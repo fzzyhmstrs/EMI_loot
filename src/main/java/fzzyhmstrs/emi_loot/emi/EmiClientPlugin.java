@@ -3,16 +3,18 @@ package fzzyhmstrs.emi_loot.emi;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.block.Blocks;
+import fzzyhmstrs.emi_loot.EMILoot;
+import net.minecraft.util.Identifier;
 
 public class EmiClientPlugin implements EmiPlugin {
-
-    private final EmiStack LOOT_WORKSTATION = EmiStack.of(Blocks.CHEST.asItem());
-    private final EmiRecipeCategory LOOT_CATEGORY = new EmiRecipeCategory(LOOT_WORKSTATION.getId(),LOOT_WORKSTATION, new LootSimplifiedRenderer(0,0));
+    private static final Identifier LOOT_ID = new Identifier(EMILoot.MOD_ID,"chest_loot");
+    public static final EmiRecipeCategory LOOT_CATEGORY = new EmiRecipeCategory(LOOT_ID, new LootSimplifiedRenderer(0,0));
 
     @Override
     public void register(EmiRegistry registry) {
+
+        registry.addCategory(LOOT_CATEGORY);
+
 
     }
 }

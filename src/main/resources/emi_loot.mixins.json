@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "fzzyhmstrs.emi_loot.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "LootTableAccessor",
+    "LootPoolAccessor",
+    "LeafEntryAccessor",
+    "ItemEntryAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
