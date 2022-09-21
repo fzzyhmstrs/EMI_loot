@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "emi-loot",
+  "version": "0.1.0+1.19",
+  "name": "EMI Loot",
+  "description":"Plugin for EMI that shows chest loot and block drops. Entity drops TBA.",
+  "icon": "assets/emi_loot/icon.png",
+  "authors": [
+    "fzzyhmstrs"
+  ],
+  "entrypoints": {
+    "main": [
+        "fzzyhmstrs.emi_loot.EMILoot"
+    ]
+  },
+  "license": "MIT License",
+  "depends": {
+    "minecraft": "1.19.x"
+  }
+}
