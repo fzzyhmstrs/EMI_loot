@@ -6,7 +6,10 @@
     "LootTableAccessor",
     "LootPoolAccessor",
     "LeafEntryAccessor",
-    "ItemEntryAccessor"
+    "ItemEntryAccessor",
+    "ConstantLootNumberProviderAccessor",
+    "BinomialLootNumberProviderAccessor",
+    "UniformLootNumberProviderAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

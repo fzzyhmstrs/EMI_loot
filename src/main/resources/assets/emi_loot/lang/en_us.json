@@ -1,5 +1,7 @@
 {
   "emi_loot.percentage": "%s%%",
+  "emi_loot.chest.unknown": "Unknown",
+  "emi_loot.chest.unknown_chest": "%s Loot Chest",
   "emi_loot.chest.minecraft:chests/spawn_bonus_chest": "Spawn Bonus Chest",
   "emi_loot.chest.minecraft:chests/end_city_treasure": "End City Treasure",
   "emi_loot.chest.minecraft:chests/simple_dungeon": "Dungeon Chest",

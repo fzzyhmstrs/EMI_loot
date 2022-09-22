@@ -13,12 +13,14 @@ import java.util.HashMap;
 
 public class ChestLootPoolSender implements LootSender {
 
-    public ChestLootPoolSender(Identifier id){
+    public ChestLootPoolSender(Identifier id, float rollWeight){
         this.id = id;
+        this.rollWeight = rollWeight;
     }
 
     private final HashMap<Item, Integer> map = new HashMap<>();
     private final Identifier id;
+    private final float rollWeight;
     private Integer totalWeight = 0;
     public static Identifier CHEST_SENDER = new Identifier(EMILoot.MOD_ID,"chest_sender");
 
@@ -35,7 +37,7 @@ public class ChestLootPoolSender implements LootSender {
     @Override
     public void send(ServerPlayerEntity player) {
         HashMap<Item, Float> floatMap = new HashMap<>();
-        map.forEach((item, itemWeight)-> floatMap.put(item,(itemWeight.floatValue()/totalWeight * 100F)));
+        map.forEach((item, itemWeight)-> floatMap.put(item,(itemWeight.floatValue()/totalWeight * 100F * rollWeight)));
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeIdentifier(id);
         buf.writeShort(floatMap.size());
