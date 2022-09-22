@@ -90,7 +90,8 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addText(title.asOrderedText(),1,0,0xFFFFFF,true);
+        //widgets.addText(title.asOrderedText(),1,0,0xFFFFFF,true);
+        widgets.addText(title.asOrderedText(),1,0,0x404040,false);
         AtomicInteger index = new AtomicInteger(1);
         lootStacks.forEach((stack, itemWeight)->{
             int row = (int) Math.ceil(index.get() /3.0) - 1;
@@ -105,7 +106,8 @@ public class ChestLootRecipe implements EmiRecipe {
             } else {
                 fTrim = f + ".00";
             }
-            widgets.addText(Text.translatable("emi_loot.percentage",fTrim).asOrderedText(),column * 39 + 19,row * 19,0xFFFFFF,true);
+            //widgets.addText(Text.translatable("emi_loot.percentage",fTrim).asOrderedText(),column * 39 + 19,row * 19,0xFFFFFF,true);
+            widgets.addText(Text.translatable("emi_loot.percentage",fTrim).asOrderedText(),column * 39 + 19,row * 19,0x404040,false);
         });
     }
 
