@@ -1,15 +1,17 @@
 package fzzyhmstrs.emi_loot.emi;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.render.EmiRenderable;
 import fzzyhmstrs.emi_loot.EMILoot;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class LootSimplifiedRenderer implements EmiRenderable {
 
-    private int u;
-    private int v;
-    private Identifier SPRITE_SHEET = new Identifier(EMILoot.MOD_ID,"textures/gui/emi_recipe_textures.png");
+    private final int u;
+    private final int v;
+    private final Identifier SPRITE_SHEET = new Identifier(EMILoot.MOD_ID,"textures/gui/emi_recipe_textures.png");
 
     public LootSimplifiedRenderer(int u, int v){
         this.u = u;
@@ -18,6 +20,7 @@ public class LootSimplifiedRenderer implements EmiRenderable {
 
     @Override
     public void render(MatrixStack matrices, int x, int y, float delta) {
-
+        RenderSystem.setShaderTexture(0, SPRITE_SHEET);
+        DrawableHelper.drawTexture(matrices, x, y, u, v, 16, 16, 32, 16);
     }
 }

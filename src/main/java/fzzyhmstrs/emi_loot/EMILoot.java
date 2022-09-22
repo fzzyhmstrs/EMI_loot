@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot;
 
 import fzzyhmstrs.emi_loot.server.LootTableParser;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
 public class EMILoot implements ModInitializer {

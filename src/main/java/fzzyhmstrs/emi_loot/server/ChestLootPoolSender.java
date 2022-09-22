@@ -10,9 +10,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class ChestLootPoolSender implements LootSender {
 
@@ -40,7 +37,6 @@ public class ChestLootPoolSender implements LootSender {
         HashMap<Item, Float> floatMap = new HashMap<>();
         map.forEach((item, itemWeight)-> floatMap.put(item,(itemWeight.floatValue()/totalWeight * 100F)));
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeString("chest");
         buf.writeIdentifier(id);
         buf.writeShort(floatMap.size());
         floatMap.forEach((item, floatWeight)->{

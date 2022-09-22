@@ -4,6 +4,8 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import net.minecraft.util.Identifier;
 
 public class EmiClientPlugin implements EmiPlugin {
@@ -15,6 +17,11 @@ public class EmiClientPlugin implements EmiPlugin {
 
         registry.addCategory(LOOT_CATEGORY);
 
+        EMILootClient.tables.getLoots().forEach(lootReceiver -> {
+            if (lootReceiver instanceof ClientChestLootTable){
+                registry.addRecipe(new ChestLootRecipe((ClientChestLootTable) lootReceiver));
+            }
+        });
 
     }
 }

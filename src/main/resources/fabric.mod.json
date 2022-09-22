@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
         "fzzyhmstrs.emi_loot.EMILoot"
+    ],
+    "client": [
+      "fzzyhmstrs.emi_loot.EMILoot"
     ]
   },
   "license": "MIT License",

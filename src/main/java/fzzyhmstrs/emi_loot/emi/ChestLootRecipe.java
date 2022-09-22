@@ -1,26 +1,38 @@
-package fzzyhmstrs.emi_loot.recipe;
+package fzzyhmstrs.emi_loot.emi;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.emi.EmiClientPlugin;
-import fzzyhmstrs.emi_loot.emi.LootSimplifiedRenderer;
-import net.minecraft.loot.LootTable;
+import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class LootEmiRecipe implements EmiRecipe {
+public class ChestLootRecipe implements EmiRecipe {
 
-    private final LootTable table;
+    public ChestLootRecipe(ClientChestLootTable loot){
+        this.loot = loot;
+        if (loot.items.size() == 1){
+            if (loot.items.values().stream().toList().get(0)== 1f){
+                isGuaranteedNonChance = true;
 
-    public LootEmiRecipe(LootTable table){
-        this.table = table;
+            }
+        }
+        Map<EmiStack,Float> map = new HashMap<>();
+        loot.items.forEach((item,weight)-> map.put(EmiStack.of(item),weight));
+        lootStacks = map;
     }
+
+    private final ClientChestLootTable loot;
+    private final Map<EmiStack, Float> lootStacks;
+    private boolean isGuaranteedNonChance = false;
 
     @Override
     public EmiRecipeCategory getCategory() {
@@ -29,12 +41,12 @@ public class LootEmiRecipe implements EmiRecipe {
 
     @Override
     public @Nullable Identifier getId() {
-        return new Identifier("emi", EMILoot.MOD_ID + table.toString());
+        return new Identifier("emi", EMILootClient.MOD_ID + "/" + getCategory().id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());
     }
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return null;
+        return new LinkedList<>();
     }
 
     @Override
@@ -44,16 +56,18 @@ public class LootEmiRecipe implements EmiRecipe {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return null;
+        return lootStacks.keySet().stream().toList();
     }
 
     @Override
     public int getDisplayWidth() {
-        return 0;
+        return 100;
     }
 
     @Override
     public int getDisplayHeight() {
+        int titleHeight = 11;
+
         return 0;
     }
 
