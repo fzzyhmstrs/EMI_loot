@@ -1,7 +1,10 @@
 package fzzyhmstrs.emi_loot.server;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -9,7 +12,6 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.AlternativeEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
@@ -24,6 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LootTableParser {
 
@@ -53,7 +56,7 @@ public class LootTableParser {
                     sender.addBuilder(builder);
                 }
                 chestSenders.put(id, sender);
-            } else if (type == LootContextTypes.BLOCK) {
+            } /*else if (type == LootContextTypes.BLOCK) {
                 BlockLootTableSender sender = new BlockLootTableSender(id);
                 LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
                 for (LootPool pool : pools) {
@@ -69,7 +72,7 @@ public class LootTableParser {
                     }
                     sender.addBuilder(builder);
                 }
-            }
+            }*/
         });
     }
 
@@ -105,17 +108,22 @@ public class LootTableParser {
         LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
         LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
         List<Text> functionTexts = new LinkedList<>();
-        Arrays.stream(functions).toList().forEach(lootFunction -> {
-            Text lootText = parseLootFunction(lootFunction, item);
-            if (!Objects.equals(lootText, Text.empty())){
+        for (LootFunction lootFunction : functions) {
+            LootFunctionResult result = parseLootFunction(lootFunction, item);
+            Text lootText = result.text;
+            ItemStack newStack = result.stack;
+            if (!Objects.equals(lootText, Text.empty())) {
                 functionTexts.add(lootText);
             }
-        });
+            if (newStack != ItemStack.EMPTY) {
+                item = newStack;
+            }
+        }
         List<Text> conditionsTexts = new LinkedList<>();
         return new ItemEntryResult(item,weight,conditionsTexts,functionTexts);
     }
 
-    static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry, boolean skipExtra){
+    /*static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry, boolean skipExtra){
         LootPoolEntry[] children = ((CombinedEntryAccessor)entry).getChildren();
         List<ItemEntryResult> results = new LinkedList<>();
         Arrays.stream(children).toList().forEach((lootEntry)->{
@@ -125,18 +133,18 @@ public class LootTableParser {
             }
         });
         return results;
-    }
+    }*/
 
-    static Text parseLootFunction(LootFunction function, ItemStack stack){
+    static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack){
         LootFunctionType type = function.getType();
         if (type == LootFunctionTypes.APPLY_BONUS){
-            return Text.translatable("emi_loot.function.bonus");
+            return new LootFunctionResult(Text.translatable("emi_loot.function.bonus"),ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_POTION){
             Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
             PotionUtil.setPotion(stack, potion);
             System.out.println(stack.getNbt());
             Text potionName = Text.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
-            return Text.translatable("emi_loot.function.potion",potionName);
+            return new LootFunctionResult(Text.translatable("emi_loot.function.potion",potionName), ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_COUNT){
             LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
             float rollAvg = getRollAvg(provider);
@@ -147,15 +155,38 @@ public class LootTableParser {
                 stack.setCount((int)rollAvg);
             }
             if (add){
-                return Text.translatable("emi_loot.function.set_count_add");
+                return new LootFunctionResult(Text.translatable("emi_loot.function.set_count_add"),ItemStack.EMPTY);
             }
-            return Text.empty();
+            return LootFunctionResult.EMPTY;
+        }else if (type == LootFunctionTypes.ENCHANT_WITH_LEVELS){
+            if (stack.isOf(Items.BOOK)){
+                stack = new ItemStack(Items.ENCHANTED_BOOK);
+                EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
+                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_book"), stack);
+            } else {
+                stack.addEnchantment(EMILoot.RANDOM,1);
+                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
+            }
+        }else if (type == LootFunctionTypes.ENCHANT_RANDOMLY){
+            if (stack.isOf(Items.BOOK)){
+                stack = new ItemStack(Items.ENCHANTED_BOOK);
+                EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
+                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_book"), stack);
+            } else {
+                stack.addEnchantment(EMILoot.RANDOM,1);
+                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
+            }
         } else {
-            return Text.empty();
+            return LootFunctionResult.EMPTY;
         }
     }
 
-
+    record LootFunctionResult(
+            Text text,
+            ItemStack stack
+    ){
+        static LootFunctionResult EMPTY = new LootFunctionResult(Text.empty(), ItemStack.EMPTY);
+    }
 
     record ItemEntryResult(
             ItemStack item,
