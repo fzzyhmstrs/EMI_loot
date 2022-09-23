@@ -5,11 +5,16 @@
   "mixins": [
     "LootTableAccessor",
     "LootPoolAccessor",
+    "LootPoolEntryAccessor",
     "LeafEntryAccessor",
     "ItemEntryAccessor",
     "ConstantLootNumberProviderAccessor",
     "BinomialLootNumberProviderAccessor",
-    "UniformLootNumberProviderAccessor"
+    "UniformLootNumberProviderAccessor",
+    "LootManagerMixin",
+    "SetPotionLootFunctionAccessor",
+    "CombinedEntryAccessor",
+    "SetCountLootFunctionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

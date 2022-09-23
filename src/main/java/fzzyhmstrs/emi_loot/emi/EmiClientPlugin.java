@@ -3,14 +3,18 @@ package fzzyhmstrs.emi_loot.emi;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 
 public class EmiClientPlugin implements EmiPlugin {
     private static final Identifier LOOT_ID = new Identifier(EMILoot.MOD_ID,"chest_loot");
-    public static final EmiRecipeCategory LOOT_CATEGORY = new EmiRecipeCategory(LOOT_ID, new LootSimplifiedRenderer(0,0));
+    private static final Identifier BLOCK_ID = new Identifier(EMILoot.MOD_ID,"block_drops");
+    public static final EmiRecipeCategory LOOT_CATEGORY = new EmiRecipeCategory(LOOT_ID, EmiStack.of(Blocks.CHEST.asItem()), new LootSimplifiedRenderer(0,0));
+    public static final EmiRecipeCategory BLOCK_CATEGORY = new EmiRecipeCategory(BLOCK_ID, EmiStack.of(Blocks.DIAMOND_ORE.asItem()), new LootSimplifiedRenderer(16,0));
 
     @Override
     public void register(EmiRegistry registry) {

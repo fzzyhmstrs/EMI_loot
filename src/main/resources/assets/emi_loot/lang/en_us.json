@@ -1,4 +1,6 @@
 {
+  "emi.category.emi_loot.chest_loot": "Chest Loot",
+  "emi.category.emi_loot.block_drops": "Chest Loot",
   "emi_loot.percentage": "%s%%",
   "emi_loot.chest.unknown": "Unknown",
   "emi_loot.chest.unknown_chest": "%s Loot Chest",

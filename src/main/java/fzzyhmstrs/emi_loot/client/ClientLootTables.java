@@ -1,6 +1,6 @@
 package fzzyhmstrs.emi_loot.client;
 
-import fzzyhmstrs.emi_loot.server.ChestLootPoolSender;
+import fzzyhmstrs.emi_loot.server.ChestLootPoolBuilder;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.LinkedList;
@@ -14,7 +14,11 @@ public class ClientLootTables {
     }
 
     public void registerClient(){
-        ClientPlayNetworking.registerGlobalReceiver(ChestLootPoolSender.CHEST_SENDER,(minecraftClient,playNetworkHandler,buf,sender)-> loots.add(ClientChestLootTable.INSTANCE.fromBuf(buf)));
+        ClientPlayNetworking.registerGlobalReceiver(ChestLootPoolBuilder.CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+            LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
+            loots.add(table);
+            System.out.println("received " + table.getId());
+        });
     }
 
 }

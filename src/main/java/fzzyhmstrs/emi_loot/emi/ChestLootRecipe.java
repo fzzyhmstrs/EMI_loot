@@ -26,9 +26,24 @@ public class ChestLootRecipe implements EmiRecipe {
 
             }
         }
-        Map<EmiStack,Float> map = new HashMap<>();
-        loot.items.forEach((item,weight)-> map.put(EmiStack.of(item),weight));
-        lootStacks = map;
+
+        Map<Float, List<EmiStack>> map2 = new TreeMap<>();
+        List<EmiStack> outputsList = new LinkedList<>();
+        loot.items.forEach((item,weight)-> {
+            List<EmiStack> list = map2.getOrDefault(weight,new LinkedList<>());
+            EmiStack stack = EmiStack.of(item);
+            list.add(stack);
+            map2.put(weight,list);
+            outputsList.add(stack);
+        });
+        lootStacksSorted = map2;
+        if (loot.items.size() > 24){
+            this.lootStacksSortedSize = lootStacksSorted.keySet().size();
+        } else{
+            this.lootStacksSortedSize = loot.items.size();
+        }
+
+        outputs = outputsList;
         String key = "emi_loot.chest." + loot.id.toString();
         Text text = Text.translatable(key);
         if (Objects.equals(text.getString(), key)){
@@ -47,7 +62,10 @@ public class ChestLootRecipe implements EmiRecipe {
     }
 
     private final ClientChestLootTable loot;
-    private final Map<EmiStack, Float> lootStacks;
+    //private final Map<EmiStack, Float> lootStacks;
+    private final Map<Float,List<EmiStack>> lootStacksSorted;
+    private final int lootStacksSortedSize;
+    private final List<EmiStack> outputs;
     private boolean isGuaranteedNonChance = false;
     private final Text title;
 
@@ -73,41 +91,53 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiStack> getOutputs() {
-        return lootStacks.keySet().stream().toList();
+        return outputs;
     }
 
     @Override
     public int getDisplayWidth() {
-        return (19 * 3) + (20 * 3);
+        return (19 * 4) + (26 * 3) + 25;
     }
 
     @Override
     public int getDisplayHeight() {
         int titleHeight = 11;
-        int boxesHeight = (int) Math.ceil(loot.items.size()/3.0);
+        int boxesHeight = ((int) Math.ceil(lootStacksSortedSize/4.0) * 19) - 1;
         return titleHeight + boxesHeight;
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        //widgets.addText(title.asOrderedText(),1,0,0xFFFFFF,true);
+        final int titleSpace;
+        final int finalRowHeight;
+        if (widgets.getHeight() < getDisplayHeight()){
+            titleSpace = 9;
+            finalRowHeight = (widgets.getHeight() - titleSpace)/((int) Math.ceil(loot.items.size()/4.0));
+        } else {
+            titleSpace = 11;
+            finalRowHeight = 19;
+        }
         widgets.addText(title.asOrderedText(),1,0,0x404040,false);
-        AtomicInteger index = new AtomicInteger(1);
-        lootStacks.forEach((stack, itemWeight)->{
-            int row = (int) Math.ceil(index.get() /3.0) - 1;
-            int column = (index.get() - 1) % 3;
-            index.getAndIncrement();
-            widgets.addSlot(stack,column * 39,row * 19).recipeContext(this);
-            String f = Float.toString(itemWeight);
-            int fDot = f.indexOf(".");
-            String fTrim;
-            if (fDot > 0) {
-                fTrim = f.substring(0, Math.min(f.length() - 1, fDot + 2));
+        AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
+        lootStacksSorted.forEach((weight, items)->{
+            if (loot.items.size() <= 24) {
+                items.forEach((stack) -> {
+                    int row = (int) Math.ceil(index.get() / 4.0) - 1;
+                    int column = (index.get() - 1) % 4;
+                    index.getAndDecrement();
+                    String fTrim = trimFloatString(weight);
+                    widgets.addSlot(stack, column * 45, titleSpace + row * finalRowHeight).recipeContext(this);
+                    widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                });
             } else {
-                fTrim = f + ".00";
+                int row = (int) Math.ceil(index.get() / 4.0) - 1;
+                int column = (index.get() - 1) % 4;
+                index.getAndDecrement();
+                EmiIngredient ingredient = EmiIngredient.of(items);
+                String fTrim = trimFloatString(weight);
+                widgets.addSlot(ingredient, column * 45, titleSpace + row * finalRowHeight).recipeContext(this);
+                widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
             }
-            //widgets.addText(Text.translatable("emi_loot.percentage",fTrim).asOrderedText(),column * 39 + 19,row * 19,0xFFFFFF,true);
-            widgets.addText(Text.translatable("emi_loot.percentage",fTrim).asOrderedText(),column * 39 + 19,row * 19,0x404040,false);
         });
     }
 
@@ -119,5 +149,25 @@ public class ChestLootRecipe implements EmiRecipe {
     @Override
     public boolean hideCraftable() {
         return EmiRecipe.super.hideCraftable();
+    }
+
+    private String trimFloatString(Float weight){
+        String f = Float.toString(weight);
+        int fDot = f.indexOf(".");
+        String fTrim;
+        if (fDot > 0) {
+            if (weight < 10f) {
+                fTrim = f.substring(0, Math.min(f.length(), fDot + 2));
+            } else {
+                fTrim = f.substring(0, Math.min(f.length(), fDot));
+            }
+        } else {
+            if (weight < 10f) {
+                fTrim = f + ".0";
+            } else {
+                fTrim = f;
+            }
+        }
+        return fTrim;
     }
 }
