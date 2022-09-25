@@ -22,11 +22,12 @@ import net.minecraft.loot.provider.number.LootNumberProviderType;
 import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class LootTableParser {
 
@@ -112,7 +113,7 @@ public class LootTableParser {
             LootFunctionResult result = parseLootFunction(lootFunction, item);
             Text lootText = result.text;
             ItemStack newStack = result.stack;
-            if (!Objects.equals(lootText, Text.empty())) {
+            if (!Objects.equals(lootText, Text.EMPTY)) {
                 functionTexts.add(lootText);
             }
             if (newStack != ItemStack.EMPTY) {
@@ -138,13 +139,13 @@ public class LootTableParser {
     static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack){
         LootFunctionType type = function.getType();
         if (type == LootFunctionTypes.APPLY_BONUS){
-            return new LootFunctionResult(Text.translatable("emi_loot.function.bonus"),ItemStack.EMPTY);
+            return new LootFunctionResult(new TranslatableText("emi_loot.function.bonus"),ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_POTION){
             Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
             PotionUtil.setPotion(stack, potion);
             System.out.println(stack.getNbt());
-            Text potionName = Text.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
-            return new LootFunctionResult(Text.translatable("emi_loot.function.potion",potionName), ItemStack.EMPTY);
+            Text potionName = new TranslatableText(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
+            return new LootFunctionResult(new TranslatableText("emi_loot.function.potion",potionName), ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_COUNT){
             LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
             float rollAvg = getRollAvg(provider);
@@ -155,26 +156,26 @@ public class LootTableParser {
                 stack.setCount((int)rollAvg);
             }
             if (add){
-                return new LootFunctionResult(Text.translatable("emi_loot.function.set_count_add"),ItemStack.EMPTY);
+                return new LootFunctionResult(new TranslatableText("emi_loot.function.set_count_add"),ItemStack.EMPTY);
             }
             return LootFunctionResult.EMPTY;
         }else if (type == LootFunctionTypes.ENCHANT_WITH_LEVELS){
             if (stack.isOf(Items.BOOK)){
                 stack = new ItemStack(Items.ENCHANTED_BOOK);
                 EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
-                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_book"), stack);
+                return new LootFunctionResult(new TranslatableText("emi_loot.function.randomly_enchanted_book"), stack);
             } else {
                 stack.addEnchantment(EMILoot.RANDOM,1);
-                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
+                return new LootFunctionResult(new TranslatableText("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
             }
         }else if (type == LootFunctionTypes.ENCHANT_RANDOMLY){
             if (stack.isOf(Items.BOOK)){
                 stack = new ItemStack(Items.ENCHANTED_BOOK);
                 EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
-                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_book"), stack);
+                return new LootFunctionResult(new TranslatableText("emi_loot.function.randomly_enchanted_book"), stack);
             } else {
                 stack.addEnchantment(EMILoot.RANDOM,1);
-                return new LootFunctionResult(Text.translatable("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
+                return new LootFunctionResult(new TranslatableText("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY);
             }
         } else {
             return LootFunctionResult.EMPTY;
@@ -185,7 +186,7 @@ public class LootTableParser {
             Text text,
             ItemStack stack
     ){
-        static LootFunctionResult EMPTY = new LootFunctionResult(Text.empty(), ItemStack.EMPTY);
+        static LootFunctionResult EMPTY = new LootFunctionResult(LiteralText.EMPTY, ItemStack.EMPTY);
     }
 
     record ItemEntryResult(
