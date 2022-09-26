@@ -18,6 +18,10 @@ public class BlockLootPoolBuilder implements LootBuilder {
     HashMap<ItemStack, Float> builtMap = new HashMap<>();
     public static Identifier BLOCK_SENDER = new Identifier(EMILoot.MOD_ID,"block_sender");
 
+    public void addItem(LootTableParser.ItemEntryResult result){
+
+    }
+
     @Override
     public void build() {
 
