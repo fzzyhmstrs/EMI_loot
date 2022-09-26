@@ -16,4 +16,7 @@ public interface LootPoolAccessor {
     @Accessor(value = "rolls")
     LootNumberProvider getRolls();
 
+    @Accessor(value = "conditions")
+    LootCondition[] getConditions();
+
 }
