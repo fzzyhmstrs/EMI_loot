@@ -14,7 +14,22 @@
     "LootManagerMixin",
     "SetPotionLootFunctionAccessor",
     "CombinedEntryAccessor",
-    "SetCountLootFunctionAccessor"
+    "SetCountLootFunctionAccessor",
+    "ApplyBonusLootFunctionAccessor",
+    "SetDamageLootFunctionAccessor",
+    "SetNameLootFunctionAccessor",
+    "ExplorationMapLootFunctionAccessor",
+    "SetGoatHornLootFunctionAccessor",
+    "SetEnchantmentsLootFunctionAccessor",
+    "TableBonusLootConditionAccessor",
+    "InvertedLootConditionAccessor",
+    "AlternativeLootConditionAccessor",
+    "RandomChanceLootConditionAccessor",
+    "RandomChanceWithLootingLootConditionAccessor",
+    "EntityPredicateAccessor",
+    "ItemPredicateAccessor",
+    "EnchantmentPredicateAccessor",
+    "MatchToolLootConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

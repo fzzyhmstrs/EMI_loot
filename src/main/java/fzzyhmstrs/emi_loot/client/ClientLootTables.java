@@ -1,10 +1,12 @@
 package fzzyhmstrs.emi_loot.client;
 
-import fzzyhmstrs.emi_loot.server.ChestLootPoolBuilder;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import static fzzyhmstrs.emi_loot.server.BlockLootTableSender.BLOCK_SENDER;
+import static fzzyhmstrs.emi_loot.server.ChestLootTableSender.CHEST_SENDER;
 
 public class ClientLootTables {
     private final List<LootReceiver> loots = new LinkedList<>();
@@ -14,10 +16,15 @@ public class ClientLootTables {
     }
 
     public void registerClient(){
-        ClientPlayNetworking.registerGlobalReceiver(ChestLootPoolBuilder.CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            System.out.println("received " + table.getId());
+            System.out.println("received chest " + table.getId());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+            LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
+            loots.add(table);
+            System.out.println("received block " + table.getId());
         });
     }
 
