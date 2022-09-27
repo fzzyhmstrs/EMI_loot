@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.server;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
@@ -23,6 +24,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     private final Identifier id;
     private final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
+    public static Identifier CHEST_SENDER = new Identifier(EMILoot.MOD_ID,"chest_sender");
 
     @Override
     public void send(ServerPlayerEntity player) {
@@ -30,13 +32,11 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
         builderList.forEach((builder) -> {
             builder.build();
             builder.builtMap.forEach((item,weight)->{
-                if (!item.isOf(Items.AIR)) {
-                    if (floatMap.containsKey(item)) {
-                        float oldWeight = floatMap.getOrDefault(item, 0f);
-                        floatMap.put(item, oldWeight + weight);
-                    } else {
-                        floatMap.put(item, weight);
-                    }
+                if (floatMap.containsKey(item)) {
+                    float oldWeight = floatMap.getOrDefault(item, 0f);
+                    floatMap.put(item, oldWeight + weight);
+                } else {
+                    floatMap.put(item, weight);
                 }
             });
         });
@@ -48,7 +48,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
             buf.writeItemStack(item);
             buf.writeFloat(floatWeight);
         });
-        ServerPlayNetworking.send(player,ChestLootPoolBuilder.CHEST_SENDER, buf);
+        ServerPlayNetworking.send(player,CHEST_SENDER, buf);
     }
 
     @Override

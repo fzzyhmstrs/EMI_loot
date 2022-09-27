@@ -5,12 +5,30 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
+import net.minecraft.block.Block;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class BlockLootRecipe implements EmiRecipe {
+
+    public BlockLootRecipe(ClientBlockLootTable loot){
+        Identifier lootId = loot.id;
+        Identifier blockId = fromLootId(lootId);
+        Block block = Registry.BLOCK.get(blockId);
+        inputStack = EmiStack.of(block);
+    }
+
+    private final EmiStack inputStack;
+
+    private Identifier fromLootId(Identifier lootId){
+        //TODO
+        return new Identifier("empty");
+    }
+
     @Override
     public EmiRecipeCategory getCategory() {
         return null;

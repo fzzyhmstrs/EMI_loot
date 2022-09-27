@@ -1,9 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
-import fzzyhmstrs.emi_loot.EMILoot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.Items;
 
 import java.util.HashMap;
 
@@ -17,7 +15,7 @@ public class ChestLootPoolBuilder implements LootBuilder {
     private final float rollWeight;
     private Integer totalWeight = 0;
     HashMap<ItemStack, Float> builtMap = new HashMap<>();
-    public static Identifier CHEST_SENDER = new Identifier(EMILoot.MOD_ID,"chest_sender");
+
 
     public void addItem(ItemStack item, int weight){
         totalWeight += weight;
@@ -32,7 +30,11 @@ public class ChestLootPoolBuilder implements LootBuilder {
     @Override
     public void build() {
         HashMap<ItemStack, Float> floatMap = new HashMap<>();
-        map.forEach((item, itemWeight)-> floatMap.put(item,(itemWeight.floatValue()/totalWeight * 100F * rollWeight)));
+        map.forEach((item, itemWeight)-> {
+            if (!item.isOf(Items.AIR)) {
+                floatMap.put(item, (itemWeight.floatValue() / totalWeight * 100F * rollWeight));
+            }
+        });
         builtMap = floatMap;
     }
 }
