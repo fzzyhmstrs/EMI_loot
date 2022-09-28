@@ -18,9 +18,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
+
 public class BlockLootRecipe implements EmiRecipe {
+
+    //kelp
+    //potted plants
+    //fire
+    //candle cakes
 
     public BlockLootRecipe(ClientBlockLootTable loot){
         this.loot = loot;
@@ -128,15 +136,26 @@ public class BlockLootRecipe implements EmiRecipe {
                 var xObj = new Object() {
                     int x = 0;
                 };
+                AtomicInteger index = new AtomicInteger();
+                AtomicBoolean addedItems = new AtomicBoolean(false);
                 itemMap.forEach((stack,weight)->{
                     widgets.addSlot(EmiStack.of(stack), xObj.x, yObj.y);
+                    addedItems.set(true);
                     xObj.x += 20;
                     if (weight != 100F){
-                        String fTrim = Float.toString(weight);
+                        String fTrim = trimFloatString(weight);
                         widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
                         xObj.x += 28;
                     }
+                    if (index.getAndIncrement() == 3){
+                        yObj.y += getDisplayHeight() > widgets.getHeight() ? 19 : 20;
+                        xObj.x = 0;
+                        index.set(0);
+                    }
                 });
+                if (index.get() == 0 && addedItems.get()){
+                    yObj.y -= getDisplayHeight() > widgets.getHeight() ? 19 : 20;
+                }
                 yObj.y += poolOffset;
             });
         });

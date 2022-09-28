@@ -136,6 +136,10 @@ public class LootTableParser {
     }
 
     static ItemEntryResult parseItemEntry(ItemEntry entry, boolean skipExtras){
+        return parseItemEntry(entry, skipExtras,false);
+    }
+
+    static ItemEntryResult parseItemEntry(ItemEntry entry, boolean skipExtras, boolean parentIsAlternative){
         int weight = ((LeafEntryAccessor) entry).getWeight();
         ItemStack item = new ItemStack(((ItemEntryAccessor) entry).getItem());
         if (skipExtras){
@@ -145,7 +149,7 @@ public class LootTableParser {
         LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
         List<TextKey> functionTexts = new LinkedList<>();
         for (LootFunction lootFunction : functions) {
-            LootFunctionResult result = parseLootFunction(lootFunction, item);
+            LootFunctionResult result = parseLootFunction(lootFunction, item, parentIsAlternative);
             TextKey lootText = result.text;
             ItemStack newStack = result.stack;
             if (lootText.isNotEmpty()) {
@@ -184,18 +188,12 @@ public class LootTableParser {
         List<ItemEntryResult> results = new LinkedList<>();
         Arrays.stream(children).toList().forEach((lootEntry)->{
             if(lootEntry instanceof ItemEntry itemEntry){
-                ItemEntryResult result = parseItemEntry(itemEntry,false);
-                if (result.conditions.isEmpty()) {
-                    result.conditions.addAll(conditionsTexts);
-                }
+                ItemEntryResult result = parseItemEntry(itemEntry,false, true);
+                result.conditions.addAll(conditionsTexts);
                 results.add(result);
             } else if(lootEntry instanceof AlternativeEntry alternativeEntry){
                 List<ItemEntryResult> altResults = parseAlternativeEntry(alternativeEntry,false);
-                altResults.forEach(result-> {
-                    if (result.conditions.isEmpty()) {
-                        result.conditions.addAll(conditionsTexts);
-                    }
-                });
+                altResults.forEach(result-> result.conditions.addAll(conditionsTexts));
                 results.addAll(altResults);
             }
         });
@@ -203,6 +201,10 @@ public class LootTableParser {
     }
 
     static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack){
+        return parseLootFunction(function, stack,false);
+    }
+
+    static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative){
         LootFunctionType type = function.getType();
         if (type == LootFunctionTypes.APPLY_BONUS){
             Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
@@ -323,6 +325,7 @@ public class LootTableParser {
         }else if (type == LootFunctionTypes.COPY_STATE){
             return new LootFunctionResult(TextKey.of("emi_loot.function.copy_state"), ItemStack.EMPTY);
         }else if (type == LootFunctionTypes.EXPLOSION_DECAY){
+            if (parentIsAlternative) return new LootFunctionResult(TextKey.of("emi_loot.function.decay"), ItemStack.EMPTY);
             return new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY);
         } else {
             return LootFunctionResult.EMPTY;

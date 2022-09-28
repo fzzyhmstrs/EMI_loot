@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
+
 public class ChestLootRecipe implements EmiRecipe {
 
     public ChestLootRecipe(ClientChestLootTable loot){
@@ -148,25 +150,5 @@ public class ChestLootRecipe implements EmiRecipe {
     @Override
     public boolean hideCraftable() {
         return EmiRecipe.super.hideCraftable();
-    }
-
-    private String trimFloatString(Float weight){
-        String f = Float.toString(weight);
-        int fDot = f.indexOf(".");
-        String fTrim;
-        if (fDot > 0) {
-            if (weight < 10f) {
-                fTrim = f.substring(0, Math.min(f.length(), fDot + 2));
-            } else {
-                fTrim = f.substring(0, Math.min(f.length(), fDot));
-            }
-        } else {
-            if (weight < 10f) {
-                fTrim = f + ".0";
-            } else {
-                fTrim = f;
-            }
-        }
-        return fTrim;
     }
 }
