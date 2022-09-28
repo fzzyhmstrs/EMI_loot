@@ -1,15 +1,13 @@
 package fzzyhmstrs.emi_loot.util;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -45,7 +43,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(21,"emi_loot.condition.survives_explosion",(key)-> getBasicText(21));
         mapBuilder(22,"emi_loot.condition.blockstate",(key)-> getBasicText(22));
         mapBuilder(23,"emi_loot.condition.table_bonus",(key)-> getOneArgText(23, key));
-        mapBuilder(24,"emi_loot.condition.invert",(key)-> getOneArgText(24, key));
+        mapBuilder(24,"emi_loot.condition.invert",(key)-> getInvertedText(24, key));
         mapBuilder(25,"emi_loot.condition.alternates",(key)-> getOneArgText(25, key));
         mapBuilder(26,"emi_loot.condition.alternates_2",(key)-> getTwoArgText(26, key));
         mapBuilder(27,"emi_loot.condition.alternates_3",(key)-> getAlternates3Text(27, key));
@@ -79,6 +77,18 @@ public record TextKey(int index, List<String> args){
             arg = "Missing";
         }
         return Text.translatable(translationKey, arg);
+    }
+
+    private static Text getInvertedText(int index, TextKey key){
+        String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
+        String arg;
+        try{
+            arg = key.args.get(0);
+        } catch(Exception e) {
+            e.printStackTrace();
+            arg = "Missing";
+        }
+        return Text.translatable(translationKey, arg).formatted(Formatting.RED);
     }
 
     private static Text getTwoArgText(int index, TextKey key){
@@ -118,8 +128,8 @@ public record TextKey(int index, List<String> args){
         return finalText;
     }
 
-    public boolean isEmpty(){
-        return index == 0;
+    public boolean isNotEmpty(){
+        return index != 0;
     }
 
     public static TextKey empty(){
@@ -145,18 +155,21 @@ public record TextKey(int index, List<String> args){
     }
 
     public TextKeyResult process(ItemStack stack, @Nullable World world){
-        ItemStack finalStack = stack;
+        ItemStack finalStack;
+        List<ItemStack> finalStacks = new LinkedList<>();
+        finalStacks.add(stack);
         if (this.index == 6 && world != null){
             Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
             if (opt.isPresent()){
                 ItemStack tempStack = opt.get().getOutput();
                 if (!tempStack.isEmpty()) {
                     finalStack = tempStack.copy();
+                    finalStacks.add(finalStack);
                 }
             }
         }
         Text text = keyTextBuilderMap.getOrDefault(this.index,DEFAULT_FUNCTION).apply(this);
-        return new TextKeyResult(text,finalStack);
+        return new TextKeyResult(text,finalStacks);
     }
 
     public static TextKey fromBuf(PacketByteBuf buf){
@@ -196,6 +209,6 @@ public record TextKey(int index, List<String> args){
         return Objects.hash(index, args);
     }
 
-    public record TextKeyResult(Text text,ItemStack stack){}
+    public record TextKeyResult(Text text,List<ItemStack> stacks){}
 
 }

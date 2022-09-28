@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.server;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -62,6 +63,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
             });
 
         });
+        ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
     }
 
     @Override
