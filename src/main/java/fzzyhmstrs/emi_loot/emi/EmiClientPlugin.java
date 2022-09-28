@@ -29,7 +29,9 @@ public class EmiClientPlugin implements EmiPlugin {
                 registry.addRecipe(new ChestLootRecipe((ClientChestLootTable) lootReceiver));
             }
             if (lootReceiver instanceof ClientBlockLootTable){
-                registry.addRecipe(new BlockLootRecipe((ClientBlockLootTable) lootReceiver));
+                if (!((ClientBlockLootTable) lootReceiver).isEmpty()) {
+                    registry.addRecipe(new BlockLootRecipe((ClientBlockLootTable) lootReceiver));
+                }
             }
         });
     }

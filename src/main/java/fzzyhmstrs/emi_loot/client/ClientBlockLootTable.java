@@ -7,22 +7,20 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ClientBlockLootTable implements LootReceiver {
 
     public static ClientBlockLootTable INSTANCE = new ClientBlockLootTable();
+    private static final Identifier EMPTY = new Identifier("blocks/empty");
     public final Identifier id;
     public final Identifier blockId;
     private final Map<List<TextKey>, ClientBlockRawPool> rawItems;
     public Map<List<Text>, ClientBlockBuiltPool> builtItems;
 
     public ClientBlockLootTable(){
-        this.id = new Identifier("blocks/empty");
+        this.id = EMPTY;
         this.blockId = new Identifier("air");
         this.rawItems = new HashMap<>();
     }
@@ -38,6 +36,10 @@ public class ClientBlockLootTable implements LootReceiver {
             blockId = new Identifier(ns,pth.substring(Math.min(lastSlashIndex + 1,pth.length())));
         }
         this.rawItems = map;
+    }
+
+    public boolean isEmpty(){
+        return Objects.equals(id, EMPTY);
     }
 
     public void build(World world){
@@ -88,7 +90,6 @@ public class ClientBlockLootTable implements LootReceiver {
 
         });
         builtItems = builderItems;
-
     }
 
     @Override
@@ -98,6 +99,7 @@ public class ClientBlockLootTable implements LootReceiver {
 
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
+        boolean isEmpty = true;
         Identifier id = buf.readIdentifier();
         int builderCount = buf.readByte();
 
@@ -139,14 +141,15 @@ public class ClientBlockLootTable implements LootReceiver {
                     ItemStack stack = buf.readItemStack();
                     float weight = buf.readFloat();
                     pileItemMap.put(stack,weight);
+                    isEmpty = false;
                 }
                 pool.map.put(pileQualifierList,pileItemMap);
             }
 
             itemMap.put(qualifierList,pool);
-
-
         }
+        if (isEmpty) return new ClientBlockLootTable();
+
         return new ClientBlockLootTable(id,itemMap);
     }
 
