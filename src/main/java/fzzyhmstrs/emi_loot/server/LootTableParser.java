@@ -13,7 +13,6 @@ import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.InvertedLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
@@ -44,9 +43,11 @@ import java.util.*;
 public class LootTableParser {
 
     private static final Map<Identifier, ChestLootTableSender> chestSenders = new HashMap<>();
+    private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
 
     public void registerServer(){
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player)));
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> blockSenders.forEach((id,blockSender) -> blockSender.send(handler.player)));
     }
 
     public static void parseLootTables(Map<Identifier, LootTable> tables) {
@@ -77,7 +78,12 @@ public class LootTableParser {
                     LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
                     List<LootConditionResult> parsedConditions = new LinkedList<>();
                     for (LootCondition condition: conditions){
-                        parsedConditions.addAll(parseLootCondition(condition, ItemStack.EMPTY));
+                        List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
+                        for (LootConditionResult result: results){
+                            if (result.text.isNotEmpty()){
+                                parsedConditions.add(result);
+                            }
+                        }
                     }
                     LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
                     List<LootFunctionResult> parsedFunctions = new LinkedList<>();
@@ -101,6 +107,7 @@ public class LootTableParser {
                     }
                     sender.addBuilder(builder);
                 }
+                blockSenders.put(id,sender);
             }
         });
     }
@@ -141,7 +148,7 @@ public class LootTableParser {
             LootFunctionResult result = parseLootFunction(lootFunction, item);
             TextKey lootText = result.text;
             ItemStack newStack = result.stack;
-            if (!lootText.isEmpty()) {
+            if (lootText.isNotEmpty()) {
                 functionTexts.add(lootText);
             }
             if (newStack != ItemStack.EMPTY) {
@@ -149,18 +156,46 @@ public class LootTableParser {
             }
         }
         List<TextKey> conditionsTexts = new LinkedList<>();
+        for (LootCondition condition: conditions){
+            List<LootConditionResult> results = parseLootCondition(condition,item);
+            results.forEach((result)->{
+                TextKey lootText = result.text;
+                if (lootText.isNotEmpty()){
+                    conditionsTexts.add(lootText);
+                }
+            });
+        }
         return new ItemEntryResult(item,weight,conditionsTexts,functionTexts);
     }
 
     static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry, boolean skipExtra){
         LootPoolEntry[] children = ((CombinedEntryAccessor)entry).getChildren();
+        LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
+        List<TextKey> conditionsTexts = new LinkedList<>();
+        for (LootCondition condition: conditions){
+            List<LootConditionResult> results = parseLootCondition(condition,ItemStack.EMPTY, true);
+            results.forEach((result)->{
+                TextKey lootText = result.text;
+                if (lootText.isNotEmpty()){
+                    conditionsTexts.add(lootText);
+                }
+            });
+        }
         List<ItemEntryResult> results = new LinkedList<>();
         Arrays.stream(children).toList().forEach((lootEntry)->{
             if(lootEntry instanceof ItemEntry itemEntry){
                 ItemEntryResult result = parseItemEntry(itemEntry,false);
+                if (result.conditions.isEmpty()) {
+                    result.conditions.addAll(conditionsTexts);
+                }
                 results.add(result);
             } else if(lootEntry instanceof AlternativeEntry alternativeEntry){
                 List<ItemEntryResult> altResults = parseAlternativeEntry(alternativeEntry,false);
+                altResults.forEach(result-> {
+                    if (result.conditions.isEmpty()) {
+                        result.conditions.addAll(conditionsTexts);
+                    }
+                });
                 results.addAll(altResults);
             }
         });
@@ -171,7 +206,14 @@ public class LootTableParser {
         LootFunctionType type = function.getType();
         if (type == LootFunctionTypes.APPLY_BONUS){
             Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
-            return new LootFunctionResult(TextKey.of("emi_loot.function.bonus",enchant.getName(1).getString()),ItemStack.EMPTY);
+            String name = enchant.getName(1).getString();
+            String nTrim;
+            if (enchant.getMaxLevel() != 1) {
+                nTrim = name.substring(0, name.length() - 2);
+            } else {
+                nTrim = name;
+            }
+            return new LootFunctionResult(TextKey.of("emi_loot.function.bonus",nTrim),ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_POTION){
             Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
             PotionUtil.setPotion(stack, potion);
@@ -281,21 +323,33 @@ public class LootTableParser {
         }else if (type == LootFunctionTypes.COPY_STATE){
             return new LootFunctionResult(TextKey.of("emi_loot.function.copy_state"), ItemStack.EMPTY);
         }else if (type == LootFunctionTypes.EXPLOSION_DECAY){
-            return new LootFunctionResult(TextKey.of("emi_loot.function.decay"), ItemStack.EMPTY);
+            return new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY);
         } else {
             return LootFunctionResult.EMPTY;
         }
     }
 
     static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack){
+        return parseLootCondition(condition, stack, false);
+    }
+
+    static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
         LootConditionType type = condition.getType();
         if (type == LootConditionTypes.SURVIVES_EXPLOSION){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.survives_explosion")));
+            if (parentIsAlternative) return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.survives_explosion")));
+            return Collections.singletonList(new LootConditionResult(TextKey.empty()));
         } else if (type == LootConditionTypes.BLOCK_STATE_PROPERTY){
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.blockstate")));
         } else if (type == LootConditionTypes.TABLE_BONUS){
-            Enchantment enchantment = ((TableBonusLootConditionAccessor)condition).getEnchantment();
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.table_bonus",enchantment.getName(1).getString())));
+            Enchantment enchant = ((TableBonusLootConditionAccessor)condition).getEnchantment();
+            String name = enchant.getName(1).getString();
+            String nTrim;
+            if (enchant.getMaxLevel() != 1) {
+                 nTrim = name.substring(0, name.length() - 2);
+            } else {
+                nTrim = name;
+            }
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.table_bonus",nTrim)));
         } else if (type == LootConditionTypes.INVERTED){
             LootCondition term = ((InvertedLootConditionAccessor)condition).getCondition();
             List<LootConditionResult> termResults = parseLootCondition(term, stack);
@@ -316,7 +370,17 @@ public class LootTableParser {
                 List<LootConditionResult> termResults1 = parseLootCondition(terms[0], stack);
                 List<LootConditionResult> termResults2 = parseLootCondition(terms[1], stack);
                 Text termText1 = compileConditionTexts(stack,termResults1);
-                Text termText2 = compileConditionTexts(stack,termResults2);
+                Text termText2;
+                if (termResults2.size() == 1){
+                    TextKey key = termResults2.get(0).text;
+                    if (key.args().size() == 1){
+                        termText2 = Text.of(key.args().get(0));
+                    } else {
+                        termText2 = compileConditionTexts(stack,termResults2);
+                    }
+                } else {
+                    termText2 = compileConditionTexts(stack, termResults2);
+                }
                 List<String> args = new LinkedList<>(Arrays.stream(new String[]{termText1.getString(), termText2.getString()}).toList());
                 return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.alternates_2",args)));
             } else {
@@ -347,7 +411,7 @@ public class LootTableParser {
         } else if (type == LootConditionTypes.MATCH_TOOL){
             ItemPredicate predicate = ((MatchToolLootConditionAccessor)condition).getPredicate();
             Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.match_tool",predicateText.getString())));
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }

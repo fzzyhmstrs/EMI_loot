@@ -6,9 +6,11 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class EmiClientPlugin implements EmiPlugin {
     private static final Identifier LOOT_ID = new Identifier(EMILoot.MOD_ID,"chest_loot");
@@ -20,12 +22,15 @@ public class EmiClientPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
 
         registry.addCategory(LOOT_CATEGORY);
+        registry.addCategory(BLOCK_CATEGORY);
 
         EMILootClient.tables.getLoots().forEach(lootReceiver -> {
             if (lootReceiver instanceof ClientChestLootTable){
                 registry.addRecipe(new ChestLootRecipe((ClientChestLootTable) lootReceiver));
             }
+            if (lootReceiver instanceof ClientBlockLootTable){
+                registry.addRecipe(new BlockLootRecipe((ClientBlockLootTable) lootReceiver));
+            }
         });
-
     }
 }
