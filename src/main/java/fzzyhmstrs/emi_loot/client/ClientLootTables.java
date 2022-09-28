@@ -7,6 +7,7 @@ import java.util.List;
 
 import static fzzyhmstrs.emi_loot.server.BlockLootTableSender.BLOCK_SENDER;
 import static fzzyhmstrs.emi_loot.server.ChestLootTableSender.CHEST_SENDER;
+import static fzzyhmstrs.emi_loot.server.MobLootTableSender.MOB_SENDER;
 
 public class ClientLootTables {
     private final List<LootReceiver> loots = new LinkedList<>();
@@ -25,6 +26,11 @@ public class ClientLootTables {
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             System.out.println("received block " + table.getId());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+            LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
+            loots.add(table);
+            System.out.println("received mob " + table.getId());
         });
     }
 
