@@ -25,23 +25,21 @@ import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class MobLootRecipe implements EmiRecipe {
 
-    //kelp
-    //potted plants
-    //fire
-    //candle cakes
-
+    private final MinecraftClient client = MinecraftClient.getInstance();
+    
     public MobLootRecipe(ClientMobLootTable loot){
         this.loot = loot;
         allStacksGuaranteed = true;
         loot.build(MinecraftClient.getInstance().world);
         Identifier lootId = loot.id;
-        Identifier blockId = loot.blockId;
-        System.out.println(blockId);
-        Block block = Registry.BLOCK.get(blockId);
-        inputStack = EmiStack.of(block);
+        Identifier mobId = loot.mobId;
+        System.out.println(mobId);
+        EntityType type = Registry.ENTITY_TYPE.get(mobId);
+        Entity entity = type.create(client.world);
+        inputStack = EntityEmiStack.of(entity);
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((textList, builtPool)->
-            builtPool.map().forEach((poolList,map)->
+            builtPool.map().forEach((poolList, map)->
                 map.forEach((stack, weight)->{
                     if (weight < 100f){
                         allStacksGuaranteed = false;
@@ -57,7 +55,7 @@ public class MobLootRecipe implements EmiRecipe {
     private final EmiStack inputStack;
     private final List<EmiStack> outputStacks;
     private boolean allStacksGuaranteed;
-    private final MinecraftClient client = MinecraftClient.getInstance();
+    
 
     @Override
     public EmiRecipeCategory getCategory() {
