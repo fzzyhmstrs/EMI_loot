@@ -165,6 +165,14 @@ public class LootTableParser {
                     }
                 } else if (entry instanceof LootTableEntry lootTableEntry){
                     LootSender<?> results = parseLootTableEntry(lootTableEntry,false);
+                    List<? extends LootBuilder> parsedBuilders = results.getBuilders();
+                    List<ItemEntryResult> parsedList = new LinkedList<>();
+                    parsedBuilders.forEach(parsedBuilder->{
+                        parsedList.addAll(parsedBuilder.revert());
+                    });
+                    for (ItemEntryResult result: parsedList){
+                        builder.addItem(result);
+                    }
                 }
             }
             sender.addBuilder(builder);
@@ -297,7 +305,6 @@ public class LootTableParser {
         } else if (type == LootFunctionTypes.SET_POTION){
             Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
             PotionUtil.setPotion(stack, potion);
-            System.out.println(stack.getNbt());
             Text potionName = TranslatableText(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
             return new LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_COUNT){

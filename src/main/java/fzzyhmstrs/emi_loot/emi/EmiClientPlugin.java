@@ -19,7 +19,7 @@ public class EmiClientPlugin implements EmiPlugin {
     private static final Identifier MOB_ID = new Identifier(EMILoot.MOD_ID,"mob_drops");
     public static final EmiRecipeCategory LOOT_CATEGORY = new EmiRecipeCategory(LOOT_ID, EmiStack.of(Blocks.CHEST.asItem()), new LootSimplifiedRenderer(0,0));
     public static final EmiRecipeCategory BLOCK_CATEGORY = new EmiRecipeCategory(BLOCK_ID, EmiStack.of(Blocks.DIAMOND_ORE.asItem()), new LootSimplifiedRenderer(16,0));
-    public static final EmiRecipeCategory MOB_CATEGORY = new EmiRecipeCategory(MOB_ID, EmiStack.of(Blocks.WITHER_SKELETON_SKULL.asItem()), new LootSimplifiedRenderer(16,16));
+    public static final EmiRecipeCategory MOB_CATEGORY = new EmiRecipeCategory(MOB_ID, EmiStack.of(Blocks.ZOMBIE_HEAD.asItem()), new LootSimplifiedRenderer(16,16));
 
     @Override
     public void register(EmiRegistry registry) {

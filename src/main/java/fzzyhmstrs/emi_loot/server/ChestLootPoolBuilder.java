@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ChestLootPoolBuilder implements LootBuilder {
 
@@ -11,9 +13,9 @@ public class ChestLootPoolBuilder implements LootBuilder {
         this.rollWeight = rollWeight;
     }
 
-    private final HashMap<ItemStack, Integer> map = new HashMap<>();
-    private final float rollWeight;
-    private Integer totalWeight = 0;
+    final HashMap<ItemStack, Integer> map = new HashMap<>();
+    final float rollWeight;
+    Integer totalWeight = 0;
     HashMap<ItemStack, Float> builtMap = new HashMap<>();
 
 
@@ -36,5 +38,14 @@ public class ChestLootPoolBuilder implements LootBuilder {
             }
         });
         builtMap = floatMap;
+    }
+
+    @Override
+    public List<LootTableParser.ItemEntryResult> revert() {
+        List<LootTableParser.ItemEntryResult> list = new LinkedList<>();
+        map.forEach((stack,weight)->{
+            list.add(new LootTableParser.ItemEntryResult(stack,weight,new LinkedList<>(), new LinkedList<>()));
+        });
+        return list;
     }
 }
