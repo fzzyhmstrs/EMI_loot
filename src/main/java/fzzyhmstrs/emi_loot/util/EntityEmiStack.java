@@ -15,12 +15,10 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
@@ -29,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class EntityEmiStack extends EmiStack {
     private final @Nullable Entity entity;
     private final EntityEntry entry;
@@ -108,12 +107,7 @@ public class EntityEmiStack extends EmiStack {
         List<TooltipComponent> list = new ArrayList<>();
         if (entity != null) {
             list.addAll(getTooltipText().stream().map(EmiPort::ordered).map(TooltipComponent::of).toList());
-            String mod;
-            if (entity instanceof VillagerEntity villager) {
-                mod = EmiUtil.getModName(Registry.VILLAGER_PROFESSION.getId(villager.getVillagerData().getProfession()).getNamespace());
-            } else {
-                mod = EmiUtil.getModName(Registry.ENTITY_TYPE.getId(entity.getType()).getNamespace());
-            }
+            String mod = EmiUtil.getModName(Registry.ENTITY_TYPE.getId(entity.getType()).getNamespace());
             list.add(TooltipComponent.of(EmiPort.ordered(EmiPort.literal(mod, Formatting.BLUE, Formatting.ITALIC))));
             if (!getRemainder().isEmpty()) {
                 list.add(new RemainderTooltipComponent(this));

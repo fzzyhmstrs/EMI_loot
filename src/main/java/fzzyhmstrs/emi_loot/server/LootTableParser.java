@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.util.DamageSourcePredicateParser;
 import fzzyhmstrs.emi_loot.util.ItemPredicateParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -21,6 +22,7 @@ import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.AlternativeEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.entry.LootTableEntry;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.function.LootFunctionTypes;
@@ -29,6 +31,7 @@ import net.minecraft.loot.provider.number.LootNumberProviderType;
 import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
@@ -45,6 +48,7 @@ public class LootTableParser {
     private static final Map<Identifier, ChestLootTableSender> chestSenders = new HashMap<>();
     private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
+    private static Map<Identifier, LootTable> tables = new HashMap<>();
 
     public void registerServer(){
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player)));
@@ -53,126 +57,139 @@ public class LootTableParser {
     }
 
     public static void parseLootTables(Map<Identifier, LootTable> tables) {
+        LootTableParser.tables = tables;
         System.out.println("parsing loot tables");
         tables.forEach((id,lootTable)-> {
             LootContextType type = lootTable.getType();
             if (type == LootContextTypes.CHEST) {
-                ChestLootTableSender sender = new ChestLootTableSender(id);
-                LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-                for (LootPool pool : pools) {
-                    LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
-                    float rollAvg = getRollAvg(rollProvider);
-                    ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
-                    LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
-                    for (LootPoolEntry entry : entries) {
-                        if (entry instanceof ItemEntry itemEntry) {
-                            ItemEntryResult result = parseItemEntry(itemEntry, false);
-                            builder.addItem(result.item, result.weight);
-                        }
-                    }
-                    sender.addBuilder(builder);
-                }
-                chestSenders.put(id, sender);
+                chestSenders.put(id, parseChestLootTable(lootTable,id));
             } else if (type == LootContextTypes.BLOCK) {
-                BlockLootTableSender sender = new BlockLootTableSender(id);
-                LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-                for (LootPool pool : pools) {
-                    LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
-                    List<LootConditionResult> parsedConditions = new LinkedList<>();
-                    for (LootCondition condition: conditions){
-                        List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
-                        for (LootConditionResult result: results){
-                            if (result.text.isNotEmpty()){
-                                parsedConditions.add(result);
-                            }
-                        }
-                    }
-                    LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
-                    List<LootFunctionResult> parsedFunctions = new LinkedList<>();
-                    for (LootFunction function: functions){
-                        parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
-                    }
-                    LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
-                    float rollAvg = getRollAvg(rollProvider);
-                    BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-                    LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
-                    for (LootPoolEntry entry : entries) {
-                        if (entry instanceof ItemEntry itemEntry) {
-                            ItemEntryResult result = parseItemEntry(itemEntry, false);
-                            builder.addItem(result);
-                        } else if(entry instanceof AlternativeEntry alternativeEntry){
-                            List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
-                            for (ItemEntryResult res: resultList){
-                                builder.addItem(res);
-                            }
-                        }
-                    }
-                    sender.addBuilder(builder);
-                }
-                blockSenders.put(id,sender);
+                blockSenders.put(id, parseBlockLootTable(lootTable,id));
             } else if (type == LootContextTypes.ENTITY) {
-                MobLootTableSender sender = new MobLootTableSender(id);
-                LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-                for (LootPool pool : pools) {
-                    LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
-                    List<LootConditionResult> parsedConditions = new LinkedList<>();
-                    for (LootCondition condition: conditions){
-                        List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
-                        for (LootConditionResult result: results){
-                            if (result.text.isNotEmpty()){
-                                parsedConditions.add(result);
-                            }
-                        }
-                    }
-                    LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
-                    List<LootFunctionResult> parsedFunctions = new LinkedList<>();
-                    for (LootFunction function: functions){
-                        parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
-                    }
-                    LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
-                    float rollAvg = getRollAvg(rollProvider);
-                    MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-                    LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
-                    for (LootPoolEntry entry : entries) {
-                        if (entry instanceof ItemEntry itemEntry) {
-                            ItemEntryResult result = parseItemEntry(itemEntry, false);
-                            builder.addItem(result);
-                        } else if(entry instanceof AlternativeEntry alternativeEntry){
-                            List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
-                            for (ItemEntryResult res: resultList){
-                                builder.addItem(res);
-                            }
-                        }
-                    }
-                    sender.addBuilder(builder);
-                }
-                mobSenders.put(id,sender);
+                mobSenders.put(id,parseMobLootTable(lootTable,id));
             }
         });
     }
 
-    private static float getRollAvg(LootNumberProvider provider){
-        LootNumberProviderType type = provider.getType();
-        if(type == LootNumberProviderTypes.CONSTANT){
-            return ((ConstantLootNumberProviderAccessor)provider).getValue();
-        } else if(type == LootNumberProviderTypes.BINOMIAL){
-            LootNumberProvider n = ((BinomialLootNumberProviderAccessor)provider).getN();
-            LootNumberProvider p = ((BinomialLootNumberProviderAccessor)provider).getP();
-            float nVal = getRollAvg(n);
-            float pVal = getRollAvg(p);
-            return nVal * pVal;
-        } else if(type == LootNumberProviderTypes.UNIFORM){
-            LootNumberProvider min = ((UniformLootNumberProviderAccessor)provider).getMin();
-            LootNumberProvider max = ((UniformLootNumberProviderAccessor)provider).getMax();
-            float minVal = getRollAvg(min);
-            float maxVal = getRollAvg(max);
-            return (minVal + maxVal) / 2f;
-        } else if (type == LootNumberProviderTypes.SCORE){
-            return 0f;
-        } else {
-            return 0f;
+    private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id){
+        ChestLootTableSender sender = new ChestLootTableSender(id);
+        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
+        for (LootPool pool : pools) {
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            float rollAvg = getRollAvg(rollProvider);
+            ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            for (LootPoolEntry entry : entries) {
+                if (entry instanceof ItemEntry itemEntry) {
+                    ItemEntryResult result = parseItemEntry(itemEntry, false);
+                    builder.addItem(result.item, result.weight);
+                }
+            }
+            sender.addBuilder(builder);
         }
+        return sender;
     }
+
+    private static BlockLootTableSender parseBlockLootTable(LootTable lootTable, Identifier id){
+        BlockLootTableSender sender = new BlockLootTableSender(id);
+        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
+        for (LootPool pool : pools) {
+            LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
+            List<LootConditionResult> parsedConditions = new LinkedList<>();
+            for (LootCondition condition: conditions){
+                List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
+                for (LootConditionResult result: results){
+                    if (result.text.isNotEmpty()){
+                        parsedConditions.add(result);
+                    }
+                }
+            }
+            LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
+            List<LootFunctionResult> parsedFunctions = new LinkedList<>();
+            for (LootFunction function: functions){
+                parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
+            }
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            float rollAvg = getRollAvg(rollProvider);
+            BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            for (LootPoolEntry entry : entries) {
+                if (entry instanceof ItemEntry itemEntry) {
+                    ItemEntryResult result = parseItemEntry(itemEntry, false);
+                    builder.addItem(result);
+                } else if(entry instanceof AlternativeEntry alternativeEntry){
+                    List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
+                    for (ItemEntryResult res: resultList){
+                        builder.addItem(res);
+                    }
+                }
+            }
+            sender.addBuilder(builder);
+        }
+        return sender;
+    }
+
+    private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id){
+        MobLootTableSender sender = new MobLootTableSender(id);
+        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
+        for (LootPool pool : pools) {
+            LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
+            List<LootConditionResult> parsedConditions = new LinkedList<>();
+            for (LootCondition condition: conditions){
+                List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
+                for (LootConditionResult result: results){
+                    if (result.text.isNotEmpty()){
+                        parsedConditions.add(result);
+                    }
+                }
+            }
+            LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
+            List<LootFunctionResult> parsedFunctions = new LinkedList<>();
+            for (LootFunction function: functions){
+                parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
+            }
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            float rollAvg = getRollAvg(rollProvider);
+            MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            for (LootPoolEntry entry : entries) {
+                if (entry instanceof ItemEntry itemEntry) {
+                    ItemEntryResult result = parseItemEntry(itemEntry, false);
+                    builder.addItem(result);
+                } else if(entry instanceof AlternativeEntry alternativeEntry){
+                    List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
+                    for (ItemEntryResult res: resultList){
+                        builder.addItem(res);
+                    }
+                } else if (entry instanceof LootTableEntry lootTableEntry){
+                    LootSender<?> results = parseLootTableEntry(lootTableEntry,false);
+                }
+            }
+            sender.addBuilder(builder);
+        }
+        return sender;
+    }
+
+    private static FishingLootTableSender parseFishingLootTable(LootTable lootTable, Identifier id){
+        FishingLootTableSender sender = new FishingLootTableSender(id);
+        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
+        for (LootPool pool : pools) {
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            float rollAvg = getRollAvg(rollProvider);
+            ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            for (LootPoolEntry entry : entries) {
+                if (entry instanceof ItemEntry itemEntry) {
+                    ItemEntryResult result = parseItemEntry(itemEntry, false);
+                    builder.addItem(result.item, result.weight);
+                }
+            }
+            sender.addBuilder(builder);
+        }
+        return sender;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     static ItemEntryResult parseItemEntry(ItemEntry entry, boolean skipExtras){
         return parseItemEntry(entry, skipExtras,false);
@@ -239,6 +256,26 @@ public class LootTableParser {
         return results;
     }
 
+    static LootSender<?> parseLootTableEntry(LootTableEntry entry, boolean skipExtras){
+        Identifier id = ((LootTableEntryAccessor)entry).getId();
+        if (LootTableParser.tables.containsKey(id)) {
+            LootTable table = LootTableParser.tables.get(id);
+            LootContextType type = table.getType();
+            if (type == LootContextTypes.CHEST) {
+                return parseChestLootTable(table,id);
+            } else if (type == LootContextTypes.BLOCK) {
+                return parseBlockLootTable(table,id);
+            } else if (type == LootContextTypes.ENTITY) {
+                return parseMobLootTable(table,id);
+            } else if (type == LootContextTypes.FISHING) {
+                return parseFishingLootTable(table,id);
+            }
+        }
+        return new EmptyLootTableSender();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack){
         return parseLootFunction(function, stack,false);
     }
@@ -266,9 +303,9 @@ public class LootTableParser {
             float rollAvg = getRollAvg(provider);
             boolean add = ((SetCountLootFunctionAccessor)function).getAdd();
             if (add){
-                stack.setCount(stack.getCount() + (int)rollAvg);
+                stack.setCount(Math.max(stack.getCount() + (int)rollAvg,1));
             } else {
-                stack.setCount((int)rollAvg);
+                stack.setCount(Math.max((int)rollAvg,1));
             }
             if (add){
                 return new LootFunctionResult(TextKey.of("emi_loot.function.set_count_add"),ItemStack.EMPTY);
@@ -445,7 +482,9 @@ public class LootTableParser {
             List<String> args = new LinkedList<>(Arrays.stream(new String[]{Float.toString((chance*100)), Float.toString((multiplier*100))}).toList());
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.chance_looting", args)));
         } else if (type == LootConditionTypes.DAMAGE_SOURCE_PROPERTIES){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.damage_source")));
+            DamageSourcePredicate damageSourcePredicate = ((DamageSourcePropertiesLootConditionAccessor)condition).getPredicate();
+            Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.damage_source",damageText.getString())));
         } else if (type == LootConditionTypes.LOCATION_CHECK){
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location")));
         } else if (type == LootConditionTypes.ENTITY_PROPERTIES){
@@ -457,6 +496,8 @@ public class LootTableParser {
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Text compileConditionTexts(ItemStack stack,List<LootConditionResult> results){
         MutableText finalText = Text.empty();
@@ -474,6 +515,29 @@ public class LootTableParser {
             }
         }
         return finalText;
+    }
+
+    private static float getRollAvg(LootNumberProvider provider){
+        LootNumberProviderType type = provider.getType();
+        if(type == LootNumberProviderTypes.CONSTANT){
+            return ((ConstantLootNumberProviderAccessor)provider).getValue();
+        } else if(type == LootNumberProviderTypes.BINOMIAL){
+            LootNumberProvider n = ((BinomialLootNumberProviderAccessor)provider).getN();
+            LootNumberProvider p = ((BinomialLootNumberProviderAccessor)provider).getP();
+            float nVal = getRollAvg(n);
+            float pVal = getRollAvg(p);
+            return nVal * pVal;
+        } else if(type == LootNumberProviderTypes.UNIFORM){
+            LootNumberProvider min = ((UniformLootNumberProviderAccessor)provider).getMin();
+            LootNumberProvider max = ((UniformLootNumberProviderAccessor)provider).getMax();
+            float minVal = getRollAvg(min);
+            float maxVal = getRollAvg(max);
+            return (minVal + maxVal) / 2f;
+        } else if (type == LootNumberProviderTypes.SCORE){
+            return 0f;
+        } else {
+            return 0f;
+        }
     }
 
     record LootFunctionResult(

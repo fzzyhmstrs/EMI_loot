@@ -86,7 +86,7 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 166;
+        return (19 * 4) + (26 * 3) + 25;
     }
 
     @Override
