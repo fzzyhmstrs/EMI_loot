@@ -20,7 +20,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     }
 
     private final Identifier id;
-    private final List<MobLootPoolBuilder> builderList = new LinkedList<>();
+    final List<MobLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier MOB_SENDER = new Identifier(EMILoot.MOD_ID,"mob_sender");
 
     @Override
@@ -69,5 +69,10 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     @Override
     public void addBuilder(MobLootPoolBuilder builder) {
         builderList.add(builder);
+    }
+
+    @Override
+    public List<MobLootPoolBuilder> getBuilders() {
+        return builderList;
     }
 }

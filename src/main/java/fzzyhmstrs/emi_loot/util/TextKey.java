@@ -165,8 +165,6 @@ public record TextKey(int index, List<String> args){
                 if (!tempStack.isEmpty()) {
                     finalStack = tempStack.copy();
                     finalStacks.add(finalStack);
-                    System.out.println("generated a cooked recipe!");
-                    System.out.println(finalStack);
                 }
             }
         }

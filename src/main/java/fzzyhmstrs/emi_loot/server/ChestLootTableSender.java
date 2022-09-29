@@ -23,7 +23,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     }
 
     private final Identifier id;
-    private final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
+    final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier CHEST_SENDER = new Identifier(EMILoot.MOD_ID,"chest_sender");
 
     @Override
@@ -54,5 +54,10 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     @Override
     public void addBuilder(ChestLootPoolBuilder builder) {
         builderList.add(builder);
+    }
+
+    @Override
+    public List<ChestLootPoolBuilder> getBuilders() {
+        return builderList;
     }
 }

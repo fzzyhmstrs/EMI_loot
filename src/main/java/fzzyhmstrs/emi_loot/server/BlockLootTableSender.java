@@ -20,7 +20,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     }
 
     private final Identifier id;
-    private final List<BlockLootPoolBuilder> builderList = new LinkedList<>();
+    final List<BlockLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier BLOCK_SENDER = new Identifier(EMILoot.MOD_ID,"block_sender");
 
     @Override
@@ -69,5 +69,10 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     @Override
     public void addBuilder(BlockLootPoolBuilder builder) {
         builderList.add(builder);
+    }
+
+    @Override
+    public List<BlockLootPoolBuilder> getBuilders() {
+        return builderList;
     }
 }

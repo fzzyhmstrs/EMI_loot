@@ -36,7 +36,6 @@ public class BlockLootRecipe implements EmiRecipe {
         loot.build(MinecraftClient.getInstance().world);
         Identifier lootId = loot.id;
         Identifier blockId = loot.blockId;
-        System.out.println(blockId);
         Block block = Registry.BLOCK.get(blockId);
         inputStack = EmiStack.of(block);
         List<EmiStack> list = new LinkedList<>();

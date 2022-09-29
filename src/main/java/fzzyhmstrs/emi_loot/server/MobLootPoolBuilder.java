@@ -14,8 +14,8 @@ public class MobLootPoolBuilder implements LootBuilder {
         this.functions = functions;
     }
 
-    private final HashMap<List<TextKey>, ChestLootPoolBuilder> map = new HashMap<>();
-    private final float rollWeight;
+    final HashMap<List<TextKey>, ChestLootPoolBuilder> map = new HashMap<>();
+    final float rollWeight;
     final List<LootTableParser.LootConditionResult> conditions;
     final List<LootTableParser.LootFunctionResult> functions;
     HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
@@ -36,5 +36,26 @@ public class MobLootPoolBuilder implements LootBuilder {
             builder.build();
             builtMap.put(key,builder);
         }
+    }
+
+    @Override
+    public List<LootTableParser.ItemEntryResult> revert() {
+        List<LootTableParser.ItemEntryResult> list = new LinkedList<>();
+        List<TextKey> topLevelKeys = new LinkedList<>();
+        conditions.forEach((condition)->{
+            topLevelKeys.add(condition.text());
+        });
+        functions.forEach((function)->{
+            topLevelKeys.add(function.text());
+        });
+        map.forEach((keyList,builder)->{
+            List<LootTableParser.ItemEntryResult> builderList = builder.revert();
+            builderList.forEach((builderEntry)->{
+                builderEntry.functions().addAll(keyList);
+                builderEntry.conditions().addAll(topLevelKeys);
+            });
+            list.addAll(builderList);
+        });
+        return list;
     }
 }

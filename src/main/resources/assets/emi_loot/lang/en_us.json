@@ -5,6 +5,7 @@
   "enchantment.emi_loot.random": "Randomly Enchanted",
   "emi_loot.percentage": "%s%%",
   "emi_loot.and": " & ",
+  "emi_loot.color_name": "%1$s %2$s",
   "emi_loot.missing_key": "Missing or malformed function/condition",
   "emi_loot.missing_entity": "Unknown Entity",
   "emi_loot.function.bonus": "Bonus drops with %s",

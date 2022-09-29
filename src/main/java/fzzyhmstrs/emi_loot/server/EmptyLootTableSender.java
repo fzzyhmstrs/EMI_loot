@@ -23,4 +23,9 @@ public class EmptyLootTableSender implements LootSender<ChestLootPoolBuilder> {
     public void addBuilder(ChestLootPoolBuilder builder) {
 
     }
+
+    @Override
+    public List<ChestLootPoolBuilder> getBuilders() {
+        return new LinkedList<>();
+    }
 }
