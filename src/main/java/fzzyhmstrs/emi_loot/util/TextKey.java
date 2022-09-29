@@ -50,9 +50,9 @@ public record TextKey(int index, List<String> args){
         mapBuilder(28,"emi_loot.condition.killed_player",(key)-> getBasicText(28));
         mapBuilder(29,"emi_loot.condition.chance",(key)-> getOneArgText(29, key));
         mapBuilder(30,"emi_loot.condition.chance_looting",(key)-> getTwoArgText(30, key));
-        mapBuilder(31,"emi_loot.function.damage_source",(key)-> getBasicText(31));
-        mapBuilder(32,"emi_loot.function.location",(key)-> getBasicText(32));
-        mapBuilder(33,"emi_loot.function.entity_props",(key)-> getBasicText(33));
+        mapBuilder(31,"emi_loot.condition.damage_source",(key)-> getOneArgText(31, key));
+        mapBuilder(32,"emi_loot.condition.location",(key)-> getBasicText(32));
+        mapBuilder(33,"emi_loot.condition.entity_props",(key)-> getBasicText(33));
         mapBuilder(34,"emi_loot.condition.match_tool",(key)-> getOneArgText(34, key));
     }
 
@@ -158,13 +158,15 @@ public record TextKey(int index, List<String> args){
         ItemStack finalStack;
         List<ItemStack> finalStacks = new LinkedList<>();
         finalStacks.add(stack);
-        if (this.index == 6 && world != null){
+        if (this.index == 8 && world != null){
             Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
             if (opt.isPresent()){
                 ItemStack tempStack = opt.get().getOutput();
                 if (!tempStack.isEmpty()) {
                     finalStack = tempStack.copy();
                     finalStacks.add(finalStack);
+                    System.out.println("generated a cooked recipe!");
+                    System.out.println(finalStack);
                 }
             }
         }

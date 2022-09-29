@@ -29,7 +29,10 @@
     "EntityPredicateAccessor",
     "ItemPredicateAccessor",
     "EnchantmentPredicateAccessor",
-    "MatchToolLootConditionAccessor"
+    "MatchToolLootConditionAccessor",
+    "DamageSourcePredicateAccessor",
+    "DamageSourcePropertiesLootConditionAccessor",
+    "LootTableEntryAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

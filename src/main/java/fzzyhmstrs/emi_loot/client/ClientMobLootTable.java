@@ -1,10 +1,15 @@
 package fzzyhmstrs.emi_loot.client;
 
 import fzzyhmstrs.emi_loot.util.TextKey;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -16,6 +21,7 @@ public class ClientMobLootTable implements LootReceiver {
     private static final Identifier EMPTY = new Identifier("entity/empty");
     public final Identifier id;
     public final Identifier mobId;
+    public String color = "";
     private final Map<List<TextKey>, ClientMobRawPool> rawItems;
     public Map<List<Text>, ClientMobBuiltPool> builtItems;
 
@@ -33,8 +39,26 @@ public class ClientMobLootTable implements LootReceiver {
         if (lastSlashIndex == -1){
             mobId = new Identifier(ns,pth);
         } else {
-            mobId = new Identifier(ns,pth.substring(Math.min(lastSlashIndex + 1,pth.length())));
+            String subString = pth.substring(Math.min(lastSlashIndex + 1,pth.length()));
+            Identifier tempMobId = new Identifier(ns,subString);
+            if (!Registry.ENTITY_TYPE.containsId(tempMobId)){
+                String choppedString = pth.substring(0, lastSlashIndex);
+                int nextSlashIndex = choppedString.lastIndexOf('/');
+                if (nextSlashIndex != -1){
+                    String sheepString = choppedString.substring(Math.min(nextSlashIndex + 1,pth.length()));
+                    tempMobId = new Identifier(ns,sheepString);
+                    mobId = tempMobId;
+                    if (Registry.ENTITY_TYPE.containsId(tempMobId)) {
+                        this.color = subString;
+                    }
+                } else {
+                    mobId = tempMobId;
+                }
+            } else {
+                mobId = tempMobId;
+            }
         }
+
         this.rawItems = map;
     }
 
@@ -43,7 +67,7 @@ public class ClientMobLootTable implements LootReceiver {
     }
 
     public void build(World world){
-        Map<List<Text>, ClientBlockBuiltPool> builderItems = new HashMap<>();
+        Map<List<Text>, ClientMobBuiltPool> builderItems = new HashMap<>();
         rawItems.forEach((list,pool)->{
             List<Text> newList = new LinkedList<>();
             list.forEach((textKey) -> {
@@ -61,7 +85,7 @@ public class ClientMobLootTable implements LootReceiver {
 
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack,weight)->{
-                        List<ItemStack> stacks = textKey.process(ItemStack.EMPTY,world).stacks();
+                        List<ItemStack> stacks = textKey.process(poolStack,world).stacks();
                         if (stacks.size() > 1){
                             AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
                             stacks.forEach(stack->{
@@ -103,7 +127,7 @@ public class ClientMobLootTable implements LootReceiver {
         Identifier id = buf.readIdentifier();
         int builderCount = buf.readByte();
 
-        Map<List<TextKey>, ClientBlockRawPool> itemMap = new HashMap<>();
+        Map<List<TextKey>, ClientMobRawPool> itemMap = new HashMap<>();
 
         for (int b = 0; b < builderCount; b++) {
 
