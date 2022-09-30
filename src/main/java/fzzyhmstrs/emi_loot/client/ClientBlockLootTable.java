@@ -1,6 +1,8 @@
 package fzzyhmstrs.emi_loot.client;
 
 import fzzyhmstrs.emi_loot.util.TextKey;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -53,7 +55,7 @@ public class ClientBlockLootTable implements LootReceiver {
 
             ClientBlockBuiltPool newPool = builderItems.getOrDefault(newList, new ClientBlockBuiltPool(new HashMap<>()));
 
-            Map<List<Text>,Map<ItemStack,Float>> builderPoolMap = newPool.map;
+            Map<List<Text>,Object2FloatMap<ItemStack>> builderPoolMap = newPool.map;
             pool.map.forEach((poolList,poolItemMap)->{
 
                 List<Text> newPoolList = new LinkedList<>();
@@ -66,7 +68,7 @@ public class ClientBlockLootTable implements LootReceiver {
                             AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
                             stacks.forEach(stack->{
                                 if(poolItemMap.containsKey(stack)){
-                                    toAddWeight.set(poolItemMap.get(stack));
+                                    toAddWeight.set(poolItemMap.getFloat(stack));
                                 }
                             });
                             stacks.forEach(stack->{
@@ -80,7 +82,7 @@ public class ClientBlockLootTable implements LootReceiver {
                     newPoolList.add(text);
 
                 });
-                Map<ItemStack,Float> newPoolItemMap = builderPoolMap.getOrDefault(newPoolList,poolItemMap);
+                Object2FloatMap<ItemStack> newPoolItemMap = builderPoolMap.getOrDefault(newPoolList,poolItemMap);
                 newPoolItemMap.putAll(itemsToAdd);
                 builderPoolMap.put(newPoolList,newPoolItemMap);
 
@@ -134,7 +136,7 @@ public class ClientBlockLootTable implements LootReceiver {
                     pileQualifierList.add(key);
                 }
 
-                Map<ItemStack,Float> pileItemMap = pool.map.getOrDefault(pileQualifierList,new HashMap<>());
+                Object2FloatMap<ItemStack> pileItemMap = pool.map.getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
 
                 int pileItemSize = buf.readByte();
                 for (int j = 0; j < pileItemSize; j++) {
@@ -153,6 +155,6 @@ public class ClientBlockLootTable implements LootReceiver {
         return new ClientBlockLootTable(id,itemMap);
     }
 
-    public record ClientBlockRawPool(Map<List<TextKey>, Map<ItemStack,Float>> map){}
-    public record ClientBlockBuiltPool(Map<List<Text>, Map<ItemStack,Float>> map){}
+    public record ClientBlockRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
+    public record ClientBlockBuiltPool(Map<List<Text>, Object2FloatMap<ItemStack>> map){}
 }

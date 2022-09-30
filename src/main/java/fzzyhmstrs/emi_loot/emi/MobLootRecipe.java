@@ -9,6 +9,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -35,7 +37,7 @@ public class MobLootRecipe implements EmiRecipe {
     private final static Map<EntityType<?>,Integer> needsElevating;
 
     static{
-        Map<EntityType<?>,Integer> map = new HashMap<>();
+        Object2IntMap<EntityType<?>> map = new Object2IntOpenHashMap<>();
         map.put(EntityType.COD,-8);
         map.put(EntityType.CHICKEN,0);
         map.put(EntityType.SQUID,-8);

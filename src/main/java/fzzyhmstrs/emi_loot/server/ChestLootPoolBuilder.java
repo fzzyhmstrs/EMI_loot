@@ -1,11 +1,15 @@
 package fzzyhmstrs.emi_loot.server;
 
+import it.unimi.dsi.fastutil.floats.FloatCollection;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ChestLootPoolBuilder implements LootBuilder {
 
@@ -13,10 +17,10 @@ public class ChestLootPoolBuilder implements LootBuilder {
         this.rollWeight = rollWeight;
     }
 
-    final HashMap<ItemStack, Integer> map = new HashMap<>();
+    final Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
     final float rollWeight;
     Integer totalWeight = 0;
-    HashMap<ItemStack, Float> builtMap = new HashMap<>();
+    Object2FloatMap<ItemStack> builtMap = new Object2FloatOpenHashMap<>();
 
 
     public void addItem(ItemStack item, int weight){
@@ -31,7 +35,7 @@ public class ChestLootPoolBuilder implements LootBuilder {
 
     @Override
     public void build() {
-        HashMap<ItemStack, Float> floatMap = new HashMap<>();
+        Object2FloatMap<ItemStack> floatMap = new Object2FloatOpenHashMap<>();
         map.forEach((item, itemWeight)-> {
             if (!item.isOf(Items.AIR)) {
                 floatMap.put(item, (itemWeight.floatValue() / totalWeight * 100F * rollWeight));
@@ -43,9 +47,7 @@ public class ChestLootPoolBuilder implements LootBuilder {
     @Override
     public List<LootTableParser.ItemEntryResult> revert() {
         List<LootTableParser.ItemEntryResult> list = new LinkedList<>();
-        map.forEach((stack,weight)->{
-            list.add(new LootTableParser.ItemEntryResult(stack,weight,new LinkedList<>(), new LinkedList<>()));
-        });
+        map.forEach((stack,weight)-> list.add(new LootTableParser.ItemEntryResult(stack,weight,new LinkedList<>(), new LinkedList<>())));
         return list;
     }
 }
