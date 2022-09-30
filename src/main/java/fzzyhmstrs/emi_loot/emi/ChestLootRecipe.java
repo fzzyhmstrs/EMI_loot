@@ -24,7 +24,7 @@ public class ChestLootRecipe implements EmiRecipe {
     public ChestLootRecipe(ClientChestLootTable loot){
         this.loot = loot;
         if (loot.items.size() == 1){
-            if (loot.items.values().stream().toList().get(0)== 1f){
+            if (loot.items.values().toFloatArray()[0] == 1f){
                 isGuaranteedNonChance = true;
             }
         }
