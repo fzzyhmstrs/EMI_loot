@@ -9,6 +9,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
+import fzzyhmstrs.emi_loot.util.LText;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -76,8 +77,8 @@ public class MobLootRecipe implements EmiRecipe {
             }
             if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")){
                 DyeColor color = DyeColor.byName(loot.color,DyeColor.WHITE);
-                MutableText colorName = Text.translatable("color.minecraft." + color.getName());
-                name = Text.translatable("emi_loot.color_name",colorName.getString(),entity.getName().getString());
+                MutableText colorName = LText.translatable("color.minecraft." + color.getName());
+                name = LText.translatable("emi_loot.color_name",colorName.getString(),entity.getName().getString());
                 ((SheepEntity)entity).setColor(color);
             } else {
                 name = entity.getName();
@@ -86,7 +87,7 @@ public class MobLootRecipe implements EmiRecipe {
             inputStack = EntityEmiStack.ofScaled(entity,scale);
         } else{
             inputStack = EmiStack.EMPTY;
-            name = Text.translatable("emi_loot.missing_entity");
+            name = LText.translatable("emi_loot.missing_entity");
         }
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((textList, builtPool)->
@@ -204,7 +205,7 @@ public class MobLootRecipe implements EmiRecipe {
                     xObj.x += 20;
                     if (weight != 100F){
                         String fTrim = trimFloatString(weight);
-                        widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
+                        widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
                         xObj.x += 26;
                     }
                     if (index.getAndIncrement() == 3){
