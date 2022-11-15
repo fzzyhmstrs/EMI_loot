@@ -16,7 +16,16 @@ public class EMILoot implements ModInitializer {
     public static String MOD_ID = "emi_loot";
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
-    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.COMMON, EnchantmentTarget.ARMOR, EquipmentSlot.values()){};
+    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
+        @Override
+        public Boolean isAvailableForEnchantedBookOffer() {
+            return false
+        }
+
+        public Boolean isAvailableForRandomSelection() {
+            return false
+        }
+    };
 
     @Override
     public void onInitialize() {
