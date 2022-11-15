@@ -8,6 +8,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.OrderedText;
@@ -143,7 +144,7 @@ public class BlockLootRecipe implements EmiRecipe {
                     xObj.x += 20;
                     if (weight != 100F){
                         String fTrim = trimFloatString(weight);
-                        widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
+                        widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
                         xObj.x += 28;
                     }
                     if (index.getAndIncrement() == 3){
