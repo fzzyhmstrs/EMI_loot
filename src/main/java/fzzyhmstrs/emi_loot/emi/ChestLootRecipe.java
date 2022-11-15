@@ -7,6 +7,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.Text;
@@ -46,16 +47,16 @@ public class ChestLootRecipe implements EmiRecipe {
 
         outputs = outputsList;
         String key = "emi_loot.chest." + loot.id.toString();
-        Text text = Text.translatable(key);
+        Text text = LText.translatable(key);
         if (Objects.equals(text.getString(), key)){
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
             if (modNameOpt.isPresent()){
                 ModContainer modContainer = modNameOpt.get();
                 String modName = modContainer.getMetadata().getName();
-                title = Text.translatable("emi_loot.chest.unknown_chest",modName);
+                title = LText.translatable("emi_loot.chest.unknown_chest",modName);
             } else {
-                Text unknown = Text.translatable("emi_loot.chest.unknown");
-                title = Text.translatable("emi_loot.chest.unknown_chest", unknown.getString());
+                Text unknown = LText.translatable("emi_loot.chest.unknown");
+                title = LText.translatable("emi_loot.chest.unknown_chest", unknown.getString());
             }
         } else {
             title = text;
@@ -128,7 +129,7 @@ public class ChestLootRecipe implements EmiRecipe {
                     index.getAndDecrement();
                     String fTrim = trimFloatString(weight);
                     widgets.addSlot(stack, column * 45, titleSpace + row * finalRowHeight).recipeContext(this);
-                    widgets.addText(Text.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                    widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
                 });
             } else {
                 int row = (int) Math.ceil(index.get() / 4.0) - 1;
