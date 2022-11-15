@@ -5,6 +5,7 @@ import fzzyhmstrs.emi_loot.mixins.*;
 import fzzyhmstrs.emi_loot.util.DamageSourcePredicateParser;
 import fzzyhmstrs.emi_loot.util.ItemPredicateParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -305,7 +306,7 @@ public class LootTableParser {
         } else if (type == LootFunctionTypes.SET_POTION){
             Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
             PotionUtil.setPotion(stack, potion);
-            Text potionName = TranslatableText(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
+            Text potionName = LText.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
             return new LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY);
         } else if (type == LootFunctionTypes.SET_COUNT){
             LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
@@ -382,7 +383,7 @@ public class LootTableParser {
                 MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN,"+",decoration);
                 typeKey = "emi_loot.map."+ destination.id().getPath();
             }
-            return new LootFunctionResult(TextKey.of("emi_loot.function.map",Text.translatable(typeKey).getString()), mapStack);
+            return new LootFunctionResult(TextKey.of("emi_loot.function.map",LText.translatable(typeKey).getString()), mapStack);
         } else if (type == LootFunctionTypes.SET_NAME){
             Text text = ((SetNameLootFunctionAccessor)function).getName();
             stack.setCustomName(text);
@@ -509,7 +510,7 @@ public class LootTableParser {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Text compileConditionTexts(ItemStack stack,List<LootConditionResult> results){
-        MutableText finalText = Text.empty();
+        MutableText finalText = LText.empty();
         int size = results.size();
         for(int i = 0; i < size;i++){
             LootConditionResult result = results.get(i);
@@ -520,7 +521,7 @@ public class LootTableParser {
                 finalText.append(resultText);
             }
             if (i<(size - 1)){
-                finalText.append(Text.translatable("emi_loot.and"));
+                finalText.append(LText.translatable("emi_loot.and"));
             }
         }
         return finalText;
