@@ -19,7 +19,7 @@ public record TextKey(int index, List<String> args){
     static Map<String, Integer> keyMap;
     static Map<Integer,String> keyReverseMap;
     static Map<Integer, Function<TextKey, Text>> keyTextBuilderMap;
-    static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> Text.translatable("emi_loot.missing_key");
+    static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
 
     static{
         keyMap = new HashMap<>();
@@ -64,7 +64,7 @@ public record TextKey(int index, List<String> args){
 
     private static Text getBasicText(int index){
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        return Text.translatable(translationKey);
+        return LText.translatable(translationKey);
     }
 
     private static Text getOneArgText(int index, TextKey key){
@@ -76,7 +76,7 @@ public record TextKey(int index, List<String> args){
             e.printStackTrace();
             arg = "Missing";
         }
-        return Text.translatable(translationKey, arg);
+        return LText.translatable(translationKey, arg);
     }
 
     private static Text getInvertedText(int index, TextKey key){
@@ -88,7 +88,7 @@ public record TextKey(int index, List<String> args){
             e.printStackTrace();
             arg = "Missing";
         }
-        return Text.translatable(translationKey, arg).formatted(Formatting.RED);
+        return LText.translatable(translationKey, arg).formatted(Formatting.RED);
     }
 
     private static Text getTwoArgText(int index, TextKey key){
@@ -107,22 +107,22 @@ public record TextKey(int index, List<String> args){
             e.printStackTrace();
             arg2 = "Missing";
         }
-        return Text.translatable(translationKey,arg1,arg2);
+        return LText.translatable(translationKey,arg1,arg2);
     }
 
     private static Text getAlternates3Text(int index, TextKey key){
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        MutableText finalText = Text.empty();
+        MutableText finalText = LText.empty();
         List<String> args = key.args;
         int size = args.size();
         for (int i = 0;i<size;i++){
             String arg = args.get(i);
             if (i == (size - 2)){
-                finalText.append(Text.translatable("emi_loot.condition.alternates_3a", arg));
+                finalText.append(LText.translatable("emi_loot.condition.alternates_3a", arg));
             } else if (i == (size - 1)){
-                finalText.append(Text.translatable("emi_loot.condition.alternates", arg));
+                finalText.append(LText.translatable("emi_loot.condition.alternates", arg));
             } else {
-                finalText.append(Text.translatable(translationKey,arg));
+                finalText.append(LText.translatable(translationKey,arg));
             }
         }
         return finalText;
