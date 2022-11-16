@@ -10,9 +10,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
+import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
@@ -42,6 +44,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.*;
@@ -59,7 +62,7 @@ public class LootTableParser {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player)));
     }
 
-    public static void parseLootTables(Map<Identifier, LootTable> tables) {
+    public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
         LootTableParser.tables = tables;
         System.out.println("parsing loot tables");
         tables.forEach((id,lootTable)-> {
@@ -68,8 +71,15 @@ public class LootTableParser {
                 chestSenders.put(id, parseChestLootTable(lootTable,id));
             } else if (type == LootContextTypes.BLOCK) {
                 blockSenders.put(id, parseBlockLootTable(lootTable,id));
-            } else if (type == LootContextTypes.ENTITY) {
-                mobSenders.put(id,parseMobLootTable(lootTable,id));
+            }
+        });
+        Identifier chk = new Identifier("pig");
+        Registry.ENTITY_TYPE.stream().toList().forEach((type)->{
+            Identifier mobId = Registry.ENTITY_TYPE.getId(type);
+            Identifier mobTableId = type.getLootTableId();
+            LootTable mobTable = manager.getTable(mobTableId);
+            if (type == EntityType.PIG && mobId.equals(chk) || mobTable != LootTable.EMPTY){
+                mobSenders.put(mobTableId,parseMobLootTable(mobTable,mobTableId,mobId));
             }
         });
     }
@@ -132,8 +142,8 @@ public class LootTableParser {
         return sender;
     }
 
-    private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id){
-        MobLootTableSender sender = new MobLootTableSender(id);
+    private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId){
+        MobLootTableSender sender = new MobLootTableSender(id, mobId);
         LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
         for (LootPool pool : pools) {
             LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
@@ -277,7 +287,7 @@ public class LootTableParser {
             } else if (type == LootContextTypes.BLOCK) {
                 return parseBlockLootTable(table,id);
             } else if (type == LootContextTypes.ENTITY) {
-                return parseMobLootTable(table,id);
+                return parseMobLootTable(table,id, new Identifier("empty"));
             } else if (type == LootContextTypes.FISHING) {
                 return parseFishingLootTable(table,id);
             }
@@ -292,7 +302,12 @@ public class LootTableParser {
     }
 
     static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative){
-        LootFunctionType type = function.getType();
+        LootFunctionType type;
+        try {
+            type = function.getType();
+        } catch (Exception e){
+            return LootFunctionResult.EMPTY;
+        }
         if (type == LootFunctionTypes.APPLY_BONUS){
             Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
             String name = enchant.getName(1).getString();
@@ -423,7 +438,12 @@ public class LootTableParser {
     }
 
     static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
-        LootConditionType type = condition.getType();
+        LootConditionType type;
+        try {
+            type = condition.getType();
+        } catch (Exception e){
+            return Collections.singletonList(LootConditionResult.EMPTY);
+        }
         if (type == LootConditionTypes.SURVIVES_EXPLOSION){
             if (parentIsAlternative) return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.survives_explosion")));
             return Collections.singletonList(new LootConditionResult(TextKey.empty()));

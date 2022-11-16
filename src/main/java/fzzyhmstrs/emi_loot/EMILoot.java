@@ -18,12 +18,12 @@ public class EMILoot implements ModInitializer {
     public static LootTableParser parser = new LootTableParser();
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
-        public Boolean isAvailableForEnchantedBookOffer() {
-            return false
+        public boolean isAvailableForEnchantedBookOffer() {
+            return false;
         }
 
-        public Boolean isAvailableForRandomSelection() {
-            return false
+        public boolean isAvailableForRandomSelection() {
+            return false;
         }
     };
 

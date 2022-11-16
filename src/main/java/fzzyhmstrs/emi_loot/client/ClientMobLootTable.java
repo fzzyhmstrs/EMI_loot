@@ -29,36 +29,40 @@ public class ClientMobLootTable implements LootReceiver {
 
     public ClientMobLootTable(){
         this.id = EMPTY;
-        this.mobId = new Identifier("air");
+        this.mobId = new Identifier("empty");
         this.rawItems = new HashMap<>();
     }
 
-    public ClientMobLootTable(Identifier id, Map<List<TextKey>, ClientMobRawPool> map){
+    public ClientMobLootTable(Identifier id,Identifier mobId, Map<List<TextKey>, ClientMobRawPool> map){
         this.id = id;
         String ns = id.getNamespace();
         String pth = id.getPath();
-        int lastSlashIndex = pth.lastIndexOf('/');
-        if (lastSlashIndex == -1){
-            mobId = new Identifier(ns,pth);
-        } else {
-            String subString = pth.substring(Math.min(lastSlashIndex + 1,pth.length()));
-            Identifier tempMobId = new Identifier(ns,subString);
-            if (!Registry.ENTITY_TYPE.containsId(tempMobId)){
-                String choppedString = pth.substring(0, lastSlashIndex);
-                int nextSlashIndex = choppedString.lastIndexOf('/');
-                if (nextSlashIndex != -1){
-                    String sheepString = choppedString.substring(Math.min(nextSlashIndex + 1,pth.length()));
-                    tempMobId = new Identifier(ns,sheepString);
-                    mobId = tempMobId;
-                    if (Registry.ENTITY_TYPE.containsId(tempMobId)) {
-                        this.color = subString;
+        if (Objects.equals(mobId, new Identifier("empty"))) {
+            int lastSlashIndex = pth.lastIndexOf('/');
+            if (lastSlashIndex == -1) {
+                this.mobId = new Identifier(ns, pth);
+            } else {
+                String subString = pth.substring(Math.min(lastSlashIndex + 1, pth.length()));
+                Identifier tempMobId = new Identifier(ns, subString);
+                if (!Registry.ENTITY_TYPE.containsId(tempMobId)) {
+                    String choppedString = pth.substring(0, lastSlashIndex);
+                    int nextSlashIndex = choppedString.lastIndexOf('/');
+                    if (nextSlashIndex != -1) {
+                        String sheepString = choppedString.substring(Math.min(nextSlashIndex + 1, pth.length()));
+                        tempMobId = new Identifier(ns, sheepString);
+                        this.mobId = tempMobId;
+                        if (Registry.ENTITY_TYPE.containsId(tempMobId)) {
+                            this.color = subString;
+                        }
+                    } else {
+                        this.mobId = tempMobId;
                     }
                 } else {
-                    mobId = tempMobId;
+                    this.mobId = tempMobId;
                 }
-            } else {
-                mobId = tempMobId;
             }
+        } else {
+            this.mobId = mobId;
         }
 
         this.rawItems = map;
@@ -127,6 +131,7 @@ public class ClientMobLootTable implements LootReceiver {
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
         Identifier id = buf.readIdentifier();
+        Identifier mobId = buf.readIdentifier();
         int builderCount = buf.readByte();
 
         Map<List<TextKey>, ClientMobRawPool> itemMap = new HashMap<>();
@@ -176,7 +181,7 @@ public class ClientMobLootTable implements LootReceiver {
         }
         if (isEmpty) return new ClientMobLootTable();
 
-        return new ClientMobLootTable(id,itemMap);
+        return new ClientMobLootTable(id,mobId,itemMap);
     }
 
     public record ClientMobRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
