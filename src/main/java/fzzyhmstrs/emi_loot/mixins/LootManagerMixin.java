@@ -22,7 +22,7 @@ public class LootManagerMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("RETURN"))
     private void lootTablesAfterFabric(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci){
-        LootTableParser.parseLootTables(tables);
+        LootTableParser.parseLootTables((LootManager)(Object)this,tables);
     }
 
 }

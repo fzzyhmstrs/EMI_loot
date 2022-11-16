@@ -15,11 +15,13 @@ import java.util.Map;
 
 public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
-    public MobLootTableSender(Identifier id){
+    public MobLootTableSender(Identifier id, Identifier mobId){
         this.id = id;
+        this.mobId = mobId;
     }
 
     private final Identifier id;
+    private final Identifier mobId;
     final List<MobLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier MOB_SENDER = new Identifier(EMILoot.MOD_ID,"mob_sender");
 
@@ -28,6 +30,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         PacketByteBuf buf = PacketByteBufs.create();
         //start with the loot pool ID and the number of builders to write
         buf.writeIdentifier(id);
+        buf.writeIdentifier(mobId);
         buf.writeByte(builderList.size());
         builderList.forEach((builder)->{
             //start by building the builder
