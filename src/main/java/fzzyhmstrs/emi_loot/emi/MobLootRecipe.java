@@ -10,6 +10,7 @@ import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.SlimeEntitySizeSetter;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.MinecraftClient;
@@ -49,7 +50,6 @@ public class MobLootRecipe implements EmiRecipe {
         map.put(EntityType.RABBIT,-8);
         map.put(EntityType.TROPICAL_FISH,-9);
         map.put(EntityType.PUFFERFISH,-12);
-        map.put(EntityType.WARDEN,9);
         map.put(EntityType.ENDERMAN,7);
         map.put(EntityType.DOLPHIN,-3);
         map.put(EntityType.PHANTOM,-3);
@@ -73,7 +73,7 @@ public class MobLootRecipe implements EmiRecipe {
                 len = (len + Math.sqrt(len))/2.0;
             }
             if (entity instanceof SlimeEntity){
-                ((SlimeEntity)entity).setSize(5,false);
+                ((SlimeEntitySizeSetter)entity).setSlimeSize(5,false);
             }
             if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")){
                 DyeColor color = DyeColor.byName(loot.color,DyeColor.WHITE);

@@ -36,6 +36,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.structure.Structure;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.LiteralText;
@@ -45,7 +46,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 import java.util.*;
 
@@ -393,7 +394,7 @@ public class LootTableParser {
                 mapStack = stack;
             } else {
                 MapIcon.Type decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
-                TagKey<Structure> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
+                TagKey<ConfiguredStructureFeature<?, ?>> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
                 mapStack = new ItemStack(Items.FILLED_MAP);
                 MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN,"+",decoration);
                 typeKey = "emi_loot.map."+ destination.id().getPath();
@@ -419,10 +420,10 @@ public class LootTableParser {
             }
             stack.setDamage(MathHelper.floor(damage));
             return new LootFunctionResult(TextKey.of("emi_loot.function.damage",Integer.toString((int)(rollAvg*100))), stack);
-        } else if (type == LootFunctionTypes.SET_INSTRUMENT){
+        /*} else if (type == LootFunctionTypes.SE){
             TagKey<Instrument> tag = ((SetGoatHornLootFunctionAccessor)function).getInstrumentTag();
             GoatHornItem.setRandomInstrumentFromTag(stack,tag,EMILoot.emiLootRandom);
-            return new LootFunctionResult(TextKey.empty(), stack);
+            return new LootFunctionResult(TextKey.empty(), stack);*/
         }else if (type == LootFunctionTypes.COPY_STATE){
             return new LootFunctionResult(TextKey.of("emi_loot.function.copy_state"), ItemStack.EMPTY);
         }else if (type == LootFunctionTypes.EXPLOSION_DECAY){

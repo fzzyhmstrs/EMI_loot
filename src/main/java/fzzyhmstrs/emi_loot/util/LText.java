@@ -1,25 +1,27 @@
 package fzzyhmstrs.emi_loot.util;
 
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 
 public class LText{
 
     public static MutableText translatable(String key){
-        return Text.translatable(key);
+        return new TranslatableText(key);
     }
     
     public static MutableText translatable(String key, Object ... args){
-        return Text.translatable(key, args);
+        return new TranslatableText(key, args);
     }
 
     public static MutableText literal(String msg){
-        return Text.literal(msg);
+        return new LiteralText(msg);
     }
     
     public static MutableText empty(){
-        return Text.empty();
+        return (MutableText) LiteralText.EMPTY;
     }
 
 }

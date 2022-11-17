@@ -3,7 +3,7 @@ package fzzyhmstrs.emi_loot.mixins;
 import net.minecraft.item.map.MapIcon;
 import net.minecraft.loot.function.ExplorationMapLootFunction;
 import net.minecraft.tag.TagKey;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -14,6 +14,6 @@ public interface ExplorationMapLootFunctionAccessor {
     MapIcon.Type getDecoration();
 
     @Accessor(value = "destination")
-    TagKey<Structure> getDestination();
+    TagKey<ConfiguredStructureFeature<?, ?>> getDestination();
 
 }

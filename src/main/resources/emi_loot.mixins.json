@@ -19,7 +19,7 @@
     "SetDamageLootFunctionAccessor",
     "SetNameLootFunctionAccessor",
     "ExplorationMapLootFunctionAccessor",
-    "SetGoatHornLootFunctionAccessor",
+    "SlimeEntityMixin",
     "SetEnchantmentsLootFunctionAccessor",
     "TableBonusLootConditionAccessor",
     "InvertedLootConditionAccessor",

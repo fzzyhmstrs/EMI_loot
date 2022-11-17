@@ -25,7 +25,7 @@ public record TextKey(int index, List<String> args){
         keyMap = new HashMap<>();
         keyReverseMap = new HashMap<>();
         keyTextBuilderMap = new HashMap<>();
-        mapBuilder(0,"emi_loot.function.empty",(key)->Text.empty());
+        mapBuilder(0,"emi_loot.function.empty",(key)->LText.empty());
         mapBuilder(1,"emi_loot.function.bonus",(key)-> getOneArgText(1, key));
         mapBuilder(2,"emi_loot.function.potion",(key) -> getOneArgText(2, key));
         mapBuilder(3,"emi_loot.function.set_count_add",(key)-> getBasicText(3));
