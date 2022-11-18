@@ -8,6 +8,7 @@ import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ public record TextKey(int index, List<String> args){
     static Map<String, Integer> keyMap;
     static Map<Integer,String> keyReverseMap;
     static Map<Integer, Function<TextKey, Text>> keyTextBuilderMap;
+    static Map<Integer, Pair<Integer,Integer>> keySpriteOffsetMap;
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
 
     static{
@@ -40,26 +42,27 @@ public record TextKey(int index, List<String> args){
         mapBuilder(12,"emi_loot.function.damage",(key)-> getOneArgText(12, key));
         mapBuilder(13,"emi_loot.function.copy_state",(key)-> getBasicText(13));
         mapBuilder(14,"emi_loot.function.decay",(key)-> getBasicText(14));
-        mapBuilder(21,"emi_loot.condition.survives_explosion",(key)-> getBasicText(21));
-        mapBuilder(22,"emi_loot.condition.blockstate",(key)-> getBasicText(22));
-        mapBuilder(23,"emi_loot.condition.table_bonus",(key)-> getOneArgText(23, key));
-        mapBuilder(24,"emi_loot.condition.invert",(key)-> getInvertedText(24, key));
-        mapBuilder(25,"emi_loot.condition.alternates",(key)-> getOneArgText(25, key));
-        mapBuilder(26,"emi_loot.condition.alternates_2",(key)-> getTwoArgText(26, key));
-        mapBuilder(27,"emi_loot.condition.alternates_3",(key)-> getAlternates3Text(27, key));
-        mapBuilder(28,"emi_loot.condition.killed_player",(key)-> getBasicText(28));
-        mapBuilder(29,"emi_loot.condition.chance",(key)-> getOneArgText(29, key));
-        mapBuilder(30,"emi_loot.condition.chance_looting",(key)-> getTwoArgText(30, key));
-        mapBuilder(31,"emi_loot.condition.damage_source",(key)-> getOneArgText(31, key));
-        mapBuilder(32,"emi_loot.condition.location",(key)-> getBasicText(32));
-        mapBuilder(33,"emi_loot.condition.entity_props",(key)-> getBasicText(33));
-        mapBuilder(34,"emi_loot.condition.match_tool",(key)-> getOneArgText(34, key));
+        mapBuilder(31,"emi_loot.condition.survives_explosion",(key)-> getBasicText(31));
+        mapBuilder(32,"emi_loot.condition.blockstate",(key)-> getBasicText(32));
+        mapBuilder(33,"emi_loot.condition.table_bonus",(key)-> getOneArgText(33, key));
+        mapBuilder(34,"emi_loot.condition.invert",(key)-> getInvertedText(34, key));
+        mapBuilder(35,"emi_loot.condition.alternates",(key)-> getOneArgText(35, key));
+        mapBuilder(36,"emi_loot.condition.alternates_2",(key)-> getTwoArgText(36, key));
+        mapBuilder(37,"emi_loot.condition.alternates_3",(key)-> getAlternates3Text(37, key));
+        mapBuilder(38,"emi_loot.condition.killed_player",(key)-> getBasicText(38));
+        mapBuilder(39,"emi_loot.condition.chance",(key)-> getOneArgText(39, key));
+        mapBuilder(40,"emi_loot.condition.chance_looting",(key)-> getTwoArgText(40, key));
+        mapBuilder(41,"emi_loot.condition.damage_source",(key)-> getOneArgText(41, key));
+        mapBuilder(42,"emi_loot.condition.location",(key)-> getBasicText(42));
+        mapBuilder(43,"emi_loot.condition.entity_props",(key)-> getBasicText(43));
+        mapBuilder(44,"emi_loot.condition.match_tool",(key)-> getOneArgText(44, key));
     }
 
     private static void mapBuilder(int index, String key, Function<TextKey, Text> function){
         keyMap.put(key,index);
         keyReverseMap.put(index,key);
         keyTextBuilderMap.put(index,function);
+        keySpriteOffsetMap.put(index, new Pair<>(index % 8, index / 8));
     }
 
     private static Text getBasicText(int index){
