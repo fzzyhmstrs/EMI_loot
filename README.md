@@ -14,6 +14,7 @@
 |Update mob/chest guis|In work|0.3.0|
 |Update Entity/Block EMI recipes for new layouts|Not started|0.3.0|
 |Starting impl of basic config|Not started|0.3.0|
+|Fix smelting condition showing the unsmelted item|Not started|0.3.0?|
 |Implement EntityPredicate Parser|Not started|?.?.?|
 |Implement other missing parsers as needed|Not started|?.?.?|
 |Optimize packet sending size/number|Not started|?.?.?|
