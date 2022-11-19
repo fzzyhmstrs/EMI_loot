@@ -1,16 +1,19 @@
 package fzzyhmstrs.emi_loot.client;
 
+import dev.emi.emi.api.stack.EmiIngredient;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
+import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
+import it.unimi.dsi.fastutil.floats.Float2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -25,7 +28,7 @@ public class ClientMobLootTable implements LootReceiver {
     public final Identifier mobId;
     public String color = "";
     private final Map<List<TextKey>, ClientMobRawPool> rawItems;
-    public Map<List<Text>, ClientMobBuiltPool> builtItems;
+    public List<ClientMobBuiltPool> builtItems;
 
     public ClientMobLootTable(){
         this.id = EMPTY;
@@ -73,21 +76,16 @@ public class ClientMobLootTable implements LootReceiver {
     }
 
     public void build(World world){
-        Map<List<Text>, ClientMobBuiltPool> builderItems = new HashMap<>();
+        Map<List<Pair<Integer,Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
         rawItems.forEach((list,pool)->{
-            List<Text> newList = new LinkedList<>();
+            List<Pair<Integer,Text>> applyToAllList = new LinkedList<>();
             list.forEach((textKey) -> {
                 Text text = textKey.process(ItemStack.EMPTY,world).text();
-                newList.add(text);
+                applyToAllList.add(new Pair<>(textKey.index(),text));
             });
-
-            ClientMobBuiltPool newPool = builderItems.getOrDefault(newList, new ClientMobBuiltPool(new HashMap<>()));
-
-            Map<List<Text>,Object2FloatMap<ItemStack>> builderPoolMap = newPool.map;
             pool.map.forEach((poolList,poolItemMap)->{
-
-                List<Text> newPoolList = new LinkedList<>();
-                Map<ItemStack, Float> itemsToAdd = new HashMap<>();
+                List<Pair<Integer,Text>> newPoolList = new LinkedList<>();
+                Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
 
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack,weight)->{
@@ -101,25 +99,43 @@ public class ClientMobLootTable implements LootReceiver {
                             });
                             stacks.forEach(stack->{
                                 if(!poolItemMap.containsKey(stack)){
-                                    itemsToAdd.put(stack,toAddWeight.get());
+                                    itemsToAdd.put(stack,(float)toAddWeight.get());
                                 }
                             });
                         }
                     });
                     Text text = textKey.process(ItemStack.EMPTY,world).text();
-                    newPoolList.add(text);
+                    newPoolList.add(new Pair<>(textKey.index(),text));
 
                 });
-                Object2FloatMap<ItemStack> newPoolItemMap = builderPoolMap.getOrDefault(newPoolList,poolItemMap);
-                newPoolItemMap.putAll(itemsToAdd);
-                builderPoolMap.put(newPoolList,newPoolItemMap);
+                List<Pair<Integer, Text>> summedList = new LinkedList<>(applyToAllList);
+                summedList.addAll(newPoolList);
+                if (summedList.isEmpty()){
+                    summedList.add(new Pair<>(63, LText.translatable("emi_loot.no_conditions")));
+                }
+                Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);
+                builderPoolMap.putAll(itemsToAdd);
+                builderItems.put(summedList,builderPoolMap);
 
             });
-
-            builderItems.put(newList,newPool);
-
         });
-        builtItems = builderItems;
+        List<ClientMobBuiltPool> finalList = new LinkedList<>();
+        builderItems.forEach((builtList,builtMap)->{
+            Float2ObjectMap<List<ItemStack>> consolidatedMap = new Float2ObjectArrayMap<>();
+            builtMap.forEach((stack,weight)->{
+                List<ItemStack> consolidatedList = consolidatedMap.getOrDefault((float)weight,new LinkedList<>());
+                if (!consolidatedList.contains(stack)){
+                    consolidatedList.add(stack);
+                }
+                consolidatedMap.put((float)weight,consolidatedList);
+            });
+            Float2ObjectMap<EmiIngredient> emiConsolidatedMap = new Float2ObjectArrayMap<>();
+            consolidatedMap.forEach((consolidatedWeight,consolidatedList)->
+                emiConsolidatedMap.put((float)consolidatedWeight,EmiIngredient.of(Ingredient.ofStacks(consolidatedList.stream())))
+            );
+            finalList.add(new ClientMobBuiltPool(builtList,emiConsolidatedMap));
+        });
+        builtItems = finalList;
     }
 
     @Override
@@ -185,5 +201,5 @@ public class ClientMobLootTable implements LootReceiver {
     }
 
     public record ClientMobRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
-    public record ClientMobBuiltPool(Map<List<Text>, Object2FloatMap<ItemStack>> map){}
+    public record ClientMobBuiltPool(List<Pair<Integer,Text>> list, Float2ObjectMap<EmiIngredient> stackMap){}
 }

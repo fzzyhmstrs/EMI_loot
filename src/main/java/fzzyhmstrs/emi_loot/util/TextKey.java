@@ -160,7 +160,7 @@ public record TextKey(int index, List<String> args){
     public TextKeyResult process(ItemStack stack, @Nullable World world){
         ItemStack finalStack;
         List<ItemStack> finalStacks = new LinkedList<>();
-        finalStacks.add(stack);
+        //finalStacks.add(stack);
         if (this.index == 8 && world != null){
             Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
             if (opt.isPresent()){
@@ -170,6 +170,8 @@ public record TextKey(int index, List<String> args){
                     finalStacks.add(finalStack);
                 }
             }
+        } else {
+            finalStacks.add(stack);
         }
         Text text = keyTextBuilderMap.getOrDefault(this.index,DEFAULT_FUNCTION).apply(this);
         return new TextKeyResult(text,finalStacks);
@@ -211,7 +213,6 @@ public record TextKey(int index, List<String> args){
     public int hashCode() {
         return Objects.hash(index, args);
     }
-
     public record TextKeyResult(Text text,List<ItemStack> stacks){}
 
 }
