@@ -32,7 +32,8 @@
     "MatchToolLootConditionAccessor",
     "DamageSourcePredicateAccessor",
     "DamageSourcePropertiesLootConditionAccessor",
-    "LootTableEntryAccessor"
+    "LootTableEntryAccessor",
+    "ConditionalLootFunctionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

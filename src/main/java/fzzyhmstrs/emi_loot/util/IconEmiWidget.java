@@ -10,6 +10,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
@@ -18,25 +19,23 @@ import java.util.List;
 
 public class IconEmiWidget extends Widget {
 
-    public IconEmiWidget(int x, int y, TextKey key){
-        this.key = key;
-        this.u = TextKey.keySpriteOffsetMap.getOrDefault(key.index(),new Pair<>(0,0)).getLeft() * 8;
-        this.v = TextKey.keySpriteOffsetMap.getOrDefault(key.index(),new Pair<>(0,0)).getRight() * 8;
+    public IconEmiWidget(int x, int y, int keyIndex, Text text){
+        this.u = TextKey.keySpriteOffsetMap.getOrDefault(keyIndex,new Pair<>(0,0)).getLeft() * 8;
+        this.v = TextKey.keySpriteOffsetMap.getOrDefault(keyIndex,new Pair<>(0,0)).getRight() * 8;
         this.x = x;
         this.y = y;
         this.bounds = new Bounds(x,y,12,12);
-        OrderedText text = key.process(ItemStack.EMPTY, null).text().asOrderedText();
-        this.tooltipText = Collections.singletonList(TooltipComponent.of(text));
+        this.tooltipText = Collections.singletonList(TooltipComponent.of(text.asOrderedText()));
     }
 
     private static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_frame.png");
     private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_sprites.png");
 
-    private final TextKey key;
     private final int u, v;
-    private final int x, y;
+    private int x, y;
     private final Bounds bounds;
     private final List<TooltipComponent> tooltipText;
+
 
 
     @Override
