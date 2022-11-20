@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.util;
 
 import dev.emi.emi.api.stack.EmiIngredient;
+import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
@@ -17,27 +18,29 @@ public class WidgetRowBuilder {
     }
 
     private final int maxWidth;
-    private final List<ClientMobLootTable.ClientMobBuiltPool> poolList = new LinkedList<>();
+    private final List<ClientBuiltPool> poolList = new LinkedList<>();
     private int width = 0;
 
-    public List<ClientMobLootTable.ClientMobBuiltPool> getPoolList(){
+    public List<ClientBuiltPool> getPoolList(){
         return poolList;
     }
 
-    private boolean add(ClientMobLootTable.ClientMobBuiltPool newPool){
+    private boolean add(ClientBuiltPool newPool){
         int newWidth;
         if (poolList.isEmpty()){
-            newWidth = 14 + (11 * (((newPool.list().size() - 1)/2) - 1)) + 20 * newPool.stackMap().size();
+            newWidth = 14 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
         } else {
-            newWidth = 20 + (11 * (((newPool.list().size() - 1)/2) - 1)) + 20 * newPool.stackMap().size();
+            newWidth = 20 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
         }
+        //System.out.println(newPool.stackMap());
+        //System.out.println("width: " + (width + newWidth));
         if (width + newWidth > maxWidth) return false;
         width += newWidth;
         poolList.add(newPool);
         return true;
     }
 
-    public Optional<ClientMobLootTable.ClientMobBuiltPool> addAndTrim(ClientMobLootTable.ClientMobBuiltPool newPool){
+    public Optional<ClientBuiltPool> addAndTrim(ClientBuiltPool newPool){
         if (add(newPool)) return Optional.empty();
         if (width == 0) {
             Float2ObjectMap<EmiIngredient> madeItIn = new Float2ObjectArrayMap<>();
@@ -50,11 +53,19 @@ public class WidgetRowBuilder {
                     leftOvers.put((float) weight, stacks);
                 }
             });
-            add(new ClientMobLootTable.ClientMobBuiltPool(newPool.list(), madeItIn));
-            return Optional.of(new ClientMobLootTable.ClientMobBuiltPool(newPool.list(), leftOvers));
+            add(new ClientBuiltPool(newPool.list(), madeItIn));
+            return Optional.of(new ClientBuiltPool(newPool.list(), leftOvers));
         } else {
             return Optional.of(newPool);
         }
+    }
+
+    public boolean canAddOther(WidgetRowBuilder other){
+        return (width + other.width + 6) <= maxWidth;
+    }
+
+    public void addOther(WidgetRowBuilder other){
+        this.poolList.addAll(other.poolList);
     }
 
 }

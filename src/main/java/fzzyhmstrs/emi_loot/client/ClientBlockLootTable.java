@@ -1,17 +1,27 @@
 package fzzyhmstrs.emi_loot.client;
 
+import dev.emi.emi.api.stack.EmiIngredient;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
+import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+@SuppressWarnings("deprecation")
 public class ClientBlockLootTable implements LootReceiver {
 
     public static ClientBlockLootTable INSTANCE = new ClientBlockLootTable();
@@ -19,7 +29,7 @@ public class ClientBlockLootTable implements LootReceiver {
     public final Identifier id;
     public final Identifier blockId;
     private final Map<List<TextKey>, ClientBlockRawPool> rawItems;
-    public Map<List<Text>, ClientBlockBuiltPool> builtItems;
+    public List<ClientBuiltPool> builtItems;
 
     public ClientBlockLootTable(){
         this.id = EMPTY;
@@ -44,54 +54,101 @@ public class ClientBlockLootTable implements LootReceiver {
         return Objects.equals(id, EMPTY);
     }
 
-    public void build(World world){
-        Map<List<Text>, ClientBlockBuiltPool> builderItems = new HashMap<>();
+    public void build(World world, Block block){
+        int index = -1;
+        if (block.getRegistryEntry().isIn(BlockTags.PICKAXE_MINEABLE)){
+            index = 42;
+        } else if (block.getRegistryEntry().isIn(BlockTags.AXE_MINEABLE)){
+            index = 47;
+        } else if (block.getRegistryEntry().isIn(BlockTags.SHOVEL_MINEABLE)){
+            index = 52;
+        } else if (block.getRegistryEntry().isIn(BlockTags.HOE_MINEABLE)){
+            index = 57;
+        }
+        List<Pair<Integer,Text>> toolNeededList = new LinkedList<>();
+        if (index > -1){
+            MutableText typeText = LText.translatable("emi_loot.needed_tool_"+index);
+            MutableText levelText;
+            if (block.getRegistryEntry().isIn(BlockTags.NEEDS_STONE_TOOL)){
+                index += 1;
+                levelText = LText.translatable("emi_loot.needed_tool_stone");
+            } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_IRON_TOOL)){
+                index += 2;
+                levelText = LText.translatable("emi_loot.needed_tool_iron");
+            } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_DIAMOND_TOOL)){
+                index += 3;
+                levelText = LText.translatable("emi_loot.needed_tool_diamond");
+            } else{
+                levelText = LText.translatable("emi_loot.needed_tool_any");
+            }
+            Text toolText = LText.translatable("emi_loot.needed_tool",levelText.getString(),typeText.getString());
+            toolNeededList.add(new Pair<>(index,toolText));
+        }
+
+        Map<List<Pair<Integer,Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
         rawItems.forEach((list,pool)->{
-            List<Text> newList = new LinkedList<>();
+            List<Pair<Integer,Text>> applyToAllList = new LinkedList<>(toolNeededList);
             list.forEach((textKey) -> {
                 Text text = textKey.process(ItemStack.EMPTY,world).text();
-                newList.add(text);
+                applyToAllList.add(new Pair<>(textKey.index(),text));
             });
-
-            ClientBlockBuiltPool newPool = builderItems.getOrDefault(newList, new ClientBlockBuiltPool(new HashMap<>()));
-
-            Map<List<Text>,Object2FloatMap<ItemStack>> builderPoolMap = newPool.map;
             pool.map.forEach((poolList,poolItemMap)->{
-
-                List<Text> newPoolList = new LinkedList<>();
-                Map<ItemStack, Float> itemsToAdd = new HashMap<>();
+                List<Pair<Integer,Text>> newPoolList = new LinkedList<>();
+                Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
+                List<ItemStack> itemsToRemove = new LinkedList<>();
 
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack,weight)->{
-                        List<ItemStack> stacks = textKey.process(ItemStack.EMPTY,world).stacks();
-                        if (stacks.size() > 1){
-                            AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
-                            stacks.forEach(stack->{
-                                if(poolItemMap.containsKey(stack)){
-                                    toAddWeight.set(poolItemMap.getFloat(stack));
-                                }
-                            });
-                            stacks.forEach(stack->{
-                                if(!poolItemMap.containsKey(stack)){
-                                    itemsToAdd.put(stack,toAddWeight.get());
-                                }
-                            });
+                        List<ItemStack> stacks = textKey.process(poolStack,world).stacks();
+                        if (!stacks.contains(poolStack)){
+                            itemsToRemove.add(poolStack);
                         }
+                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
+                        stacks.forEach(stack->{
+                            if(poolItemMap.containsKey(stack)){
+                                toAddWeight.set(poolItemMap.getFloat(stack));
+                            }
+                        });
+                        stacks.forEach(stack->{
+                            if(!poolItemMap.containsKey(stack)){
+                                itemsToAdd.put(stack,(float)toAddWeight.get());
+                            }
+                        });
+
                     });
                     Text text = textKey.process(ItemStack.EMPTY,world).text();
-                    newPoolList.add(text);
+                    newPoolList.add(new Pair<>(textKey.index(),text));
 
                 });
-                Object2FloatMap<ItemStack> newPoolItemMap = builderPoolMap.getOrDefault(newPoolList,poolItemMap);
-                newPoolItemMap.putAll(itemsToAdd);
-                builderPoolMap.put(newPoolList,newPoolItemMap);
-
+                List<Pair<Integer, Text>> summedList = new LinkedList<>(applyToAllList);
+                summedList.addAll(newPoolList);
+                if (summedList.isEmpty()){
+                    summedList.add(new Pair<>(63, LText.translatable("emi_loot.no_conditions")));
+                }
+                Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);
+                builderPoolMap.putAll(itemsToAdd);
+                itemsToRemove.forEach(builderPoolMap::removeFloat);
+                builderItems.put(summedList,builderPoolMap);
             });
 
-            builderItems.put(newList,newPool);
-
         });
-        builtItems = builderItems;
+        List<ClientBuiltPool> finalList = new LinkedList<>();
+        builderItems.forEach((builtList,builtMap)->{
+            Float2ObjectMap<List<ItemStack>> consolidatedMap = new Float2ObjectArrayMap<>();
+            builtMap.forEach((stack,weight)->{
+                List<ItemStack> consolidatedList = consolidatedMap.getOrDefault((float)weight,new LinkedList<>());
+                if (!consolidatedList.contains(stack)){
+                    consolidatedList.add(stack);
+                }
+                consolidatedMap.put((float)weight,consolidatedList);
+            });
+            Float2ObjectMap<EmiIngredient> emiConsolidatedMap = new Float2ObjectArrayMap<>();
+            consolidatedMap.forEach((consolidatedWeight,consolidatedList)->
+                    emiConsolidatedMap.put((float)consolidatedWeight,EmiIngredient.of(Ingredient.ofStacks(consolidatedList.stream())))
+            );
+            finalList.add(new ClientBuiltPool(builtList,emiConsolidatedMap));
+        });
+        builtItems = finalList;
     }
 
     @Override
@@ -156,5 +213,4 @@ public class ClientBlockLootTable implements LootReceiver {
     }
 
     public record ClientBlockRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
-    public record ClientBlockBuiltPool(Map<List<Text>, Object2FloatMap<ItemStack>> map){}
 }

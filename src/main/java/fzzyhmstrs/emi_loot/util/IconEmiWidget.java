@@ -28,7 +28,7 @@ public class IconEmiWidget extends Widget {
         this.tooltipText = Collections.singletonList(TooltipComponent.of(text.asOrderedText()));
     }
 
-    private static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_frame.png");
+    static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_frame.png");
     private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_sprites.png");
 
     private final int u, v;
@@ -53,7 +53,7 @@ public class IconEmiWidget extends Widget {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, FRAME_ID);
-        DrawableHelper.drawTexture(matrices, x, y, 12, 12, 0, 0, 12, 12, 16, 16);
+        DrawableHelper.drawTexture(matrices, x, y, 12, 12, 0, 0, 12, 12, 64, 16);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, SPRITE_ID);

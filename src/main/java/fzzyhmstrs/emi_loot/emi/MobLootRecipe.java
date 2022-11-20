@@ -6,7 +6,9 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
@@ -32,6 +34,7 @@ import java.util.*;
 public class MobLootRecipe implements EmiRecipe {
 
     private final static Map<EntityType<?>,Integer> needsElevating;
+    private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/downturn_arrow.png");
 
     static{
         Object2IntMap<EntityType<?>> map = new Object2IntOpenHashMap<>();
@@ -87,6 +90,7 @@ public class MobLootRecipe implements EmiRecipe {
             name = LText.translatable("emi_loot.missing_entity");
         }
         List<EmiStack> list = new LinkedList<>();
+        System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stackMap().forEach((weight, stacks) -> {
                     if (weight < 100f) {
@@ -108,15 +112,17 @@ public class MobLootRecipe implements EmiRecipe {
     private final EntityType<?> type;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
-    private void addWidgetBuilders(ClientMobLootTable.ClientMobBuiltPool newPool, boolean recursive){
+    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
         WidgetRowBuilder builder;
+        boolean newBuilder = false;
         if (recursive || rowBuilderList.isEmpty()){
             builder = new WidgetRowBuilder(154);
+            newBuilder = true;
         } else {
             builder = rowBuilderList.get(rowBuilderList.size() - 1);
         }
-        Optional<ClientMobLootTable.ClientMobBuiltPool> opt = builder.addAndTrim(newPool);
-        rowBuilderList.add(builder);
+        Optional<ClientBuiltPool> opt = builder.addAndTrim(newPool);
+        if (newBuilder) rowBuilderList.add(builder);
         opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
     }
 
@@ -168,10 +174,12 @@ public class MobLootRecipe implements EmiRecipe {
             widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
             widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5,+ offset,delta));
         }
+        widgets.addTexture(new EmiTexture(ARROW_ID,0,0,39,15,39,15,64,16),30,10);
+        widgets.addText(name.asOrderedText(),30,0,0x404040,false);
 
         y += 28;
         for (WidgetRowBuilder builder: rowBuilderList){
-            for (ClientMobLootTable.ClientMobBuiltPool pool: builder.getPoolList()){
+            for (ClientBuiltPool pool: builder.getPoolList()){
                 IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;

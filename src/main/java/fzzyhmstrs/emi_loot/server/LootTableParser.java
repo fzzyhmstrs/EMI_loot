@@ -238,7 +238,9 @@ public class LootTableParser {
                 } else {
                     conditionalItem = item;
                 }
-                conditionalEntryResults.add(new ItemEntryResult(conditionalItem,weight,resultConditions,Collections.singletonList(lootText)));
+                List<TextKey> conditionalFunctionTexts = new LinkedList<>();
+                conditionalFunctionTexts.add(lootText);
+                conditionalEntryResults.add(new ItemEntryResult(conditionalItem,weight,resultConditions,conditionalFunctionTexts));
             } else {
                 if (lootText.isNotEmpty()) {
                     functionTexts.add(lootText);
