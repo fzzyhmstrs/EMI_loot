@@ -8,7 +8,11 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
+import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
+import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
+import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.OrderedText;
@@ -19,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,22 +39,21 @@ public class BlockLootRecipe implements EmiRecipe {
     public BlockLootRecipe(ClientBlockLootTable loot){
         this.loot = loot;
         allStacksGuaranteed = true;
-        loot.build(MinecraftClient.getInstance().world);
-        Identifier lootId = loot.id;
         Identifier blockId = loot.blockId;
         Block block = Registry.BLOCK.get(blockId);
+        loot.build(MinecraftClient.getInstance().world, block);
+        Identifier lootId = loot.id;
         inputStack = EmiStack.of(block);
         List<EmiStack> list = new LinkedList<>();
-        loot.builtItems.forEach((textList, builtPool)->
-            builtPool.map().forEach((poolList,map)->
-                map.forEach((stack, weight)->{
-                    if (weight < 100f){
-                        allStacksGuaranteed = false;
-                    }
-                    list.add(EmiStack.of(stack));
-                })
-            )
-        );
+        loot.builtItems.forEach((builtPool)-> {
+            builtPool.stackMap().forEach((weight, stacks) -> {
+                if (weight < 100f) {
+                    allStacksGuaranteed = false;
+                }
+                list.addAll(stacks.getEmiStacks());
+            });
+            addWidgetBuilders(builtPool, false);
+        });
         outputStacks = list;
     }
 
@@ -58,6 +62,21 @@ public class BlockLootRecipe implements EmiRecipe {
     private final List<EmiStack> outputStacks;
     private boolean allStacksGuaranteed;
     private final MinecraftClient client = MinecraftClient.getInstance();
+    private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
+
+    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
+        WidgetRowBuilder builder;
+        boolean newBuilder = false;
+        if (recursive || rowBuilderList.isEmpty()){
+            builder = new WidgetRowBuilder(115);
+            newBuilder = true;
+        } else {
+            builder = rowBuilderList.get(rowBuilderList.size() - 1);
+        }
+        Optional<ClientBuiltPool> opt = builder.addAndTrim(newPool);
+        if (newBuilder) rowBuilderList.add(builder);
+        opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
+    }
 
     @Override
     public EmiRecipeCategory getCategory() {
@@ -86,79 +105,30 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return (19 * 4) + (26 * 3) + 25;
+        return 164;
     }
 
     @Override
     public int getDisplayHeight() {
-        AtomicInteger height = new AtomicInteger();
-        height.addAndGet(20);
-        loot.builtItems.forEach((poolList,pool)-> {
-            poolList.forEach((text)->{
-                List<OrderedText> subList = client.textRenderer.wrapLines(text,166);
-                subList.forEach(subText -> height.addAndGet(9));
-            });
-            pool.map().forEach((categoryList,itemMap)-> {
-                categoryList.forEach((text) -> {
-                    List<OrderedText> subList = client.textRenderer.wrapLines(text, 166);
-                    subList.forEach(subText -> height.addAndGet(9));
-                });
-                height.addAndGet(23);
-            });
-        });
-        return height.get();
+        return 23 + 29 * (rowBuilderList.size() - 1);
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        int poolOffset = getDisplayHeight() > widgets.getHeight() ? 21 : 23;
         widgets.addSlot(inputStack,0,0);
         widgets.addTexture(EmiTexture.EMPTY_ARROW, 22, 0);
-        var yObj = new Object() {
-            int y = getDisplayHeight() > widgets.getHeight() ? 19 : 20;
-        };
-        loot.builtItems.forEach((poolList,pool)-> {
-            poolList.forEach((text)->{
-                List<OrderedText> subList = client.textRenderer.wrapLines(text,widgets.getWidth());
-                subList.forEach(subText -> {
-                    widgets.addText(subText,0 ,yObj.y,0x404040,false);
-                    yObj.y +=9;
-                });
-            });
-            pool.map().forEach((categoryList,itemMap)->{
-                categoryList.forEach((text)->{
-                    List<OrderedText> subList = client.textRenderer.wrapLines(text,widgets.getWidth());
-                    subList.forEach(subText -> {
-                        widgets.addText(subText,0 ,yObj.y,0x404040,false);
-                        yObj.y +=9;
-                    });
-                });
-                var xObj = new Object() {
-                    int x = 0;
-                };
-                AtomicInteger index = new AtomicInteger();
-                AtomicBoolean addedItems = new AtomicBoolean(false);
-                itemMap.forEach((stack,weight)->{
-                    widgets.addSlot(EmiStack.of(stack), xObj.x, yObj.y);
-                    addedItems.set(true);
-                    xObj.x += 20;
-                    if (weight != 100F){
-                        String fTrim = trimFloatString(weight);
-                        widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), xObj.x, yObj.y,0x404040,false);
-                        xObj.x += 28;
-                    }
-                    if (index.getAndIncrement() == 3){
-                        yObj.y += getDisplayHeight() > widgets.getHeight() ? 19 : 20;
-                        xObj.x = 0;
-                        index.set(0);
-                    }
-                });
-                if (index.get() == 0 && addedItems.get()){
-                    yObj.y -= getDisplayHeight() > widgets.getHeight() ? 19 : 20;
-                }
-                yObj.y += poolOffset;
-            });
-        });
+        int x = 50;
+        int y = 0;
+
+        for (WidgetRowBuilder builder: rowBuilderList){
+            for (ClientBuiltPool pool: builder.getPoolList()){
+                IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+                widgets.add(widget);
+                x += widget.getWidth() + 6;
+            }
+            y += 29;
+            x = 50;
+        }
     }
 
     //may revisit later

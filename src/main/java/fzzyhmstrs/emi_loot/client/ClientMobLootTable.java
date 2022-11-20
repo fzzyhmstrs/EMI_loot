@@ -28,7 +28,7 @@ public class ClientMobLootTable implements LootReceiver {
     public final Identifier mobId;
     public String color = "";
     private final Map<List<TextKey>, ClientMobRawPool> rawItems;
-    public List<ClientMobBuiltPool> builtItems;
+    public List<ClientBuiltPool> builtItems;
 
     public ClientMobLootTable(){
         this.id = EMPTY;
@@ -86,23 +86,26 @@ public class ClientMobLootTable implements LootReceiver {
             pool.map.forEach((poolList,poolItemMap)->{
                 List<Pair<Integer,Text>> newPoolList = new LinkedList<>();
                 Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
+                List<ItemStack> itemsToRemove = new LinkedList<>();
 
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack,weight)->{
                         List<ItemStack> stacks = textKey.process(poolStack,world).stacks();
-                        if (stacks.size() > 1){
-                            AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
-                            stacks.forEach(stack->{
-                                if(poolItemMap.containsKey(stack)){
-                                    toAddWeight.set(poolItemMap.getFloat(stack));
-                                }
-                            });
-                            stacks.forEach(stack->{
-                                if(!poolItemMap.containsKey(stack)){
-                                    itemsToAdd.put(stack,(float)toAddWeight.get());
-                                }
-                            });
+                        if (!stacks.contains(poolStack)){
+                            itemsToRemove.add(poolStack);
                         }
+                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
+                        stacks.forEach(stack->{
+                            if(poolItemMap.containsKey(stack)){
+                                toAddWeight.set(poolItemMap.getFloat(stack));
+                            }
+                        });
+                        stacks.forEach(stack->{
+                            if(!poolItemMap.containsKey(stack)){
+                                itemsToAdd.put(stack,(float)toAddWeight.get());
+                            }
+                        });
+
                     });
                     Text text = textKey.process(ItemStack.EMPTY,world).text();
                     newPoolList.add(new Pair<>(textKey.index(),text));
@@ -115,11 +118,12 @@ public class ClientMobLootTable implements LootReceiver {
                 }
                 Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);
                 builderPoolMap.putAll(itemsToAdd);
+                itemsToRemove.forEach(builderPoolMap::removeFloat);
                 builderItems.put(summedList,builderPoolMap);
 
             });
         });
-        List<ClientMobBuiltPool> finalList = new LinkedList<>();
+        List<ClientBuiltPool> finalList = new LinkedList<>();
         builderItems.forEach((builtList,builtMap)->{
             Float2ObjectMap<List<ItemStack>> consolidatedMap = new Float2ObjectArrayMap<>();
             builtMap.forEach((stack,weight)->{
@@ -133,7 +137,7 @@ public class ClientMobLootTable implements LootReceiver {
             consolidatedMap.forEach((consolidatedWeight,consolidatedList)->
                 emiConsolidatedMap.put((float)consolidatedWeight,EmiIngredient.of(Ingredient.ofStacks(consolidatedList.stream())))
             );
-            finalList.add(new ClientMobBuiltPool(builtList,emiConsolidatedMap));
+            finalList.add(new ClientBuiltPool(builtList,emiConsolidatedMap));
         });
         builtItems = finalList;
     }
@@ -201,5 +205,4 @@ public class ClientMobLootTable implements LootReceiver {
     }
 
     public record ClientMobRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
-    public record ClientMobBuiltPool(List<Pair<Integer,Text>> list, Float2ObjectMap<EmiIngredient> stackMap){}
 }
