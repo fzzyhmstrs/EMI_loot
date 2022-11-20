@@ -90,7 +90,7 @@ public class MobLootRecipe implements EmiRecipe {
             name = LText.translatable("emi_loot.missing_entity");
         }
         List<EmiStack> list = new LinkedList<>();
-        System.out.println(getId());
+        //System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stackMap().forEach((weight, stacks) -> {
                     if (weight < 100f) {

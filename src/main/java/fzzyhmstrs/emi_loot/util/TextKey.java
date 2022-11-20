@@ -170,7 +170,7 @@ public record TextKey(int index, List<String> args){
             if (opt.isPresent()){
                 ItemStack tempStack = opt.get().getOutput();
                 if (!tempStack.isEmpty()) {
-                    System.out.println(tempStack);
+                    //System.out.println(tempStack);
                     finalStack = tempStack.copy();
                     finalStacks.add(finalStack);
                 }
