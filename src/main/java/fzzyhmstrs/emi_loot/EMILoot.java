@@ -14,6 +14,7 @@ import java.util.Random;
 
 public class EMILoot implements ModInitializer {
 
+    public static boolean DEBUG = false;
     public static String MOD_ID = "emi_loot";
     public static Random emiLootRandom = new Random(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
