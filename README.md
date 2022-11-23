@@ -28,3 +28,4 @@
 |Impl fishing loot?|Not started|?.?.?|
 |Impl handler for code-based mob drops (nether star etc)|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
+|Investigate the possibility to add LootJs support|Not started|?.?.?|
