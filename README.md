@@ -15,8 +15,10 @@
 |Update Mob EMI recipes for new layouts|Complete|0.3.0|
 |Update Block EMI recipes for new layouts|Complete|0.3.0|
 |Fix smelting condition showing the unsmelted item|Complete|0.3.0|
+|Add option for small mob loot tables shown to the right instead of below|Complete|0.3.1|
+|Review and fix mob/block table percentages|Completed|0.3.1|
 |Starting impl of basic config|Not started|0.4.0|
-|Review and fix mob/block table percentages|Not started|?.?.?|
+|Check mob/block table percentages actually right|Not started|?.?.?|
 |Implement EntityPredicate Parser|Not started|?.?.?|
 |Implement other missing parsers as needed|Not started|?.?.?|
 |Optimize packet sending size/number|Not started|?.?.?|

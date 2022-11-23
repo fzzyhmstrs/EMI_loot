@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.client;
 
 import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
@@ -100,10 +101,12 @@ public class ClientBlockLootTable implements LootReceiver {
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack,weight)->{
                         List<ItemStack> stacks = textKey.process(poolStack,world).stacks();
+                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
                         if (!stacks.contains(poolStack)){
                             itemsToRemove.add(poolStack);
+                            toAddWeight.set(poolItemMap.getFloat(poolStack));
                         }
-                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
+
                         stacks.forEach(stack->{
                             if(poolItemMap.containsKey(stack)){
                                 toAddWeight.set(poolItemMap.getFloat(stack));
@@ -143,9 +146,13 @@ public class ClientBlockLootTable implements LootReceiver {
                 consolidatedMap.put((float)weight,consolidatedList);
             });
             Float2ObjectMap<EmiIngredient> emiConsolidatedMap = new Float2ObjectArrayMap<>();
-            consolidatedMap.forEach((consolidatedWeight,consolidatedList)->
-                    emiConsolidatedMap.put((float)consolidatedWeight,EmiIngredient.of(Ingredient.ofStacks(consolidatedList.stream())))
-            );
+            consolidatedMap.forEach((consolidatedWeight,consolidatedList)-> {
+                List< EmiStack > emiStacks = new LinkedList<>();
+                for (ItemStack i : consolidatedList){
+                    emiStacks.add(EmiStack.of(i));
+                }
+                emiConsolidatedMap.put((float) consolidatedWeight, EmiIngredient.of(emiStacks));
+            });
             finalList.add(new ClientBuiltPool(builtList,emiConsolidatedMap));
         });
         builtItems = finalList;
