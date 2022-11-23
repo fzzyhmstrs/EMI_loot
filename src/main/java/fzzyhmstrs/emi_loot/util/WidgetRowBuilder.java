@@ -24,6 +24,9 @@ public class WidgetRowBuilder {
     public List<ClientBuiltPool> getPoolList(){
         return poolList;
     }
+    public int getWidth() {
+        return width;
+    }
 
     private boolean add(ClientBuiltPool newPool){
         int newWidth;

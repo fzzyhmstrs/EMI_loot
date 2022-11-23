@@ -158,7 +158,11 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayHeight() {
-        return 28 + 23 + 29 * (rowBuilderList.size() - 1);
+        if (rowBuilderList.size() > 1 || rowBuilderList.get(0).getWidth() > 94) {
+            return 28 + 23 + 29 * (rowBuilderList.size() - 1);
+        } else {
+            return 34;
+        }
     }
 
     @Override
@@ -174,18 +178,29 @@ public class MobLootRecipe implements EmiRecipe {
             widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
             widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5,+ offset,delta));
         }
-        widgets.addTexture(new EmiTexture(ARROW_ID,0,0,39,15,39,15,64,16),30,10);
         widgets.addText(name.asOrderedText(),30,0,0x404040,false);
-
-        y += 28;
-        for (WidgetRowBuilder builder: rowBuilderList){
+        if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94){
+            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 39, 15, 39, 15, 64, 32), 30, 10);
+            x = 60;
+            y = 11;
+            WidgetRowBuilder builder = rowBuilderList.get(0);
             for (ClientBuiltPool pool: builder.getPoolList()){
                 IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;
             }
-            y += 29;
-            x = 0;
+        } else {
+            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
+            y += 28;
+            for (WidgetRowBuilder builder: rowBuilderList){
+                for (ClientBuiltPool pool: builder.getPoolList()){
+                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+                    widgets.add(widget);
+                    x += widget.getWidth() + 6;
+                }
+                y += 29;
+                x = 0;
+            }
         }
     }
 
