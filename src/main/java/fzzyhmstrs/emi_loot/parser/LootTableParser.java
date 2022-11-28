@@ -1,9 +1,8 @@
-package fzzyhmstrs.emi_loot.server;
+package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
-import fzzyhmstrs.emi_loot.util.DamageSourcePredicateParser;
-import fzzyhmstrs.emi_loot.util.ItemPredicateParser;
+import fzzyhmstrs.emi_loot.server.*;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -85,12 +84,11 @@ public class LootTableParser {
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id){
         ChestLootTableSender sender = new ChestLootTableSender(id);
-        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-        for (LootPool pool : pools) {
-            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+        for (LootPool pool : lootTable.pools) {
+            LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = getRollAvg(rollProvider);
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
-            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
@@ -104,9 +102,8 @@ public class LootTableParser {
 
     private static BlockLootTableSender parseBlockLootTable(LootTable lootTable, Identifier id){
         BlockLootTableSender sender = new BlockLootTableSender(id);
-        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-        for (LootPool pool : pools) {
-            LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
+        for (LootPool pool : lootTable.pools) {
+            LootCondition[] conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = new LinkedList<>();
             for (LootCondition condition: conditions){
                 List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
@@ -116,15 +113,15 @@ public class LootTableParser {
                     }
                 }
             }
-            LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
+            LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions){
                 parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
             }
-            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = getRollAvg(rollProvider);
             BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
@@ -143,9 +140,8 @@ public class LootTableParser {
 
     private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId){
         MobLootTableSender sender = new MobLootTableSender(id, mobId);
-        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-        for (LootPool pool : pools) {
-            LootCondition[] conditions = ((LootPoolAccessor)pool).getConditions();
+        for (LootPool pool : lootTable.pools) {
+            LootCondition[] conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = new LinkedList<>();
             for (LootCondition condition: conditions){
                 List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
@@ -155,15 +151,15 @@ public class LootTableParser {
                     }
                 }
             }
-            LootFunction[] functions = ((LootPoolAccessor)pool).getFunctions();
+            LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions){
                 parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
             }
-            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+            LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = getRollAvg(rollProvider);
             MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
@@ -192,12 +188,11 @@ public class LootTableParser {
 
     private static FishingLootTableSender parseFishingLootTable(LootTable lootTable, Identifier id){
         FishingLootTableSender sender = new FishingLootTableSender(id);
-        LootPool[] pools = ((LootTableAccessor) lootTable).getPools();
-        for (LootPool pool : pools) {
-            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
+        for (LootPool pool : lootTable.pools) {
+            LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = getRollAvg(rollProvider);
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
-            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
@@ -607,7 +602,7 @@ public class LootTableParser {
         }
     }
 
-    record LootFunctionResult(
+    public record LootFunctionResult(
             TextKey text,
             ItemStack stack,
             List<TextKey> conditions
@@ -615,13 +610,13 @@ public class LootTableParser {
         static LootFunctionResult EMPTY = new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, new LinkedList<>());
     }
 
-    record LootConditionResult(
+    public record LootConditionResult(
             TextKey text
     ){
         static LootConditionResult EMPTY = new LootConditionResult(TextKey.empty());
     }
 
-    record ItemEntryResult(
+    public record ItemEntryResult(
             ItemStack item,
             int weight,
             List<TextKey> conditions,

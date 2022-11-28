@@ -1,6 +1,7 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.mixins.EntityPredicateAccessor;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.EntityTypePredicate;
 import net.minecraft.text.Text;
@@ -17,9 +18,9 @@ public class EntityPredicateParser {
                 EntityType<?> type = ((SingleAccessor) predicate).getType();
                 return Text.translatable("emi_loot.mob_type_predicate.type", type.getName().getString());
             }*/
-            return Text.translatable("emi_loot.entity_predicate.mob_type");
+            return LText.translatable("emi_loot.entity_predicate.mob_type");
         }
-        return Text.empty();
+        return LText.empty();
     }
 
 }
