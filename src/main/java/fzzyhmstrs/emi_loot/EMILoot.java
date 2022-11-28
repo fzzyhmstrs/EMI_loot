@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot;
 
-import fzzyhmstrs.emi_loot.server.LootTableParser;
-import net.fabricmc.api.ClientModInitializer;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
