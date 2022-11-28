@@ -1,7 +1,7 @@
 package fzzyhmstrs.emi_loot.mixins;
 
 import com.google.gson.JsonElement;
-import fzzyhmstrs.emi_loot.server.LootTableParser;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.resource.ResourceManager;
