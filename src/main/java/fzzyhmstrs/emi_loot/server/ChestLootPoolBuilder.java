@@ -1,15 +1,12 @@
 package fzzyhmstrs.emi_loot.server;
 
-import it.unimi.dsi.fastutil.floats.FloatCollection;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ChestLootPoolBuilder implements LootBuilder {
 

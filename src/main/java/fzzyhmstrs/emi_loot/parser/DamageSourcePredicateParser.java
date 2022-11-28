@@ -1,6 +1,7 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.mixins.DamageSourcePredicateAccessor;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.text.Text;

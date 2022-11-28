@@ -1,12 +1,11 @@
 package fzzyhmstrs.emi_loot.server;
 
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class BlockLootPoolBuilder implements LootBuilder {
 
