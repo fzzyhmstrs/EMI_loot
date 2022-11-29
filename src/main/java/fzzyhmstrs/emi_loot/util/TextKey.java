@@ -119,7 +119,7 @@ public record TextKey(int index, List<String> args){
 
     private static Text getAlternates3Text(int index, TextKey key){
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        MutableText finalText = LText.empty();
+        MutableText finalText = LText.empty().copy();
         List<String> args = key.args;
         int size = args.size();
         for (int i = 0;i<size;i++){
