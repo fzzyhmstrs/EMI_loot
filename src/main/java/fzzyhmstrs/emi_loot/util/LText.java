@@ -21,7 +21,7 @@ public class LText{
     }
     
     public static MutableText empty(){
-        return LiteralText.EMPTY.copy();
+        return new LiteralText("");
     }
 
 }
