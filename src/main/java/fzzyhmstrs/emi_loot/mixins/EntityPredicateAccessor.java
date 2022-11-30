@@ -20,6 +20,9 @@ public interface EntityPredicateAccessor {
     @Accessor(value = "steppingOn")
     LocationPredicate getSteppingOn();
 
+    @Accessor(value = "effects")
+    EntityEffectPredicate getEffects();
+
     @Accessor(value = "nbt")
     NbtPredicate getNbt();
 
