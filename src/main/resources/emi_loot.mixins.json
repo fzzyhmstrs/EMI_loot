@@ -31,7 +31,21 @@
     "DamageSourcePredicateAccessor",
     "DamageSourcePropertiesLootConditionAccessor",
     "LootTableEntryAccessor",
-    "ConditionalLootFunctionAccessor"
+    "ConditionalLootFunctionAccessor",
+    "DistancePredicateAccessor",
+    "LightPredicateAccessor",
+    "BlockPredicateAccessor",
+    "LocationPredicateAccessor",
+    "FluidPredicateAccessor",
+    "EntityEffectPredicateAccessor",
+    "EffectDataAccessor",
+    "NbtPredicateAccessor",
+    "EntityFlagsPredicateAccessor",
+    "EntityEquipmentPredicateAccessor",
+    "LightningBoltPredicateAccessor",
+    "FishingHookPredicateAccessor",
+    "PlayerPredicateAccessor",
+    "SlimePredicateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

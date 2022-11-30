@@ -6,7 +6,6 @@ import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
-import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.GameRenderer;

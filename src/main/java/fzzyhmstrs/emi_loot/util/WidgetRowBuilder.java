@@ -2,7 +2,6 @@ package fzzyhmstrs.emi_loot.util;
 
 import dev.emi.emi.api.stack.EmiIngredient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
-import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 

@@ -9,14 +9,10 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
-import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
-import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class BlockLootRecipe implements EmiRecipe {
 
