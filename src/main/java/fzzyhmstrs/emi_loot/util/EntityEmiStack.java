@@ -123,18 +123,16 @@ public class EntityEmiStack extends EmiStack {
 
     public static void renderEntity(int x, int y, double size, LivingEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
-        Mouse mouse = client.mouse;
-        float width = 1920;
-        float height = 1080;
-        Screen screen = client.currentScreen;
-        if (screen != null) {
-            width = screen.width;
-            height = screen.height;
-        }
-        float mouseX = (float) ((width + 51) - mouse.getX());
-        float mouseY = (float) ((height + 75 - 50) - mouse.getY());
-        float f = (float)Math.atan(mouseX / 40.0F);
-        float g = (float)Math.atan(mouseY / 40.0F);
+
+        double width = client.getWindow().getScaledWidth();
+        double height = client.getWindow().getScaledHeight();
+        float mouseX = (float)(client.mouse.getX() * width / (double)client.getWindow().getWidth());
+        float mouseY = (float)(client.mouse.getY() * height / (double)client.getWindow().getHeight());
+        double posX = mouseX - width/2 + 63;
+        double posY = mouseY - height/2;
+        float f = (float)Math.atan(-posX / 40.0F);
+        float g = (float)Math.atan(-posY / 40.0F);
+
         MatrixStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.push();
         matrixStack.translate(x, y, 1050.0);
