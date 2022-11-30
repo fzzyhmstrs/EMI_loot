@@ -63,17 +63,7 @@ public class LocationPredicateParser {
 
         LightPredicate light = ((LocationPredicateAccessor)predicate).getLight();
         if (!light.equals(LightPredicate.ANY)) {
-            NumberRange.IntRange range = ((LightPredicateAccessor) light).getRange();
-            if (range.equals(NumberRange.IntRange.ANY)) {
-                return LText.translatable("emi_loot.location_predicate.light_any");
-            }
-            Integer min = range.getMin();
-            Integer max = range.getMax();
-            if (Objects.equals(min, max) && min != null) {
-                return LText.translatable("emi_loot.location_predicate.light", min);
-            } else {
-                return LText.translatable("emi_loot.location_predicate.light_2", min, max);
-            }
+            return LightPredicateParser.parseLightPredicate(light);
         }
 
         BlockPredicate block = ((LocationPredicateAccessor)predicate).getBlock();
