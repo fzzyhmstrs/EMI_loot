@@ -10,7 +10,7 @@ import net.minecraft.util.registry.Registry;
 public class EntityTypePredicateParser{
 
     public static Text parseEntityTypePredicate(EntityTypePredicate predicate){
-         String jsonString = typePredicate.toJson().getAsString();
+         String jsonString = predicate.toJson().getAsString();
         if (jsonString.startsWith("#")) {
             return LText.translatable("emi_loot.entity_predicate.type_tag", jsonString);
         } else {
