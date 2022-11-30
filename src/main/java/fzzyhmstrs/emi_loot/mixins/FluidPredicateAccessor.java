@@ -1,6 +1,5 @@
 package fzzyhmstrs.emi_loot.mixins;
 
-import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.StatePredicate;
@@ -14,7 +13,7 @@ import java.util.Set;
 public interface FluidPredicateAccessor {
 
     @Accessor(value = "tag")
-    TagKey<Block> getTag();
+    TagKey<Fluid> getTag();
 
     @Accessor(value = "fluid")
     Fluid getFluid();

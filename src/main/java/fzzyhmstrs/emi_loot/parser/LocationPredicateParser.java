@@ -1,11 +1,16 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.mixins.FluidPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LightPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LocationPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.predicate.BlockPredicate;
+import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.LightPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -69,6 +74,16 @@ public class LocationPredicateParser {
             } else {
                 return LText.translatable("emi_loot.location_predicate.light_2", min, max);
             }
+        }
+
+        BlockPredicate block = ((LocationPredicateAccessor)predicate).getBlock();
+        if (!block.equals(BlockPredicate.ANY)) {
+            return BlockPredicateParser.parseBlockPredicate(block);
+        }
+
+        FluidPredicate fluid = ((LocationPredicateAccessor)predicate).getFluid();
+        if (!fluid.equals(FluidPredicate.ANY)){
+            return FluidPredicateParser.parseFluidPredicate(fluid);
         }
 
         return LText.empty();
