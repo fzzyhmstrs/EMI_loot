@@ -74,32 +74,7 @@ public class ItemPredicateParser {
             List<EnchantmentPredicate> list = new LinkedList<>();
             list.addAll(Arrays.stream(enchants).toList());
             list.addAll(Arrays.stream(storedEnchants).toList());
-            int size = list.size();
-            if (size == 1){
-                Enchantment enchant = ((EnchantmentPredicateAccessor)list.get(0)).getEnchantment();
-                return LText.translatable("emi_loot.item_predicate.enchant",enchant.getName(1).getString());
-            }
-            if (size == 2){
-                Enchantment enchant1 = ((EnchantmentPredicateAccessor)list.get(0)).getEnchantment();
-                Enchantment enchant2 = ((EnchantmentPredicateAccessor)list.get(1)).getEnchantment();
-                return LText.translatable("emi_loot.item_predicate.enchant_2",enchant1.getName(1).getString(),enchant2.getName(1).getString());
-            }
-            if (size > 2){
-                MutableText finalText = LText.empty();
-                for (int i = 0; i < size; i++){
-                    Enchantment enchant = ((EnchantmentPredicateAccessor)list.get(i)).getEnchantment();
-                    if (i == 0){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.enchant_3a", enchant.getName(1).getString()));
-                    } else if (i == size - 2){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.enchant_3c", enchant.getName(1).getString()));
-                    } else if (i == size - 1){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.enchant_3d", enchant.getName(1).getString()));
-                    } else {
-                        finalText.append(LText.translatable("emi_loot.item_predicate.enchant_3b",enchant.getName(1).getString()));
-                    }
-                }
-                return finalText;
-            }
+            return EnchantmentPredicateParser.parseEnchantmentPredicates(list);
         }
         return LText.translatable("emi_loot.item_predicate.empty");
     }
