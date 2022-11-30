@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 public class EntityFlagsPredicateParser{
 
     public static Text parseEntityFlagsPredicate(EntityFlagsPredicate predicate){
-        Boolean isOnFire = ((EntityFlagsPredicateAccessor)entityFlagsPredicate).getIsOnFire();
+        Boolean isOnFire = ((EntityFlagsPredicateAccessor)predicate).getIsOnFire();
         if (isOnFire != null){
             if (isOnFire){
                 return LText.translatable("emi_loot.entity_predicate.fire_true");
@@ -17,7 +17,7 @@ public class EntityFlagsPredicateParser{
             }
         }
 
-        Boolean isSneaking = ((EntityFlagsPredicateAccessor)entityFlagsPredicate).getIsSneaking();
+        Boolean isSneaking = ((EntityFlagsPredicateAccessor)predicate).getIsSneaking();
         if (isSneaking != null){
             if (isSneaking){
                 return LText.translatable("emi_loot.entity_predicate.sneak_true");
@@ -26,7 +26,7 @@ public class EntityFlagsPredicateParser{
             }
         }
 
-        Boolean isSprinting = ((EntityFlagsPredicateAccessor)entityFlagsPredicate).getIsSprinting();
+        Boolean isSprinting = ((EntityFlagsPredicateAccessor)predicate).getIsSprinting();
         if (isSprinting != null){
             if (isSprinting){
                 return LText.translatable("emi_loot.entity_predicate.sprint_true");
@@ -35,7 +35,7 @@ public class EntityFlagsPredicateParser{
             }
         }
 
-        Boolean isSwimming = ((EntityFlagsPredicateAccessor)entityFlagsPredicate).getIsSwimming();
+        Boolean isSwimming = ((EntityFlagsPredicateAccessor)predicate).getIsSwimming();
         if (isSwimming != null){
             if (isSwimming){
                 return LText.translatable("emi_loot.entity_predicate.swim_true");
@@ -44,7 +44,7 @@ public class EntityFlagsPredicateParser{
             }
         }
 
-        Boolean isBaby = ((EntityFlagsPredicateAccessor)entityFlagsPredicate).getIsBaby();
+        Boolean isBaby = ((EntityFlagsPredicateAccessor)predicate).getIsBaby();
         if (isBaby != null){
             if (isBaby){
                 return LText.translatable("emi_loot.entity_predicate.baby_true");
