@@ -1,5 +1,12 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.mixins.LightPredicateAccessor;
+import fzzyhmstrs.emi_loot.util.LText;
+import net.minecraft.predicate.LightPredicate;
+import net.minecraft.predicate.NumberRange;
+import net.minecraft.text.Text;
+
+import java.util.Objects;
 
 public class LightPredicateParser{
 
