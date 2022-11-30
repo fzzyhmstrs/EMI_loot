@@ -17,7 +17,7 @@ public class EMILoot implements ModInitializer {
     public static String MOD_ID = "emi_loot";
     public static Random emiLootRandom = new Random(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
-    private static Gson gson = GsonBuilder().create();
+    private static Gson gson = GsonBuilder().setPrettyPrinting().create();
     public static EmiLootConfig config = readOrCreate();
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
