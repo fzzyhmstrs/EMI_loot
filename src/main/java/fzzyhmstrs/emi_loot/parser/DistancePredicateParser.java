@@ -28,7 +28,7 @@ public class DistancePredicateParser{
         if (!z.equals(NumberRange.FloatRange.ANY)){
             return LText.translatable("emi_loot.entity_predicate.distance_z",z.getMin(),z.getMax());
         }
-    
+        return LText.empty();
     }
 
 }
