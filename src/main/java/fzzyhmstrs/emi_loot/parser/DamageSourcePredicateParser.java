@@ -89,9 +89,8 @@ public class DamageSourcePredicateParser {
         }
 
         EntityPredicate directPredicate = ((DamageSourcePredicateAccessor)predicate).getDirectEntity();
-        Text directText = EntityPredicateParser.parseEntityPredicate(directPredicate);
-        if (!directText.equals(LText.empty())){
-            return directText;
+        if (!directPredicate.equals(EntityPredicate.ANY){
+            return EntityPredicateParser.parseEntityPredicate(directPredicate);
         }
 
         return LText.empty();
