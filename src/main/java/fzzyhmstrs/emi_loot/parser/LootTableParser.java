@@ -3,8 +3,8 @@ package fzzyhmstrs.emi_loot.parser;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
 import fzzyhmstrs.emi_loot.server.*;
-import fzzyhmstrs.emi_loot.util.TextKey;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -80,6 +80,7 @@ public class LootTableParser {
                 mobSenders.put(mobTableId,parseMobLootTable(mobTable,mobTableId,mobId));
             }
         });
+        System.out.println("finished parsing loot tables");
     }
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id){
