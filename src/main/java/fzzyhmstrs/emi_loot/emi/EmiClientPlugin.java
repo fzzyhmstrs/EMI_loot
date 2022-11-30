@@ -11,7 +11,6 @@ import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class EmiClientPlugin implements EmiPlugin {
     private static final Identifier LOOT_ID = new Identifier(EMILoot.MOD_ID,"chest_loot");

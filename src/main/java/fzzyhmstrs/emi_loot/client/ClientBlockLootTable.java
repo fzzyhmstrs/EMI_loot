@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
