@@ -55,34 +55,33 @@ public class ClientBlockLootTable implements LootReceiver {
     }
 
     public void build(World world, Block block){
-        int index = -1;
+        String tool = "";
         if (block.getRegistryEntry().isIn(BlockTags.PICKAXE_MINEABLE)){
-            index = 42;
+            tool = "pickaxe";
         } else if (block.getRegistryEntry().isIn(BlockTags.AXE_MINEABLE)){
-            index = 47;
+            tool = "axe";
         } else if (block.getRegistryEntry().isIn(BlockTags.SHOVEL_MINEABLE)){
-            index = 52;
+            tool = "shovel";
         } else if (block.getRegistryEntry().isIn(BlockTags.HOE_MINEABLE)){
-            index = 57;
+            tool = "hoe";
         }
         List<Pair<Integer,Text>> toolNeededList = new LinkedList<>();
-        if (index > -1){
-            MutableText typeText = LText.translatable("emi_loot.needed_tool_"+index);
-            MutableText levelText;
+        if (!Objects.equals(tool,"")){
+            String type = "";
             if (block.getRegistryEntry().isIn(BlockTags.NEEDS_STONE_TOOL)){
-                index += 1;
-                levelText = LText.translatable("emi_loot.needed_tool_stone");
+                type = "stone";
             } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_IRON_TOOL)){
-                index += 2;
-                levelText = LText.translatable("emi_loot.needed_tool_iron");
+                type = "iron";
             } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_DIAMOND_TOOL)){
-                index += 3;
-                levelText = LText.translatable("emi_loot.needed_tool_diamond");
+                type = "diamond";
             } else{
-                levelText = LText.translatable("emi_loot.needed_tool_any");
+                type = wood;
             }
-            Text toolText = LText.translatable("emi_loot.needed_tool",levelText.getString(),typeText.getString());
-            toolNeededList.add(new Pair<>(index,toolText));
+            String keyString = "emi_loot." + tool + "." + type;
+            int keyIndex = TextKey.getIndex(keyString);
+            if (keyIndex != -1){
+                toolNeededList.add(new Pair<>(keyIndex,LText.translatable(keyString)));
+            }
         }
 
         Map<List<Pair<Integer,Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
