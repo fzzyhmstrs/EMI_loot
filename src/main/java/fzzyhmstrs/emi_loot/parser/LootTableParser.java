@@ -485,7 +485,15 @@ public class LootTableParser {
             if (parentIsAlternative) return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.survives_explosion")));
             return Collections.singletonList(new LootConditionResult(TextKey.empty()));
         } else if (type == LootConditionTypes.BLOCK_STATE_PROPERTY){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.blockstate")));
+            MutableText bsText;
+            Block block = ((BlockStatePropertiesLootConditionAccessor)condition).getBlock();
+            if (block != null){
+                bsText = LText.translatable("emi_loot.condition.blockstate.block",block.getName().getString());
+            } else {
+                StatePredicate predicate = ((BlockStatePropertiesLootConditionAccessor)condition).getProperties();
+                bsText = StatePredicateParser.parseStatePredicate(predicate);
+            }
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.blockstate",bsText.getString())));
         } else if (type == LootConditionTypes.TABLE_BONUS){
             Enchantment enchant = ((TableBonusLootConditionAccessor)condition).getEnchantment();
             String name = enchant.getName(1).getString();
@@ -553,7 +561,9 @@ public class LootTableParser {
             Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.damage_source",damageText.getString())));
         } else if (type == LootConditionTypes.LOCATION_CHECK){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location")));
+            LocationPredicate predicate = ((LocationCheckLootConditionAccessor)condition).getPredicate();
+            MutableText locText = LocationPredicateParser.parseLocationPredicate(predicate);
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));
         } else if (type == LootConditionTypes.ENTITY_PROPERTIES){
             LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
             EntityPredicate predicate = ((EntityPropertiesLootConditionAccessor)condition).getPredicate();
