@@ -28,12 +28,8 @@ public class BlockPredicateParser {
         Set<Block> blocks = ((BlockPredicateAccessor)predicate).getBlocks();
         if (blocks != null && !blocks.isEmpty()){
             List<MutableText> list = blocks.stream().map((Block::getName)).toList();
-            int size = list.size();
-            if (size == 1){
-                return LText.translatable("emi_loot.block_predicate.list_1",list.get(0));
-            } else {
-                return ListProcessors.buildList(list,0,"emi_loot.block_predicate.list_2","emi_loot.block_predicate.list_3");
-            }
+            return LText.translatable("emi_loot.block_predicate.list_1", ListProcessors.buildOrList(list));
+            
         }
 
         NbtPredicate nbt = ((BlockPredicateAccessor)predicate).getNbt();
