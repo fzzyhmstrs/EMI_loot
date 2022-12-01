@@ -47,7 +47,8 @@
     "PlayerPredicateAccessor",
     "SlimePredicateAccessor",
     "EntityPropertiesLootConditionAccessor",
-    "BlockStatePropertyLootConditionAccessor"
+    "BlockStatePropertyLootConditionAccessor",
+    "LocationCheckLootConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
