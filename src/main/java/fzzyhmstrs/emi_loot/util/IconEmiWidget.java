@@ -18,8 +18,7 @@ import java.util.List;
 public class IconEmiWidget extends Widget {
 
     public IconEmiWidget(int x, int y, int keyIndex, Text text){
-        this.u = TextKey.keySpriteOffsetMap.getOrDefault(keyIndex,new Pair<>(0,0)).getLeft() * 8;
-        this.v = TextKey.keySpriteOffsetMap.getOrDefault(keyIndex,new Pair<>(0,0)).getRight() * 8;
+        this.tex = TextKey.getSpriteId(keyIndex);
         this.x = x;
         this.y = y;
         this.bounds = new Bounds(x,y,12,12);
@@ -27,9 +26,9 @@ public class IconEmiWidget extends Widget {
     }
 
     static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_frame.png");
-    private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_sprites.png");
+    //private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_sprites.png");
 
-    private final int u, v;
+    private final Identifier tex;
     private int x, y;
     private final Bounds bounds;
     private final List<TooltipComponent> tooltipText;
@@ -54,7 +53,7 @@ public class IconEmiWidget extends Widget {
         DrawableHelper.drawTexture(matrices, x, y, 12, 12, 0, 0, 12, 12, 64, 16);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.setShaderTexture(0, SPRITE_ID);
+        RenderSystem.setShaderTexture(0, tex);
         DrawableHelper.drawTexture(matrices, x + 2, y + 2, 8, 8, u, v, 8, 8, 64, 64);
     }
 }
