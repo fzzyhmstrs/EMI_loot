@@ -71,7 +71,7 @@ public class EntityEffectPredicateParser{
         
         }
         if (!list.isEmpty()){
-            return LText.translatable("emi_loot.entity_predicate.effect_1", ListProcessors.buildList(list,0,"emi_loot.block_predicate.list_2","emi_loot.block_predicate.list_3"));
+            return LText.translatable("emi_loot.entity_predicate.effect_1", ListProcessors.buildAndList(list));
         }
         return LText.empty();
     }
