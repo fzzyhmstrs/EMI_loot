@@ -19,6 +19,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
+ipmort net.minecraft.loot.context.LootContext.EntityTarget;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.AlternativeEntry;
@@ -554,7 +555,15 @@ public class LootTableParser {
         } else if (type == LootConditionTypes.LOCATION_CHECK){
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location")));
         } else if (type == LootConditionTypes.ENTITY_PROPERTIES){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.entity_props")));
+            LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
+            EntityPredicate predicate = ((EntityPropertiesLootConditionAccessor)condition).getPredicate();
+            MutableText propText;
+            if (entity == LootContext.EntityTarget.THIS){
+                propText = LText.translatable("emi_loot.entity_predicate.entity_this", EntityPredicateParser.parseEntityPredicate(predicate));
+            } else {
+                propText = LText.translatable("emi_loot.entity_predicate.entity_killer", EntityPredicateParser.parseEntityPredicate(predicate));
+            }
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.entity_props",propText.getString())));
         } else if (type == LootConditionTypes.MATCH_TOOL){
             ItemPredicate predicate = ((MatchToolLootConditionAccessor)condition).getPredicate();
             Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
