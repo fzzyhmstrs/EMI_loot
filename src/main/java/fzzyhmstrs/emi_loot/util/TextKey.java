@@ -22,6 +22,7 @@ public record TextKey(int index, List<String> args){
     static Map<Integer,String> keyReverseMap;
     static Map<Integer, Function<TextKey, Text>> keyTextBuilderMap;
     static Map<Integer, Identifier> keySpriteIdMap;
+    static int curDynamicIndex = 64;
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
 
     static{
@@ -94,6 +95,26 @@ public record TextKey(int index, List<String> args){
         keyReverseMap.put(index,key);
         keyTextBuilderMap.put(index,function);
         keySpriteIdMap.put(index, spriteId);
+    }
+    
+    public static void register(String key, Int args, Identifier sprite){
+        if (keyMap.containsKey(key)) throw new IllegalArgumentException("Text key [" + key + "] already registered!");
+        if (!sprite.toString().contains(".png")) throw new IllegalArgumentException("Text key [" + key + "] registered with sprite identifier [" + sprite + "] that isn't a png!);
+        int index = curDynamicIndex + 1;
+        curDynamicIndex++;
+        switch (args){
+            case 0:
+                mapBuilder(index,key,(tk) -> getBasicText(index),sprite);
+                break;
+            case 1:
+                mapBuilder(index,key,(tk) -> getOneArgText(index, tk),sprite);
+                break;
+            case 2:
+                mapBuilder(index,key,(tk) -> getTwoArgText(index, tk),sprite);
+                break;
+            default:
+                mapBuilder(index,key,(tk) -> getAlternates3Text(index, tk),sprite);
+        }
     }
 
     private static Text getBasicText(int index){
@@ -214,6 +235,8 @@ public record TextKey(int index, List<String> args){
         Text text = keyTextBuilderMap.getOrDefault(this.index,DEFAULT_FUNCTION).apply(this);
         return new TextKeyResult(text,finalStacks);
     }
+                                                                                    
+    public record TextKeyResult(Text text,List<ItemStack> stacks){}
 
     public static TextKey fromBuf(PacketByteBuf buf){
         int key = buf.readByte();
@@ -251,6 +274,4 @@ public record TextKey(int index, List<String> args){
     public int hashCode() {
         return Objects.hash(index, args);
     }
-    public record TextKeyResult(Text text,List<ItemStack> stacks){}
-
 }
