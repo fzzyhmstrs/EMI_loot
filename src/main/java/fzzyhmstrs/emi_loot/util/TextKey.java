@@ -83,9 +83,10 @@ public record TextKey(int index, List<String> args){
         mapBuilder(59,"emi_loot.hoe.iron",(key)-> getBasicText(59), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_iron.png"));
         mapBuilder(60,"emi_loot.hoe.diamond",(key)-> getBasicText(60), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
         mapBuilder(61,"emi_loot.hoe.netherite",(key)-> getBasicText(61), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
-        for (int index = 42; index < 64; index++){
-            keySpriteOffsetMap.put(index, new Pair<>(index % 8, index / 8));
-        }
+        //Direct drops
+        mapBuilder(62,"emi_loot.direct_drops",(key)-> getBasicText(62), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
+        //No conditions
+        mapBuilder(63,"emi_loot.no_conditions",(key)-> getBasicText(63), new Identifier(EMILoot.MOD_ID,"textures/gui/empty.png"));
     }
 
     private static void mapBuilder(int index, String key, Function<TextKey, Text> function, Identifier spriteId){
