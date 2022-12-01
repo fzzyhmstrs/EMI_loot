@@ -45,7 +45,8 @@
     "LightningBoltPredicateAccessor",
     "FishingHookPredicateAccessor",
     "PlayerPredicateAccessor",
-    "SlimePredicateAccessor"
+    "SlimePredicateAccessor",
+    "EntityPropertiesLootConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
