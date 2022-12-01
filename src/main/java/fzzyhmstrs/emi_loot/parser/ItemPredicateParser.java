@@ -22,34 +22,13 @@ public class ItemPredicateParser {
         if (tag != null){
             return LText.translatable("emi_loot.item_predicate.tag",tag.id());
         }
+        
         Set<Item> items = ((ItemPredicateAccessor)predicate).getItems();
-        if (items != null){
-            int size = items.size();
-            if (size == 1){
-                return LText.translatable("emi_loot.item_predicate.items",items.stream().toList().get(0).getName());
-            }
-            if (size == 2){
-                List<Item> list = items.stream().toList();
-                return LText.translatable("emi_loot.item_predicate.items_2",list.get(0).getName(),list.get(1).getName());
-            }
-            if (size > 2){
-                List<Item> list = items.stream().toList();
-                MutableText finalText = LText.empty();
-                for (int i = 0; i < size; i++){
-                    Item item = list.get(i);
-                    if (i == 0){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.items_3a", item.getName().getString()));
-                    } else if (i == size - 2){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.items_3c", item.getName().getString()));
-                    } else if (i == size - 1){
-                        finalText.append(LText.translatable("emi_loot.item_predicate.items_3d", item.getName().getString()));
-                    } else {
-                        finalText.append(LText.translatable("emi_loot.item_predicate.items_3b", item.getName().getString()));
-                    }
-                }
-                return finalText;
-            }
+        if (items != null && !items.isEmpty()){
+            List<MutableText> list = items.stream().map((Item::getName)).toList();
+            return LText.translatable("emi_loot.item_predicate.items", ListProcessors.buildOrList(list));
         }
+        
         NumberRange.IntRange count = ((ItemPredicateAccessor)predicate).getCount();
         if (count != NumberRange.IntRange.ANY){
             Integer max = count.getMax();
@@ -58,6 +37,7 @@ public class ItemPredicateParser {
             int finalMin = min != null ? min : 0;
             return LText.translatable("emi_loot.item_predicate.count", Integer.toString(finalMin), Integer.toString(finalMax));
         }
+        
         NumberRange.IntRange durability = ((ItemPredicateAccessor)predicate).getDurability();
         if (durability != NumberRange.IntRange.ANY){
             Integer max = durability.getMax();
@@ -66,6 +46,7 @@ public class ItemPredicateParser {
             int finalMin = min != null ? min : 0;
             return LText.translatable("emi_loot.item_predicate.durability", Integer.toString(finalMin), Integer.toString(finalMax));
         }
+        
         EnchantmentPredicate[] enchants = ((ItemPredicateAccessor)predicate).getEnchantments();
         EnchantmentPredicate[] storedEnchants = ((ItemPredicateAccessor)predicate).getStoredEnchantments();
         if (enchants.length + storedEnchants.length > 0){
