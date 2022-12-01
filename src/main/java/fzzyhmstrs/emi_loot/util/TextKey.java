@@ -54,7 +54,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(32,"emi_loot.condition.chance",(key)-> getOneArgText(32, key));
         mapBuilder(33,"emi_loot.condition.chance_looting",(key)-> getTwoArgText(33, key));
         mapBuilder(34,"emi_loot.condition.damage_source",(key)-> getOneArgText(34, key));
-        mapBuilder(35,"emi_loot.condition.location",(key)-> getBasicText(35));
+        mapBuilder(35,"emi_loot.condition.location",(key)-> getOneArgText(35, key));
         mapBuilder(36,"emi_loot.condition.entity_props",(key)-> getOneArgText(36, key));
         mapBuilder(37,"emi_loot.condition.match_tool",(key)-> getOneArgText(37, key));
         for (int index = 42; index < 64; index++){
