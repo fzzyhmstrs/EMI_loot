@@ -89,7 +89,7 @@ public class DamageSourcePredicateParser {
         }
 
         EntityPredicate directPredicate = ((DamageSourcePredicateAccessor)predicate).getDirectEntity();
-        if (!directPredicate.equals(EntityPredicate.ANY){
+        if (!directPredicate.equals(EntityPredicate.ANY)){
             return EntityPredicateParser.parseEntityPredicate(directPredicate);
         }
 

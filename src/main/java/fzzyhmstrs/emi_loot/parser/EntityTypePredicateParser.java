@@ -2,7 +2,7 @@ package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.entity.EntityType;
-import net.minecraft.predicate.entity.*;
+import net.minecraft.predicate.entity.EntityTypePredicate;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

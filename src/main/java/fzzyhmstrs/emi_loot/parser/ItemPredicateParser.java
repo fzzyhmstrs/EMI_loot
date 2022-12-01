@@ -1,9 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
-import fzzyhmstrs.emi_loot.mixins.EnchantmentPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.ItemPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.EnchantmentPredicate;

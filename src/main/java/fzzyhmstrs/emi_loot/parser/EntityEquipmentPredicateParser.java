@@ -1,39 +1,40 @@
 package fzzyhmstrs.emi_loot.parser;
 
-import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.mixins.EntityEquipmentPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
+import net.minecraft.predicate.entity.EntityEquipmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.text.Text;
 
 public class EntityEquipmentPredicateParser{
 
     public static Text parseEntityEquipmentPredicate(EntityEquipmentPredicate predicate){
-        ItemPredicate head = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getHead();
+        ItemPredicate head = ((EntityEquipmentPredicateAccessor)predicate).getHead();
         if (!head.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(head);
         }
 
-        ItemPredicate chest = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getChest();
+        ItemPredicate chest = ((EntityEquipmentPredicateAccessor)predicate).getChest();
         if (!chest.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(chest);
         }
 
-        ItemPredicate legs = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getLegs();
+        ItemPredicate legs = ((EntityEquipmentPredicateAccessor)predicate).getLegs();
         if (!legs.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(legs);
         }
 
-        ItemPredicate feet = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getFeet();
+        ItemPredicate feet = ((EntityEquipmentPredicateAccessor)predicate).getFeet();
         if (!feet.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(feet);
         }
 
-        ItemPredicate mainhand = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getMainhand();
+        ItemPredicate mainhand = ((EntityEquipmentPredicateAccessor)predicate).getMainhand();
         if (!mainhand.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(mainhand);
         }
 
-        ItemPredicate offhand = ((EntityEquipmentPredicateAccessor)entityEquipmentPredicate).getOffhand();
+        ItemPredicate offhand = ((EntityEquipmentPredicateAccessor)predicate).getOffhand();
         if (!offhand.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(offhand);
         }

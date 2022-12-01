@@ -1,7 +1,10 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -10,13 +13,17 @@ import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 
+import java.io.*;
+import java.util.Arrays;
+
 public class EMILoot implements ModInitializer {
 
     public static boolean DEBUG = false;
     public static String MOD_ID = "emi_loot";
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
-    private static Gson gson = GsonBuilder().setPrettyPrinting().create();
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     public static EmiLootConfig config = readOrCreate();
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
@@ -36,7 +43,7 @@ public class EMILoot implements ModInitializer {
     }
     
     private static EmiLootConfig readOrCreate(){
-        File dir = FabricLoader.getInstance().configDir.toFile();
+        File dir = FabricLoader.getInstance().getConfigDir().toFile();
         
         if (!dir.exists() && !dir.mkdirs()) {
             System.out.println("EMI Loot could not find or create config directory, using default configs");
@@ -47,17 +54,19 @@ public class EMILoot implements ModInitializer {
         
         try{
             if (f.exists()){
-                return gson.fromJson(f.readLines().joinToString(""),EmiLootConfig.class);
+                return gson.fromJson(new InputStreamReader(new FileInputStream(f)),EmiLootConfig.class);
             } else if (!f.createNewFile()){
                 throw new UnsupportedOperationException("couldn't generate config file");
             } else {
-                f.writeText(gson.toJson(new EmiLootConfig()));
+                FileWriter fw = new FileWriter(f);
+                fw.write(gson.toJson(new EmiLootConfig()));
             }
         } catch(Exception e){
-            System.out.println("Emi Loot failed to create or read it's config file!);
-            System.out.println(e.getStackTrace());
-            return EmiLootConfig();
+            System.out.println("Emi Loot failed to create or read it's config file!");
+            System.out.println(Arrays.toString(e.getStackTrace()));
+            return new EmiLootConfig();
         }
+        return new EmiLootConfig();
     }
     
     public static class EmiLootConfig{
