@@ -24,13 +24,14 @@ public record TextKey(int index, List<String> args){
     static Map<Integer, Identifier> keySpriteIdMap;
     static int curDynamicIndex = 64;
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
+    static final Identifier EMPTY = new Identifier(EMILoot.MOD_ID,"textures/gui/empty.png");
 
     static{
         keyMap = new HashMap<>();
         keyReverseMap = new HashMap<>();
         keyTextBuilderMap = new HashMap<>();
         keySpriteOffsetMap = new HashMap<>();
-        mapBuilder(0,"emi_loot.function.empty",(key)->LText.empty(), new Identifier(EMILoot.MOD_ID,"textures/gui/empty.png"));
+        mapBuilder(0,"emi_loot.function.empty",(key)->LText.empty(), EMPTY);
         mapBuilder(1,"emi_loot.function.bonus",(key)-> getOneArgText(1, key), new Identifier(EMILoot.MOD_ID,"textures/gui/bonus.png"));
         mapBuilder(2,"emi_loot.function.potion",(key) -> getOneArgText(2, key), new Identifier(EMILoot.MOD_ID,"textures/gui/potion.png"));
         mapBuilder(3,"emi_loot.function.set_count_add",(key)-> getBasicText(3), new Identifier(EMILoot.MOD_ID,"textures/gui/set_count_add.png"));
@@ -87,7 +88,7 @@ public record TextKey(int index, List<String> args){
         //Direct drops
         mapBuilder(62,"emi_loot.direct_drops",(key)-> getBasicText(62), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
         //No conditions
-        mapBuilder(63,"emi_loot.no_conditions",(key)-> getBasicText(63), new Identifier(EMILoot.MOD_ID,"textures/gui/empty.png"));
+        mapBuilder(63,"emi_loot.no_conditions",(key)-> getBasicText(63), EMPTY);
     }
 
     private static void mapBuilder(int index, String key, Function<TextKey, Text> function, Identifier spriteId){
@@ -187,8 +188,12 @@ public record TextKey(int index, List<String> args){
         return index != 0;
     }
     
-    public static getIndex(String key){
+    public static int getIndex(String key){
         return keyMap.getOrDefault(key,-1)
+    }
+                                                                                    
+    public static Identifier getSpriteId(int index){
+        return keySpriteIdMap.getOrDefault(index,EMPTY)
     }
 
     public static TextKey empty(){
