@@ -1,8 +1,8 @@
 package fzzyhmstrs.emi_loot.parser;
 
-import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.mixins.EntityFlagsPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
-import net.minecraft.predicate.entity.*;
+import net.minecraft.predicate.entity.EntityFlagsPredicate;
 import net.minecraft.text.Text;
 
 public class EntityFlagsPredicateParser{

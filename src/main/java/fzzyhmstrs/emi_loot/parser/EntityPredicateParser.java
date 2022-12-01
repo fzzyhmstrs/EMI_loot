@@ -1,18 +1,10 @@
 package fzzyhmstrs.emi_loot.parser;
 
-import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.mixins.EntityPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.predicate.NbtPredicate;
-import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.*;
-import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import java.util.Map;
 
 public class EntityPredicateParser {
 

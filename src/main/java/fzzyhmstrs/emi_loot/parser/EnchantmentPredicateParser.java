@@ -37,6 +37,7 @@ public class EnchantmentPredicateParser{
                 }
             }
             return finalText;
-        }    
+        }
+        return LText.empty();
     }
 }

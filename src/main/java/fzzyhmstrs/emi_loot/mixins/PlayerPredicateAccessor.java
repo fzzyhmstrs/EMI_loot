@@ -15,6 +15,9 @@ import java.util.Map;
 @Mixin(PlayerPredicate.class)
 public interface PlayerPredicateAccessor {
 
+    @Accessor(value = "experienceLevel")
+    NumberRange.IntRange getExperienceLevel();
+
     @Accessor(value = "gameMode")
     GameMode getGameMode();
 

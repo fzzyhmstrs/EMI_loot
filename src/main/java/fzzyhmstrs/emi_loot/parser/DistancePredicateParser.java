@@ -1,9 +1,10 @@
 package fzzyhmstrs.emi_loot.parser;
 
-import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.mixins.DistancePredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.NumberRange;
-import net.minecraft.predicate.entity.*;
+import net.minecraft.predicate.entity.DistancePredicate;
+import net.minecraft.text.Text;
 
 public class DistancePredicateParser{
 
