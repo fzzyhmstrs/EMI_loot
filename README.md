@@ -20,10 +20,10 @@
 |Starting impl of basic config|In work|0.4.0|
 |Check mob/block table percentages actually right|Not started|0.4.0|
 |Implement EntityPredicate Parser|In work|0.4.0|
+|Update icon widget impl to handle custom sprites|In Work|0.4.0|
 |Implement other missing parsers as needed|In work|0.4.0?|
 |Optimize packet sending size/number|Not started|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
-|Update icon widget impl to handle custom sprites|Not started|?.?.?|
 |Impl resource-driven mob offsetting overrides|Not started|?.?.?|
 |Impl fishing loot?|Not started|?.?.?|
 |Impl handler for code-based mob drops (nether star etc)|Not started|?.?.?|
