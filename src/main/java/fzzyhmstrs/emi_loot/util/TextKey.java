@@ -44,7 +44,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(13,"emi_loot.function.copy_state",(key)-> getBasicText(13));
         mapBuilder(14,"emi_loot.function.decay",(key)-> getBasicText(14));
         mapBuilder(24,"emi_loot.condition.survives_explosion",(key)-> getBasicText(24));
-        mapBuilder(25,"emi_loot.condition.blockstate",(key)-> getBasicText(25));
+        mapBuilder(25,"emi_loot.condition.blockstate",(key)-> getOneArgText(25, key));
         mapBuilder(26,"emi_loot.condition.table_bonus",(key)-> getOneArgText(26, key));
         mapBuilder(27,"emi_loot.condition.invert",(key)-> getInvertedText(27, key));
         mapBuilder(28,"emi_loot.condition.alternates",(key)-> getOneArgText(28, key));
