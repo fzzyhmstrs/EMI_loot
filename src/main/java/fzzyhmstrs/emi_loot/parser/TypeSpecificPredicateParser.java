@@ -119,7 +119,8 @@ public class TypeSpecificPredicateParser {
             if (!list.isEmpty()) {
                 return LText.translatable(
                         "emi_loot.entity_predicate.type_specific.player",
-                        ListProcessors.buildList(list, 0, "emi_loot.entity_predicate.type_specific.player.stats_2", "emi_loot.entity_predicate.type_specific.player.stats_3"));
+                        ListProcessors.buildAndList(list)
+                );
             }
         }
 
@@ -138,7 +139,8 @@ public class TypeSpecificPredicateParser {
             if (!list.isEmpty()){
                 return LText.translatable(
                         "emi_loot.entity_predicate.type_specific.player",
-                        ListProcessors.buildList(list, 0, "emi_loot.entity_predicate.type_specific.player.stats_2", "emi_loot.entity_predicate.type_specific.player.stats_3"));
+                        ListProcessors.buildAndList(list)
+                );
             }
         }
 
