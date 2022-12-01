@@ -46,7 +46,8 @@
     "FishingHookPredicateAccessor",
     "PlayerPredicateAccessor",
     "SlimePredicateAccessor",
-    "EntityPropertiesLootConditionAccessor"
+    "EntityPropertiesLootConditionAccessor",
+    "BlockStatePropertyLootConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
