@@ -114,7 +114,7 @@ public class ChestLootRecipe implements EmiRecipe {
         final int finalRowHeight;
         if (widgets.getHeight() < getDisplayHeight()){
             titleSpace = 9;
-            finalRowHeight = (widgets.getHeight() - titleSpace)/((int) Math.ceil(loot.items.size()/4.0));
+            finalRowHeight = (widgets.getHeight() - titleSpace) / ((int) Math.ceil(lootStacksSortedSize / 4.0));
         } else {
             titleSpace = 11;
             finalRowHeight = 19;
