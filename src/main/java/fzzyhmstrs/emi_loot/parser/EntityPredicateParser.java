@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.parser;
 import fzzyhmstrs.emi_loot.mixins.EntityPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.NbtPredicate;
+import net.minecraft.predicate.PlayerPredicate;
 import net.minecraft.predicate.entity.*;
 import net.minecraft.text.Text;
 
@@ -64,9 +65,24 @@ public class EntityPredicateParser {
         }
 
         //Type Specific checks
-        TypeSpecificPredicate typeSpecificPredicate = ((EntityPredicateAccessor)predicate).getTypeSpecific();
+        /*FishingHookPredicate typeSpecificPredicate = ((EntityPredicateAccessor)predicate).getTypeSpecific();
         if (!typeSpecificPredicate.equals(TypeSpecificPredicate.ANY)){
             return TypeSpecificPredicateParser.parseTypeSpecificPredicate(typeSpecificPredicate);
+        }*/
+
+        PlayerPredicate playerPredicate = ((EntityPredicateAccessor)predicate).getPlayer();
+        if (!playerPredicate.equals(PlayerPredicate.ANY)){
+            return TypeSpecificPredicateParser.parsePlayerPredicate(playerPredicate);
+        }
+
+        FishingHookPredicate fishingHookPredicate = ((EntityPredicateAccessor)predicate).getFishingHook();
+        if (!fishingHookPredicate.equals(FishingHookPredicate.ANY)){
+            return TypeSpecificPredicateParser.parseFishingHookPredicate(fishingHookPredicate);
+        }
+
+        LightningBoltPredicate lightningBoltPredicate = ((EntityPredicateAccessor)predicate).getLightningBolt();
+        if (!lightningBoltPredicate.equals(LightningBoltPredicate.ANY)){
+            return TypeSpecificPredicateParser.parseLightningBoltPredicate(lightningBoltPredicate);
         }
 
         //vehicle checks

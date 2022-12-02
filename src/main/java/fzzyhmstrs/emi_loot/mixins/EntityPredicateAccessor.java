@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.mixins;
 
 import net.minecraft.predicate.NbtPredicate;
+import net.minecraft.predicate.PlayerPredicate;
 import net.minecraft.predicate.entity.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -32,8 +33,14 @@ public interface EntityPredicateAccessor {
     @Accessor(value = "equipment")
     EntityEquipmentPredicate getEquipment();
 
-    @Accessor(value = "typeSpecific")
-    TypeSpecificPredicate getTypeSpecific();
+    @Accessor(value = "player")
+    PlayerPredicate getPlayer();
+
+    @Accessor(value = "fishingHook")
+    FishingHookPredicate getFishingHook();
+
+    @Accessor(value = "lightningBolt")
+    LightningBoltPredicate getLightningBolt();
 
     @Accessor(value = "vehicle")
     EntityPredicate getVehicle();

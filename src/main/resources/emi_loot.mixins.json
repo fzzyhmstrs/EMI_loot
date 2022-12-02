@@ -45,7 +45,6 @@
     "LightningBoltPredicateAccessor",
     "FishingHookPredicateAccessor",
     "PlayerPredicateAccessor",
-    "SlimePredicateAccessor",
     "EntityPropertiesLootConditionAccessor",
     "BlockStatePropertyLootConditionAccessor",
     "LocationCheckLootConditionAccessor",

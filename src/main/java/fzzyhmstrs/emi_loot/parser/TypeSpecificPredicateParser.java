@@ -3,12 +3,12 @@ package fzzyhmstrs.emi_loot.parser;
 import fzzyhmstrs.emi_loot.mixins.FishingHookPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LightningBoltPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.PlayerPredicateAccessor;
-import fzzyhmstrs.emi_loot.mixins.SlimePredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.PlayerPredicate;
 import net.minecraft.predicate.entity.*;
 import net.minecraft.stat.Stat;
 import net.minecraft.text.MutableText;
@@ -22,28 +22,6 @@ import java.util.Map;
 
 public class TypeSpecificPredicateParser {
 
-    public static Text parseTypeSpecificPredicate(TypeSpecificPredicate predicate){
-        if (predicate instanceof LightningBoltPredicate){
-            return parseLightningBoltPredicate((LightningBoltPredicate)predicate);
-        }
-        
-        if (predicate instanceof FishingHookPredicate){
-            return parseFishingHookPredicate((FishingHookPredicate)predicate);
-        }
-        
-
-        if (predicate instanceof PlayerPredicate){
-            return parsePlayerPredicate((PlayerPredicate)predicate);
-        }
-
-        if (predicate instanceof SlimePredicate){
-            return parseSlimePredicate((SlimePredicate)predicate);
-        }
-
-        return LText.translatable("emi_loot.entity_predicate.type_specific.any");
-    }
-    
-    
     public static Text parseLightningBoltPredicate(LightningBoltPredicate predicate){
         NumberRange.IntRange blocksSetOnFire = ((LightningBoltPredicateAccessor)predicate).getBlocksSetOnFire();
         if (!blocksSetOnFire.equals(NumberRange.IntRange.ANY)){
@@ -151,10 +129,5 @@ public class TypeSpecificPredicateParser {
                     LText.translatable("emi_loot.entity_predicate.type_specific.player.looking", EntityPredicateParser.parseEntityPredicate(entityPredicate)));
         }
         return LText.translatable("emi_loot.entity_predicate.type_specific.any");
-    }
-    
-    public static Text parseSlimePredicate(SlimePredicate predicate){
-        NumberRange.IntRange size = ((SlimePredicateAccessor)predicate).getSize();
-        return NumberProcessors.processNumberRange(size,"emi_loot.entity_predicate.type_specific.slime","emi_loot.entity_predicate.type_specific.slime_2","");
     }
 }

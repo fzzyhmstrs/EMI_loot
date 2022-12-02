@@ -3,7 +3,7 @@ package fzzyhmstrs.emi_loot.mixins;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.PlayerPredicate;
+import net.minecraft.predicate.PlayerPredicate;
 import net.minecraft.stat.Stat;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameMode;

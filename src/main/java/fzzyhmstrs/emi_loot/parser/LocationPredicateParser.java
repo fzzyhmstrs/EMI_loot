@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 public class LocationPredicateParser {
 
@@ -41,7 +41,7 @@ public class LocationPredicateParser {
             return LText.translatable("emi_loot.location_predicate.biome",biome.getValue().toString());
         }
 
-        RegistryKey<Structure> feature = ((LocationPredicateAccessor)predicate).getFeature();
+        RegistryKey<ConfiguredStructureFeature<?, ?>> feature = ((LocationPredicateAccessor)predicate).getFeature();
         if (feature != null){
             return LText.translatable("emi_loot.location_predicate.structure",feature.getValue().toString());
         }
