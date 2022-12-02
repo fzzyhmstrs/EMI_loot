@@ -5,6 +5,8 @@
 
 Emi Loot is a plugin for [EMI](https://github.com/emilyploszaj/emi) that displays loot drops from chests, mobs, blocks, and more.
 
+Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Thank you!!
+
 ## Known Compatible Loot or Content Mods:
 * [Loot Config](https://www.curseforge.com/minecraft/mc-mods/loot-config)
 * [Dark Loot](https://www.curseforge.com/minecraft/mc-mods/darkloot-better-mob-loot)
