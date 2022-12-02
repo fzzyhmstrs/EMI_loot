@@ -8,8 +8,8 @@ import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 public class EnchantmentPredicateParser{
 
@@ -17,7 +17,7 @@ public class EnchantmentPredicateParser{
         List<MutableText> list2 = new LinkedList<>();
         for (EnchantmentPredicate predicate : list){
             Enchantment enchant = ((EnchantmentPredicateAccessor)predicate).getEnchantment();
-            list2.add(enchant.getName(1));
+            list2.add((MutableText) enchant.getName(1));
         }
         if (!list2.isEmpty()){
             return LText.translatable("emi_loot.item_predicate.enchant", ListProcessors.buildAndList(list2));

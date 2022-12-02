@@ -48,7 +48,13 @@
     "SlimePredicateAccessor",
     "EntityPropertiesLootConditionAccessor",
     "BlockStatePropertyLootConditionAccessor",
-    "LocationCheckLootConditionAccessor"
+    "LocationCheckLootConditionAccessor",
+    "ReferenceLootConditionAccessor",
+    "ScoreLootNumberProviderAccessor",
+    "BoundedIntUnaryOperatorAccessor",
+    "TimeCheckLootConditionAccessor",
+    "ValueCheckLootConditionAccessor",
+    "WeatherCheckLootConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

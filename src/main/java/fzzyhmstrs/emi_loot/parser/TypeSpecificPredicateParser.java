@@ -77,7 +77,7 @@ public class TypeSpecificPredicateParser {
         return inOpenWater ? LText.translatable("emi_loot.entity_predicate.type_specific.fishing_hook_true") : LText.translatable("emi_loot.entity_predicate.type_specific.fishing_hook_false");
     }
 
-    public static parsePlayerPredicate(PlayerPredicate predicate){
+    public static Text parsePlayerPredicate(PlayerPredicate predicate){
         NumberRange.IntRange experienceLevel = ((PlayerPredicateAccessor)predicate).getExperienceLevel();
         if (!experienceLevel.equals(NumberRange.IntRange.ANY)){
             return LText.translatable(
@@ -153,7 +153,7 @@ public class TypeSpecificPredicateParser {
         return LText.translatable("emi_loot.entity_predicate.type_specific.any");
     }
     
-    public static parseSlimePredicate(SlimePredicate predicate){
+    public static Text parseSlimePredicate(SlimePredicate predicate){
         NumberRange.IntRange size = ((SlimePredicateAccessor)predicate).getSize();
         return NumberProcessors.processNumberRange(size,"emi_loot.entity_predicate.type_specific.slime","emi_loot.entity_predicate.type_specific.slime_2","");
     }

@@ -7,8 +7,6 @@ import net.minecraft.tag.TagKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Set;
-
 @Mixin(FluidPredicate.class)
 public interface FluidPredicateAccessor {
 

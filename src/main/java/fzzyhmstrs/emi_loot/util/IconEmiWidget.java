@@ -10,7 +10,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +53,6 @@ public class IconEmiWidget extends Widget {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, tex);
-        DrawableHelper.drawTexture(matrices, x + 2, y + 2, 8, 8, u, v, 8, 8, 64, 64);
+        DrawableHelper.drawTexture(matrices, x + 2, y + 2, 8, 8, 0, 0, 8, 8, 8, 8);
     }
 }

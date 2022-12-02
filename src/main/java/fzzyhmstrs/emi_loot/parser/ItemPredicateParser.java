@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.mixins.ItemPredicateAccessor;
+import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.item.Item;
 import net.minecraft.predicate.NumberRange;
@@ -25,7 +26,7 @@ public class ItemPredicateParser {
         
         Set<Item> items = ((ItemPredicateAccessor)predicate).getItems();
         if (items != null && !items.isEmpty()){
-            List<MutableText> list = items.stream().map((Item::getName)).toList();
+            List<MutableText> list = items.stream().map((item) -> (MutableText)item.getName()).toList();
             return LText.translatable("emi_loot.item_predicate.items", ListProcessors.buildOrList(list));
         }
         

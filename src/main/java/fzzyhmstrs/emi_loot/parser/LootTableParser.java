@@ -2,10 +2,13 @@ package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.server.*;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.LootManagerConditionManager;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -17,9 +20,10 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.condition.LootConditionManager;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
-ipmort net.minecraft.loot.context.LootContext.EntityTarget;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.AlternativeEntry;
@@ -30,12 +34,14 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.function.LootFunctionTypes;
+import net.minecraft.loot.operator.BoundedIntUnaryOperator;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.loot.provider.number.LootNumberProviderType;
-import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.predicate.StatePredicate;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
+import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
@@ -54,6 +60,7 @@ public class LootTableParser {
     private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static Map<Identifier, LootTable> tables = new HashMap<>();
+    private static LootConditionManager conditionManager;
 
     public void registerServer(){
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player)));
@@ -63,6 +70,7 @@ public class LootTableParser {
 
     public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
         LootTableParser.tables = tables;
+        LootTableParser.conditionManager = ((LootManagerConditionManager)manager).getManager();
         System.out.println("parsing loot tables");
         tables.forEach((id,lootTable)-> {
             LootContextType type = lootTable.getType();
@@ -88,7 +96,7 @@ public class LootTableParser {
         ChestLootTableSender sender = new ChestLootTableSender(id);
         for (LootPool pool : lootTable.pools) {
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = getRollAvg(rollProvider);
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
@@ -118,10 +126,10 @@ public class LootTableParser {
             LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions){
-                parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
+                parsedFunctions.add(parseLootFunction(function));
             }
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = getRollAvg(rollProvider);
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
@@ -156,10 +164,10 @@ public class LootTableParser {
             LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions){
-                parsedFunctions.add(parseLootFunction(function,ItemStack.EMPTY));
+                parsedFunctions.add(parseLootFunction(function));
             }
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = getRollAvg(rollProvider);
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
@@ -192,7 +200,7 @@ public class LootTableParser {
         FishingLootTableSender sender = new FishingLootTableSender(id);
         for (LootPool pool : lootTable.pools) {
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = getRollAvg(rollProvider);
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
@@ -318,8 +326,8 @@ public class LootTableParser {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack){
-        return parseLootFunction(function, stack,false);
+    static LootFunctionResult parseLootFunction(LootFunction function){
+        return parseLootFunction(function, ItemStack.EMPTY,false);
     }
 
     static LootFunctionResult parseLootFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative){
@@ -359,7 +367,7 @@ public class LootTableParser {
             return new LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY,conditionsTexts);
         } else if (type == LootFunctionTypes.SET_COUNT){
             LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
-            float rollAvg = getRollAvg(provider);
+            float rollAvg = NumberProcessors.getRollAvg(provider);
             boolean add = ((SetCountLootFunctionAccessor)function).getAdd();
             if (add){
                 stack.setCount(Math.max(stack.getCount() + (int)rollAvg,1));
@@ -395,7 +403,7 @@ public class LootTableParser {
                 stack = new ItemStack(Items.ENCHANTED_BOOK);
                 ItemStack finalStack = stack;
                 enchantments.forEach((enchantment, provider)->{
-                    float rollAvg = getRollAvg(provider);
+                    float rollAvg = NumberProcessors.getRollAvg(provider);
                     EnchantedBookItem.addEnchantment(finalStack, new EnchantmentLevelEntry(enchantment, (int)rollAvg));
                 });
                 return new LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_book"), finalStack,conditionsTexts);
@@ -404,12 +412,12 @@ public class LootTableParser {
                 if (add){
                     Map<Enchantment, Integer> stackMap = EnchantmentHelper.get(stack);
                     enchantments.forEach((enchantment, provider)->{
-                        float rollAvg = getRollAvg(provider);
+                        float rollAvg = NumberProcessors.getRollAvg(provider);
                         finalStackMap.put(enchantment,Math.max(((int)rollAvg) + stackMap.getOrDefault(enchantment,0),0));
                     });
                 } else {
                     enchantments.forEach((enchantment, provider)->{
-                        float rollAvg = getRollAvg(provider);
+                        float rollAvg = NumberProcessors.getRollAvg(provider);
                         finalStackMap.put(enchantment,Math.max(((int)rollAvg),0));
                     });
                 }
@@ -441,7 +449,7 @@ public class LootTableParser {
             return new LootFunctionResult(TextKey.of("emi_loot.function.set_contents"), ItemStack.EMPTY, conditionsTexts);
         } else if (type == LootFunctionTypes.SET_DAMAGE){
             LootNumberProvider provider = ((SetDamageLootFunctionAccessor)function).getDurabilityRange();
-            float rollAvg = getRollAvg(provider);
+            float rollAvg = NumberProcessors.getRollAvg(provider);
             boolean add = ((SetDamageLootFunctionAccessor)function).getAdd();
             int md = stack.getMaxDamage();
             float damage;
@@ -483,12 +491,12 @@ public class LootTableParser {
             return Collections.singletonList(new LootConditionResult(TextKey.empty()));
         } else if (type == LootConditionTypes.BLOCK_STATE_PROPERTY){
             MutableText bsText;
-            Block block = ((BlockStatePropertiesLootConditionAccessor)condition).getBlock();
+            Block block = ((BlockStatePropertyLootConditionAccessor)condition).getBlock();
             if (block != null){
                 bsText = LText.translatable("emi_loot.condition.blockstate.block",block.getName().getString());
             } else {
-                StatePredicate predicate = ((BlockStatePropertiesLootConditionAccessor)condition).getProperties();
-                bsText = StatePredicateParser.parseStatePredicate(predicate);
+                StatePredicate predicate = ((BlockStatePropertyLootConditionAccessor)condition).getProperties();
+                bsText = (MutableText) StatePredicateParser.parseStatePredicate(predicate);
             }
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.blockstate",bsText.getString())));
         } else if (type == LootConditionTypes.TABLE_BONUS){
@@ -559,7 +567,7 @@ public class LootTableParser {
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.damage_source",damageText.getString())));
         } else if (type == LootConditionTypes.LOCATION_CHECK){
             LocationPredicate predicate = ((LocationCheckLootConditionAccessor)condition).getPredicate();
-            MutableText locText = LocationPredicateParser.parseLocationPredicate(predicate);
+            Text locText = LocationPredicateParser.parseLocationPredicate(predicate);
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));
         } else if (type == LootConditionTypes.ENTITY_PROPERTIES){
             LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
@@ -575,6 +583,53 @@ public class LootTableParser {
             ItemPredicate predicate = ((MatchToolLootConditionAccessor)condition).getPredicate();
             Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));
+        } else if (type == LootConditionTypes.ENTITY_SCORES){
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.entity_scores")));
+        } else if (type == LootConditionTypes.REFERENCE){
+            Identifier id = ((ReferenceLootConditionAccessor)condition).getId();
+            if (conditionManager != null){
+                LootCondition referenceCondition = conditionManager.get(id);
+                if (referenceCondition != null && referenceCondition.getType() != LootConditionTypes.REFERENCE){
+                    return parseLootCondition(referenceCondition,stack,parentIsAlternative);
+                }
+            }
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.reference",id.toString())));
+        } else if (type == LootConditionTypes.TIME_CHECK){
+            Long period = ((TimeCheckLootConditionAccessor)condition).getPeriod();
+            BoundedIntUnaryOperator value = ((TimeCheckLootConditionAccessor)condition).getValue();
+            String processedValue = NumberProcessors.processBoundedIntUnaryOperator(value).getString();
+            if (period != null){
+                return Collections.singletonList(
+                        new LootConditionResult(TextKey.of(
+                                "emi_loot.condition.time_check_period",
+                                period.toString(),
+                                processedValue
+                            )
+                        )
+                );
+            }
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.time_check",processedValue)));
+        } else if (type == LootConditionTypes.VALUE_CHECK){
+            LootNumberProvider value = ((ValueCheckLootConditionAccessor)condition).getValue();
+            String processedValue = NumberProcessors.processLootNumberProvider(value).getString();
+            BoundedIntUnaryOperator range = ((ValueCheckLootConditionAccessor)condition).getRange();
+            String processedRange = NumberProcessors.processBoundedIntUnaryOperator(range).getString();
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.value_check",processedValue,processedRange)));
+        } else if(type == LootConditionTypes.WEATHER_CHECK) {
+            Boolean raining = ((WeatherCheckLootConditionAccessor)condition).getRaining();
+            if (raining != null){
+                if (raining){
+                    return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.raining_true")));
+                }
+                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.raining_false")));
+            }
+            Boolean thundering = ((WeatherCheckLootConditionAccessor)condition).getThundering();
+            if (thundering != null){
+                if (thundering){
+                    return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_true")));
+                }
+                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_false")));
+            }
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }
@@ -597,29 +652,6 @@ public class LootTableParser {
             }
         }
         return finalText;
-    }
-
-    private static float getRollAvg(LootNumberProvider provider){
-        LootNumberProviderType type = provider.getType();
-        if(type == LootNumberProviderTypes.CONSTANT){
-            return ((ConstantLootNumberProviderAccessor)provider).getValue();
-        } else if(type == LootNumberProviderTypes.BINOMIAL){
-            LootNumberProvider n = ((BinomialLootNumberProviderAccessor)provider).getN();
-            LootNumberProvider p = ((BinomialLootNumberProviderAccessor)provider).getP();
-            float nVal = getRollAvg(n);
-            float pVal = getRollAvg(p);
-            return nVal * pVal;
-        } else if(type == LootNumberProviderTypes.UNIFORM){
-            LootNumberProvider min = ((UniformLootNumberProviderAccessor)provider).getMin();
-            LootNumberProvider max = ((UniformLootNumberProviderAccessor)provider).getMax();
-            float minVal = getRollAvg(min);
-            float maxVal = getRollAvg(max);
-            return (minVal + maxVal) / 2f;
-        } else if (type == LootNumberProviderTypes.SCORE){
-            return 0f;
-        } else {
-            return 0f;
-        }
     }
 
     public record LootFunctionResult(
