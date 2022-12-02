@@ -3,6 +3,19 @@
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
 </p>
 
+Emi Loot is a plugin for [EMI](https://github.com/emilyploszaj/emi) that displays loot drops from chests, mobs, blocks, and more.
+
+## Known Compatible Loot or Content Mods:
+* [Loot Config](https://www.curseforge.com/minecraft/mc-mods/loot-config)
+* [Dark Loot](https://www.curseforge.com/minecraft/mc-mods/darkloot-better-mob-loot)
+* [Amethyst Imbuement](https://modrinth.com/mod/amethyst-imbuement)
+
+## Known INCOMPATIBLE Mods
+* [LootJS](https://modrinth.com/mod/lootjs): Affects drops on generation, doesn't modify loot tables themselves.
+* [Better Nether](https://www.curseforge.com/minecraft/mc-mods/betternether): Hardcoded drops
+* [Better End](https://www.curseforge.com/minecraft/mc-mods/betterend): Hardcoded drops
+* [Paradise Lost](https://www.curseforge.com/minecraft/mc-mods/paradise-lost): Hardcoded drops
+
 ## TODO LIST
 
 |Task|Status|Planned Release|
