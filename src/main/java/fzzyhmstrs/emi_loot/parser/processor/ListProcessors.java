@@ -16,9 +16,9 @@ public class ListProcessors {
         if (currentIndex == (list.size() - 1)){
             return list.get(currentIndex);
         } else if (currentIndex == (list.size() - 2)){
-            return LText.translatable("emi_loot.predicate.and_2",list.get(currentIndex),buildList(list, currentIndex + 1, "emi_loot.predicate.and_2", "emi_loot.predicate.and_3").getString());
+            return LText.translatable("emi_loot.predicate.and_2",list.get(currentIndex),buildAndList(list, currentIndex + 1).getString());
         } else {
-            return LText.translatable("emi_loot.predicate.and_3",list.get(currentIndex),buildList(list, currentIndex + 1, "emi_loot.predicate.and_2", "emi_loot.predicate.and_3").getString());
+            return LText.translatable("emi_loot.predicate.and_3",list.get(currentIndex),buildAndList(list, currentIndex + 1).getString());
         }
     }
     
@@ -30,9 +30,9 @@ public class ListProcessors {
         if (currentIndex == (list.size() - 1)){
             return list.get(currentIndex);
         } else if (currentIndex == (list.size() - 2)){
-            return LText.translatable("emi_loot.predicate.or_2",list.get(currentIndex),buildList(list, currentIndex + 1, "emi_loot.predicate.or_2", "emi_loot.predicate.or_3").getString());
+            return LText.translatable("emi_loot.predicate.or_2",list.get(currentIndex),buildOrList(list, currentIndex + 1).getString());
         } else {
-            return LText.translatable("emi_loot.predicate.or_3",list.get(currentIndex),buildList(list, currentIndex + 1, "emi_loot.predicate.or_2", "emi_loot.predicate.or_3").getString());
+            return LText.translatable("emi_loot.predicate.or_3",list.get(currentIndex),buildOrList(list, currentIndex + 1).getString());
         }
     }
 

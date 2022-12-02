@@ -67,7 +67,7 @@ public class ClientBlockLootTable implements LootReceiver {
         }
         List<Pair<Integer,Text>> toolNeededList = new LinkedList<>();
         if (!Objects.equals(tool,"")){
-            String type = "";
+            String type;
             if (block.getRegistryEntry().isIn(BlockTags.NEEDS_STONE_TOOL)){
                 type = "stone";
             } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_IRON_TOOL)){
@@ -75,7 +75,7 @@ public class ClientBlockLootTable implements LootReceiver {
             } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_DIAMOND_TOOL)){
                 type = "diamond";
             } else{
-                type = wood;
+                type = "wood";
             }
             String keyString = "emi_loot." + tool + "." + type;
             int keyIndex = TextKey.getIndex(keyString);

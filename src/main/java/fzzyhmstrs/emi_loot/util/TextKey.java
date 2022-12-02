@@ -9,7 +9,7 @@ import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -18,19 +18,15 @@ import java.util.function.Function;
 
 public record TextKey(int index, List<String> args){
 
-    static Map<String, Integer> keyMap;
-    static Map<Integer,String> keyReverseMap;
-    static Map<Integer, Function<TextKey, Text>> keyTextBuilderMap;
-    static Map<Integer, Identifier> keySpriteIdMap;
-    static int curDynamicIndex = 64;
+    static final Map<String, Integer> keyMap = new HashMap<>();
+    static final Map<Integer,String> keyReverseMap = new HashMap<>();
+    static final Map<Integer, Function<TextKey, Text>> keyTextBuilderMap = new HashMap<>();
+    static final Map<Integer, Identifier> keySpriteIdMap = new HashMap<>();
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
     static final Identifier EMPTY = new Identifier(EMILoot.MOD_ID,"textures/gui/empty.png");
+    static int curDynamicIndex = 1000;
 
     static{
-        keyMap = new HashMap<>();
-        keyReverseMap = new HashMap<>();
-        keyTextBuilderMap = new HashMap<>();
-        keySpriteOffsetMap = new HashMap<>();
         mapBuilder(0,"emi_loot.function.empty",(key)->LText.empty(), EMPTY);
         mapBuilder(1,"emi_loot.function.bonus",(key)-> getOneArgText(1, key), new Identifier(EMILoot.MOD_ID,"textures/gui/bonus.png"));
         mapBuilder(2,"emi_loot.function.potion",(key) -> getOneArgText(2, key), new Identifier(EMILoot.MOD_ID,"textures/gui/potion.png"));
@@ -60,35 +56,44 @@ public record TextKey(int index, List<String> args){
         mapBuilder(35,"emi_loot.condition.location",(key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID,"textures/gui/location.png"));
         mapBuilder(36,"emi_loot.condition.entity_props",(key)-> getOneArgText(36, key), new Identifier(EMILoot.MOD_ID,"textures/gui/entity_props.png"));
         mapBuilder(37,"emi_loot.condition.match_tool",(key)-> getOneArgText(37, key), new Identifier(EMILoot.MOD_ID,"textures/gui/match_tool.png"));
+        mapBuilder(38,"emi_loot.condition.entity_scores",(key)-> getBasicText(38), new Identifier(EMILoot.MOD_ID,"textures/gui/score.png"));
+        mapBuilder(39,"emi_loot.condition.reference",(key)-> getOneArgText(39, key), new Identifier(EMILoot.MOD_ID,"textures/gui/reference.png"));
+        mapBuilder(40,"emi_loot.condition.time_check",(key)-> getOneArgText(40, key), new Identifier(EMILoot.MOD_ID,"textures/gui/time.png"));
+        mapBuilder(41,"emi_loot.condition.value_check",(key)-> getTwoArgText(41, key), new Identifier(EMILoot.MOD_ID,"textures/gui/value.png"));
+        mapBuilder(42,"emi_loot.condition.raining_true",(key)-> getBasicText(42), new Identifier(EMILoot.MOD_ID,"textures/gui/raining.png"));
+        mapBuilder(43,"emi_loot.condition.raining_false",(key)-> getBasicText(43), new Identifier(EMILoot.MOD_ID,"textures/gui/sunny.png"));
+        mapBuilder(44,"emi_loot.condition.thundering_true",(key)-> getBasicText(44), new Identifier(EMILoot.MOD_ID,"textures/gui/thundering.png"));
+        mapBuilder(45,"emi_loot.condition.thundering_false",(key)-> getBasicText(45), new Identifier(EMILoot.MOD_ID,"textures/gui/not_thundering.png"));
+
         //tool tag textkeys
         //pickaxe
-        mapBuilder(42,"emi_loot.pickaxe.wood",(key)-> getBasicText(42), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_wood.png"));
-        mapBuilder(43,"emi_loot.pickaxe.stone",(key)-> getBasicText(43), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_stone.png"));
-        mapBuilder(44,"emi_loot.pickaxe.iron",(key)-> getBasicText(44), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_iron.png"));
-        mapBuilder(45,"emi_loot.pickaxe.diamond",(key)-> getBasicText(45), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_diamond.png"));
-        mapBuilder(46,"emi_loot.pickaxe.netherite",(key)-> getBasicText(46), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_netherite.png"));
+        mapBuilder(52,"emi_loot.pickaxe.wood",(key)-> getBasicText(52), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_wood.png"));
+        mapBuilder(53,"emi_loot.pickaxe.stone",(key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_stone.png"));
+        mapBuilder(54,"emi_loot.pickaxe.iron",(key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_iron.png"));
+        mapBuilder(55,"emi_loot.pickaxe.diamond",(key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_diamond.png"));
+        mapBuilder(56,"emi_loot.pickaxe.netherite",(key)-> getBasicText(56), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_netherite.png"));
         //axe
-        mapBuilder(47,"emi_loot.axe.wood",(key)-> getBasicText(47), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_wood.png"));
-        mapBuilder(48,"emi_loot.axe.stone",(key)-> getBasicText(48), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_stone.png"));
-        mapBuilder(49,"emi_loot.axe.iron",(key)-> getBasicText(49), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_iron.png"));
-        mapBuilder(50,"emi_loot.axe.diamond",(key)-> getBasicText(50), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_diamond.png"));
-        mapBuilder(51,"emi_loot.axe.netherite",(key)-> getBasicText(51), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_netherite.png"));
+        mapBuilder(67,"emi_loot.axe.wood",(key)-> getBasicText(67), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_wood.png"));
+        mapBuilder(68,"emi_loot.axe.stone",(key)-> getBasicText(68), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_stone.png"));
+        mapBuilder(69,"emi_loot.axe.iron",(key)-> getBasicText(69), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_iron.png"));
+        mapBuilder(70,"emi_loot.axe.diamond",(key)-> getBasicText(70), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_diamond.png"));
+        mapBuilder(71,"emi_loot.axe.netherite",(key)-> getBasicText(71), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_netherite.png"));
         //shovel
-        mapBuilder(52,"emi_loot.shovel.wood",(key)-> getBasicText(52), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_wood.png"));
-        mapBuilder(53,"emi_loot.shovel.stone",(key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_stone.png"));
-        mapBuilder(54,"emi_loot.shovel.iron",(key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_iron.png"));
-        mapBuilder(55,"emi_loot.shovel.diamond",(key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_diamond.png"));
-        mapBuilder(56,"emi_loot.shovel.netherite",(key)-> getBasicText(56), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_netherite.png"));
+        mapBuilder(82,"emi_loot.shovel.wood",(key)-> getBasicText(82), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_wood.png"));
+        mapBuilder(83,"emi_loot.shovel.stone",(key)-> getBasicText(83), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_stone.png"));
+        mapBuilder(84,"emi_loot.shovel.iron",(key)-> getBasicText(84), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_iron.png"));
+        mapBuilder(85,"emi_loot.shovel.diamond",(key)-> getBasicText(85), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_diamond.png"));
+        mapBuilder(86,"emi_loot.shovel.netherite",(key)-> getBasicText(86), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_netherite.png"));
         //hoe
-        mapBuilder(57,"emi_loot.hoe.wood",(key)-> getBasicText(57), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_wood.png"));
-        mapBuilder(58,"emi_loot.hoe.stone",(key)-> getBasicText(58), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_stone.png"));
-        mapBuilder(59,"emi_loot.hoe.iron",(key)-> getBasicText(59), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_iron.png"));
-        mapBuilder(60,"emi_loot.hoe.diamond",(key)-> getBasicText(60), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
-        mapBuilder(61,"emi_loot.hoe.netherite",(key)-> getBasicText(61), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
+        mapBuilder(97,"emi_loot.hoe.wood",(key)-> getBasicText(97), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_wood.png"));
+        mapBuilder(98,"emi_loot.hoe.stone",(key)-> getBasicText(98), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_stone.png"));
+        mapBuilder(99,"emi_loot.hoe.iron",(key)-> getBasicText(99), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_iron.png"));
+        mapBuilder(100,"emi_loot.hoe.diamond",(key)-> getBasicText(100), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
+        mapBuilder(101,"emi_loot.hoe.netherite",(key)-> getBasicText(101), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
         //Direct drops
-        mapBuilder(62,"emi_loot.direct_drops",(key)-> getBasicText(62), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
+        mapBuilder(125,"emi_loot.direct_drops",(key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
         //No conditions
-        mapBuilder(63,"emi_loot.no_conditions",(key)-> getBasicText(63), EMPTY);
+        mapBuilder(150,"emi_loot.no_conditions",(key)-> getBasicText(150), EMPTY);
     }
 
     private static void mapBuilder(int index, String key, Function<TextKey, Text> function, Identifier spriteId){
@@ -98,23 +103,16 @@ public record TextKey(int index, List<String> args){
         keySpriteIdMap.put(index, spriteId);
     }
     
-    public static void register(String key, Int args, Identifier sprite){
+    public static void register(String key, int args, Identifier sprite){
         if (keyMap.containsKey(key)) throw new IllegalArgumentException("Text key [" + key + "] already registered!");
-        if (!sprite.toString().contains(".png")) throw new IllegalArgumentException("Text key [" + key + "] registered with sprite identifier [" + sprite + "] that isn't a png!);
-        int index = curDynamicIndex + 1;
+        if (!sprite.toString().contains(".png")) throw new IllegalArgumentException("Text key [" + key + "] registered with sprite identifier [" + sprite + "] that isn't a png!)");
+        int index = curDynamicIndex;
         curDynamicIndex++;
-        switch (args){
-            case 0:
-                mapBuilder(index,key,(tk) -> getBasicText(index),sprite);
-                break;
-            case 1:
-                mapBuilder(index,key,(tk) -> getOneArgText(index, tk),sprite);
-                break;
-            case 2:
-                mapBuilder(index,key,(tk) -> getTwoArgText(index, tk),sprite);
-                break;
-            default:
-                mapBuilder(index,key,(tk) -> getAlternates3Text(index, tk),sprite);
+        switch (args) {
+            case 0 -> mapBuilder(index, key, (tk) -> getBasicText(index), sprite);
+            case 1 -> mapBuilder(index, key, (tk) -> getOneArgText(index, tk), sprite);
+            case 2 -> mapBuilder(index, key, (tk) -> getTwoArgText(index, tk), sprite);
+            default -> mapBuilder(index, key, (tk) -> getAlternates3Text(index, tk), sprite);
         }
     }
 
@@ -189,15 +187,23 @@ public record TextKey(int index, List<String> args){
     }
     
     public static int getIndex(String key){
-        return keyMap.getOrDefault(key,-1)
+        return keyMap.getOrDefault(key,-1);
     }
                                                                                     
     public static Identifier getSpriteId(int index){
-        return keySpriteIdMap.getOrDefault(index,EMPTY)
+        return keySpriteIdMap.getOrDefault(index,EMPTY);
     }
 
     public static TextKey empty(){
         return new TextKey(0,new LinkedList<>());
+    }
+
+    public static TextKey of(String key, String ... args){
+        if (keyMap.containsKey(key)){
+            return new TextKey(keyMap.get(key), Arrays.stream(args).toList());
+        } else {
+            return new TextKey(0,new LinkedList<>());
+        }
     }
 
     public static TextKey of(String key, List<String> args){
@@ -213,9 +219,7 @@ public record TextKey(int index, List<String> args){
     }
 
     public static TextKey of (String key, String arg){
-        List<String> args = new LinkedList<>();
-        args.add(arg);
-        return TextKey.of(key,args);
+        return TextKey.of(key,Collections.singletonList(arg));
     }
 
     public TextKeyResult process(ItemStack stack, @Nullable World world){
