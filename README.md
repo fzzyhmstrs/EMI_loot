@@ -11,6 +11,8 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 * [Loot Config](https://www.curseforge.com/minecraft/mc-mods/loot-config)
 * [Dark Loot](https://www.curseforge.com/minecraft/mc-mods/darkloot-better-mob-loot)
 * [Amethyst Imbuement](https://modrinth.com/mod/amethyst-imbuement)
+* [Immersive Weathering](https://modrinth.com/mod/immersive-weathering): Some loot conditions used by IW aren't fully implemented yet, but added loot is still compatible
+* [Botania](https://modrinth.com/mod/botania): Some loot conditions used by Botania aren't fully implemented yet, but added loot is still compatible
 
 ## Known INCOMPATIBLE Mods
 * [LootJS](https://modrinth.com/mod/lootjs): Affects drops on generation, doesn't modify loot tables themselves.
@@ -31,7 +33,7 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Update Block EMI recipes for new layouts|Complete|0.3.0|
 |Fix smelting condition showing the unsmelted item|Complete|0.3.0|
 |Add option for small mob loot tables shown to the right instead of below|Complete|0.3.1|
-|Review and fix mob/block table percentages|Completed|0.3.1|
+|Review and fix mob/block table percentages|Complete|0.3.1|
 |Starting impl of basic config|In work|0.4.0|
 |Check mob/block table percentages actually right|Not started|0.4.0|
 |Implement EntityPredicate Parser|In work|0.4.0|
