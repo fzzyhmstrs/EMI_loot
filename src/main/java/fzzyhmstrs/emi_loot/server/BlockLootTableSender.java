@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,22 +17,41 @@ import java.util.Map;
 public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
 
     public BlockLootTableSender(Identifier id){
-        this.id = id;
+        this.idToSend = LootSender.getIdToSend(id);
     }
 
-    private final Identifier id;
+    private final String idToSend;
     final List<BlockLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier BLOCK_SENDER = new Identifier(EMILoot.MOD_ID,"block_sender");
+    public static Identifier BLOCK_SENDER = new Identifier("e_l","b_s");
+    boolean isEmpty = true;
 
     @Override
     public void send(ServerPlayerEntity player) {
         PacketByteBuf buf = PacketByteBufs.create();
-        //start with the loot pool ID and the number of builders to write
-        buf.writeIdentifier(id);
+        //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
+        buf.writeString(idToSend);
+        if (builderList.size() == 1 && builderList.get(0).isSimple){
+            buf.writeByte(-1);
+            buf.writeRegistryValue(Registry.ITEM,builderList.get(0).simpleStack.getItem());
+            ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
+        } else if (builderList.isEmpty()){
+            buf.writeByte(-2);
+            ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
+        }
+        //pre-build the builders to do empty checks
+        builderList.forEach((builder)->{
+            builder.build();
+            if (!builder.isEmpty){
+                isEmpty = false;
+            }
+        });
+        if (isEmpty){
+            buf.writeByte(-2);
+            ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
+        }
+
         buf.writeByte(builderList.size());
         builderList.forEach((builder)->{
-            //start by building the builder
-            builder.build();
 
             //write size of the builders condition set
             buf.writeByte(builder.conditions.size());

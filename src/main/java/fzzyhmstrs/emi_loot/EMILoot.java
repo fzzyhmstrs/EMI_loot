@@ -59,14 +59,18 @@ public class EMILoot implements ModInitializer {
                 throw new UnsupportedOperationException("couldn't generate config file");
             } else {
                 FileWriter fw = new FileWriter(f);
-                fw.write(gson.toJson(new EmiLootConfig()));
+                EmiLootConfig emc = new EmiLootConfig();
+                String json = gson.toJson(emc);
+                System.out.println(json);
+                fw.write(json);
+                fw.close();
+                return emc;
             }
         } catch(Exception e){
             System.out.println("Emi Loot failed to create or read it's config file!");
             System.out.println(Arrays.toString(e.getStackTrace()));
             return new EmiLootConfig();
         }
-        return new EmiLootConfig();
     }
     
     public static class EmiLootConfig{

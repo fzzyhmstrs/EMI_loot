@@ -16,16 +16,15 @@ import java.util.List;
 public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     public ChestLootTableSender(Identifier id){
-        this.id = id;
+        this.idToSend = LootSender.getIdToSend(id);
     }
 
-    private final Identifier id;
+    private final String idToSend;
     final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier CHEST_SENDER = new Identifier(EMILoot.MOD_ID,"chest_sender");
+    HashMap<ItemStack, Float> floatMap = new HashMap<>();
+    public static Identifier CHEST_SENDER = new Identifier("e_l","c_s");
 
-    @Override
-    public void send(ServerPlayerEntity player) {
-        HashMap<ItemStack, Float> floatMap = new HashMap<>();
+    public void build(){
         builderList.forEach((builder) -> {
             builder.build();
             builder.builtMap.forEach((item,weight)->{
@@ -37,9 +36,12 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
                 }
             });
         });
+    }
 
+    @Override
+    public void send(ServerPlayerEntity player) {
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeIdentifier(id);
+        buf.writeString(idToSend);
         buf.writeShort(floatMap.size());
         floatMap.forEach((item, floatWeight)->{
             buf.writeItemStack(item);

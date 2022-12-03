@@ -34,15 +34,16 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Fix smelting condition showing the unsmelted item|Complete|0.3.0|
 |Add option for small mob loot tables shown to the right instead of below|Complete|0.3.1|
 |Review and fix mob/block table percentages|Complete|0.3.1|
-|Starting impl of basic config|In work|0.4.0|
-|Check mob/block table percentages actually right|Not started|0.4.0|
-|Implement EntityPredicate Parser|In work|0.4.0|
-|Update icon widget impl to handle custom sprites|In Work|0.4.0|
-|Implement other missing parsers as needed|In work|0.4.0?|
-|Optimize packet sending size/number|Not started|?.?.?|
+|Implement EntityPredicate Parser|Complete|0.4.0|
+|Update icon widget impl to handle custom sprites|Complete|0.4.0|
+|Implement other missing parsers as needed|Complete|0.4.0|
+|Starting impl of basic config|In work|0.5.0|
+|Check mob/block table percentages actually right|Not started|0.5.0|
+|Port to 1.19.3 to match to EMI's update|Not started|0.5.0|
+|Optimize packet sending size/number|In work|0.5.0?|
+|Impl fishing/gameplay loot?|Not started|0.5.0?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
 |Impl resource-driven mob offsetting overrides|Not started|?.?.?|
-|Impl fishing loot?|Not started|?.?.?|
 |Impl handler for code-based mob drops (nether star etc)|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|

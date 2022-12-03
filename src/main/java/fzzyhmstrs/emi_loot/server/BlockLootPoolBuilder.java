@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +21,9 @@ public class BlockLootPoolBuilder implements LootBuilder {
     final List<LootTableParser.LootConditionResult> conditions;
     final List<LootTableParser.LootFunctionResult> functions;
     HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
+    boolean isSimple = false;
+    boolean isEmpty = false;
+    ItemStack simpleStack = ItemStack.EMPTY;
 
     public void addItem(LootTableParser.ItemEntryResult result){
         List<TextKey> testKey = new LinkedList<>();
@@ -32,9 +36,23 @@ public class BlockLootPoolBuilder implements LootBuilder {
 
     @Override
     public void build() {
+
+        if (map.isEmpty()){
+            isEmpty = true;
+            return;
+        }
+
         for (List<TextKey> key: map.keySet()){
             ChestLootPoolBuilder builder = map.getOrDefault(key,new ChestLootPoolBuilder(rollWeight));
             builder.build();
+            if (map.size() == 1 && builder.isEmpty){
+                isEmpty = true;
+                return;
+            }
+            if (map.size() == 1 && builder.isSimple && key.isEmpty()) {
+                simpleStack = builder.simpleStack;
+                isSimple = true;
+            }
             builtMap.put(key,builder);
         }
     }
@@ -43,12 +61,10 @@ public class BlockLootPoolBuilder implements LootBuilder {
     public List<LootTableParser.ItemEntryResult> revert() {
         List<LootTableParser.ItemEntryResult> list = new LinkedList<>();
         List<TextKey> topLevelKeys = new LinkedList<>();
-        conditions.forEach((condition)->{
-            topLevelKeys.add(condition.text());
-        });
-        functions.forEach((function)->{
-            topLevelKeys.add(function.text());
-        });
+
+        conditions.forEach((condition)-> topLevelKeys.add(condition.text()));
+        functions.forEach((function)-> topLevelKeys.add(function.text()));
+
         map.forEach((keyList,builder)->{
             List<LootTableParser.ItemEntryResult> builderList = builder.revert();
             builderList.forEach((builderEntry)->{

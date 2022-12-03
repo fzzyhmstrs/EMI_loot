@@ -63,9 +63,12 @@ public class LootTableParser {
     private static LootConditionManager conditionManager;
 
     public void registerServer(){
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player)));
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> blockSenders.forEach((id,blockSender) -> blockSender.send(handler.player)));
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player)));
+        if (EMILoot.config.parseChestLoot)
+            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player)));
+        if (EMILoot.config.parseBlockLoot)
+            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> blockSenders.forEach((id,blockSender) -> blockSender.send(handler.player)));
+        if (EMILoot.config.parseMobLoot)
+            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player)));
     }
 
     public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
@@ -74,21 +77,23 @@ public class LootTableParser {
         System.out.println("parsing loot tables");
         tables.forEach((id,lootTable)-> {
             LootContextType type = lootTable.getType();
-            if (type == LootContextTypes.CHEST) {
+            if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
                 chestSenders.put(id, parseChestLootTable(lootTable,id));
-            } else if (type == LootContextTypes.BLOCK) {
+            } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
                 blockSenders.put(id, parseBlockLootTable(lootTable,id));
             }
         });
-        Identifier chk = new Identifier("pig");
-        Registry.ENTITY_TYPE.stream().toList().forEach((type)->{
-            Identifier mobId = Registry.ENTITY_TYPE.getId(type);
-            Identifier mobTableId = type.getLootTableId();
-            LootTable mobTable = manager.getTable(mobTableId);
-            if (type == EntityType.PIG && mobId.equals(chk) || mobTable != LootTable.EMPTY){
-                mobSenders.put(mobTableId,parseMobLootTable(mobTable,mobTableId,mobId));
-            }
-        });
+        if (EMILoot.config.parseMobLoot) {
+            Identifier chk = new Identifier("pig");
+            Registry.ENTITY_TYPE.stream().toList().forEach((type) -> {
+                Identifier mobId = Registry.ENTITY_TYPE.getId(type);
+                Identifier mobTableId = type.getLootTableId();
+                LootTable mobTable = manager.getTable(mobTableId);
+                if (type == EntityType.PIG && mobId.equals(chk) || mobTable != LootTable.EMPTY) {
+                    mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
+                }
+            });
+        }
         System.out.println("finished parsing loot tables");
     }
 

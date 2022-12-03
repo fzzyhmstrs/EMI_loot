@@ -10,6 +10,8 @@ import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 
 public class EmiClientPlugin implements EmiPlugin {
