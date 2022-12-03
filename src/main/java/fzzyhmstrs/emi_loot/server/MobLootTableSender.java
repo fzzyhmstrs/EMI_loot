@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,21 +17,45 @@ import java.util.Map;
 public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     public MobLootTableSender(Identifier id, Identifier mobId){
-        this.id = id;
-        this.mobId = mobId;
+        this.idToSend = LootSender.getIdToSend(id);
+        this.mobIdToSend = LootSender.getIdToSend(mobId);
     }
 
-    private final Identifier id;
-    private final Identifier mobId;
+    private final String idToSend;
+    private final String mobIdToSend;
     final List<MobLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier MOB_SENDER = new Identifier(EMILoot.MOD_ID,"mob_sender");
+    public static Identifier MOB_SENDER = new Identifier("e_l","m_s");
+    boolean isEmpty = true;
 
     @Override
     public void send(ServerPlayerEntity player) {
         PacketByteBuf buf = PacketByteBufs.create();
         //start with the loot pool ID and the number of builders to write
-        buf.writeIdentifier(id);
-        buf.writeIdentifier(mobId);
+        buf.writeString(idToSend);
+        buf.writeString(mobIdToSend);
+
+        if (builderList.size() == 1 && builderList.get(0).isSimple) {
+            buf.writeByte(-1);
+            buf.writeRegistryValue(Registry.ITEM, builderList.get(0).simpleStack.getItem());
+            ServerPlayNetworking.send(player, MOB_SENDER, buf);
+        } else if (builderList.isEmpty()){
+            buf.writeByte(-2);
+            ServerPlayNetworking.send(player,MOB_SENDER, buf);
+        }
+
+        //pre-build the builders to do empty checks
+        builderList.forEach((builder)->{
+            builder.build();
+            if (!builder.isEmpty){
+                isEmpty = false;
+            }
+        });
+        if (isEmpty){
+            buf.writeByte(-2);
+            ServerPlayNetworking.send(player,MOB_SENDER, buf);
+        }
+
+
         buf.writeByte(builderList.size());
         builderList.forEach((builder)->{
             //start by building the builder

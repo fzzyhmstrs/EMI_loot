@@ -10,6 +10,7 @@ import net.minecraft.item.Items;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ChestLootPoolBuilder implements LootBuilder {
 
@@ -21,6 +22,9 @@ public class ChestLootPoolBuilder implements LootBuilder {
     final float rollWeight;
     Integer totalWeight = 0;
     Object2FloatMap<ItemStack> builtMap = new Object2FloatOpenHashMap<>();
+    boolean isSimple = false;
+    boolean isEmpty = false;
+    ItemStack simpleStack = ItemStack.EMPTY;
 
 
     public void addItem(ItemStack item, int weight){
@@ -35,6 +39,10 @@ public class ChestLootPoolBuilder implements LootBuilder {
 
     @Override
     public void build() {
+        if (map.isEmpty()){
+            isEmpty = true;
+            return;
+        }
         Object2FloatMap<ItemStack> floatMap = new Object2FloatOpenHashMap<>();
         map.forEach((item, itemWeight)-> {
             if (!item.isOf(Items.AIR)) {
@@ -42,6 +50,16 @@ public class ChestLootPoolBuilder implements LootBuilder {
             }
         });
         builtMap = floatMap;
+        if (builtMap.size() == 1){
+            isSimple = true;
+            for (Object2FloatMap.Entry<ItemStack> entry: builtMap.object2FloatEntrySet()){
+                simpleStack = entry.getKey();
+                if (entry.getFloatValue() != 100F || entry.getKey().getCount() != 1) {
+                    isSimple = false;
+                    break;
+                }
+            }
+        }
     }
 
     @Override

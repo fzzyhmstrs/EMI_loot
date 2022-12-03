@@ -248,7 +248,7 @@ public record TextKey(int index, List<String> args){
     public record TextKeyResult(Text text,List<ItemStack> stacks){}
 
     public static TextKey fromBuf(PacketByteBuf buf){
-        int key = buf.readByte();
+        int key = buf.readVarInt();
         int size = buf.readByte();
         List<String> args = new LinkedList<>();
         if (size > 0) {
@@ -260,7 +260,7 @@ public record TextKey(int index, List<String> args){
     }
 
     public void toBuf(PacketByteBuf buf){
-        buf.writeByte(this.index);
+        buf.writeVarInt(this.index);
         if (args.isEmpty()){
             buf.writeByte(0);
         } else {

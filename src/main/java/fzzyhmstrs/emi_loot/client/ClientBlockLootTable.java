@@ -16,6 +16,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -164,10 +165,26 @@ public class ClientBlockLootTable implements LootReceiver {
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
+
         Identifier id = buf.readIdentifier();
         int builderCount = buf.readByte();
 
+        //shortcut -2 means empty sender. Build an empty table to match
+        if (builderCount == -2){
+            return new ClientBlockLootTable();
+        }
+
         Map<List<TextKey>, ClientBlockRawPool> itemMap = new HashMap<>();
+        //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
+        if (builderCount == -1){
+            ClientBlockRawPool simplePool = new ClientBlockRawPool(new HashMap<>());
+            Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
+            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
+            simpleMap.put(simpleStack,100F);
+            simplePool.map.put(new ArrayList<>(),simpleMap);
+            itemMap.put(new ArrayList<>(),simplePool);
+            return new ClientBlockLootTable(id,itemMap);
+        }
 
         for (int b = 0; b < builderCount; b++) {
 

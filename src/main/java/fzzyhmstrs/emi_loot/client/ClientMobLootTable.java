@@ -154,11 +154,27 @@ public class ClientMobLootTable implements LootReceiver {
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
+
         Identifier id = buf.readIdentifier();
         Identifier mobId = buf.readIdentifier();
         int builderCount = buf.readByte();
 
+        //shortcut -2 means empty sender. Build an empty table to match
+        if (builderCount == -2){
+            return new ClientMobLootTable();
+        }
+
         Map<List<TextKey>, ClientMobRawPool> itemMap = new HashMap<>();
+        //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
+        if (builderCount == -1){
+            ClientMobRawPool simplePool = new ClientMobRawPool(new HashMap<>());
+            Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
+            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
+            simpleMap.put(simpleStack,100F);
+            simplePool.map.put(new ArrayList<>(),simpleMap);
+            itemMap.put(new ArrayList<>(),simplePool);
+            return new ClientMobLootTable(id,mobId,itemMap);
+        }
 
         for (int b = 0; b < builderCount; b++) {
 
