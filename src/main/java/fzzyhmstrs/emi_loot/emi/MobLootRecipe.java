@@ -180,7 +180,7 @@ public class MobLootRecipe implements EmiRecipe {
         } else {
             int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type,0);
             widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
-            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5, offset,delta));
+            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5, 6 + offset,delta));
         }
         widgets.addText(name.asOrderedText(),30,0,0x404040,false);
         if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94){
