@@ -53,7 +53,8 @@
     "BoundedIntUnaryOperatorAccessor",
     "TimeCheckLootConditionAccessor",
     "ValueCheckLootConditionAccessor",
-    "WeatherCheckLootConditionAccessor"
+    "WeatherCheckLootConditionAccessor",
+    "StatePredicateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

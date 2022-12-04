@@ -24,6 +24,7 @@
     "emi_loot.mixins.json"
   ],
   "license": "MIT License",
+  "accessWidener": "emi_loot.accesswidener",
   "depends": {
     "minecraft": "1.18.x"
   }

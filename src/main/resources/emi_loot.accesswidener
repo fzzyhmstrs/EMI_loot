@@ -1,0 +1,22 @@
+accessWidener   v1  named
+
+# accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
+# state predicate stuff
+accessible class net/minecraft/predicate/StatePredicate$Condition
+accessible class net/minecraft/predicate/StatePredicate$ExactValueCondition
+accessible class net/minecraft/predicate/StatePredicate$RangedValueCondition
+
+accessible field net/minecraft/predicate/StatePredicate$Condition key Ljava/lang/String;
+accessible field net/minecraft/predicate/StatePredicate$ExactValueCondition value Ljava/lang/String;
+accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition min Ljava/lang/String;
+accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition max Ljava/lang/String;
+
+# player predicate stuff
+accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate
+
+accessible field net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate done Z
+accessible field net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate criteria Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
+
+# accessible method net/minecraft/world/poi/PointOfInterestTypes getStatesOfBlock (Lnet/minecraft/block/Block;)Ljava/util/Set;
