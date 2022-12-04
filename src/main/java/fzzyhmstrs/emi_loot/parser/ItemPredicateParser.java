@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.ItemPredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
@@ -56,6 +57,7 @@ public class ItemPredicateParser {
             list.addAll(Arrays.stream(storedEnchants).toList());
             return EnchantmentPredicateParser.parseEnchantmentPredicates(list);
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty item predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.item_predicate.empty");
     }
 

@@ -166,13 +166,9 @@ public class ClientBlockLootTable implements LootReceiver {
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
 
-        Identifier id = buf.readIdentifier();
+        String idToParse = buf.readString();
+        Identifier id = new Identifier(idToParse.contains(":") ? idToParse : "blocks/"+idToParse);
         int builderCount = buf.readByte();
-
-        //shortcut -2 means empty sender. Build an empty table to match
-        if (builderCount == -2){
-            return new ClientBlockLootTable();
-        }
 
         Map<List<TextKey>, ClientBlockRawPool> itemMap = new HashMap<>();
         //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.

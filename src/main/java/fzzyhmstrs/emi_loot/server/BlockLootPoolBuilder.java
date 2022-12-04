@@ -49,12 +49,18 @@ public class BlockLootPoolBuilder implements LootBuilder {
                 isEmpty = true;
                 return;
             }
-            if (map.size() == 1 && builder.isSimple && key.isEmpty()) {
+            if (map.size() == 1 && builder.isSimple && checkKey(key)) {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }
             builtMap.put(key,builder);
         }
+    }
+
+    private boolean checkKey(List<TextKey> keys){
+        if (keys.isEmpty()) return true;
+        if (keys.size() != 1) return false;
+        return keys.get(0).index() == 0 || keys.get(0).index() == 150;
     }
 
     @Override

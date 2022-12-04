@@ -1,5 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.FishingHookPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LightningBoltPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.PlayerPredicateAccessor;

@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.LocationPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.BlockPredicate;
@@ -69,7 +70,7 @@ public class LocationPredicateParser {
         if (!fluid.equals(FluidPredicate.ANY)){
             return FluidPredicateParser.parseFluidPredicate(fluid);
         }
-
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable location predicate in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 

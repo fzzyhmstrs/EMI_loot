@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.EffectDataAccessor;
 import fzzyhmstrs.emi_loot.mixins.EntityEffectPredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
@@ -73,6 +74,7 @@ public class EntityEffectPredicateParser{
         if (!list.isEmpty()){
             return LText.translatable("emi_loot.entity_predicate.effect_1", ListProcessors.buildAndList(list));
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Unparsable entity effect predicate in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 }

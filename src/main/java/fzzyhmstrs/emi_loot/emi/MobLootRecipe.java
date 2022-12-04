@@ -10,6 +10,7 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
+import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
@@ -34,7 +35,7 @@ import java.util.*;
 
 public class MobLootRecipe implements EmiRecipe {
 
-    private final static Map<EntityType<?>,Integer> needsElevating;
+    //private final static Map<EntityType<?>,Integer> needsElevating;
     private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/downturn_arrow.png");
 
     static{
@@ -53,7 +54,7 @@ public class MobLootRecipe implements EmiRecipe {
         map.put(EntityType.DOLPHIN,-3);
         map.put(EntityType.PHANTOM,-3);
         map.put(EntityType.TURTLE,0);
-        needsElevating = map;
+        //needsElevating = map;
     }
 
     
@@ -84,6 +85,9 @@ public class MobLootRecipe implements EmiRecipe {
                 name = entity.getName();
             }
             double scale = 1.05 / len * 8.0;
+            if (ClientResourceData.MOB_SCALES.containsKey(type)){
+                scale *= ClientResourceData.MOB_SCALES.getOrDefault(type,1.0f);
+            }
             inputStack = EntityEmiStack.ofScaled(entity,scale);
         } else{
             inputStack = EmiStack.EMPTY;
@@ -171,12 +175,12 @@ public class MobLootRecipe implements EmiRecipe {
         int x = 0;
         int y = 0;
         //draw the mob
-        if (!MobLootRecipe.needsElevating.containsKey(type)) {
+        if (!ClientResourceData.MOB_OFFSETS.containsKey(type)) {
             widgets.addSlot(inputStack, x, y).output(true);
         } else {
-            int offset = MobLootRecipe.needsElevating.getOrDefault(type,0);
+            int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type,0);
             widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
-            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5,+ offset,delta));
+            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5, offset,delta));
         }
         widgets.addText(name.asOrderedText(),30,0,0x404040,false);
         if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94){

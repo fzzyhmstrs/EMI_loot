@@ -12,7 +12,8 @@ public interface LootSender<T extends LootBuilder> {
 
     static String getIdToSend(Identifier id){
         if (id.getNamespace().equals("minecraft")){
-            return id.getPath();
+            String path = id.getPath();
+            return path.contains("blocks/") ? id.getPath().substring(7) : path; //substring after "blocks/"
         }
         return id.toString();
     }

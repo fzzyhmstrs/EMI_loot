@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot;
 
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
+import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import net.fabricmc.api.ClientModInitializer;
 
 public class EMILootClient implements ClientModInitializer {
@@ -11,5 +12,6 @@ public class EMILootClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         tables.registerClient();
+        ClientResourceData.register();
     }
 }

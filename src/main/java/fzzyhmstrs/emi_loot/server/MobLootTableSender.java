@@ -34,15 +34,6 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         buf.writeString(idToSend);
         buf.writeString(mobIdToSend);
 
-        if (builderList.size() == 1 && builderList.get(0).isSimple) {
-            buf.writeByte(-1);
-            buf.writeRegistryValue(Registry.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, MOB_SENDER, buf);
-        } else if (builderList.isEmpty()){
-            buf.writeByte(-2);
-            ServerPlayNetworking.send(player,MOB_SENDER, buf);
-        }
-
         //pre-build the builders to do empty checks
         builderList.forEach((builder)->{
             builder.build();
@@ -51,10 +42,19 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             }
         });
         if (isEmpty){
-            buf.writeByte(-2);
-            ServerPlayNetworking.send(player,MOB_SENDER, buf);
+            return;
         }
 
+        if (builderList.size() == 1 && builderList.get(0).isSimple) {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
+            buf.writeByte(-1);
+            buf.writeRegistryValue(Registry.ITEM, builderList.get(0).simpleStack.getItem());
+            ServerPlayNetworking.send(player, MOB_SENDER, buf);
+            return;
+        } else if (builderList.isEmpty()){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
+            return;
+        }
 
         buf.writeByte(builderList.size());
         builderList.forEach((builder)->{

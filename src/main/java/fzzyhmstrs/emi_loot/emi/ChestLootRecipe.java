@@ -4,7 +4,9 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
@@ -12,6 +14,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,11 +43,13 @@ public class ChestLootRecipe implements EmiRecipe {
             outputsList.add(stack);
         });
         lootStacksSorted = map2;
-        if (loot.items.size() > 24){
+
+        if (loot.items.size() > (24 * (EMILoot.config.chestLootCompact ? 2 : 1))) {
             this.lootStacksSortedSize = lootStacksSorted.keySet().size();
-        } else{
+        } else {
             this.lootStacksSortedSize = loot.items.size();
         }
+
 
         outputs = outputsList;
         String key = "emi_loot.chest." + loot.id.toString();
@@ -71,6 +76,7 @@ public class ChestLootRecipe implements EmiRecipe {
     private final List<EmiStack> outputs;
     private boolean isGuaranteedNonChance = false;
     private final Text title;
+    private final double columns = (EMILoot.config.chestLootCompact ? 8.0 : 4.0);
 
     @Override
     public EmiRecipeCategory getCategory() {
@@ -99,13 +105,14 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
+        if (EMILoot.config.chestLootCompact) return 144;
         return (19 * 4) + (26 * 3) + 25;
     }
 
     @Override
     public int getDisplayHeight() {
         int titleHeight = 11;
-        int boxesHeight = ((int) Math.ceil(lootStacksSortedSize/4.0) * 19) - 1;
+        int boxesHeight = ((int) Math.ceil(lootStacksSortedSize/ columns) * (EMILoot.config.chestLootCompact ? 18 : 19)) - 1;
         return titleHeight + boxesHeight;
     }
 
@@ -115,31 +122,41 @@ public class ChestLootRecipe implements EmiRecipe {
         final int finalRowHeight;
         if (widgets.getHeight() < getDisplayHeight()){
             titleSpace = 9;
-            finalRowHeight = (widgets.getHeight() - titleSpace) / ((int) Math.ceil(lootStacksSortedSize / 4.0));
+            finalRowHeight = (widgets.getHeight() - titleSpace) / ((int) Math.ceil(lootStacksSortedSize / (EMILoot.config.chestLootCompact ? 8.0 : 4.0)));
         } else {
             titleSpace = 11;
-            finalRowHeight = 19;
+            finalRowHeight = (EMILoot.config.chestLootCompact ? 18 : 19);
         }
         widgets.addText(title.asOrderedText(),1,0,0x404040,false);
         AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
         lootStacksSorted.forEach((weight, items)->{
-            if (loot.items.size() <= 24) {
+            if ((loot.items.size() <= (EMILoot.config.chestLootCompact ? 48 : 24)) && !EMILoot.config.chestLootAlwaysStackSame) {
                 items.forEach((stack) -> {
-                    int row = (int) Math.ceil(index.get() / 4.0) - 1;
-                    int column = (index.get() - 1) % 4;
+                    int row = (int) Math.ceil(index.get() / columns) - 1;
+                    int column = (index.get() - 1) % (int)columns;
                     index.getAndDecrement();
                     String fTrim = trimFloatString(weight);
-                    widgets.addSlot(stack, column * 45, titleSpace + row * finalRowHeight).recipeContext(this);
-                    widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                    SlotWidget slotWidget = new SlotWidget(stack, column * (EMILoot.config.chestLootCompact ? 18 : 45), titleSpace + row * finalRowHeight).recipeContext(this);
+                    if (EMILoot.config.chestLootCompact) {
+                        widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.percentage", fTrim)));
+                    } else {
+                        widgets.add(slotWidget);
+                        widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                    }
                 });
             } else {
-                int row = (int) Math.ceil(index.get() / 4.0) - 1;
+                int row = (int) Math.ceil(index.get() / columns) - 1;
                 int column = (index.get() - 1) % 4;
                 index.getAndDecrement();
                 EmiIngredient ingredient = EmiIngredient.of(items);
                 String fTrim = trimFloatString(weight);
-                widgets.addSlot(ingredient, column * 45, titleSpace + row * finalRowHeight).recipeContext(this);
-                widgets.addText(new TranslatableText("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                SlotWidget slotWidget = new SlotWidget(ingredient, column * (EMILoot.config.chestLootCompact ? 18 : 45), titleSpace + row * finalRowHeight).recipeContext(this);
+                if (EMILoot.config.chestLootCompact) {
+                    widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.percentage", fTrim).formatted(Formatting.ITALIC,Formatting.GOLD)));
+                } else {
+                    widgets.add(slotWidget);
+                    widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.EnchantmentPredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
@@ -22,6 +23,7 @@ public class EnchantmentPredicateParser{
         if (!list2.isEmpty()){
             return LText.translatable("emi_loot.item_predicate.enchant", ListProcessors.buildAndList(list2));
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable enchantment predicate in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 }

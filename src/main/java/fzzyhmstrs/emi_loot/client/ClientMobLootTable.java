@@ -159,11 +159,6 @@ public class ClientMobLootTable implements LootReceiver {
         Identifier mobId = buf.readIdentifier();
         int builderCount = buf.readByte();
 
-        //shortcut -2 means empty sender. Build an empty table to match
-        if (builderCount == -2){
-            return new ClientMobLootTable();
-        }
-
         Map<List<TextKey>, ClientMobRawPool> itemMap = new HashMap<>();
         //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
         if (builderCount == -1){

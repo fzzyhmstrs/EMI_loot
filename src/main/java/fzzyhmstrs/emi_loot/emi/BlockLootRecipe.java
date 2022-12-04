@@ -30,18 +30,16 @@ public class BlockLootRecipe implements EmiRecipe {
 
     public BlockLootRecipe(ClientBlockLootTable loot){
         this.loot = loot;
-        allStacksGuaranteed = true;
         Identifier blockId = loot.blockId;
         Block block = Registry.BLOCK.get(blockId);
         loot.build(MinecraftClient.getInstance().world, block);
-        Identifier lootId = loot.id;
         inputStack = EmiStack.of(block);
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((builtPool)-> {
             builtPool.stackMap().forEach((weight, stacks) -> {
-                if (weight < 100f) {
+                /*if (weight < 100f) {
                     allStacksGuaranteed = false;
-                }
+                }*/
                 list.addAll(stacks.getEmiStacks());
             });
             addWidgetBuilders(builtPool, false);
@@ -52,8 +50,6 @@ public class BlockLootRecipe implements EmiRecipe {
     private final ClientBlockLootTable loot;
     private final EmiStack inputStack;
     private final List<EmiStack> outputStacks;
-    private boolean allStacksGuaranteed;
-    private final MinecraftClient client = MinecraftClient.getInstance();
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
@@ -97,7 +93,7 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 164;
+        return 160;
     }
 
     @Override
@@ -108,8 +104,8 @@ public class BlockLootRecipe implements EmiRecipe {
     @Override
     public void addWidgets(WidgetHolder widgets) {
         widgets.addSlot(inputStack,0,0);
-        widgets.addTexture(EmiTexture.EMPTY_ARROW, 22, 0);
-        int x = 50;
+        widgets.addTexture(EmiTexture.EMPTY_ARROW, 20, 0);
+        int x = 46;
         int y = 0;
 
         for (WidgetRowBuilder builder: rowBuilderList){
@@ -119,7 +115,7 @@ public class BlockLootRecipe implements EmiRecipe {
                 x += widget.getWidth() + 6;
             }
             y += 29;
-            x = 50;
+            x = 46;
         }
     }
 

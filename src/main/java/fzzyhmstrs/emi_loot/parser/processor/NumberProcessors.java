@@ -1,6 +1,8 @@
 package fzzyhmstrs.emi_loot.parser.processor;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.loot.operator.BoundedIntUnaryOperator;
 import net.minecraft.loot.provider.number.LootNumberProvider;
@@ -9,6 +11,7 @@ import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.text.MutableText;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class NumberProcessors {
@@ -21,6 +24,7 @@ public class NumberProcessors {
                 return LText.translatable(keyFalse, args);
             }
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Boolean null for keys: " + keyTrue + " / " + keyFalse + " in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 
@@ -37,6 +41,7 @@ public class NumberProcessors {
                 return LText.translatable(fallback);
             }
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Non-specific number range for keys: " + exact + " / " + between + " in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 
@@ -58,6 +63,7 @@ public class NumberProcessors {
         } else if (max != null){
             return LText.translatable("emi_loot.operator.max", processLootNumberProvider(max));
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Null or undefined bounded int unary operator in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.operator.unknown");
     }
 
@@ -89,6 +95,7 @@ public class NumberProcessors {
             float lootScale = ((ScoreLootNumberProviderAccessor)provider).getScale();
             return LText.translatable("emi_loot.number_provider.score",lootScore,lootScale);
         } else {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Non-specific or undefined number provider in table: "  + LootTableParser.currentTable);
             return LText.translatable("emi_loot.number_provider.unknown");
         }
     }
@@ -112,6 +119,7 @@ public class NumberProcessors {
         } else if (type == LootNumberProviderTypes.SCORE){
             return 0f;
         } else {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Loot number provider with unknown type: " + provider.getType().toString());
             return 0f;
         }
     }

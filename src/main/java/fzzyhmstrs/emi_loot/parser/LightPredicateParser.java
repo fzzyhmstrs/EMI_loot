@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.LightPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.LightPredicate;
@@ -13,6 +14,7 @@ public class LightPredicateParser{
     public static Text parseLightPredicate(LightPredicate predicate){
         NumberRange.IntRange range = ((LightPredicateAccessor) predicate).getRange();
         if (range.equals(NumberRange.IntRange.ANY)) {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Undefined light predicate in table: "  + LootTableParser.currentTable);
             return LText.translatable("emi_loot.location_predicate.light_any");
         }
         Integer min = range.getMin();
