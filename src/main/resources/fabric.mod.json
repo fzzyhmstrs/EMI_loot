@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "emi_loot",
+  "id": "${id}",
   "version": "${version}",
   "name": "EMI Loot",
   "description":"Plugin for EMI that shows chest loot and block drops. Entity drops TBA.",
   "icon": "assets/emi_loot/icon.png",
   "authors": [
-    "fzzyhmstrs"
+    "fzzyhmstrs",
+    "lxly9 (art)"
   ],
   "entrypoints": {
     "main": [
