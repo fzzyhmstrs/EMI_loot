@@ -8,11 +8,11 @@ import java.util.List;
 
 public class ListProcessors {
     
-    public static Text buildAndList(List<MutableText> list){
+    public static MutableText buildAndList(List<MutableText> list){
         return buildAndList(list, 0);
     }
 
-    public static Text buildAndList(List<MutableText> list, int currentIndex){
+    public static MutableText buildAndList(List<MutableText> list, int currentIndex){
         if (currentIndex == (list.size() - 1)){
             return list.get(currentIndex);
         } else if (currentIndex == (list.size() - 2)){
@@ -22,11 +22,11 @@ public class ListProcessors {
         }
     }
     
-    public static Text buildOrList(List<MutableText> list){
+    public static MutableText buildOrList(List<MutableText> list){
         return buildOrList(list, 0);
     }
     
-    public static Text buildOrList(List<MutableText> list, int currentIndex){
+    public static MutableText buildOrList(List<MutableText> list, int currentIndex){
         if (currentIndex == (list.size() - 1)){
             return list.get(currentIndex);
         } else if (currentIndex == (list.size() - 2)){

@@ -67,7 +67,6 @@ public class EntityEffectPredicateParser{
                     list.add( LText.translatable("emi_loot.entity_predicate.effect.visible_false", name.getString()));
                 }
             }
-
             list.add(LText.translatable("emi_loot.entity_predicate.effect.fallback", name.getString()));
         
         }
@@ -75,6 +74,6 @@ public class EntityEffectPredicateParser{
             return LText.translatable("emi_loot.entity_predicate.effect_1", ListProcessors.buildAndList(list));
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Unparsable entity effect predicate in table: "  + LootTableParser.currentTable);
-        return LText.empty();
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 }

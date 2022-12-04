@@ -15,7 +15,7 @@ public class LightPredicateParser{
         NumberRange.IntRange range = ((LightPredicateAccessor) predicate).getRange();
         if (range.equals(NumberRange.IntRange.ANY)) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Undefined light predicate in table: "  + LootTableParser.currentTable);
-            return LText.translatable("emi_loot.location_predicate.light_any");
+            return LText.translatable("emi_loot.predicate.invalid");
         }
         Integer min = range.getMin();
         Integer max = range.getMax();

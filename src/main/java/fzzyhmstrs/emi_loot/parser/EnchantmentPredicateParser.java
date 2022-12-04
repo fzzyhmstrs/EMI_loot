@@ -24,6 +24,6 @@ public class EnchantmentPredicateParser{
             return LText.translatable("emi_loot.item_predicate.enchant", ListProcessors.buildAndList(list2));
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable enchantment predicate in table: "  + LootTableParser.currentTable);
-        return LText.empty();
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 }
