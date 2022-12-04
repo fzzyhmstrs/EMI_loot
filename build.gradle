@@ -9,6 +9,10 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version as Object
 group = project.maven_group as Object
 
+loom {
+    accessWidenerPath = file("src/main/resources/emi_loot.accesswidener")
+}
+
 repositories {
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
