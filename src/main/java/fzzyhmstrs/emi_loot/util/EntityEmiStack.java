@@ -5,6 +5,7 @@ import dev.emi.emi.EmiPort;
 import dev.emi.emi.EmiUtil;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.screen.tooltip.RemainderTooltipComponent;
+import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,7 +20,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
@@ -31,18 +34,22 @@ import java.util.List;
 public class EntityEmiStack extends EmiStack {
     private final @Nullable Entity entity;
     private final EntityEntry entry;
-    private final double scale;
+    private final EntityRenderContext ctx;
 
     protected EntityEmiStack(@Nullable Entity entity) {
-        this.entity = entity;
-        this.entry = new EntityEntry(entity);
-        this.scale = 8.0f;
+        this(entity,8.0);
     }
 
     protected EntityEmiStack(@Nullable Entity entity, double scale) {
         this.entity = entity;
         this.entry = new EntityEntry(entity);
-        this.scale = scale;
+        if (entity != null) {
+            boolean hasTransform = ClientResourceData.MOB_ROTATIONS.containsKey(entity.getType());
+            Vec3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),Vec3f.ZERO);
+            ctx = new EntityRenderContext(scale,hasTransform,transform);
+        } else {
+            ctx = new EntityRenderContext(scale,false,Vec3f.ZERO);
+        }
     }
 
     public static EntityEmiStack of(@Nullable Entity entity) {
@@ -70,9 +77,9 @@ public class EntityEmiStack extends EmiStack {
     public void render(MatrixStack matrices, int x, int y, float delta, int flags) {
         if (entity != null) {
             if (entity instanceof LivingEntity living)
-                renderEntity(x + 8, (int) (y + 8 + scale), scale, living);
+                renderEntity(x + 8, (int) (y + 8 + ctx.size), ctx, living);
             else
-                renderEntity((int) (x + (2 * scale / 2)), (int) (y + (2 * scale)), scale, entity);
+                renderEntity((int) (x + (2 * ctx.size / 2)), (int) (y + (2 * ctx.size)), ctx, entity);
         }
     }
 
@@ -121,7 +128,7 @@ public class EntityEmiStack extends EmiStack {
         return entity != null ? entity.getName() : EmiPort.literal("yet another missingno");
     }
 
-    public static void renderEntity(int x, int y, double size, LivingEntity entity) {
+    public static void renderEntity(int x, int y, EntityRenderContext ctx, LivingEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         double width = client.getWindow().getScaledWidth();
@@ -140,9 +147,14 @@ public class EntityEmiStack extends EmiStack {
         RenderSystem.applyModelViewMatrix();
         MatrixStack matrixStack2 = new MatrixStack();
         matrixStack2.translate(0.0, 0.0, 1000.0);
-        matrixStack2.scale((float) size, (float) size, (float) size);
+        matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
-        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F);
+        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180));
+        if (ctx.hasTransform){
+            Quaternion quaternion3 = new Quaternion(ctx.transform.getX(),ctx.transform.getY(),ctx.transform.getZ(),true);
+            quaternion.hamiltonProduct(quaternion3);
+        }
+
         quaternion.hamiltonProduct(quaternion2);
         matrixStack2.multiply(quaternion);
         float h = entity.bodyYaw;
@@ -150,15 +162,13 @@ public class EntityEmiStack extends EmiStack {
         float j = entity.getPitch();
         float k = entity.prevHeadYaw;
         float l = entity.headYaw;
-        entity.bodyYaw = 180.0F + f * 20.0F;
-        entity.setYaw(180.0F + f * 40.0F);
-        entity.setPitch(-g * 20.0F);
+        entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)));
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)) );
         entity.headYaw = entity.getYaw();
         entity.prevHeadYaw = entity.getYaw();
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
-        quaternion2.conjugate();
-        entityRenderDispatcher.setRotation(quaternion2);
         entityRenderDispatcher.setRenderShadows(false);
         VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
@@ -174,7 +184,7 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    public static void renderEntity(int x, int y, double size, Entity entity) {
+    public static void renderEntity(int x, int y, EntityRenderContext ctx, Entity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
         Mouse mouse = client.mouse;
         float w = 1920;
@@ -195,19 +205,22 @@ public class EntityEmiStack extends EmiStack {
         RenderSystem.applyModelViewMatrix();
         MatrixStack matrixStack2 = new MatrixStack();
         matrixStack2.translate(0.0, 0.0, 1000.0);
-        matrixStack2.scale((float) size, (float) size, (float) size);
+        matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
-        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F);
+        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180));
+        if (ctx.hasTransform){
+            Quaternion quaternion3 = new Quaternion(ctx.transform.getX(),ctx.transform.getY(),ctx.transform.getZ(),true);
+            quaternion.hamiltonProduct(quaternion3);
+        }
+
         quaternion.hamiltonProduct(quaternion2);
         matrixStack2.multiply(quaternion);
         float i = entity.getYaw();
         float j = entity.getPitch();
-        entity.setYaw(180.0F + f * 40.0F);
-        entity.setPitch(-g * 20.0F);
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)) );
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
-        quaternion2.conjugate();
-        entityRenderDispatcher.setRotation(quaternion2);
         entityRenderDispatcher.setRenderShadows(false);
         VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
@@ -218,6 +231,10 @@ public class EntityEmiStack extends EmiStack {
         matrixStack.pop();
         RenderSystem.applyModelViewMatrix();
         DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    private record EntityRenderContext(double size, boolean hasTransform, Vec3f transform){
+        static EntityRenderContext EMPTY = new EntityRenderContext(8.0,false,Vec3f.ZERO);
     }
 
     public static class EntityEntry extends Entry<Entity> {

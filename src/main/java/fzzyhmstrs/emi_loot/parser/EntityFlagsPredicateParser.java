@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.EntityFlagsPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.EntityFlagsPredicate;
@@ -52,6 +53,7 @@ public class EntityFlagsPredicateParser{
                 return LText.translatable("emi_loot.entity_predicate.baby_false");
             }
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable entity flags predicate in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 

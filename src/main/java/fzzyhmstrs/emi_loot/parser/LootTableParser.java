@@ -61,6 +61,7 @@ public class LootTableParser {
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static Map<Identifier, LootTable> tables = new HashMap<>();
     private static LootConditionManager conditionManager;
+    public static String currentTable = "none";
 
     public void registerServer(){
         if (EMILoot.config.parseChestLoot)
@@ -74,11 +75,14 @@ public class LootTableParser {
     public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
         LootTableParser.tables = tables;
         LootTableParser.conditionManager = ((LootManagerConditionManager)manager).getManager();
-        System.out.println("parsing loot tables");
+        EMILoot.LOGGER.info("parsing loot tables");
         tables.forEach((id,lootTable)-> {
+            currentTable = id.toString();
             LootContextType type = lootTable.getType();
             if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
-                chestSenders.put(id, parseChestLootTable(lootTable,id));
+                ChestLootTableSender sender = parseChestLootTable(lootTable,id);
+                sender.build();
+                chestSenders.put(id, sender);
             } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
                 blockSenders.put(id, parseBlockLootTable(lootTable,id));
             }
@@ -90,11 +94,12 @@ public class LootTableParser {
                 Identifier mobTableId = type.getLootTableId();
                 LootTable mobTable = manager.getTable(mobTableId);
                 if (type == EntityType.PIG && mobId.equals(chk) || mobTable != LootTable.EMPTY) {
+                    currentTable = mobTableId.toString();
                     mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
                 }
             });
         }
-        System.out.println("finished parsing loot tables");
+        EMILoot.LOGGER.info("finished parsing loot tables");
     }
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id){

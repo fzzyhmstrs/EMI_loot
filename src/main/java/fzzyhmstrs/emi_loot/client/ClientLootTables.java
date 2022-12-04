@@ -21,17 +21,17 @@ public class ClientLootTables {
         ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) System.out.println("received chest " + table.getId());
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received chest " + table.getId());
         });
         ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) System.out.println("received block " + table.getId());
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received block " + table.getId());
         });
         ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) System.out.println("received mob " + table.getId());
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
         });
     }
 

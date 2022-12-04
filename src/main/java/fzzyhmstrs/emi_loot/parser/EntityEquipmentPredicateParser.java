@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.EntityEquipmentPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.EntityEquipmentPredicate;
@@ -38,6 +39,7 @@ public class EntityEquipmentPredicateParser{
         if (!offhand.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(offhand);
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable equipment predicate in table: "  + LootTableParser.currentTable);
         return LText.empty();
     }
 }

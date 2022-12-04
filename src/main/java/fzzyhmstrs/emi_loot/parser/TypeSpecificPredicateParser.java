@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.FishingHookPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LightningBoltPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.PlayerPredicateAccessor;
@@ -30,7 +31,6 @@ public class TypeSpecificPredicateParser {
         if (predicate instanceof FishingHookPredicate){
             return parseFishingHookPredicate((FishingHookPredicate)predicate);
         }
-        
 
         if (predicate instanceof PlayerPredicate){
             return parsePlayerPredicate((PlayerPredicate)predicate);
@@ -40,6 +40,7 @@ public class TypeSpecificPredicateParser {
             return parseSlimePredicate((SlimePredicate)predicate);
         }
 
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Type specific predicate undefined or for a cat or frog variant (not implemented). Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.entity_predicate.type_specific.any");
     }
     

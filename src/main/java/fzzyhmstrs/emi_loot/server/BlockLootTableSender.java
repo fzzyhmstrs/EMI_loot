@@ -30,14 +30,6 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
         PacketByteBuf buf = PacketByteBufs.create();
         //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
         buf.writeString(idToSend);
-        if (builderList.size() == 1 && builderList.get(0).isSimple){
-            buf.writeByte(-1);
-            buf.writeRegistryValue(Registry.ITEM,builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
-        } else if (builderList.isEmpty()){
-            buf.writeByte(-2);
-            ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
-        }
         //pre-build the builders to do empty checks
         builderList.forEach((builder)->{
             builder.build();
@@ -46,8 +38,17 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
             }
         });
         if (isEmpty){
-            buf.writeByte(-2);
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
+            return;
+        }
+        if (builderList.size() == 1 && builderList.get(0).isSimple){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
+            buf.writeByte(-1);
+            buf.writeRegistryValue(Registry.ITEM,builderList.get(0).simpleStack.getItem());
             ServerPlayNetworking.send(player,BLOCK_SENDER, buf);
+            return;
+        } else if (builderList.isEmpty()){
+            return;
         }
 
         buf.writeByte(builderList.size());

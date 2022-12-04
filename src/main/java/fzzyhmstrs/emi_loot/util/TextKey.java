@@ -189,6 +189,10 @@ public record TextKey(int index, List<String> args){
     public static int getIndex(String key){
         return keyMap.getOrDefault(key,-1);
     }
+
+    public static String getKey(int index){
+        return keyReverseMap.getOrDefault(index,"emi_loot.function.empty");
+    }
                                                                                     
     public static Identifier getSpriteId(int index){
         return keySpriteIdMap.getOrDefault(index,EMPTY);

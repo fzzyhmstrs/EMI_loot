@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.EntityPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.NbtPredicate;
@@ -87,6 +88,7 @@ public class EntityPredicateParser {
             return EntityPredicateParser.parseEntityPredicate(targetedEntity);
         }
 
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Entity predicate undefined in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.entity_predicate.any");
 
     }

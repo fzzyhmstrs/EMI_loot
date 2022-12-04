@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.DistancePredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.NumberRange;
@@ -29,6 +30,7 @@ public class DistancePredicateParser{
         if (!z.equals(NumberRange.FloatRange.ANY)){
             return LText.translatable("emi_loot.entity_predicate.distance_z",z.getMin(),z.getMax());
         }
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Unparsable distance predicate in table: " + LootTableParser.currentTable);
         return LText.empty();
     }
 
