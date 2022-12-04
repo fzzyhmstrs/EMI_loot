@@ -71,7 +71,7 @@ public class LocationPredicateParser {
             return FluidPredicateParser.parseFluidPredicate(fluid);
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable location predicate in table: "  + LootTableParser.currentTable);
-        return LText.empty();
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 
 }

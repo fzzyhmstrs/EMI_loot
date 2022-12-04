@@ -1,11 +1,13 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.BlockPredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.block.Block;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.predicate.NbtPredicate;
+import net.minecraft.predicate.StatePredicate;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -32,11 +34,17 @@ public class BlockPredicateParser {
             
         }
 
+        StatePredicate statePredicate = ((BlockPredicateAccessor)predicate).getState();
+        if (!statePredicate.equals(StatePredicate.ANY)){
+            return StatePredicateParser.parseStatePredicate(statePredicate);
+        }
+
         NbtPredicate nbt = ((BlockPredicateAccessor)predicate).getNbt();
         if (!nbt.equals(NbtPredicate.ANY)){
             return NbtPredicateParser.parseNbtPredicate(nbt);
         }
 
-        return LText.literal("with a certain blockstate");
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable block predicate in table: "  + LootTableParser.currentTable);
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 }

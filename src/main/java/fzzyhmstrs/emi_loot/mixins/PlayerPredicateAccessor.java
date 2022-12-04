@@ -27,8 +27,8 @@ public interface PlayerPredicateAccessor {
     @Accessor(value = "recipes")
     Object2BooleanMap<Identifier> getRecipes();
 
-    /*@Accessor(value = "advancements")
-    Map<Identifier, PlayerPredicate.AdvancementPredicate> getAdvancements();*/
+    @Accessor(value = "advancements")
+    Map<Identifier, PlayerPredicate.AdvancementPredicate> getAdvancements();
 
     @Accessor(value = "lookingAt")
     EntityPredicate getLookingAt();

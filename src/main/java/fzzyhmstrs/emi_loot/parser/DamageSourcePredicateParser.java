@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.DamageSourcePredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
@@ -93,7 +94,8 @@ public class DamageSourcePredicateParser {
             return EntityPredicateParser.parseEntityPredicate(directPredicate);
         }
 
-        return LText.empty();
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable damage source predicate in table: "  + LootTableParser.currentTable);
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 
 }

@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.FishingHookPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.LightningBoltPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.PlayerPredicateAccessor;
@@ -16,6 +15,8 @@ import net.minecraft.stat.Stat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameMode;
 
 import java.util.LinkedList;
@@ -48,7 +49,8 @@ public class TypeSpecificPredicateParser {
                     )
             );
         }
-        return LText.translatable("emi_loot.entity_predicate.type_specific.any");
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        return LText.translatable("emi_loot.predicate.invalid");
     }
     
     
@@ -124,12 +126,45 @@ public class TypeSpecificPredicateParser {
             }
         }
 
+        Map<Identifier, PlayerPredicate.AdvancementPredicate> advancements = ((PlayerPredicateAccessor)predicate).getAdvancements();
+        if (!advancements.isEmpty()){
+            List<MutableText> list = new LinkedList<>();
+            for (Map.Entry<Identifier, PlayerPredicate.AdvancementPredicate> entry: advancements.entrySet()){
+                String idString = entry.getKey().toString();
+                PlayerPredicate.AdvancementPredicate advancementPredicate = entry.getValue();
+                if (advancementPredicate instanceof PlayerPredicate.CompletedAdvancementPredicate){
+                    boolean done = ((PlayerPredicate.CompletedAdvancementPredicate) advancementPredicate).done;
+                    if (done){
+                        list.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.adv.id_true",idString));
+                    } else {
+                        list.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.adv.id_false",idString));
+                    }
+                } else if (advancementPredicate instanceof PlayerPredicate.AdvancementCriteriaPredicate){
+                    Object2BooleanMap<String> criteria = ((PlayerPredicate.AdvancementCriteriaPredicate) advancementPredicate).criteria;
+                    if (!criteria.isEmpty()) {
+                        List<MutableText> list2 = new LinkedList<>();
+                        for (Object2BooleanMap.Entry<String> criteriaEntry : criteria.object2BooleanEntrySet()){
+                            if (criteriaEntry.getBooleanValue()){
+                                list2.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.adv.crit_true",criteriaEntry.getKey()));
+                            } else {
+                                list2.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.adv.crit_false",criteriaEntry.getKey()));
+                            }
+                        }
+                        list.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.adv.crit_base", idString, ListProcessors.buildAndList(list2)));
+                    }
+                }
+            }
+            return LText.translatable(
+                    "emi_loot.entity_predicate.type_specific.player", ListProcessors.buildAndList(list));
+        }
+
         EntityPredicate entityPredicate = ((PlayerPredicateAccessor)predicate).getLookingAt();
         if (!entityPredicate.equals(EntityPredicate.ANY)){
             return LText.translatable(
                     "emi_loot.entity_predicate.type_specific.player",
                     LText.translatable("emi_loot.entity_predicate.type_specific.player.looking", EntityPredicateParser.parseEntityPredicate(entityPredicate)));
         }
-        return LText.translatable("emi_loot.entity_predicate.type_specific.any");
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 }

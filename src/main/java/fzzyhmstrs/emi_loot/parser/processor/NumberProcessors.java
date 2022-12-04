@@ -42,7 +42,7 @@ public class NumberProcessors {
             }
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Non-specific number range for keys: " + exact + " / " + between + " in table: "  + LootTableParser.currentTable);
-        return LText.empty();
+        return LText.translatable("emi_loot.predicate.invalid");
     }
 
     public static MutableText processBoundedIntUnaryOperator(BoundedIntUnaryOperator operator){
