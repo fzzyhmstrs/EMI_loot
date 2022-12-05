@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
+import com.google.common.collect.Multimap;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
@@ -62,6 +63,7 @@ public class LootTableParser {
     private static Map<Identifier, LootTable> tables = new HashMap<>();
     private static LootConditionManager conditionManager;
     public static String currentTable = "none";
+    public static List<Identifier> parsedDirectDrops = new LinkedList<>();
 
     public void registerServer(){
         if (EMILoot.config.parseChestLoot)
@@ -74,32 +76,48 @@ public class LootTableParser {
 
     public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
         LootTableParser.tables = tables;
+        parsedDirectDrops = new LinkedList<>();
         LootTableParser.conditionManager = ((LootManagerConditionManager)manager).getManager();
         EMILoot.LOGGER.info("parsing loot tables");
-        tables.forEach((id,lootTable)-> {
-            currentTable = id.toString();
-            LootContextType type = lootTable.getType();
-            if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
-                ChestLootTableSender sender = parseChestLootTable(lootTable,id);
-                sender.build();
-                chestSenders.put(id, sender);
-            } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
-                blockSenders.put(id, parseBlockLootTable(lootTable,id));
-            }
-        });
+        tables.forEach(LootTableParser::parseLootTable);
         if (EMILoot.config.parseMobLoot) {
             Identifier chk = new Identifier("pig");
             Registry.ENTITY_TYPE.stream().toList().forEach((type) -> {
-                Identifier mobId = Registry.ENTITY_TYPE.getId(type);
-                Identifier mobTableId = type.getLootTableId();
-                LootTable mobTable = manager.getTable(mobTableId);
-                if (type == EntityType.PIG && mobId.equals(chk) || mobTable != LootTable.EMPTY) {
-                    currentTable = mobTableId.toString();
-                    mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
+                if (type == EntityType.SHEEP){
+                    for (Identifier sheepId : ServerResourceData.SHEEP_TABLES){
+                        parseEntityType(manager,type,sheepId,chk);
+                    }
                 }
+                parseEntityType(manager,type,type.getLootTableId(),chk);
             });
         }
+        Multimap<Identifier, LootTable> missedDrops = ServerResourceData.getMissedDirectDrops(parsedDirectDrops);
+        for (Map.Entry<Identifier,LootTable> entry : missedDrops.entries()){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("parsing missed direct drop table: " + entry.getKey());
+            parseLootTable(entry.getKey(),entry.getValue());
+        }
         EMILoot.LOGGER.info("finished parsing loot tables");
+    }
+
+    private static void parseLootTable(Identifier id, LootTable lootTable){
+        currentTable = id.toString();
+        LootContextType type = lootTable.getType();
+        if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
+            ChestLootTableSender sender = parseChestLootTable(lootTable,id);
+            sender.build();
+            chestSenders.put(id, sender);
+        } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
+            blockSenders.put(id, parseBlockLootTable(lootTable,id));
+        }
+    }
+
+    private static void parseEntityType(LootManager manager,EntityType<?> type, Identifier mobTableId, Identifier fallback){
+        Identifier mobId = Registry.ENTITY_TYPE.getId(type);
+        LootTable mobTable = manager.getTable(mobTableId);
+        if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
+            currentTable = mobTableId.toString();
+            mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
+        }
     }
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id){
@@ -122,9 +140,31 @@ public class LootTableParser {
 
     private static BlockLootTableSender parseBlockLootTable(LootTable lootTable, Identifier id){
         BlockLootTableSender sender = new BlockLootTableSender(id);
+        parseBlockLootTableInternal(lootTable,sender, false);
+        if (ServerResourceData.DIRECT_DROPS.containsKey(id)){
+            parsedDirectDrops.add(id);
+            Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
+            parseBlockDirectLootTable(directTables,sender);
+        }
+        return sender;
+    }
+
+    private static void parseBlockDirectLootTable(Collection<LootTable> tables, BlockLootTableSender sender){
+        for (LootTable directTable : tables) {
+            if (directTable != null) {
+                parseBlockLootTableInternal(directTable, sender, true);
+            }
+        }
+    }
+
+    private static void parseBlockLootTableInternal(LootTable lootTable, BlockLootTableSender sender, boolean isDirect){
         for (LootPool pool : lootTable.pools) {
             LootCondition[] conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = new LinkedList<>();
+            if (isDirect){
+                if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding direct drop condition to " + currentTable);
+                parsedConditions.add(new LootConditionResult(TextKey.of("emi_loot.condition.direct_drop")));
+            }
             for (LootCondition condition: conditions){
                 List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
                 for (LootConditionResult result: results){
@@ -155,14 +195,35 @@ public class LootTableParser {
             }
             sender.addBuilder(builder);
         }
-        return sender;
     }
 
     private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId){
         MobLootTableSender sender = new MobLootTableSender(id, mobId);
+        parseMobLootTableInternal(lootTable,sender, false);
+        if (ServerResourceData.DIRECT_DROPS.containsKey(id)){
+            parsedDirectDrops.add(id);
+            Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
+            parseMobDirectLootTable(directTables,sender);
+        }
+        return sender;
+    }
+
+    private static void parseMobDirectLootTable(Collection<LootTable> tables, MobLootTableSender sender){
+        for (LootTable directTable : tables) {
+            if (directTable != null) {
+                parseMobLootTableInternal(directTable, sender, true);
+            }
+        }
+    }
+
+    private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect){
         for (LootPool pool : lootTable.pools) {
             LootCondition[] conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = new LinkedList<>();
+            if (isDirect){
+                if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding direct drop condition to " + currentTable);
+                parsedConditions.add(new LootConditionResult(TextKey.of("emi_loot.condition.direct_drop")));
+            }
             for (LootCondition condition: conditions){
                 List<LootConditionResult> results = parseLootCondition(condition, ItemStack.EMPTY);
                 for (LootConditionResult result: results){
@@ -194,7 +255,7 @@ public class LootTableParser {
                     List<? extends LootBuilder> parsedBuilders = results.getBuilders();
                     List<ItemEntryResult> parsedList = new LinkedList<>();
                     parsedBuilders.forEach(parsedBuilder->
-                        parsedList.addAll(parsedBuilder.revert())
+                            parsedList.addAll(parsedBuilder.revert())
                     );
                     for (ItemEntryResult result: parsedList){
                         builder.addItem(result);
@@ -203,7 +264,6 @@ public class LootTableParser {
             }
             sender.addBuilder(builder);
         }
-        return sender;
     }
 
     private static FishingLootTableSender parseFishingLootTable(LootTable lootTable, Identifier id){

@@ -154,8 +154,16 @@ public class EMILoot implements ModInitializer {
         @Override
         public String format(LogRecord record) {
             ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneId.systemDefault());
+            String levelName;
+            if (record.getLevel() == Level.SEVERE){
+                levelName = "ERROR";
+            } else if(record.getLevel() == Level.WARNING){
+                levelName = "WARN";
+            } else{
+                levelName = record.getLevel().getName();
+            }
             String a = "[" + zdt.getHour() + ":" + zdt.getMinute() + ":" + zdt.getSecond() + "] ";
-            String b = "[EMI Loot/" + record.getLevel().getLocalizedName() + "] [" + record.getSourceClassName() + "]: ";
+            String b = "[EMI Loot/" + levelName + "] [" + record.getSourceClassName() + "]: ";
             String c = record.getMessage() + "\n";
             return a + b + c;
         }

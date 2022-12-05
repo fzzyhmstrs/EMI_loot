@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.mixins;
 
 import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.util.LootManagerConditionManager;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
@@ -35,6 +36,7 @@ public class LootManagerMixin implements LootManagerConditionManager {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("RETURN"))
     private void emi_loot_lootTablesAfterFabric(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci){
+        ServerResourceData.loadDirectTables(resourceManager);
         LootTableParser.parseLootTables((LootManager)(Object)this,tables);
     }
 }

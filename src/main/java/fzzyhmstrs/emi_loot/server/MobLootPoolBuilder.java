@@ -49,11 +49,11 @@ public class MobLootPoolBuilder implements LootBuilder {
                 isEmpty = true;
                 return;
             }
-            if (map.size() == 1 && builder.isSimple && key.isEmpty()) {
+            if (map.size() == 1 && builder.isSimple && conditions.isEmpty() && functions.isEmpty() && key.isEmpty()) {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }
-            builtMap.put(key,builder);
+            builtMap.put(key, builder);
         }
     }
 

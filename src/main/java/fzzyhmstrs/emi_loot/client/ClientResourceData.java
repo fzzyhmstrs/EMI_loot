@@ -29,9 +29,7 @@ public class ClientResourceData {
     public static final Map<EntityType<?>, Vec3f> MOB_ROTATIONS = new HashMap<>();
 
     public static void register(){
-
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new EntityOffsetsReloadListener());
-
     }
 
 
@@ -54,7 +52,7 @@ public class ClientResourceData {
         }
 
         private void load(Identifier fileId, Resource resource){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading entity offsets from file: " + fileId.toString());
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading entity fixers from file: " + fileId.toString());
             try {
                 BufferedReader reader = resource.getReader();
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();

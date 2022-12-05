@@ -8,7 +8,12 @@ import net.minecraft.text.Text;
 
 public class EntityFlagsPredicateParser{
 
+
     public static Text parseEntityFlagsPredicate(EntityFlagsPredicate predicate){
+        return LText.translatable("emi_loot.entity_predicate.flag",parseEntityFlagsPredicateInternal(predicate).getString());
+    }
+
+    private static Text parseEntityFlagsPredicateInternal(EntityFlagsPredicate predicate){
         Boolean isOnFire = ((EntityFlagsPredicateAccessor)predicate).getIsOnFire();
         if (isOnFire != null){
             if (isOnFire){
