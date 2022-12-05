@@ -58,7 +58,7 @@ public class TypeSpecificPredicateParser {
             }
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Type specific predicate undefined or unparsable. Affects table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Type specific predicate undefined or unparsable. Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
     
@@ -87,7 +87,7 @@ public class TypeSpecificPredicateParser {
                     )
             );
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
     
@@ -202,14 +202,14 @@ public class TypeSpecificPredicateParser {
                     "emi_loot.entity_predicate.type_specific.player",
                     LText.translatable("emi_loot.entity_predicate.type_specific.player.looking", EntityPredicateParser.parseEntityPredicate(entityPredicate)));
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
     
     public static Text parseSlimePredicate(SlimePredicate predicate){
         NumberRange.IntRange size = ((SlimePredicateAccessor)predicate).getSize();
         if (size.equals(NumberRange.IntRange.ANY)){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Undefined slime size predicate in table: "  + LootTableParser.currentTable);
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Undefined slime size predicate in table: "  + LootTableParser.currentTable);
             return LText.translatable("emi_loot.predicate.invalid");
         }
         return NumberProcessors.processNumberRange(size,"emi_loot.entity_predicate.type_specific.slime","emi_loot.entity_predicate.type_specific.slime_2","");

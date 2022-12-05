@@ -36,8 +36,8 @@ public class ServerResourceData {
         Identifier id2 = new Identifier(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
         String path2 = id2.getPath();
         if (!(path2.startsWith("blocks/") || path2.startsWith("entities/"))){
-            EMILoot.LOGGER.severe("File path for [" + id + "] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.");
-            EMILoot.LOGGER.severe("Example: [./data/mod_id/direct_drops/blocks/cobblestone.json] is a valid block direct drop table path for a block added by [mod_id].");
+            EMILoot.LOGGER.error("File path for [" + id + "] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.");
+            EMILoot.LOGGER.error("Example: [./data/mod_id/direct_drops/blocks/cobblestone.json] is a valid block direct drop table path for a block added by [mod_id].");
             return;
         }
         try {
@@ -47,10 +47,10 @@ public class ServerResourceData {
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
-                EMILoot.LOGGER.severe("Loot table in file [" + id + "] is empty!");
+                EMILoot.LOGGER.error("Loot table in file [" + id + "] is empty!");
             }
         } catch(Exception e){
-            EMILoot.LOGGER.severe("Failed to open or read direct drops loot table file: " + id);
+            EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
         }
     }
 

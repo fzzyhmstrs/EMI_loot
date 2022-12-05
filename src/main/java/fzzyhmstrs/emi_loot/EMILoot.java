@@ -12,17 +12,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.logging.*;
 
 public class EMILoot implements ModInitializer {
 
     public static String MOD_ID = "emi_loot";
-    public static final Logger LOGGER = getLogger();
+    public static final Logger LOGGER = LoggerFactory.getLogger("emi_loot");
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -54,7 +53,7 @@ public class EMILoot implements ModInitializer {
         File dir = FabricLoader.getInstance().getConfigDir().toFile();
         
         if (!dir.exists() && !dir.mkdirs()) {
-            LOGGER.severe("EMI Loot could not find or create config directory, using default configs");
+            LOGGER.error("EMI Loot could not find or create config directory, using default configs");
             return new EmiLootConfig();
         }
         String f_old_name = "EmiLootConfig.json";
@@ -71,7 +70,7 @@ public class EMILoot implements ModInitializer {
                     f_old.delete();
                     return gson.fromJson(new InputStreamReader(new FileInputStream(f)),EmiLootConfig.class);
                 } else if (!f.createNewFile()){
-                    LOGGER.severe("Failed to create new config file, using old config with new defaults.");
+                    LOGGER.error("Failed to create new config file, using old config with new defaults.");
                 } else {
                     f_old.delete();
                     FileWriter fw = new FileWriter(f);
@@ -98,8 +97,8 @@ public class EMILoot implements ModInitializer {
                 }
             }
         } catch(Exception e){
-            LOGGER.severe("Emi Loot failed to create or read it's config file!");
-            LOGGER.severe(Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Emi Loot failed to create or read it's config file!");
+            LOGGER.error(Arrays.toString(e.getStackTrace()));
             return new EmiLootConfig();
         }
     }
@@ -136,36 +135,6 @@ public class EMILoot implements ModInitializer {
             newConfig.parseMobLoot = this.parseMobLoot;
             newConfig.parseGameplayLoot = this.parseGameplayLoot;
             return newConfig;
-        }
-    }
-
-    private static Logger getLogger(){
-        Logger logger = Logger.getLogger(MOD_ID);
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new LogFormat());
-        handler.setLevel(Level.ALL);
-        logger.setLevel(Level.ALL);
-        logger.addHandler(handler);
-        logger.setUseParentHandlers(false);
-        return logger;
-    }
-
-    private static class LogFormat extends Formatter{
-        @Override
-        public String format(LogRecord record) {
-            ZonedDateTime zdt = ZonedDateTime.ofInstant(record.getInstant(), ZoneId.systemDefault());
-            String levelName;
-            if (record.getLevel() == Level.SEVERE){
-                levelName = "ERROR";
-            } else if(record.getLevel() == Level.WARNING){
-                levelName = "WARN";
-            } else{
-                levelName = record.getLevel().getName();
-            }
-            String a = "[" + zdt.getHour() + ":" + zdt.getMinute() + ":" + zdt.getSecond() + "] ";
-            String b = "[EMI Loot/" + levelName + "] [" + record.getSourceClassName() + "]: ";
-            String c = record.getMessage() + "\n";
-            return a + b + c;
         }
     }
 }

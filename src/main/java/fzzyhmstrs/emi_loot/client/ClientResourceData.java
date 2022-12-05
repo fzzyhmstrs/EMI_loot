@@ -97,7 +97,7 @@ public class ClientResourceData {
                     }
                 });
             } catch (Exception e){
-                EMILoot.LOGGER.severe("Failed to open or read Entity Offsets file: " + fileId);
+                EMILoot.LOGGER.error("Failed to open or read Entity Offsets file: " + fileId);
             }
         }
     }

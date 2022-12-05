@@ -88,7 +88,7 @@ public class EntityPredicateParser {
             return EntityPredicateParser.parseEntityPredicate(targetedEntity);
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Entity predicate undefined in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate undefined in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
 
     }

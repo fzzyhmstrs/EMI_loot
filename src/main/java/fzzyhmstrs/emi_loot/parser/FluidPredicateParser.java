@@ -34,7 +34,7 @@ public class FluidPredicateParser {
             return StatePredicateParser.parseStatePredicate(statePredicate);
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable fluid predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable fluid predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 

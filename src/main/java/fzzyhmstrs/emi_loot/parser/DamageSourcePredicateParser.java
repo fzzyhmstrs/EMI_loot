@@ -94,7 +94,7 @@ public class DamageSourcePredicateParser {
             return EntityPredicateParser.parseEntityPredicate(directPredicate);
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable damage source predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable damage source predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 

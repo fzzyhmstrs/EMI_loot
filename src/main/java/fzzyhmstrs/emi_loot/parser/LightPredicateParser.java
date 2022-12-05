@@ -14,7 +14,7 @@ public class LightPredicateParser{
     public static Text parseLightPredicate(LightPredicate predicate){
         NumberRange.IntRange range = ((LightPredicateAccessor) predicate).getRange();
         if (range.equals(NumberRange.IntRange.ANY)) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Undefined light predicate in table: "  + LootTableParser.currentTable);
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Undefined light predicate in table: "  + LootTableParser.currentTable);
             return LText.translatable("emi_loot.predicate.invalid");
         }
         Integer min = range.getMin();

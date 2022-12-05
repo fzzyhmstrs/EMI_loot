@@ -58,7 +58,7 @@ public class EntityFlagsPredicateParser{
                 return LText.translatable("emi_loot.entity_predicate.baby_false");
             }
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable entity flags predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable entity flags predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 
