@@ -58,6 +58,8 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
   * naturally spawned equipment
 * Zombie Villager
   * naturally spawned equipment
+* Husk
+  * naturally spawned equipment
 * Skellie
   * skull from creeper
   * equipment
