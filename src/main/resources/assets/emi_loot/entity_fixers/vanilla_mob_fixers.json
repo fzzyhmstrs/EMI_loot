@@ -64,5 +64,8 @@
 	"minecraft:shulker": {
 		"scale": 1.25,
 		"offset": -7
+	},
+	"minecraft:wither": {
+		"offset": 5
 	}
 }

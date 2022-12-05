@@ -70,6 +70,7 @@
   "emi_loot.condition.weather_check.raining_false": "not raining",
   "emi_loot.condition.weather_check.thundering_true": "thundering",
   "emi_loot.condition.weather_check.thundering_false": "not thundering",
+  "emi_loot.condition.direct_drop": "Directly dropped by this mob without using a loot table",
   "emi_loot.number_provider.constant": "exactly %s",
   "emi_loot.number_provider.binomial": "the result of %1$s tests of a binomial distribution of period $2%s (average %3$s)",
   "emi_loot.number_provider.uniform": "between %1$s & %2$s (average %3$s)",

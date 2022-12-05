@@ -49,7 +49,7 @@ public class BlockLootPoolBuilder implements LootBuilder {
                 isEmpty = true;
                 return;
             }
-            if (map.size() == 1 && builder.isSimple && checkKey(key)) {
+            if (map.size() == 1 && conditions.isEmpty() && functions.isEmpty() && builder.isSimple && checkKey(key)) {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }

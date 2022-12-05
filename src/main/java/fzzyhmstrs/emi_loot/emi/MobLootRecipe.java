@@ -81,6 +81,7 @@ public class MobLootRecipe implements EmiRecipe {
                 MutableText colorName = LText.translatable("color.minecraft." + color.getName());
                 name = LText.translatable("emi_loot.color_name",colorName.getString(),entity.getName().getString());
                 ((SheepEntity)entity).setColor(color);
+
             } else {
                 name = entity.getName();
             }

@@ -11,8 +11,8 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 * [Loot Config](https://www.curseforge.com/minecraft/mc-mods/loot-config)
 * [Dark Loot](https://www.curseforge.com/minecraft/mc-mods/darkloot-better-mob-loot)
 * [Amethyst Imbuement](https://modrinth.com/mod/amethyst-imbuement)
-* [Immersive Weathering](https://modrinth.com/mod/immersive-weathering): Some loot conditions used by IW aren't fully implemented yet, but added loot is still compatible
-* [Botania](https://modrinth.com/mod/botania): Some loot conditions used by Botania aren't fully implemented yet, but added loot is still compatible
+* [Immersive Weathering](https://modrinth.com/mod/immersive-weathering)
+* [Botania](https://modrinth.com/mod/botania)
 
 ## Known INCOMPATIBLE Mods
 * [LootJS](https://modrinth.com/mod/lootjs): Affects drops on generation, doesn't modify loot tables themselves.
@@ -24,6 +24,7 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 
 |Task|Status|Planned Release|
 |----|------|---------------|
+|_Released_|---|---|
 |Add chest loot|Complete|0.1.0|
 |Add mob loot|Complete|0.2.0|
 |Add block drops|Complete|0.2.0|
@@ -37,16 +38,16 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Implement EntityPredicate Parser|Complete|0.4.0|
 |Update icon widget impl to handle custom sprites|Complete|0.4.0|
 |Implement other missing parsers as needed|Complete|0.4.0|
-|Remove GUI wiggles|In work|0.5.0|
+|_Not yet released_|---|---|
+|Remove GUI wiggles|Complete|0.5.0|
 |Starting impl of basic config|In work|0.5.0|
 |Check mob/block table percentages actually right|Not started|0.5.0|
 |Port to 1.19.3 to match to EMI's update|Not started|0.5.0|
 |Impl resource-driven mob offsetting overrides|In work|0.5.0|
-|Optimize packet sending size/number|In work|0.5.0?|
+|Optimize packet sending size/number|In work|0.5.0|
+|Impl handler for code-based mob drops (nether star etc)|In work|0.5.0?|
 |Refactor client table builders for commonality?|Not started|0.5.0?|
-|Impl fishing/gameplay loot?|Not started|0.5.0?|
+|Impl fishing/gameplay loot?|Not started|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
-
-|Impl handler for code-based mob drops (nether star etc)|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|
