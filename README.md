@@ -51,3 +51,30 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|
+
+## Direct Drops to Handle
+* Zombie
+  * Head from creeper
+  * naturally spawned equipment
+* Zombie Villager
+  * naturally spawned equipment
+* Skellie
+  * skull from creeper
+  * equipment
+* Stray
+  * equipment
+* Drowned
+  * Nautilus shells
+  * equipment
+* Creeper
+  * Music disc?
+  * head from charged creeper
+* Vindicator
+  * their axe?
+  * raid banner
+* Pillager
+  * their crossbow?
+  * raid banner
+* Evoker
+  * totem?
+  * raid banner
