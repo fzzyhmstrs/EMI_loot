@@ -57,7 +57,7 @@ public class ItemPredicateParser {
             list.addAll(Arrays.stream(storedEnchants).toList());
             return EnchantmentPredicateParser.parseEnchantmentPredicates(list);
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty item predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty item predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 

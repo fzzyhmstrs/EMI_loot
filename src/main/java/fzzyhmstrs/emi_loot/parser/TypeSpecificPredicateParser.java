@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TypeSpecificPredicateParser {
-
+    
     public static Text parseLightningBoltPredicate(LightningBoltPredicate predicate){
         NumberRange.IntRange blocksSetOnFire = ((LightningBoltPredicateAccessor)predicate).getBlocksSetOnFire();
         if (!blocksSetOnFire.equals(NumberRange.IntRange.ANY)){
@@ -49,7 +49,7 @@ public class TypeSpecificPredicateParser {
                     )
             );
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
     
@@ -164,7 +164,7 @@ public class TypeSpecificPredicateParser {
                     "emi_loot.entity_predicate.type_specific.player",
                     LText.translatable("emi_loot.entity_predicate.type_specific.player.looking", EntityPredicateParser.parseEntityPredicate(entityPredicate)));
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Lightning bolt predicate empty or unparsable. Affects table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 }

@@ -31,7 +31,7 @@ public class DistancePredicateParser{
             return LText.translatable("emi_loot.entity_predicate.distance_z",z.getMin(),z.getMax());
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Unparsable distance predicate in table: " + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Unparsable distance predicate in table: " + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 

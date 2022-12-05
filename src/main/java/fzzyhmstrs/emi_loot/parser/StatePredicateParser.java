@@ -33,7 +33,7 @@ public class StatePredicateParser {
             }
             return LText.translatable("emi_loot.state_predicate.base", ListProcessors.buildAndList(list2));
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable block/fluid state predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable block/fluid state predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
   

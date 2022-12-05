@@ -22,7 +22,7 @@ public class EntityTypePredicateParser{
                 return LText.translatable("emi_loot.mob_type_predicate.type", type.getName().getString());
             }
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable entity type predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable entity type predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 }

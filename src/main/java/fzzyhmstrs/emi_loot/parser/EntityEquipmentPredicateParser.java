@@ -39,7 +39,7 @@ public class EntityEquipmentPredicateParser{
         if (!offhand.equals(ItemPredicate.ANY)){
             return ItemPredicateParser.parseItemPredicate(offhand);
         }
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable equipment predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable equipment predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 }

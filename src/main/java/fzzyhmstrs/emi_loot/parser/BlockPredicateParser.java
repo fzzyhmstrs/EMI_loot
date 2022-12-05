@@ -44,7 +44,7 @@ public class BlockPredicateParser {
             return NbtPredicateParser.parseNbtPredicate(nbt);
         }
 
-        if (EMILoot.DEBUG) EMILoot.LOGGER.warning("Empty or unparsable block predicate in table: "  + LootTableParser.currentTable);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable block predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");
     }
 }
