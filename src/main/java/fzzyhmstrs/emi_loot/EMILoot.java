@@ -3,11 +3,14 @@ package fzzyhmstrs.emi_loot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.server.MobSpawnedWithCondition;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -25,9 +28,10 @@ public class EMILoot implements ModInitializer {
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
     public static EmiLootConfig config = readOrCreate();
     public static boolean DEBUG = config.debugMode;
+
+    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("emi_loot:spawns_with", new MobSpawnedWithCondition.Serializer());
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
         public boolean isAvailableForEnchantedBookOffer() {
@@ -43,10 +47,6 @@ public class EMILoot implements ModInitializer {
     public void onInitialize() {
         parser.registerServer();
         Registry.register(Registry.ENCHANTMENT,new Identifier(MOD_ID,"random"),RANDOM);
-    }
-
-    public static void debugText(String text){
-
     }
     
     private static EmiLootConfig readOrCreate(){

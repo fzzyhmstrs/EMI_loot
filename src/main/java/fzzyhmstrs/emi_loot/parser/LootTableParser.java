@@ -700,6 +700,8 @@ public class LootTableParser {
                 }
                 return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_false")));
             }
+        } else if (type == EMILoot.SPAWNS_WITH){
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.spawns_with")));
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }
