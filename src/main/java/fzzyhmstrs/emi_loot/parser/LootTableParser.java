@@ -540,6 +540,9 @@ public class LootTableParser {
         }else if (type == LootFunctionTypes.EXPLOSION_DECAY){
             if (parentIsAlternative) return new LootFunctionResult(TextKey.of("emi_loot.function.decay"), ItemStack.EMPTY, conditionsTexts);
             return new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, conditionsTexts);
+        }else if (type == EMILoot.SET_ANY_DAMAGE){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an any-damage function");
+            return new LootFunctionResult(TextKey.of("emi_loot.function.set_any_damage"), ItemStack.EMPTY, conditionsTexts);
         } else {
             return LootFunctionResult.EMPTY;
         }

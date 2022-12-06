@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.server;
+package fzzyhmstrs.emi_loot.server.condition;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -9,7 +9,7 @@ import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.util.JsonSerializer;
 
-public class BlownUpByCreeperCondition implements LootCondition {
+public class BlownUpByCreeperLootCondition implements LootCondition {
     @Override
     public LootConditionType getType() {
         return EMILoot.CREEPER;
@@ -20,15 +20,15 @@ public class BlownUpByCreeperCondition implements LootCondition {
         return false;
     }
 
-    public static class Serializer implements JsonSerializer<BlownUpByCreeperCondition>{
+    public static class Serializer implements JsonSerializer<BlownUpByCreeperLootCondition>{
 
         @Override
-        public void toJson(JsonObject json, BlownUpByCreeperCondition object, JsonSerializationContext context) {
+        public void toJson(JsonObject json, BlownUpByCreeperLootCondition object, JsonSerializationContext context) {
         }
 
         @Override
-        public BlownUpByCreeperCondition fromJson(JsonObject json, JsonDeserializationContext context) {
-            return new BlownUpByCreeperCondition();
+        public BlownUpByCreeperLootCondition fromJson(JsonObject json, JsonDeserializationContext context) {
+            return new BlownUpByCreeperLootCondition();
         }
     }
 

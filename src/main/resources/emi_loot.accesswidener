@@ -19,5 +19,6 @@ accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementCrite
 accessible field net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate done Z
 accessible field net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate criteria Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
 
-# Loot Condition Types
+# Loot Condition/function Types
 accessible method net/minecraft/loot/condition/LootConditionTypes register (Ljava/lang/String;Lnet/minecraft/util/JsonSerializer;)Lnet/minecraft/loot/condition/LootConditionType;
+accessible method net/minecraft/loot/function/LootFunctionTypes register (Ljava/lang/String;Lnet/minecraft/util/JsonSerializer;)Lnet/minecraft/loot/function/LootFunctionType;

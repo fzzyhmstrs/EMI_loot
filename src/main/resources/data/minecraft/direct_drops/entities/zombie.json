@@ -34,13 +34,7 @@
           "name": "minecraft:iron_sword",
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         }
@@ -65,13 +59,7 @@
           "name": "minecraft:iron_sword",
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -97,64 +85,40 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:leather_chestplate",
-          "weight": 1166,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_chestplate",
-          "weight": 1277,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
-          "weight": 121,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
-          "weight": 12,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         },
@@ -164,18 +128,12 @@
           "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             }
           ]
         }
       ],
-      "rolls": 1.0
+      "rolls": 5.0
     },
     {
       "bonus_rolls": 0.0,
@@ -193,16 +151,10 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:leather_chestplate",
-          "weight": 1166,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -212,16 +164,10 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_chestplate",
-          "weight": 1277,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -231,16 +177,10 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
-          "weight": 121,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -250,16 +190,10 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
-          "weight": 12,
+          "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -272,13 +206,7 @@
           "weight": 1,
           "functions": [
             {
-              "add": false,
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              },
-              "function": "minecraft:set_damage"
+              "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
@@ -286,7 +214,7 @@
           ]
         }
       ],
-      "rolls": 1.0
+      "rolls": 5.0
     }
   ]
 }

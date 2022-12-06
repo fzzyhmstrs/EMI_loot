@@ -44,6 +44,7 @@
   "emi_loot.function.damage": "Items damaged to approximately %s%%",
   "emi_loot.function.copy_state": "Block properties copied to the drop",
   "emi_loot.function.decay": "Must survive explosion",
+  "emi_loot.function.set_any_damage": "Items damaged to any durability value",
   "emi_loot.condition.survives_explosion": "Must survive explosion",
   "emi_loot.condition.blockstate": "Needs a block %s",
   "emi_loot.condition.blockstate.block": "that is %s",

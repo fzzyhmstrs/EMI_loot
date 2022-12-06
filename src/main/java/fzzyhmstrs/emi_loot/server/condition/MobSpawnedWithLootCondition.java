@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.server;
+package fzzyhmstrs.emi_loot.server.condition;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -9,7 +9,7 @@ import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.util.JsonSerializer;
 
-public class MobSpawnedWithCondition implements LootCondition {
+public class MobSpawnedWithLootCondition implements LootCondition {
     @Override
     public LootConditionType getType() {
         return EMILoot.SPAWNS_WITH;
@@ -20,15 +20,15 @@ public class MobSpawnedWithCondition implements LootCondition {
         return false;
     }
 
-    public static class Serializer implements JsonSerializer<MobSpawnedWithCondition>{
+    public static class Serializer implements JsonSerializer<MobSpawnedWithLootCondition>{
 
         @Override
-        public void toJson(JsonObject json, MobSpawnedWithCondition object, JsonSerializationContext context) {
+        public void toJson(JsonObject json, MobSpawnedWithLootCondition object, JsonSerializationContext context) {
         }
 
         @Override
-        public MobSpawnedWithCondition fromJson(JsonObject json, JsonDeserializationContext context) {
-            return new MobSpawnedWithCondition();
+        public MobSpawnedWithLootCondition fromJson(JsonObject json, JsonDeserializationContext context) {
+            return new MobSpawnedWithLootCondition();
         }
     }
 
