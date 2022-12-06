@@ -3,8 +3,9 @@ package fzzyhmstrs.emi_loot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
-import fzzyhmstrs.emi_loot.server.BlownUpByCreeperCondition;
-import fzzyhmstrs.emi_loot.server.MobSpawnedWithCondition;
+import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
+import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
+import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
@@ -12,6 +13,8 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
+import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.loot.function.LootFunctionTypes;
 import net.minecraft.util.Identifier;
 
 import net.minecraft.util.registry.Registry;
@@ -33,9 +36,10 @@ public class EMILoot implements ModInitializer {
     public static EmiLootConfig config = readOrCreate();
     public static boolean DEBUG = config.debugMode;
 
-    //conditions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
-    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("lootify:spawns_with", new MobSpawnedWithCondition.Serializer());
-    public static LootConditionType CREEPER = LootConditionTypes.register("lootify:creeper", new BlownUpByCreeperCondition.Serializer());
+    //conditions & functions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
+    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("lootify:spawns_with", new MobSpawnedWithLootCondition.Serializer());
+    public static LootConditionType CREEPER = LootConditionTypes.register("lootify:creeper", new BlownUpByCreeperLootCondition.Serializer());
+    public static LootFunctionType SET_ANY_DAMAGE = LootFunctionTypes.register("lootify:set_any_damage", new SetAnyDamageLootFunction.Serializer());
 
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override

@@ -94,6 +94,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(125,"emi_loot.condition.direct_drop",(key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
         mapBuilder(126,"emi_loot.condition.spawns_with",(key)-> getBasicText(126), new Identifier(EMILoot.MOD_ID,"textures/gui/spawns_with.png"));
         mapBuilder(127,"emi_loot.condition.creeper",(key)-> getBasicText(127), new Identifier(EMILoot.MOD_ID,"textures/gui/creeper.png"));
+        mapBuilder(128,"emi_loot.function.set_any_damage",(key)-> getBasicText(128), new Identifier(EMILoot.MOD_ID,"textures/gui/damage.png"));
         //No conditions
         mapBuilder(150,"emi_loot.no_conditions",(key)-> getBasicText(150), EMPTY);
     }
