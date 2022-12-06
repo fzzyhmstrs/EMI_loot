@@ -557,6 +557,7 @@ public class LootTableParser {
         try {
             type = condition.getType();
         } catch (Exception e){
+            EMILoot.LOGGER.error("failed to determine a loot type");
             return Collections.singletonList(LootConditionResult.EMPTY);
         }
         if (type == LootConditionTypes.SURVIVES_EXPLOSION){
@@ -704,7 +705,11 @@ public class LootTableParser {
                 return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_false")));
             }
         } else if (type == EMILoot.SPAWNS_WITH){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a spawns_with condition");
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.spawns_with")));
+        } else if (type == EMILoot.CREEPER){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a creeper condition");
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.creeper")));
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }

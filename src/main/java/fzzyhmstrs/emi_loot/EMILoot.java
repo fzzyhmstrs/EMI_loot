@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.server.BlownUpByCreeperCondition;
 import fzzyhmstrs.emi_loot.server.MobSpawnedWithCondition;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -32,7 +33,10 @@ public class EMILoot implements ModInitializer {
     public static EmiLootConfig config = readOrCreate();
     public static boolean DEBUG = config.debugMode;
 
-    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("emi_loot:spawns_with", new MobSpawnedWithCondition.Serializer());
+    //conditions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
+    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("lootify:spawns_with", new MobSpawnedWithCondition.Serializer());
+    public static LootConditionType CREEPER = LootConditionTypes.register("lootify:creeper", new BlownUpByCreeperCondition.Serializer());
+
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
         public boolean isAvailableForEnchantedBookOffer() {
