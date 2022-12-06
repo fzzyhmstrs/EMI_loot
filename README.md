@@ -56,20 +56,11 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 ## Direct Drops to Handle
 * Creeper
   * Music disc?
-  * head from charged creeper
-* Vindicator
-  * their axe?
-  * raid banner
-* Pillager
-  * their crossbow?
-  * raid banner
 * Evoker
   * totem?
   * raid banner
-* Piglin
-  * crossbow/sword
+* zombified piglin
+  * golden sword
   * armor?
-* piglin brute
-  * their axe?
 * Wither Skeleton
   * their sword?
