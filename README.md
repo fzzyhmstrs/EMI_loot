@@ -45,29 +45,14 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Port to 1.19.3 to match to EMI's update|Not started|0.5.0|
 |Impl resource-driven mob offsetting overrides|In work|0.5.0|
 |Optimize packet sending size/number|In work|0.5.0|
-|Impl handler for code-based mob drops (nether star etc)|In work|0.5.0?|
-|Refactor client table builders for commonality?|Not started|0.5.0?|
+|Impl handler for code-based mob drops (nether star etc)|In work|0.5.0|
+|Refactor client table builders for commonality?|Not started|?.?.?|
 |Impl fishing/gameplay loot?|Not started|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|
 
 ## Direct Drops to Handle
-* Zombie
-  * Head from creeper
-  * naturally spawned equipment
-* Zombie Villager
-  * naturally spawned equipment
-* Husk
-  * naturally spawned equipment
-* Skellie
-  * skull from creeper
-  * equipment
-* Stray
-  * equipment
-* Drowned
-  * Nautilus shells
-  * equipment
 * Creeper
   * Music disc?
   * head from charged creeper
@@ -80,3 +65,10 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 * Evoker
   * totem?
   * raid banner
+* Piglin
+  * crossbow/sword
+  * armor?
+* piglin brute
+  * their axe?
+* Wither Skeleton
+  * their sword?
