@@ -92,6 +92,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(101,"emi_loot.hoe.netherite",(key)-> getBasicText(101), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
         //Direct drops
         mapBuilder(125,"emi_loot.condition.direct_drop",(key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
+        mapBuilder(126,"emi_loot.condition.spawns_with",(key)-> getBasicText(126), new Identifier(EMILoot.MOD_ID,"textures/gui/spawns_with.png"));
         //No conditions
         mapBuilder(150,"emi_loot.no_conditions",(key)-> getBasicText(150), EMPTY);
     }
