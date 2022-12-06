@@ -31,6 +31,59 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "minecraft:iron_shovel",
+          "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_shovel",
+          "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            },
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
           "name": "minecraft:iron_sword",
           "functions": [
             {
@@ -81,56 +134,36 @@
           "looting_multiplier": 0.01
         }
       ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:leather_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
-          ]
+          "weight": 1
         }
       ],
       "rolls": 5.0
@@ -147,71 +180,325 @@
           "looting_multiplier": 0.01
         }
       ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            },
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:leather_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:golden_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ]
+          "weight": 1
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond_chestplate",
-          "weight": 1,
-          "functions": [
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_helmet",
+          "weight": 1
+          
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_helmet",
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
             {
               "function": "lootify:set_any_damage"
             },
             {
               "function": "minecraft:enchant_randomly"
             }
-          ]
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_helmet",
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_leggings",
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            },
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_leggings",
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_boots",
+          "weight": 1
+        }
+      ],
+      "rolls": 5.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            },
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_boots",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_boots",
+          "weight": 1
         }
       ],
       "rolls": 5.0
