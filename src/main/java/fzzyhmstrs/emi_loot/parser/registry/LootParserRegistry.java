@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.parser;
+package fzzyhmstrs.emi_loot.parser.registry;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 package fzzyhmstrs.emi_loot.parser.LootTableParser;
