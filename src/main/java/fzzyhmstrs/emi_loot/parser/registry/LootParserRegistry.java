@@ -40,8 +40,8 @@ public class LootParserRegistry{
         return parser.parseCondition(condition);
     }
     
-    public static LootTableParser.LootFunctionResult parseFunction(LootFunction function, LootFunctionType type){
+    public static LootTableParser.LootFunctionResult parseFunction(LootFunction function, LootFunctionType type, List<TextKey> conditionTexts){
         FunctionParser parser = FUNCTION_PARSERS.getOrDefault(type,FunctionParser.EMPTY);
-        return parser.parseFunction(function);
+        return parser.parseFunction(function, conditionTexts);
     }
 }
