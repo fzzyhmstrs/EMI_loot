@@ -148,13 +148,13 @@ public class ChestLootRecipe implements EmiRecipe {
                 int column = (index.get() - 1) % 4;
                 index.getAndDecrement();
                 EmiIngredient ingredient = EmiIngredient.of(items);
-                String fTrim = trimFloatString(weight);
+                String fTrim = trimFloatString(Math.min(weight/100f,0.01f));
                 SlotWidget slotWidget = new SlotWidget(ingredient, column * (EMILoot.config.chestLootCompact ? 18 : 45), titleSpace + row * finalRowHeight).recipeContext(this);
                 if (EMILoot.config.chestLootCompact) {
-                    widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.percentage", fTrim).formatted(Formatting.ITALIC,Formatting.GOLD)));
+                    widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.rolls", fTrim).formatted(Formatting.ITALIC,Formatting.GOLD)));
                 } else {
                     widgets.add(slotWidget);
-                    widgets.addText(LText.translatable("emi_loot.percentage", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
+                    widgets.addText(LText.translatable("emi_loot.rolls_visible", fTrim).asOrderedText(), column * 45 + 19, titleSpace + row * finalRowHeight, 0x404040, false);
                 }
             }
         });
