@@ -42,15 +42,22 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |_Not yet released_|---|---|
 |Remove GUI wiggles|Complete|0.5.0|
 |Starting impl of basic config|In work|0.5.0|
-|Check mob/block table percentages actually right|Not started|0.5.0|
+|Check mob/block table percentages actually right|In work|0.5.0|
 |Port to 1.19.3 to match to EMI's update|Not started|0.5.0|
+|Update parser to apply top level functions to inner stacks|In work|0.5.0|
 |Impl resource-driven mob offsetting overrides|In work|0.5.0|
 |Optimize packet sending size/number|In work|0.5.0|
 |Impl handler for code-based mob drops (nether star etc)|In work|0.5.0|
+|Impl tag item entries|Not started|?.?.?|
+|Impl dynamic item entries|Not started|?.?.?|
+|Impl group item entries|Not started|?.?.?|
+|Impl sequence item entries|Not started|?.?.?|
 |Refactor client table builders for commonality?|Not started|?.?.?|
 |Impl fishing/gameplay loot?|Not started|?.?.?|
+|Add item tile optimizer to improve layout of condition tiles|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
+|Investigate way to calculate and convey item drop probability|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|
 
 ## Direct Drops to Handle

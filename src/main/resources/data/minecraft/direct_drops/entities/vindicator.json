@@ -8,10 +8,15 @@
           "condition": "lootify:spawns_with"
         }
       ],
+      "functions": [
+        {
+          "function": "lootify:ominous_banner"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:ominous_banner"
+          "name": "minecraft:white_banner"
         }
       ],
       "rolls": 1.0

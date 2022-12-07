@@ -54,6 +54,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.village.raid.Raid;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 import java.util.*;
@@ -133,7 +134,7 @@ public class LootTableParser {
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
-                    result.forEach(resultEntry -> builder.addItem(resultEntry.item, resultEntry.weight));
+                    result.forEach(builder::addItem);
                 }
             }
             sender.addBuilder(builder);
@@ -144,7 +145,7 @@ public class LootTableParser {
     private static BlockLootTableSender parseBlockLootTable(LootTable lootTable, Identifier id){
         BlockLootTableSender sender = new BlockLootTableSender(id);
         parseBlockLootTableInternal(lootTable,sender, false);
-        if (ServerResourceData.DIRECT_DROPS.containsKey(id)){
+        if (ServerResourceData.DIRECT_DROPS.containsKey(id) && EMILoot.config.mobLootIncludeDirectDrops){
             parsedDirectDrops.add(id);
             Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
             parseBlockDirectLootTable(directTables,sender);
@@ -203,7 +204,7 @@ public class LootTableParser {
     private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId){
         MobLootTableSender sender = new MobLootTableSender(id, mobId);
         parseMobLootTableInternal(lootTable,sender, false);
-        if (ServerResourceData.DIRECT_DROPS.containsKey(id)){
+        if (ServerResourceData.DIRECT_DROPS.containsKey(id) && EMILoot.config.mobLootIncludeDirectDrops){
             parsedDirectDrops.add(id);
             Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
             parseMobDirectLootTable(directTables,sender);
@@ -279,7 +280,7 @@ public class LootTableParser {
             for (LootPoolEntry entry : entries) {
                 if (entry instanceof ItemEntry itemEntry) {
                     List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
-                    result.forEach(resultEntry -> builder.addItem(resultEntry.item, resultEntry.weight));
+                    result.forEach(builder::addItem);
                 }
             }
             sender.addBuilder(builder);
@@ -491,7 +492,7 @@ public class LootTableParser {
                 } else {
                     enchantments.forEach((enchantment, provider)->{
                         float rollAvg = NumberProcessors.getRollAvg(provider);
-                        finalStackMap.put(enchantment,Math.max(((int)rollAvg),0));
+                        finalStackMap.put(enchantment,Math.max(((int)rollAvg),1));
                     });
                 }
                 EnchantmentHelper.set(finalStackMap,stack);
@@ -546,6 +547,9 @@ public class LootTableParser {
         }else if (type == EMILoot.SET_ANY_DAMAGE){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an any-damage function");
             return new LootFunctionResult(TextKey.of("emi_loot.function.set_any_damage"), ItemStack.EMPTY, conditionsTexts);
+        }else if (type == EMILoot.OMINOUS_BANNER){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an ominous banner function");
+            return new LootFunctionResult(TextKey.of("emi_loot.function.ominous_banner"), Raid.getOminousBanner(), conditionsTexts);
         } else {
             return LootFunctionResult.EMPTY;
         }
@@ -708,11 +712,14 @@ public class LootTableParser {
                 return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_false")));
             }
         } else if (type == EMILoot.SPAWNS_WITH){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a spawns_with condition");
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a spawns-with condition");
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.spawns_with")));
         } else if (type == EMILoot.CREEPER){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a creeper condition");
             return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.creeper")));
+        } else if (type == EMILoot.WITHER_KILL){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a wither-kill condition");
+            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.wither_kill")));
         }
         return Collections.singletonList(LootConditionResult.EMPTY);
     }
