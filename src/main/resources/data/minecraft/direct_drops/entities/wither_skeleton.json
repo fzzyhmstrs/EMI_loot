@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:zombie_head"
+          "name": "minecraft:wither_skeleton_skull"
         }
       ],
       "rolls": 1.0
