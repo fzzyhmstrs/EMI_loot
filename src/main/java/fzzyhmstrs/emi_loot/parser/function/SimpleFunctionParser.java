@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser.condition;
 
+import fzzyhmstrs.emi_loot.util.TextKey;
 package fzzyhmstrs.emi_loot.parser.LootTableParser;
 import net.minecraft.loot.function.LootFunction;
 
