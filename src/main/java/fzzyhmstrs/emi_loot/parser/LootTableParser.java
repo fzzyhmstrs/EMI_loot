@@ -187,15 +187,7 @@ public class LootTableParser {
             BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
-                if (entry instanceof ItemEntry itemEntry) {
-                    List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
-                    result.forEach(builder::addItem);
-                } else if(entry instanceof AlternativeEntry alternativeEntry){
-                    List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
-                    for (ItemEntryResult res: resultList){
-                        builder.addItem(res);
-                    }
-                }
+                parseLootPoolEntry(builder,entry);
             }
             sender.addBuilder(builder);
         }
@@ -246,25 +238,7 @@ public class LootTableParser {
             MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
-                if (entry instanceof ItemEntry itemEntry) {
-                    List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
-                    result.forEach(builder::addItem);
-                } else if(entry instanceof AlternativeEntry alternativeEntry){
-                    List<ItemEntryResult> resultList = parseAlternativeEntry(alternativeEntry,false);
-                    for (ItemEntryResult res: resultList){
-                        builder.addItem(res);
-                    }
-                } else if (entry instanceof LootTableEntry lootTableEntry){
-                    LootSender<?> results = parseLootTableEntry(lootTableEntry,false);
-                    List<? extends LootBuilder> parsedBuilders = results.getBuilders();
-                    List<ItemEntryResult> parsedList = new LinkedList<>();
-                    parsedBuilders.forEach(parsedBuilder->
-                            parsedList.addAll(parsedBuilder.revert())
-                    );
-                    for (ItemEntryResult result: parsedList){
-                        builder.addItem(result);
-                    }
-                }
+                parseLootPoolEntry(builder,entry);
             }
             sender.addBuilder(builder);
         }
