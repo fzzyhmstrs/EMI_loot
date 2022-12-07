@@ -573,6 +573,8 @@ public class LootTableParser {
             return LootFunctionResult.EMPTY;
         }
     }
+    
+    ///////////////////////////////////////////////////////////////
 
     static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack){
         return parseLootCondition(condition, stack, false);
@@ -583,7 +585,7 @@ public class LootTableParser {
         try {
             type = condition.getType();
         } catch (Exception e){
-            EMILoot.LOGGER.error("failed to determine a loot type");
+            EMILoot.LOGGER.error("failed to determine a loot type for stack " + stack.getName() + " in table " + currentTable);
             return Collections.singletonList(LootConditionResult.EMPTY);
         }
         if (type == LootConditionTypes.SURVIVES_EXPLOSION){
