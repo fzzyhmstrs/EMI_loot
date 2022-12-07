@@ -14,7 +14,10 @@ public class EntityPredicateParser {
     }
 
     private static Text parseEntityPredicateInternal(EntityPredicate predicate){
-        if (predicate.equals(EntityPredicate.ANY)) return LText.translatable("emi_loot.entity_predicate.any");
+        if (predicate.equals(EntityPredicate.ANY)) {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate empty in table: "  + LootTableParser.currentTable);
+            return LText.empty();
+        }
 
         //entity type check
         EntityTypePredicate typePredicate = ((EntityPredicateAccessor)predicate).getType();

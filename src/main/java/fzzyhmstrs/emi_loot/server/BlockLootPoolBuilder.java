@@ -25,12 +25,13 @@ public class BlockLootPoolBuilder implements LootBuilder {
     boolean isEmpty = false;
     ItemStack simpleStack = ItemStack.EMPTY;
 
+    @Override
     public void addItem(LootTableParser.ItemEntryResult result){
         List<TextKey> testKey = new LinkedList<>();
         testKey.addAll(result.functions());
         testKey.addAll(result.conditions());
         ChestLootPoolBuilder builder = map.getOrDefault(testKey,new ChestLootPoolBuilder(rollWeight));
-        builder.addItem(result.item(),result.weight());
+        builder.addItem(result);
         map.put(testKey,builder);
     }
 

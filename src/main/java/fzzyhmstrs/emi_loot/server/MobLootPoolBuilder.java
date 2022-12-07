@@ -25,12 +25,13 @@ public class MobLootPoolBuilder implements LootBuilder {
     boolean isEmpty = false;
     HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
 
+    @Override
     public void addItem(LootTableParser.ItemEntryResult result){
         List<TextKey> testKey = new LinkedList<>();
         testKey.addAll(result.functions());
         testKey.addAll(result.conditions());
         ChestLootPoolBuilder builder = map.getOrDefault(testKey,new ChestLootPoolBuilder(rollWeight));
-        builder.addItem(result.item(),result.weight());
+        builder.addItem(result);
         map.put(testKey,builder);
     }
 

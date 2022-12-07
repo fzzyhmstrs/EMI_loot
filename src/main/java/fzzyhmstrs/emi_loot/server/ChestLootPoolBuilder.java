@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,10 @@ public class ChestLootPoolBuilder implements LootBuilder {
     boolean isEmpty = false;
     ItemStack simpleStack = ItemStack.EMPTY;
 
-
-    public void addItem(ItemStack item, int weight){
+    @Override
+    public void addItem(LootTableParser.ItemEntryResult result){
+        ItemStack item = result.item();
+        int weight = result.weight();
         totalWeight += weight;
         if (map.containsKey(item)){
             int oldWeight = map.getOrDefault(item,0);

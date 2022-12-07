@@ -11,12 +11,6 @@ public class DamageSourcePredicateParser {
 
     public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate){
 
-        EntityPredicate sourcePredicate = ((DamageSourcePredicateAccessor)predicate).getSourceEntity();
-        Text sourceText = EntityPredicateParser.parseEntityPredicate(sourcePredicate);
-        if (!sourceText.equals(LText.empty())){
-            return sourceText;
-        }
-
         Boolean isProjectile = ((DamageSourcePredicateAccessor)predicate).getIsProjectile();
         if (isProjectile != null){
             if (isProjectile){
@@ -92,6 +86,11 @@ public class DamageSourcePredicateParser {
         EntityPredicate directPredicate = ((DamageSourcePredicateAccessor)predicate).getDirectEntity();
         if (!directPredicate.equals(EntityPredicate.ANY)){
             return EntityPredicateParser.parseEntityPredicate(directPredicate);
+        }
+
+        EntityPredicate sourcePredicate = ((DamageSourcePredicateAccessor)predicate).getSourceEntity();
+        if (!sourcePredicate.equals(EntityPredicate.ANY)){
+            return EntityPredicateParser.parseEntityPredicate(sourcePredicate);
         }
 
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable damage source predicate in table: "  + LootTableParser.currentTable);
