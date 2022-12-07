@@ -8,8 +8,8 @@ import java.util.List;
 public interface ConditionParser{
     public static ConditionParser EMPTY = new ConditionParser(){
         @Override
-        parseCondition(LootCondition condition){
-            return Collections.singletonList(LootConditionResult.EMPTY);
+        public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition){
+            return Collections.singletonList(LootTableParser.LootConditionResult.EMPTY);
         }
     }
     
