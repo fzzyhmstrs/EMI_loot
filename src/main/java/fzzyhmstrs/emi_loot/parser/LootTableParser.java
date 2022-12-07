@@ -289,9 +289,30 @@ public class LootTableParser {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    static List<ItemEntryResult> parseLootPoolEntry(LootBuilder builder, LootPoolEntry entry){
+        if (entry instanceof ItemEntry itemEntry) {
+            List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
+            result.forEach(builder::addItem);
+        } else if(entry instanceof AlternativeEntry alternativeEntry){
+            List<ItemEntryResult> result = parseAlternativeEntry(alternativeEntry, false);
+            result.forEach(builder::addItem);
+        } else if(entry instanceof TagEntry tagEntry){
+            List<ItemEntryResult> result = parseTagEntry(tagEntry, false);
+            result.forEach(builder::addItem);
+        } else if (entry instanceof LootTableEntry lootTableEntry){
+            LootSender<?> results = parseLootTableEntry(lootTableEntry, false);
+            List<? extends LootBuilder> parsedBuilders = results.getBuilders();
+            List<ItemEntryResult> parsedList = new LinkedList<>();
+            parsedBuilders.forEach(parsedBuilder->
+                    parsedList.addAll(parsedBuilder.revert())
+            );
+            parsedList.forEach(builder::addItem);
+        }
+    }
 
     static List<ItemEntryResult> parseItemEntry(ItemEntry entry, boolean skipExtras){
-        return parseItemEntry(entry, skipExtras,false);
+        return parseItemEntry(entry, skipExtras, false);
     }
 
     static List<ItemEntryResult> parseItemEntry(ItemEntry entry, boolean skipExtras, boolean parentIsAlternative){
@@ -302,6 +323,10 @@ public class LootTableParser {
         }
         LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
         LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
+        return parseItemEntry(weight, item, functions, conditions)
+    }
+    
+    static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, LootFunction[] functions, LootCondition[] conditions){
         List<TextKey> functionTexts = new LinkedList<>();
         List<ItemEntryResult> conditionalEntryResults = new LinkedList<>();
         for (LootFunction lootFunction : functions) {
@@ -348,6 +373,29 @@ public class LootTableParser {
         });
 
         return returnList;
+    }
+    
+    static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean skipExtras){
+        return parseTagEntry(entry, skipExtras, false);
+    }
+
+    static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean skipExtras, boolean parentIsAlternative){
+        int weight = ((LeafEntryAccessor) entry).getWeight();
+        TagKey<Item> items = new ItemStack(((TagEntryAccessor) entry).getName());
+        Optional<RegistryEntryList.Named<Item>> opt = Registry.ITEM.getEntryList(items);
+        opt.ifPresent(named -> {
+            List<ItemEntryResult> returnList = new LinkedList<>();
+            List<ItemStack> stacks = named.stream().map(item -> new ItemStack(item.value()));
+            int weight = ((LeafEntryAccessor) entry).getWeight();
+            LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
+            LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
+            for (ItemStack item : items){
+                returnList.addAll(parseItemEntry(weight, item, functions, conditions));
+            }
+            return returnList;
+        });
+        return new ArrayList<>();
+        
     }
 
     static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry, boolean skipExtra){
