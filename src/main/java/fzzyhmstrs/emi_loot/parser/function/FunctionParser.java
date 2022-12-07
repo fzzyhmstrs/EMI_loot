@@ -8,10 +8,10 @@ import java.util.List;
 public interface FunctionParser{
     public static FunctionParser EMPTY = new FunctionParser(){
         @Override
-        public LootTableParser.LootFunctionResult parseFunction(LootFunction function){
+        public LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts){
             return LootTableParser.LootFunctionResult.EMPTY;
         }
     }
     
-    LootTableParser.LootFunctionResult parseFunction(LootFunction function);
+    LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts);
 }
