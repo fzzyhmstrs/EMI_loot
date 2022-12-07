@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:creeper"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:zombie_head"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "lootify:spawns_with"
+        },
+        {
+          "chance": 0.085,
+          "condition": "minecraft:random_chance_with_looting",
+          "looting_multiplier": 0.01
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stone_sword",
+          "functions": [
+            {
+              "function": "lootify:set_any_damage"
+            }
+          ]
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}
