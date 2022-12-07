@@ -9,7 +9,7 @@ public interface FunctionParser{
     public static FunctionParser EMPTY = new FunctionParser(){
         @Override
         public LootTableParser.LootFunctionResult parseFunction(LootFunction function){
-            return LootFunctionResult.EMPTY;
+            return LootTableParser.LootFunctionResult.EMPTY;
         }
     }
     
