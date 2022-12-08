@@ -1,16 +1,18 @@
-package fzzyhmstrs.emi_loot.parser.condition;
+package fzzyhmstrs.emi_loot.parser.function;
 
-import fzzyhmstrs.emi_loot.util.TextKey;
+import fzzyhmstrs.emi_loot.mixins.ApplyBonusLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
-import net.minecraft.loot.function.LootFunction;
+import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public class ApplyBonusFunctionParser{
+public class ApplyBonusFunctionParser implements FunctionParser{
     
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
         Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
         String name = enchant.getName(1).getString();
         String nTrim;
@@ -19,6 +21,6 @@ public class ApplyBonusFunctionParser{
         } else {
             nTrim = name;
         }
-        return new LootFunctionResult(TextKey.of("emi_loot.function.bonus",nTrim),ItemStack.EMPTY,conditionsTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus",nTrim), ItemStack.EMPTY, conditionTexts);
     }
 }

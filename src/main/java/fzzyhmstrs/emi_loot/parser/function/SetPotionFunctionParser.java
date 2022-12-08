@@ -1,22 +1,25 @@
-package fzzyhmstrs.emi_loot.parser.condition;
+package fzzyhmstrs.emi_loot.parser.function;
 
-import fzzyhmstrs.emi_loot.util.TextKey;
-import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.mixins.SetPotionLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.TextKey;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.loot.function.LootFunction;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class SetPotionFunctionParser{
+public class SetPotionFunctionParser implements FunctionParser {
     
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
         Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
         PotionUtil.setPotion(stack, potion);
         Text potionName = LText.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
-        return new LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY,conditionsTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY,conditionTexts);
     }
 }

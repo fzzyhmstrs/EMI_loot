@@ -1,17 +1,18 @@
-package fzzyhmstrs.emi_loot.parser.condition;
+package fzzyhmstrs.emi_loot.parser.function;
 
-package fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.util.TextKey;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
 public interface FunctionParser{
-    public static FunctionParser EMPTY = new FunctionParser(){
-        @Override
-        public LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts){
-            return LootTableParser.LootFunctionResult.EMPTY;
-        }
-    }
+    FunctionParser EMPTY = (function,stack, conditionTexts, parentIsAlternative) -> LootTableParser.LootFunctionResult.EMPTY;
     
-    LootTableParser.LootFunctionResult parseFunction(LootFunction function, List<TextKey> conditionTexts);
+    LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts);
+
+    default ItemStack parseStack(ItemStack stack){
+        return stack;
+    }
 }

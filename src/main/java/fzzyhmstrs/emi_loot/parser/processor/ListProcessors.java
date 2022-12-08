@@ -2,7 +2,6 @@ package fzzyhmstrs.emi_loot.parser.processor;
 
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 
 import java.util.List;
 

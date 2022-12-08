@@ -4,55 +4,34 @@ import com.google.common.collect.Multimap;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.*;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
+import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
 import fzzyhmstrs.emi_loot.server.*;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.LootManagerConditionManager;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
-import net.minecraft.item.map.MapIcon;
-import net.minecraft.item.map.MapState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionManager;
 import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.loot.condition.LootConditionTypes;
-import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.AlternativeEntry;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootTableEntry;
+import net.minecraft.loot.entry.*;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
-import net.minecraft.loot.function.LootFunctionTypes;
-import net.minecraft.loot.operator.BoundedIntUnaryOperator;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.predicate.StatePredicate;
-import net.minecraft.predicate.entity.DamageSourcePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.LocationPredicate;
-import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.village.raid.Raid;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.util.registry.RegistryEntryList;
 
 import java.util.*;
 
@@ -62,7 +41,7 @@ public class LootTableParser {
     private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static Map<Identifier, LootTable> tables = new HashMap<>();
-    private static LootConditionManager conditionManager;
+    public static LootConditionManager conditionManager;
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
 
@@ -261,7 +240,7 @@ public class LootTableParser {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    static List<ItemEntryResult> parseLootPoolEntry(LootBuilder builder, LootPoolEntry entry){
+    static void parseLootPoolEntry(LootBuilder builder, LootPoolEntry entry){
         if (entry instanceof ItemEntry itemEntry) {
             List<ItemEntryResult> result = parseItemEntry(itemEntry, false);
             result.forEach(builder::addItem);
@@ -269,7 +248,7 @@ public class LootTableParser {
             List<ItemEntryResult> result = parseAlternativeEntry(alternativeEntry, false);
             result.forEach(builder::addItem);
         } else if(entry instanceof TagEntry tagEntry){
-            List<ItemEntryResult> result = parseTagEntry(tagEntry, false);
+            List<ItemEntryResult> result = parseTagEntry(tagEntry);
             result.forEach(builder::addItem);
         } else if (entry instanceof LootTableEntry lootTableEntry){
             LootSender<?> results = parseLootTableEntry(lootTableEntry, false);
@@ -294,10 +273,10 @@ public class LootTableParser {
         }
         LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
         LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
-        return parseItemEntry(weight, item, functions, conditions)
+        return parseItemEntry(weight, item, functions, conditions, parentIsAlternative);
     }
     
-    static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, LootFunction[] functions, LootCondition[] conditions){
+    static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, LootFunction[] functions, LootCondition[] conditions, boolean parentIsAlternative){
         List<TextKey> functionTexts = new LinkedList<>();
         List<ItemEntryResult> conditionalEntryResults = new LinkedList<>();
         for (LootFunction lootFunction : functions) {
@@ -346,26 +325,24 @@ public class LootTableParser {
         return returnList;
     }
     
-    static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean skipExtras){
-        return parseTagEntry(entry, skipExtras, false);
+    static List<ItemEntryResult> parseTagEntry(TagEntry entry){
+        return parseTagEntry(entry, false);
     }
 
-    static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean skipExtras, boolean parentIsAlternative){
-        int weight = ((LeafEntryAccessor) entry).getWeight();
-        TagKey<Item> items = new ItemStack(((TagEntryAccessor) entry).getName());
+    static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean parentIsAlternative){
+        TagKey<Item> items = ((TagEntryAccessor) entry).getName();
         Optional<RegistryEntryList.Named<Item>> opt = Registry.ITEM.getEntryList(items);
+        List<ItemEntryResult> returnList = new LinkedList<>();
         opt.ifPresent(named -> {
-            List<ItemEntryResult> returnList = new LinkedList<>();
-            List<ItemStack> stacks = named.stream().map(item -> new ItemStack(item.value()));
+            List<ItemStack> stacks = named.stream().map(item -> new ItemStack(item.value())).toList();
             int weight = ((LeafEntryAccessor) entry).getWeight();
             LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
             LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
-            for (ItemStack item : items){
-                returnList.addAll(parseItemEntry(weight, item, functions, conditions));
+            for (ItemStack item : stacks){
+                returnList.addAll(parseItemEntry(weight, item, functions, conditions, parentIsAlternative));
             }
-            return returnList;
         });
-        return new ArrayList<>();
+        return returnList;
         
     }
 
@@ -386,6 +363,12 @@ public class LootTableParser {
         Arrays.stream(children).toList().forEach((lootEntry)->{
             if(lootEntry instanceof ItemEntry itemEntry){
                 List<ItemEntryResult> result = parseItemEntry(itemEntry,false, true);
+                result.forEach(resultEntry ->{
+                    resultEntry.conditions.addAll(conditionsTexts);
+                    results.add(resultEntry);
+                });
+            } else if(lootEntry instanceof TagEntry tagEntry) {
+                List<ItemEntryResult> result = parseTagEntry(tagEntry, true);
                 result.forEach(resultEntry ->{
                     resultEntry.conditions.addAll(conditionsTexts);
                     results.add(resultEntry);
@@ -428,6 +411,7 @@ public class LootTableParser {
         try {
             type = function.getType();
         } catch (Exception e){
+            EMILoot.LOGGER.error(Arrays.toString(e.getStackTrace()));
             return LootFunctionResult.EMPTY;
         }
         List<TextKey> conditionsTexts = new LinkedList<>();
@@ -443,144 +427,16 @@ public class LootTableParser {
                 });
             }
         }
-        if (type == LootFunctionTypes.APPLY_BONUS){
-            Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
-            String name = enchant.getName(1).getString();
-            String nTrim;
-            if (enchant.getMaxLevel() != 1) {
-                nTrim = name.substring(0, name.length() - 2);
-            } else {
-                nTrim = name;
-            }
-            return new LootFunctionResult(TextKey.of("emi_loot.function.bonus",nTrim),ItemStack.EMPTY,conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_POTION){
-            Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
-            PotionUtil.setPotion(stack, potion);
-            Text potionName = LText.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
-            return new LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY,conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_COUNT){
-            LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
-            float rollAvg = NumberProcessors.getRollAvg(provider);
-            boolean add = ((SetCountLootFunctionAccessor)function).getAdd();
-            if (add){
-                stack.setCount(Math.max(stack.getCount() + (int)rollAvg,1));
-            } else {
-                stack.setCount(Math.max((int)rollAvg,1));
-            }
-            if (add){
-                return new LootFunctionResult(TextKey.of("emi_loot.function.set_count_add"),ItemStack.EMPTY,conditionsTexts);
-            }
-            return LootFunctionResult.EMPTY;
-        }else if (type == LootFunctionTypes.ENCHANT_WITH_LEVELS){
-            if (stack.isOf(Items.BOOK)){
-                stack = new ItemStack(Items.ENCHANTED_BOOK);
-                EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
-                return new LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_book"), stack,conditionsTexts);
-            } else {
-                stack.addEnchantment(EMILoot.RANDOM,1);
-                return new LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY,conditionsTexts);
-            }
-        }else if (type == LootFunctionTypes.ENCHANT_RANDOMLY){
-            if (stack.isOf(Items.BOOK)){
-                stack = new ItemStack(Items.ENCHANTED_BOOK);
-                EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
-                return new LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_book"), stack,conditionsTexts);
-            } else {
-                stack.addEnchantment(EMILoot.RANDOM,1);
-                return new LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY,conditionsTexts);
-            }
-        } else if (type == LootFunctionTypes.SET_ENCHANTMENTS){
-            Map<Enchantment,LootNumberProvider> enchantments = ((SetEnchantmentsLootFunctionAccessor)function).getEnchantments();
-            boolean add = ((SetEnchantmentsLootFunctionAccessor)function).getAdd();
-            if (stack.isOf(Items.BOOK)){
-                stack = new ItemStack(Items.ENCHANTED_BOOK);
-                ItemStack finalStack = stack;
-                enchantments.forEach((enchantment, provider)->{
-                    float rollAvg = NumberProcessors.getRollAvg(provider);
-                    EnchantedBookItem.addEnchantment(finalStack, new EnchantmentLevelEntry(enchantment, (int)rollAvg));
-                });
-                return new LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_book"), finalStack,conditionsTexts);
-            } else {
-                Map<Enchantment,Integer> finalStackMap = new HashMap<>();
-                if (add){
-                    Map<Enchantment, Integer> stackMap = EnchantmentHelper.get(stack);
-                    enchantments.forEach((enchantment, provider)->{
-                        float rollAvg = NumberProcessors.getRollAvg(provider);
-                        finalStackMap.put(enchantment,Math.max(((int)rollAvg) + stackMap.getOrDefault(enchantment,0),0));
-                    });
-                } else {
-                    enchantments.forEach((enchantment, provider)->{
-                        float rollAvg = NumberProcessors.getRollAvg(provider);
-                        finalStackMap.put(enchantment,Math.max(((int)rollAvg),1));
-                    });
-                }
-                EnchantmentHelper.set(finalStackMap,stack);
-                return new LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_item"), stack, conditionsTexts);
-            }
-        } else if (type == LootFunctionTypes.FURNACE_SMELT){
-            return new LootFunctionResult(TextKey.of("emi_loot.function.smelt"), ItemStack.EMPTY, conditionsTexts);
-        } else if (type == LootFunctionTypes.LOOTING_ENCHANT){
-            return new LootFunctionResult(TextKey.of("emi_loot.function.looting"), ItemStack.EMPTY, conditionsTexts);
-        } else if (type == LootFunctionTypes.EXPLORATION_MAP){
-            ItemStack mapStack;
-            String typeKey = "emi_loot.map.unknown";
-            if (!stack.isOf(Items.MAP)){
-                mapStack = stack;
-            } else {
-                MapIcon.Type decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
-                TagKey<Structure> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
-                mapStack = new ItemStack(Items.FILLED_MAP);
-                MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN,"+",decoration);
-                typeKey = "emi_loot.map."+ destination.id().getPath();
-            }
-            return new LootFunctionResult(TextKey.of("emi_loot.function.map",LText.translatable(typeKey).getString()), mapStack, conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_NAME){
-            Text text = ((SetNameLootFunctionAccessor)function).getName();
-            stack.setCustomName(text);
-            return new LootFunctionResult(TextKey.empty(), stack, conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_CONTENTS){
-            return new LootFunctionResult(TextKey.of("emi_loot.function.set_contents"), ItemStack.EMPTY, conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_DAMAGE){
-            LootNumberProvider provider = ((SetDamageLootFunctionAccessor)function).getDurabilityRange();
-            float rollAvg = NumberProcessors.getRollAvg(provider);
-            boolean add = ((SetDamageLootFunctionAccessor)function).getAdd();
-            int md = stack.getMaxDamage();
-            float damage;
-            if (add){
-                int dmg = stack.getDamage();
-                damage = MathHelper.clamp(((float )dmg)/md + (rollAvg * md),0,md);
-            } else {
-                damage = MathHelper.clamp(rollAvg * md,0,md);
-            }
-            stack.setDamage(MathHelper.floor(damage));
-            return new LootFunctionResult(TextKey.of("emi_loot.function.damage",Integer.toString((int)(rollAvg*100))), stack, conditionsTexts);
-        } else if (type == LootFunctionTypes.SET_INSTRUMENT){
-            TagKey<Instrument> tag = ((SetGoatHornLootFunctionAccessor)function).getInstrumentTag();
-            GoatHornItem.setRandomInstrumentFromTag(stack,tag,EMILoot.emiLootRandom);
-            return new LootFunctionResult(TextKey.empty(), stack, conditionsTexts);
-        }else if (type == LootFunctionTypes.COPY_STATE){
-            return new LootFunctionResult(TextKey.of("emi_loot.function.copy_state"), ItemStack.EMPTY, conditionsTexts);
-        }else if (type == LootFunctionTypes.EXPLOSION_DECAY){
-            if (parentIsAlternative) return new LootFunctionResult(TextKey.of("emi_loot.function.decay"), ItemStack.EMPTY, conditionsTexts);
-            return new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, conditionsTexts);
-        }else if (type == EMILoot.SET_ANY_DAMAGE){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an any-damage function");
-            return new LootFunctionResult(TextKey.of("emi_loot.function.set_any_damage"), ItemStack.EMPTY, conditionsTexts);
-        }else if (type == EMILoot.OMINOUS_BANNER){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an ominous banner function");
-            return new LootFunctionResult(TextKey.of("emi_loot.function.ominous_banner"), Raid.getOminousBanner(), conditionsTexts);
-        } else {
-            return LootFunctionResult.EMPTY;
-        }
+        return LootParserRegistry.parseFunction(function,stack,type,parentIsAlternative,conditionsTexts);
     }
     
     ///////////////////////////////////////////////////////////////
 
-    static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack){
+    public static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack){
         return parseLootCondition(condition, stack, false);
     }
 
-    static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public static List<LootConditionResult> parseLootCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
         LootConditionType type;
         try {
             type = condition.getType();
@@ -588,166 +444,12 @@ public class LootTableParser {
             EMILoot.LOGGER.error("failed to determine a loot type for stack " + stack.getName() + " in table " + currentTable);
             return Collections.singletonList(LootConditionResult.EMPTY);
         }
-        if (type == LootConditionTypes.SURVIVES_EXPLOSION){
-            if (parentIsAlternative) return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.survives_explosion")));
-            return Collections.singletonList(new LootConditionResult(TextKey.empty()));
-        } else if (type == LootConditionTypes.BLOCK_STATE_PROPERTY){
-            MutableText bsText;
-            Block block = ((BlockStatePropertyLootConditionAccessor)condition).getBlock();
-            if (block != null){
-                bsText = LText.translatable("emi_loot.condition.blockstate.block",block.getName().getString());
-            } else {
-                StatePredicate predicate = ((BlockStatePropertyLootConditionAccessor)condition).getProperties();
-                bsText = (MutableText) StatePredicateParser.parseStatePredicate(predicate);
-            }
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.blockstate",bsText.getString())));
-        } else if (type == LootConditionTypes.TABLE_BONUS){
-            Enchantment enchant = ((TableBonusLootConditionAccessor)condition).getEnchantment();
-            String name = enchant.getName(1).getString();
-            String nTrim;
-            if (enchant.getMaxLevel() != 1) {
-                 nTrim = name.substring(0, name.length() - 2);
-            } else {
-                nTrim = name;
-            }
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.table_bonus",nTrim)));
-        } else if (type == LootConditionTypes.INVERTED){
-            LootCondition term = ((InvertedLootConditionAccessor)condition).getCondition();
-            List<LootConditionResult> termResults = parseLootCondition(term, stack);
-            List<LootConditionResult> finalResults = new LinkedList<>();
-            termResults.forEach((result)->{
-                Text resultText = result.text.process(stack,null).text();
-                finalResults.add(new LootConditionResult(TextKey.of("emi_loot.condition.invert",resultText.getString())));
-            });
-            return finalResults;
-        } else if (type == LootConditionTypes.ALTERNATIVE){
-            LootCondition[] terms = ((AlternativeLootConditionAccessor)condition).getConditions();
-            int size = terms.length;
-            if (size == 1){
-                List<LootConditionResult> termResults = parseLootCondition(terms[0], stack);
-                Text termText = compileConditionTexts(stack,termResults);
-                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.alternates",termText.getString())));
-            } else if (size == 2){
-                List<LootConditionResult> termResults1 = parseLootCondition(terms[0], stack);
-                List<LootConditionResult> termResults2 = parseLootCondition(terms[1], stack);
-                Text termText1 = compileConditionTexts(stack,termResults1);
-                Text termText2;
-                if (termResults2.size() == 1){
-                    TextKey key = termResults2.get(0).text;
-                    if (key.args().size() == 1){
-                        termText2 = Text.of(key.args().get(0));
-                    } else {
-                        termText2 = compileConditionTexts(stack,termResults2);
-                    }
-                } else {
-                    termText2 = compileConditionTexts(stack, termResults2);
-                }
-                List<String> args = new LinkedList<>(Arrays.stream(new String[]{termText1.getString(), termText2.getString()}).toList());
-                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.alternates_2",args)));
-            } else {
-                List<String> args = new LinkedList<>();
-                Arrays.stream(terms).toList().forEach((term)-> {
-                    List<LootConditionResult> termResults = parseLootCondition(term, stack);
-                    Text termText = compileConditionTexts(stack,termResults);
-                    args.add(termText.getString());
-                });
-                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.alternates_3",args)));
-            }
-        } else if (type == LootConditionTypes.KILLED_BY_PLAYER){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.killed_player")));
-        } else if (type == LootConditionTypes.RANDOM_CHANCE){
-            float chance = ((RandomChanceLootConditionAccessor)condition).getChance();
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.chance", Float.toString((chance*100)))));
-        } else if (type == LootConditionTypes.RANDOM_CHANCE_WITH_LOOTING){
-            float chance = ((RandomChanceWithLootingLootConditionAccessor)condition).getChance();
-            float multiplier = ((RandomChanceWithLootingLootConditionAccessor)condition).getLootingMultiplier();
-            List<String> args = new LinkedList<>(Arrays.stream(new String[]{Float.toString((chance*100)), Float.toString((multiplier*100))}).toList());
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.chance_looting", args)));
-        } else if (type == LootConditionTypes.DAMAGE_SOURCE_PROPERTIES){
-            DamageSourcePredicate damageSourcePredicate = ((DamageSourcePropertiesLootConditionAccessor)condition).getPredicate();
-            Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.damage_source",damageText.getString())));
-        } else if (type == LootConditionTypes.LOCATION_CHECK){
-            LocationPredicate predicate = ((LocationCheckLootConditionAccessor)condition).getPredicate();
-            Text locText = LocationPredicateParser.parseLocationPredicate(predicate);
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));
-        } else if (type == LootConditionTypes.ENTITY_PROPERTIES){
-            LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
-            EntityPredicate predicate = ((EntityPropertiesLootConditionAccessor)condition).getPredicate();
-            MutableText propText;
-            if (entity == LootContext.EntityTarget.THIS){
-                propText = LText.translatable("emi_loot.entity_predicate.entity_this", EntityPredicateParser.parseEntityPredicate(predicate));
-            } else {
-                propText = LText.translatable("emi_loot.entity_predicate.entity_killer", EntityPredicateParser.parseEntityPredicate(predicate));
-            }
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.entity_props",propText.getString())));
-        } else if (type == LootConditionTypes.MATCH_TOOL){
-            ItemPredicate predicate = ((MatchToolLootConditionAccessor)condition).getPredicate();
-            Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));
-        } else if (type == LootConditionTypes.ENTITY_SCORES){
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.entity_scores")));
-        } else if (type == LootConditionTypes.REFERENCE){
-            Identifier id = ((ReferenceLootConditionAccessor)condition).getId();
-            if (conditionManager != null){
-                LootCondition referenceCondition = conditionManager.get(id);
-                if (referenceCondition != null && referenceCondition.getType() != LootConditionTypes.REFERENCE){
-                    return parseLootCondition(referenceCondition,stack,parentIsAlternative);
-                }
-            }
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.reference",id.toString())));
-        } else if (type == LootConditionTypes.TIME_CHECK){
-            Long period = ((TimeCheckLootConditionAccessor)condition).getPeriod();
-            BoundedIntUnaryOperator value = ((TimeCheckLootConditionAccessor)condition).getValue();
-            String processedValue = NumberProcessors.processBoundedIntUnaryOperator(value).getString();
-            if (period != null){
-                return Collections.singletonList(
-                        new LootConditionResult(TextKey.of(
-                                "emi_loot.condition.time_check_period",
-                                period.toString(),
-                                processedValue
-                            )
-                        )
-                );
-            }
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.time_check",processedValue)));
-        } else if (type == LootConditionTypes.VALUE_CHECK){
-            LootNumberProvider value = ((ValueCheckLootConditionAccessor)condition).getValue();
-            String processedValue = NumberProcessors.processLootNumberProvider(value).getString();
-            BoundedIntUnaryOperator range = ((ValueCheckLootConditionAccessor)condition).getRange();
-            String processedRange = NumberProcessors.processBoundedIntUnaryOperator(range).getString();
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.value_check",processedValue,processedRange)));
-        } else if(type == LootConditionTypes.WEATHER_CHECK) {
-            Boolean raining = ((WeatherCheckLootConditionAccessor)condition).getRaining();
-            if (raining != null){
-                if (raining){
-                    return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.raining_true")));
-                }
-                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.raining_false")));
-            }
-            Boolean thundering = ((WeatherCheckLootConditionAccessor)condition).getThundering();
-            if (thundering != null){
-                if (thundering){
-                    return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_true")));
-                }
-                return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.thundering_false")));
-            }
-        } else if (type == EMILoot.SPAWNS_WITH){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a spawns-with condition");
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.spawns_with")));
-        } else if (type == EMILoot.CREEPER){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a creeper condition");
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.creeper")));
-        } else if (type == EMILoot.WITHER_KILL){
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing a wither-kill condition");
-            return Collections.singletonList(new LootConditionResult(TextKey.of("emi_loot.condition.wither_kill")));
-        }
-        return Collections.singletonList(LootConditionResult.EMPTY);
+        return LootParserRegistry.parseCondition(condition,type,stack,parentIsAlternative);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static Text compileConditionTexts(ItemStack stack,List<LootConditionResult> results){
+    public static Text compileConditionTexts(ItemStack stack,List<LootConditionResult> results){
         MutableText finalText = LText.empty();
         int size = results.size();
         for(int i = 0; i < size;i++){
@@ -770,13 +472,17 @@ public class LootTableParser {
             ItemStack stack,
             List<TextKey> conditions
     ){
-        static LootFunctionResult EMPTY = new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, new LinkedList<>());
+        public static LootFunctionResult EMPTY = new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, new LinkedList<>());
     }
 
     public record LootConditionResult(
             TextKey text
     ){
-        static LootConditionResult EMPTY = new LootConditionResult(TextKey.empty());
+        public static LootConditionResult EMPTY = new LootConditionResult(TextKey.empty());
+
+        public TextKey getText(){
+            return text;
+        }
     }
 
     public record ItemEntryResult(

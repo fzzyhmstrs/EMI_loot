@@ -11,7 +11,6 @@ import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.text.MutableText;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class NumberProcessors {
