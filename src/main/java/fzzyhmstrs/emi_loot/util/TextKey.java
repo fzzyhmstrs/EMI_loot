@@ -78,29 +78,29 @@ public record TextKey(int index, List<String> args){
 
         //tool tag textkeys
         //pickaxe
-        mapBuilder(52,"emi_loot.pickaxe.wood",(key)-> getBasicText(52), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_wood.png"));
-        mapBuilder(53,"emi_loot.pickaxe.stone",(key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_stone.png"));
-        mapBuilder(54,"emi_loot.pickaxe.iron",(key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_iron.png"));
-        mapBuilder(55,"emi_loot.pickaxe.diamond",(key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_diamond.png"));
-        mapBuilder(56,"emi_loot.pickaxe.netherite",(key)-> getBasicText(56), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_netherite.png"));
+        mapBuilder(62,"emi_loot.pickaxe.wood",(key)-> getBasicText(62), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_wood.png"));
+        mapBuilder(63,"emi_loot.pickaxe.stone",(key)-> getBasicText(63), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_stone.png"));
+        mapBuilder(64,"emi_loot.pickaxe.iron",(key)-> getBasicText(64), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_iron.png"));
+        mapBuilder(65,"emi_loot.pickaxe.diamond",(key)-> getBasicText(65), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_diamond.png"));
+        mapBuilder(66,"emi_loot.pickaxe.netherite",(key)-> getBasicText(66), new Identifier(EMILoot.MOD_ID,"textures/gui/pickaxe_netherite.png"));
         //axe
-        mapBuilder(67,"emi_loot.axe.wood",(key)-> getBasicText(67), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_wood.png"));
-        mapBuilder(68,"emi_loot.axe.stone",(key)-> getBasicText(68), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_stone.png"));
-        mapBuilder(69,"emi_loot.axe.iron",(key)-> getBasicText(69), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_iron.png"));
-        mapBuilder(70,"emi_loot.axe.diamond",(key)-> getBasicText(70), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_diamond.png"));
-        mapBuilder(71,"emi_loot.axe.netherite",(key)-> getBasicText(71), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_netherite.png"));
+        mapBuilder(77,"emi_loot.axe.wood",(key)-> getBasicText(77), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_wood.png"));
+        mapBuilder(78,"emi_loot.axe.stone",(key)-> getBasicText(78), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_stone.png"));
+        mapBuilder(79,"emi_loot.axe.iron",(key)-> getBasicText(79), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_iron.png"));
+        mapBuilder(80,"emi_loot.axe.diamond",(key)-> getBasicText(80), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_diamond.png"));
+        mapBuilder(81,"emi_loot.axe.netherite",(key)-> getBasicText(81), new Identifier(EMILoot.MOD_ID,"textures/gui/axe_netherite.png"));
         //shovel
-        mapBuilder(82,"emi_loot.shovel.wood",(key)-> getBasicText(82), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_wood.png"));
-        mapBuilder(83,"emi_loot.shovel.stone",(key)-> getBasicText(83), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_stone.png"));
-        mapBuilder(84,"emi_loot.shovel.iron",(key)-> getBasicText(84), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_iron.png"));
-        mapBuilder(85,"emi_loot.shovel.diamond",(key)-> getBasicText(85), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_diamond.png"));
-        mapBuilder(86,"emi_loot.shovel.netherite",(key)-> getBasicText(86), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_netherite.png"));
+        mapBuilder(92,"emi_loot.shovel.wood",(key)-> getBasicText(92), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_wood.png"));
+        mapBuilder(93,"emi_loot.shovel.stone",(key)-> getBasicText(93), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_stone.png"));
+        mapBuilder(94,"emi_loot.shovel.iron",(key)-> getBasicText(94), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_iron.png"));
+        mapBuilder(95,"emi_loot.shovel.diamond",(key)-> getBasicText(95), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_diamond.png"));
+        mapBuilder(96,"emi_loot.shovel.netherite",(key)-> getBasicText(96), new Identifier(EMILoot.MOD_ID,"textures/gui/shovel_netherite.png"));
         //hoe
-        mapBuilder(97,"emi_loot.hoe.wood",(key)-> getBasicText(97), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_wood.png"));
-        mapBuilder(98,"emi_loot.hoe.stone",(key)-> getBasicText(98), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_stone.png"));
-        mapBuilder(99,"emi_loot.hoe.iron",(key)-> getBasicText(99), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_iron.png"));
-        mapBuilder(100,"emi_loot.hoe.diamond",(key)-> getBasicText(100), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
-        mapBuilder(101,"emi_loot.hoe.netherite",(key)-> getBasicText(101), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
+        mapBuilder(107,"emi_loot.hoe.wood",(key)-> getBasicText(107), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_wood.png"));
+        mapBuilder(108,"emi_loot.hoe.stone",(key)-> getBasicText(108), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_stone.png"));
+        mapBuilder(109,"emi_loot.hoe.iron",(key)-> getBasicText(109), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_iron.png"));
+        mapBuilder(110,"emi_loot.hoe.diamond",(key)-> getBasicText(110), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
+        mapBuilder(111,"emi_loot.hoe.netherite",(key)-> getBasicText(111), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
         //Direct drops and builtin/lootify conditions
         mapBuilder(125,"emi_loot.condition.direct_drop",(key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
         mapBuilder(126,"emi_loot.condition.spawns_with",(key)-> getBasicText(126), new Identifier(EMILoot.MOD_ID,"textures/gui/spawns_with.png"));
@@ -149,18 +149,6 @@ public record TextKey(int index, List<String> args){
         return LText.translatable(translationKey, arg);
     }
 
-    private static Text getInvertedText(int index, TextKey key){
-        String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        String arg;
-        try{
-            arg = key.args.get(0);
-        } catch(Exception e) {
-            e.printStackTrace();
-            arg = "Missing";
-        }
-        return LText.translatable(translationKey, arg).formatted(Formatting.RED);
-    }
-
     private static Text getTwoArgText(int index, TextKey key){
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
         String arg1;
@@ -196,6 +184,18 @@ public record TextKey(int index, List<String> args){
             }
         }
         return finalText;
+    }
+    
+    private static Text getInvertedText(int index, TextKey key){
+        String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
+        String arg;
+        try{
+            arg = key.args.get(0);
+        } catch(Exception e) {
+            e.printStackTrace();
+            arg = "Missing";
+        }
+        return LText.translatable(translationKey, arg).formatted(Formatting.RED);
     }
 
     public boolean isNotEmpty(){
