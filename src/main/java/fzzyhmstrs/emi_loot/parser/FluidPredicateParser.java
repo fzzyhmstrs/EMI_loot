@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.BlockPredicateAccessor;
 import fzzyhmstrs.emi_loot.mixins.FluidPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.fluid.Fluid;

@@ -1,6 +1,5 @@
 package fzzyhmstrs.emi_loot.server;
 
-import fzzyhmstrs.emi_loot.EMILoot;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;

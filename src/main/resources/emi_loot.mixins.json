@@ -54,7 +54,12 @@
     "TimeCheckLootConditionAccessor",
     "ValueCheckLootConditionAccessor",
     "WeatherCheckLootConditionAccessor",
-    "StatePredicateAccessor"
+    "StatePredicateAccessor",
+    "CopyNameLootFunctionAccessor",
+    "TagEntryAccessor",
+    "LimitCountLootFunctionAccessor",
+    "SetLootTableLootFunctionAccessor",
+    "SetStewEffectLootFunctionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

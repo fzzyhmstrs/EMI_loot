@@ -7,16 +7,11 @@ import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public class SimpleFunctionParser implements FunctionParser{
-    
-    private final TextKey key;
-  
-    public SimpleFunctionParser(String key){
-      this.key = TextKey.of(key);
-    }
-    
+public class ExplosionDecayFunctionParser implements FunctionParser{
+
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
-        return new LootTableParser.LootFunctionResult(key,ItemStack.EMPTY,conditionTexts);
+        if (parentIsAlternative) return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.decay"), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, conditionTexts);
     }
 }
