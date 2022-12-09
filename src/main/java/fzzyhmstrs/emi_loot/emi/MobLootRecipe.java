@@ -40,27 +40,6 @@ public class MobLootRecipe implements EmiRecipe {
     //private final static Map<EntityType<?>,Integer> needsElevating;
     private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/downturn_arrow.png");
 
-    static{
-        Object2IntMap<EntityType<?>> map = new Object2IntOpenHashMap<>();
-        map.put(EntityType.COD,-8);
-        map.put(EntityType.CHICKEN,0);
-        map.put(EntityType.SQUID,-8);
-        map.put(EntityType.GLOW_SQUID,-8);
-        map.put(EntityType.CAVE_SPIDER,-3);
-        map.put(EntityType.SALMON,-6);
-        map.put(EntityType.CAT,-3);
-        map.put(EntityType.RABBIT,-8);
-        map.put(EntityType.TROPICAL_FISH,-9);
-        map.put(EntityType.PUFFERFISH,-12);
-        map.put(EntityType.WARDEN,9);
-        map.put(EntityType.ENDERMAN,7);
-        map.put(EntityType.DOLPHIN,-3);
-        map.put(EntityType.PHANTOM,-3);
-        map.put(EntityType.TURTLE,0);
-        //needsElevating = map;
-    }
-
-    
     public MobLootRecipe(ClientMobLootTable loot){
         this.loot = loot;
         allStacksGuaranteed = true;
@@ -121,17 +100,23 @@ public class MobLootRecipe implements EmiRecipe {
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
-        WidgetRowBuilder builder;
-        boolean newBuilder = false;
         if (recursive || rowBuilderList.isEmpty()){
-            builder = new WidgetRowBuilder(154);
-            newBuilder = true;
-        } else {
-            builder = rowBuilderList.get(rowBuilderList.size() - 1);
+            rowBuilderList.add(new WidgetRowBuilder(154));
         }
-        Optional<ClientBuiltPool> opt = builder.addAndTrim(newPool);
-        if (newBuilder) rowBuilderList.add(builder);
-        opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
+        boolean added = false;
+        for (WidgetRowBuilder builder : rowBuilderList){
+            if (builder.canAddPool(newPool)){
+                builder.addAndTrim(newPool);
+                added = true;
+                break;
+            }
+        }
+        if (!added){
+            Optional<ClientBuiltPool> opt = rowBuilderList.get(rowBuilderList.size() - 1).addAndTrim(newPool);
+            opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
+        }
+
+
     }
 
     @Override

@@ -54,6 +54,7 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Impl sequence item entries|Not started|?.?.?|
 |Refactor client table builders for commonality?|Not started|?.?.?|
 |Impl fishing/gameplay loot?|Not started|?.?.?|
+|Improve collation of same-condition stacks|Not started|?.?.?|
 |Add item tile optimizer to improve layout of condition tiles|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
 |Add method for displaying experience drops from mobs|Not started|?.?.?|

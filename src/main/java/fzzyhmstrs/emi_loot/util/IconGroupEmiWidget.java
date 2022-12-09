@@ -76,7 +76,7 @@ public class IconGroupEmiWidget extends Widget {
 	public boolean mouseClicked(int mouseX, int mouseY, int button) {
         for (SlotWidget slot: items){
             if (slot.getBounds().contains(mouseX, mouseY)){
-                if(slot.mouseClicked(mouseX, mouseY, button) return true;
+                if(slot.mouseClicked(mouseX, mouseY, button)) return true;
             }
         }
         return super.mouseClicked(mouseX,mouseY,button);

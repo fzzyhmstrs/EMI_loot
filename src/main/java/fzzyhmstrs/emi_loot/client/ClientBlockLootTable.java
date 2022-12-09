@@ -124,7 +124,7 @@ public class ClientBlockLootTable implements LootReceiver {
                 List<Pair<Integer, Text>> summedList = new LinkedList<>(applyToAllList);
                 summedList.addAll(newPoolList);
                 if (summedList.isEmpty()){
-                    summedList.add(new Pair<>(63, LText.translatable("emi_loot.no_conditions")));
+                    summedList.add(new Pair<>(TextKey.getIndex("emi_loot.no_conditions"), LText.translatable("emi_loot.no_conditions")));
                 }
                 Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);
                 builderPoolMap.putAll(itemsToAdd);

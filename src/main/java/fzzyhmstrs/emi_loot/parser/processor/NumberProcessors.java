@@ -27,14 +27,18 @@ public class NumberProcessors {
         return LText.empty();
     }
 
-    public static MutableText processNumberRange(NumberRange<?> range, String exact, String between, String fallback, Object ... args){
+    public static MutableText processNumberRange(NumberRange<?> range, String exact, String between, String atLeast, String atMost, String fallback, Object ... args){
         if (!range.equals(NumberRange.IntRange.ANY) && !range.equals(NumberRange.FloatRange.ANY)){
             Number min = range.getMin();
             Number max = range.getMax();
             if (Objects.equals(min, max) && min != null){
-                return LText.translatable(exact,min, args);
+                return LText.translatable(exact, min, args);
             } else if (min != null && max != null) {
-                return LText.translatable(between,min, max, args);
+                return LText.translatable(between, min, max, args);
+            }else if (min != null) {
+                return LText.translatable(atLeast, min, args);
+            }else if (max != null) {
+                return LText.translatable(atMost, max, args);
             } else {
                 if (fallback.equals("")) return LText.empty();
                 return LText.translatable(fallback);
