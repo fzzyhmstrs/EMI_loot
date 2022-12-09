@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TypeSpecificPredicateParser {
-    
+
     public static Text parseLightningBoltPredicate(LightningBoltPredicate predicate){
         NumberRange.IntRange blocksSetOnFire = ((LightningBoltPredicateAccessor)predicate).getBlocksSetOnFire();
         if (!blocksSetOnFire.equals(NumberRange.IntRange.ANY)){
@@ -34,6 +34,8 @@ public class TypeSpecificPredicateParser {
                         blocksSetOnFire,
                         "emi_loot.entity_predicate.type_specific.lightning.blocks",
                         "emi_loot.entity_predicate.type_specific.lightning.blocks_2",
+                            "emi_loot.entity_predicate.type_specific.lightning.blocks_3",
+                            "emi_loot.entity_predicate.type_specific.lightning.blocks_4",
                         ""
                     )
             );
@@ -68,6 +70,8 @@ public class TypeSpecificPredicateParser {
                             experienceLevel,
                             "emi_loot.entity_predicate.type_specific.player.level",
                             "emi_loot.entity_predicate.type_specific.player.level_2",
+                            "emi_loot.entity_predicate.type_specific.player.level_3",
+                            "emi_loot.entity_predicate.type_specific.player.level_4",
                             ""
                     )
             );
@@ -93,6 +97,8 @@ public class TypeSpecificPredicateParser {
                             entry.getValue(),
                             "emi_loot.entity_predicate.type_specific.player.stats.exact",
                             "emi_loot.entity_predicate.type_specific.player.stats.between",
+                            "emi_loot.entity_predicate.type_specific.player.stats.at_least",
+                            "emi_loot.entity_predicate.type_specific.player.stats.at_most",
                             "emi_loot.entity_predicate.type_specific.player.stats.fallback"
                     );
                     list.add(LText.translatable("emi_loot.entity_predicate.type_specific.player.stats.type." + typeId, valueId, num));
