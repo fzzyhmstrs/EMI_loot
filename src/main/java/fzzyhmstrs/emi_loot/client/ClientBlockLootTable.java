@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tag.BlockTags;
@@ -174,7 +175,8 @@ public class ClientBlockLootTable implements LootReceiver {
         if (builderCount == -1){
             ClientBlockRawPool simplePool = new ClientBlockRawPool(new HashMap<>());
             Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
+            Item item = Registry.ITEM.get(buf.readVarInt());
+            ItemStack simpleStack = new ItemStack(item);
             simpleMap.put(simpleStack,100F);
             simplePool.map.put(new ArrayList<>(),simpleMap);
             itemMap.put(new ArrayList<>(),simplePool);

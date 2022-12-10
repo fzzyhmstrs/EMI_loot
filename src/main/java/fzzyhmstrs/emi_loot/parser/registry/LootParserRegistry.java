@@ -64,7 +64,6 @@ public class LootParserRegistry{
         registerFunction(LootFunctionTypes.SET_NAME,new SetNameFunctionParser(),"Registering vanilla set name function parser");
         registerFunction(LootFunctionTypes.SET_CONTENTS,new SimpleFunctionParser("emi_loot.function.set_contents"),"Registering vanilla set contents function parser");
         registerFunction(LootFunctionTypes.SET_DAMAGE,new SetDamageFunctionParser(),"Registering vanilla set damage function parser");
-        registerFunction(LootFunctionTypes.SET_INSTRUMENT,new SetInstrumentFunctionParser(),"Registering vanilla set instrument function parser");
         registerFunction(LootFunctionTypes.COPY_STATE,new SimpleFunctionParser("emi_loot.function.copy_state"),"Registering vanilla copy state function parser");
         registerFunction(LootFunctionTypes.COPY_NAME,new CopyNameFunctionParser(),"Registering vanilla copy name function parser");
         registerFunction(LootFunctionTypes.COPY_NBT,new SimpleFunctionParser("emi_loot.function.copy_nbt"),"Registering vanilla copy nbt function parser");

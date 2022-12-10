@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,20 +42,21 @@ public class ClientResourceData {
         }
 
         @Override
-        public void reload(ResourceManager manager) {
+        public void reload(ResourceManager resourceManager) {
             MOB_OFFSETS.clear();
             MOB_SCALES.clear();
             MOB_ROTATIONS.clear();
-            manager.findResources("entity_fixers",path -> path.getPath().endsWith(".json")).forEach(this::load);
+            resourceManager.findResources("entity_fixers",path -> path.endsWith(".json")).forEach(id -> load(resourceManager,id));
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_OFFSETS.toString());
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_ROTATIONS.toString());
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_SCALES.toString());
         }
 
-        private void load(Identifier fileId, Resource resource){
+        private void load(ResourceManager resourceManager,Identifier fileId){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading entity fixers from file: " + fileId.toString());
             try {
-                BufferedReader reader = resource.getReader();
+                Resource resource = resourceManager.getResource(fileId);
+                BufferedReader reader = new BufferedReader( new InputStreamReader(resource.getInputStream()));
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 json.entrySet().forEach((entry)->{
                     JsonElement element = entry.getValue();

@@ -15,6 +15,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,10 +31,10 @@ public class ServerResourceData {
 
     public static void loadDirectTables(ResourceManager resourceManager){
         DIRECT_DROPS.clear();
-        resourceManager.findResources("direct_drops",path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadDirectTable);
+        resourceManager.findResources("direct_drops",path -> path.endsWith(".json")).forEach(id -> loadDirectTable(resourceManager,id));
     }
 
-    private static void loadDirectTable(Identifier id, Resource resource){
+    private static void loadDirectTable(ResourceManager resourceManager,Identifier id){
         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading direct drop table from file: " + id.toString());
         String path = id.getPath();
         Identifier id2 = new Identifier(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
@@ -44,7 +45,8 @@ public class ServerResourceData {
             return;
         }
         try {
-            BufferedReader reader = resource.getReader();
+            Resource resource = resourceManager.getResource(id);
+            BufferedReader reader = new BufferedReader( new InputStreamReader(resource.getInputStream()));
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             LootTable lootTable = GSON.fromJson(json, LootTable.class);
             if (lootTable != null) {

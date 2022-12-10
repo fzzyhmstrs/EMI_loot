@@ -11,7 +11,7 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class ExplorationMapFunctionParser implements FunctionParser {
             mapStack = stack;
         } else {
             MapIcon.Type decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
-            TagKey<Structure> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
+            TagKey<ConfiguredStructureFeature<?,?>> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
             mapStack = new ItemStack(Items.FILLED_MAP);
             MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN,"+",decoration);
             typeKey = "emi_loot.map."+ destination.id().getPath();

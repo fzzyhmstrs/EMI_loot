@@ -12,12 +12,12 @@ accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition min
 accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition max Ljava/lang/String;
 
 # player predicate stuff
-accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementPredicate
-accessible class net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate
-accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate
+accessible class net/minecraft/predicate/PlayerPredicate$AdvancementPredicate
+accessible class net/minecraft/predicate/PlayerPredicate$CompletedAdvancementPredicate
+accessible class net/minecraft/predicate/PlayerPredicate$AdvancementCriteriaPredicate
 
-accessible field net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate done Z
-accessible field net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate criteria Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
+accessible field net/minecraft/predicate/PlayerPredicate$CompletedAdvancementPredicate done Z
+accessible field net/minecraft/predicate/PlayerPredicate$AdvancementCriteriaPredicate criteria Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
 
 # SetAttributeLootFunction stuff
 accessible field net/minecraft/loot/function/SetAttributesLootFunction attributes Ljava/util/List;
