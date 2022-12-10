@@ -48,7 +48,7 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Impl resource-driven mob offsetting overrides|In work|0.5.0|
 |Optimize packet sending size/number|In work|0.5.0|
 |Impl handler for code-based mob drops (nether star etc)|In work|0.5.0|
-|Impl tag item entries|In work|0.5.0|
+|Impl tag item entries; need to find a way to load in the tag|In work|0.6.0?|
 |Impl dynamic item entries|Not started|?.?.?|
 |Impl group item entries|Not started|?.?.?|
 |Impl sequence item entries|Not started|?.?.?|

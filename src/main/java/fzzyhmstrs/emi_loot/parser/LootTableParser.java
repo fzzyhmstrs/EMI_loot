@@ -31,6 +31,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
 
 import java.util.*;
@@ -331,17 +332,18 @@ public class LootTableParser {
 
     static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean parentIsAlternative){
         TagKey<Item> items = ((TagEntryAccessor) entry).getName();
-        Optional<RegistryEntryList.Named<Item>> opt = Registry.ITEM.getEntryList(items);
+        if (EMILoot.DEBUG) EMILoot.LOGGER.info(">>> Parsing tag entry " + items.id());
+        Iterable<RegistryEntry<Item>> itemsItr = Registry.ITEM.iterateEntries(items);
         List<ItemEntryResult> returnList = new LinkedList<>();
-        opt.ifPresent(named -> {
-            List<ItemStack> stacks = named.stream().map(item -> new ItemStack(item.value())).toList();
-            int weight = ((LeafEntryAccessor) entry).getWeight();
-            LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
-            LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
-            for (ItemStack item : stacks){
-                returnList.addAll(parseItemEntry(weight, item, functions, conditions, parentIsAlternative));
-            }
-        });
+        if (EMILoot.DEBUG) EMILoot.LOGGER.info(itemsItr.toString());
+        int weight = ((LeafEntryAccessor) entry).getWeight();
+        LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
+        LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
+        for (RegistryEntry<Item> item : itemsItr){
+            ItemStack stack = new ItemStack(item.value());
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("> Stack: " + stack.getName());
+            returnList.addAll(parseItemEntry(weight, stack, functions, conditions, parentIsAlternative));
+        }
         return returnList;
         
     }
