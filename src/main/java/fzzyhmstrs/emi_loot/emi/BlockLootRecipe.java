@@ -13,8 +13,8 @@ import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
@@ -31,7 +31,7 @@ public class BlockLootRecipe implements EmiRecipe {
     public BlockLootRecipe(ClientBlockLootTable loot){
         this.loot = loot;
         Identifier blockId = loot.blockId;
-        Block block = Registry.BLOCK.get(blockId);
+        Block block = Registries.BLOCK.get(blockId);
         loot.build(MinecraftClient.getInstance().world, block);
         inputStack = EmiStack.of(block);
         List<EmiStack> list = new LinkedList<>();

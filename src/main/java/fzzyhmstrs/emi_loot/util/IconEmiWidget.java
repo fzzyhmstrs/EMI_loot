@@ -46,11 +46,11 @@ public class IconEmiWidget extends Widget {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, FRAME_ID);
         DrawableHelper.drawTexture(matrices, x, y, 12, 12, 0, 0, 12, 12, 64, 16);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, tex);
         DrawableHelper.drawTexture(matrices, x + 2, y + 2, 8, 8, 0, 0, 8, 8, 8, 8);

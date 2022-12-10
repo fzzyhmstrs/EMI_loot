@@ -17,7 +17,7 @@
     "SetDamageLootFunctionAccessor",
     "SetNameLootFunctionAccessor",
     "ExplorationMapLootFunctionAccessor",
-    "SetGoatHornLootFunctionAccessor",
+    "SetInstrumentLootFunctionAccessor",
     "SetEnchantmentsLootFunctionAccessor",
     "TableBonusLootConditionAccessor",
     "InvertedLootConditionAccessor",

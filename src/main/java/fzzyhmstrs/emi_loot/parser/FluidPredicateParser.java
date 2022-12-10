@@ -6,9 +6,9 @@ import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.StatePredicate;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
 
 public class FluidPredicateParser {
 
@@ -25,7 +25,7 @@ public class FluidPredicateParser {
 
         Fluid fluid = ((FluidPredicateAccessor)predicate).getFluid();
         if (fluid != null){
-            return LText.translatable("emi_loot.fluid_predicate.fluid", Registry.FLUID.getId(fluid).toString());
+            return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid).toString());
         }
 
         StatePredicate statePredicate = ((FluidPredicateAccessor)predicate).getState();

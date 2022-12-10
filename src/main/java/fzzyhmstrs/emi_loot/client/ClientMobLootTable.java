@@ -10,10 +10,10 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -46,14 +46,14 @@ public class ClientMobLootTable implements LootReceiver {
             } else {
                 String subString = pth.substring(Math.min(lastSlashIndex + 1, pth.length()));
                 Identifier tempMobId = new Identifier(ns, subString);
-                if (!Registry.ENTITY_TYPE.containsId(tempMobId)) {
+                if (!Registries.ENTITY_TYPE.containsId(tempMobId)) {
                     String choppedString = pth.substring(0, lastSlashIndex);
                     int nextSlashIndex = choppedString.lastIndexOf('/');
                     if (nextSlashIndex != -1) {
                         String sheepString = choppedString.substring(Math.min(nextSlashIndex + 1, pth.length()));
                         tempMobId = new Identifier(ns, sheepString);
                         this.mobId = tempMobId;
-                        if (Registry.ENTITY_TYPE.containsId(tempMobId)) {
+                        if (Registries.ENTITY_TYPE.containsId(tempMobId)) {
                             this.color = subString;
                         }
                     } else {
@@ -164,7 +164,7 @@ public class ClientMobLootTable implements LootReceiver {
         if (builderCount == -1){
             ClientMobRawPool simplePool = new ClientMobRawPool(new HashMap<>());
             Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
+            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
             simpleMap.put(simpleStack,100F);
             simplePool.map.put(new ArrayList<>(),simpleMap);
             itemMap.put(new ArrayList<>(),simplePool);

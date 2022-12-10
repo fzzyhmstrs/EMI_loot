@@ -12,12 +12,12 @@ import fzzyhmstrs.emi_loot.util.LText;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.*;
+import net.minecraft.registry.Registries;
 import net.minecraft.stat.Stat;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameMode;
 
 import java.util.LinkedList;
@@ -48,10 +48,10 @@ public class TypeSpecificPredicateParser {
             String variant = JsonHelper.getString(jsonObject,"variant");
             Identifier id = Identifier.tryParse(variant);
             if (id != null){
-                if (Registry.CAT_VARIANT.containsId(id)){
+                if (Registries.CAT_VARIANT.containsId(id)){
                     MutableText catVar = LText.translatable("emi_loot.entity_predicate.type_specific.cat." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.cat",catVar.getString());
-                } else if (Registry.FROG_VARIANT.containsId(id)){
+                } else if (Registries.FROG_VARIANT.containsId(id)){
                     MutableText frogVar = LText.translatable("emi_loot.entity_predicate.type_specific.frog." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.frog",frogVar.getString());
                 }

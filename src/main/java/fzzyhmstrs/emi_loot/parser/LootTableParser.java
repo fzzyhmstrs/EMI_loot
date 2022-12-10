@@ -26,13 +26,12 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryEntryList;
 
 import java.util.*;
 
@@ -63,7 +62,7 @@ public class LootTableParser {
         tables.forEach(LootTableParser::parseLootTable);
         if (EMILoot.config.parseMobLoot) {
             Identifier chk = new Identifier("pig");
-            Registry.ENTITY_TYPE.stream().toList().forEach((type) -> {
+            Registries.ENTITY_TYPE.stream().toList().forEach((type) -> {
                 if (type == EntityType.SHEEP){
                     for (Identifier sheepId : ServerResourceData.SHEEP_TABLES){
                         parseEntityType(manager,type,sheepId,chk);
@@ -93,7 +92,7 @@ public class LootTableParser {
     }
 
     private static void parseEntityType(LootManager manager,EntityType<?> type, Identifier mobTableId, Identifier fallback){
-        Identifier mobId = Registry.ENTITY_TYPE.getId(type);
+        Identifier mobId = Registries.ENTITY_TYPE.getId(type);
         LootTable mobTable = manager.getTable(mobTableId);
         if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
             currentTable = mobTableId.toString();
@@ -333,7 +332,7 @@ public class LootTableParser {
     static List<ItemEntryResult> parseTagEntry(TagEntry entry, boolean parentIsAlternative){
         TagKey<Item> items = ((TagEntryAccessor) entry).getName();
         if (EMILoot.DEBUG) EMILoot.LOGGER.info(">>> Parsing tag entry " + items.id());
-        Iterable<RegistryEntry<Item>> itemsItr = Registry.ITEM.iterateEntries(items);
+        Iterable<RegistryEntry<Item>> itemsItr = Registries.ITEM.iterateEntries(items);
         List<ItemEntryResult> returnList = new LinkedList<>();
         if (EMILoot.DEBUG) EMILoot.LOGGER.info(itemsItr.toString());
         int weight = ((LeafEntryAccessor) entry).getWeight();

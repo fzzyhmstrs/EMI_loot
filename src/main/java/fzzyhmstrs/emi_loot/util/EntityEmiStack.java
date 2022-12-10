@@ -17,14 +17,14 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,10 @@ public class EntityEmiStack extends EmiStack {
         this.entry = new EntityEntry(entity);
         if (entity != null) {
             boolean hasTransform = ClientResourceData.MOB_ROTATIONS.containsKey(entity.getType());
-            Vec3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),Vec3f.ZERO);
+            Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),new Vector3f(0,0,0));
             ctx = new EntityRenderContext(scale,hasTransform,transform);
         } else {
-            ctx = new EntityRenderContext(scale,false,Vec3f.ZERO);
+            ctx = new EntityRenderContext(scale,false,new Vector3f(0,0,0));
         }
     }
 
@@ -100,7 +100,7 @@ public class EntityEmiStack extends EmiStack {
     @Override
     public Identifier getId() {
         if (entity == null) throw new RuntimeException("Entity is null");
-        return Registry.ENTITY_TYPE.getId(entity.getType());
+        return Registries.ENTITY_TYPE.getId(entity.getType());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class EntityEmiStack extends EmiStack {
         List<TooltipComponent> list = new ArrayList<>();
         if (entity != null) {
             list.addAll(getTooltipText().stream().map(EmiPort::ordered).map(TooltipComponent::of).toList());
-            String mod = EmiUtil.getModName(Registry.ENTITY_TYPE.getId(entity.getType()).getNamespace());
+            String mod = EmiUtil.getModName(Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
             list.add(TooltipComponent.of(EmiPort.ordered(EmiPort.literal(mod, Formatting.BLUE, Formatting.ITALIC))));
             if (!getRemainder().isEmpty()) {
                 list.add(new RemainderTooltipComponent(this));
@@ -147,23 +147,23 @@ public class EntityEmiStack extends EmiStack {
         MatrixStack matrixStack2 = new MatrixStack();
         matrixStack2.translate(0.0, 0.0, 1000.0);
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
-        Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
-        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180));
+        Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
+        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180));
         if (ctx.hasTransform){
-            Quaternion quaternion3 = new Quaternion(ctx.transform.getX(),ctx.transform.getY(),ctx.transform.getZ(),true);
-            quaternion.hamiltonProduct(quaternion3);
+            Quaternionf quaternion3 = new Quaternionf(ctx.transform.x,ctx.transform.y,ctx.transform.z,1.0);
+            quaternion.mul(quaternion3);
         }
 
-        quaternion.hamiltonProduct(quaternion2);
+        quaternion.mul(quaternion2);
         matrixStack2.multiply(quaternion);
         float h = entity.bodyYaw;
         float i = entity.getYaw();
         float j = entity.getPitch();
         float k = entity.prevHeadYaw;
         float l = entity.headYaw;
-        entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)));
-        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180))));
-        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)) );
+        entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)));
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)) );
         entity.headYaw = entity.getYaw();
         entity.prevHeadYaw = entity.getYaw();
         DiffuseLighting.method_34742();
@@ -205,19 +205,19 @@ public class EntityEmiStack extends EmiStack {
         MatrixStack matrixStack2 = new MatrixStack();
         matrixStack2.translate(0.0, 0.0, 1000.0);
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
-        Quaternion quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F);
-        Quaternion quaternion2 = Vec3f.POSITIVE_X.getDegreesQuaternion(g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180));
+        Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
+        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180));
         if (ctx.hasTransform){
-            Quaternion quaternion3 = new Quaternion(ctx.transform.getX(),ctx.transform.getY(),ctx.transform.getZ(),true);
-            quaternion.hamiltonProduct(quaternion3);
+            Quaternionf quaternion3 = new Quaternionf(ctx.transform.x,ctx.transform.y,ctx.transform.z,1.0);
+            quaternion.mul(quaternion3);
         }
 
-        quaternion.hamiltonProduct(quaternion2);
+        quaternion.mul(quaternion2);
         matrixStack2.multiply(quaternion);
         float i = entity.getYaw();
         float j = entity.getPitch();
-        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180))));
-        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.getZ() * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.getZ() * MathHelper.PI / 180)) );
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)) );
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
@@ -232,8 +232,8 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    private record EntityRenderContext(double size, boolean hasTransform, Vec3f transform){
-        static EntityRenderContext EMPTY = new EntityRenderContext(8.0,false,Vec3f.ZERO);
+    private record EntityRenderContext(double size, boolean hasTransform, Vector3f transform){
+        static EntityRenderContext EMPTY = new EntityRenderContext(8.0,false,new Vector3f(0,0,0));
     }
 
     public static class EntityEntry extends Entry<Entity> {

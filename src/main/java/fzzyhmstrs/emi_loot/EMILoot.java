@@ -17,10 +17,11 @@ import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.function.LootFunctionTypes;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class EMILoot implements ModInitializer {
     @Override
     public void onInitialize() {
         parser.registerServer();
-        Registry.register(Registry.ENCHANTMENT,new Identifier(MOD_ID,"random"),RANDOM);
+        Registry.register(Registries.ENCHANTMENT,new Identifier(MOD_ID,"random"),RANDOM);
     }
     
     @SuppressWarnings("ResultOfMethodCallIgnored")

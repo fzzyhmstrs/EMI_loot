@@ -5,9 +5,9 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.entity.EntityType;
 import net.minecraft.predicate.entity.EntityTypePredicate;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class EntityTypePredicateParser{
 
@@ -18,7 +18,7 @@ public class EntityTypePredicateParser{
             if (jsonString.startsWith("#")) {
                 return LText.translatable("emi_loot.entity_predicate.type_tag", jsonString);
             } else {
-                EntityType<?> type = Registry.ENTITY_TYPE.get(new Identifier(jsonString));
+                EntityType<?> type = Registries.ENTITY_TYPE.get(new Identifier(jsonString));
                 return LText.translatable("emi_loot.entity_predicate.type_single", type.getName().getString());
             }
         }

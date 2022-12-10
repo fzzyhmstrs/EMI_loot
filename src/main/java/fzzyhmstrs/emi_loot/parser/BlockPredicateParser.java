@@ -8,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.StatePredicate;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 

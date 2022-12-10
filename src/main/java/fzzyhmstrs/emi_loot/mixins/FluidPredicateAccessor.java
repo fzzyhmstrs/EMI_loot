@@ -3,7 +3,7 @@ package fzzyhmstrs.emi_loot.mixins;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.StatePredicate;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

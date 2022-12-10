@@ -11,12 +11,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.Registry;
+import org.joml.Vector3f;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class ClientResourceData {
 
     public static final Object2IntMap<EntityType<?>> MOB_OFFSETS = new Object2IntOpenHashMap<>();
     public static final Object2FloatMap<EntityType<?>> MOB_SCALES = new Object2FloatOpenHashMap<>();
-    public static final Map<EntityType<?>, Vec3f> MOB_ROTATIONS = new HashMap<>();
+    public static final Map<EntityType<?>, Vector3f> MOB_ROTATIONS = new HashMap<>();
 
     public static void register(){
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new EntityOffsetsReloadListener());
@@ -59,18 +59,18 @@ public class ClientResourceData {
                 json.entrySet().forEach((entry)->{
                     JsonElement element = entry.getValue();
                     Identifier mobId = new Identifier(entry.getKey());
-                    if (Registry.ENTITY_TYPE.containsId(mobId)) {
+                    if (Registries.ENTITY_TYPE.containsId(mobId)) {
                         if (element.isJsonObject()) {
                             JsonObject object = element.getAsJsonObject();
                             JsonElement offset = object.get("offset");
                             if (offset != null && offset.isJsonPrimitive()) {
 
-                                MOB_OFFSETS.put(Registry.ENTITY_TYPE.get(mobId), offset.getAsInt());
+                                MOB_OFFSETS.put(Registries.ENTITY_TYPE.get(mobId), offset.getAsInt());
 
                             }
                             JsonElement scaling = object.get("scale");
                             if (scaling != null && scaling.isJsonPrimitive()) {
-                                    MOB_SCALES.put(Registry.ENTITY_TYPE.get(mobId), scaling.getAsFloat());
+                                    MOB_SCALES.put(Registries.ENTITY_TYPE.get(mobId), scaling.getAsFloat());
                             }
                             float x = 0f;
                             float y = 0f;
@@ -88,7 +88,7 @@ public class ClientResourceData {
                                 z = zEl.getAsFloat();
                             }
                             if (x != 0f || y != 0f || z != 0f) {
-                                MOB_ROTATIONS.put(Registry.ENTITY_TYPE.get(mobId), new Vec3f(x, y, z));
+                                MOB_ROTATIONS.put(Registries.ENTITY_TYPE.get(mobId), new Vector3f(x, y, z));
                             }
 
                         } else {

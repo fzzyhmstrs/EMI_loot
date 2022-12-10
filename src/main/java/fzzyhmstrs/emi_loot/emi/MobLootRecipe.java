@@ -22,12 +22,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
@@ -45,7 +45,7 @@ public class MobLootRecipe implements EmiRecipe {
         allStacksGuaranteed = true;
         loot.build(MinecraftClient.getInstance().world);
         Identifier mobId = loot.mobId;
-        EntityType<?> type = Registry.ENTITY_TYPE.get(mobId);
+        EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
         this.type = type;
         MinecraftClient client = MinecraftClient.getInstance();
         Entity entity = type.create(client.world);
