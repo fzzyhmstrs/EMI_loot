@@ -24,6 +24,7 @@
   "emi_loot.hoe.diamond": "Needs or prefers a diamond+ hoe",
   "emi_loot.hoe.netherite": "Needs or prefers a netherite+ hoe",
   "emi_loot.percent_chance": "%s%% Chance",
+  "emi_loot.percentage": "%s%%",
   "emi_loot.rolls": "%s rolls",
   "emi_loot.rolls_visible": "%s r",
   "emi_loot.and": " & ",
