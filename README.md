@@ -60,6 +60,7 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Add method for displaying experience drops from mobs|Not started|?.?.?|
 |Investigate way to calculate and convey item drop probability|Not started|?.?.?|
 |Investigate the possibility to add LootJs support|Not started|?.?.?|
+|Look into adding a worldgen "recipe" category|Not started|?.?.?|
 
 ## Direct Drops to Handle
 * Creeper
