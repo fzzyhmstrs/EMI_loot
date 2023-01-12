@@ -39,15 +39,15 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Implement EntityPredicate Parser|Complete|0.4.0|
 |Update icon widget impl to handle custom sprites|Complete|0.4.0|
 |Implement other missing parsers as needed|Complete|0.4.0|
-|_Not yet released_|---|---|
 |Remove GUI wiggles|Complete|0.5.0|
-|Starting impl of basic config|In work|0.5.0|
-|Check mob/block table percentages actually right|In work|0.5.0|
-|Port to 1.19.3 to match to EMI's update|Not started|0.5.0|
-|Update parser to apply top level functions to inner stacks|In work|0.5.0|
-|Impl resource-driven mob offsetting overrides|In work|0.5.0|
-|Optimize packet sending size/number|In work|0.5.0|
-|Impl handler for code-based mob drops (nether star etc)|In work|0.5.0|
+|Starting impl of basic config|Complete|0.5.0|
+|Check mob/block table percentages actually right|Complete|0.5.0|
+|Port to 1.19.3 to match to EMI's update|Complete|0.5.0|
+|Update parser to apply top level functions to inner stacks|Complete|0.5.0|
+|Impl resource-driven mob offsetting overrides|Complete|0.5.0|
+|Optimize packet sending size/number|Complete|0.5.0|
+|Impl handler for code-based mob drops (nether star etc)|Complete|0.5.0|
+|_Not yet released_|---|---|
 |Impl tag item entries; need to find a way to load in the tag|In work|0.6.0?|
 |Impl dynamic item entries|Not started|?.?.?|
 |Impl group item entries|Not started|?.?.?|
