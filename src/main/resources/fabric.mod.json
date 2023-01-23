@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "EMI Loot",
-  "description":"Plugin for EMI that shows chest loot and block drops. Entity drops TBA.",
+  "description":"Plugin for EMI that shows chest loot, block drops, and mob drops.",
   "icon": "assets/emi_loot/icon.png",
   "authors": [
     "fzzyhmstrs",
