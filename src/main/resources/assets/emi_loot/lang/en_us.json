@@ -62,6 +62,7 @@
   "emi_loot.function.banner": "Applies a unique banner pattern",
   "emi_loot.function.lore": "Unique lore is added to this item",
   "emi_loot.function.set_stew": "Suspicious stew randomly given a status effect from among %s",
+  "emi_loot.function.set_stew_unknown": "an unknown list of effects...",
   "emi_loot.function.set_nbt": "This items NBT is set with custom data",
   "emi_loot.function.set_loot_table": "This item's loot table is set to %s",
   "emi_loot.function.set_any_damage": "Items damaged to any durability value",
