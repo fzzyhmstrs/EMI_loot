@@ -26,7 +26,7 @@ public class ClientMobLootTable implements LootReceiver {
     public final Identifier id;
     public final Identifier mobId;
     public String color = "";
-    private final Map<List<TextKey>, ClientMobRawPool> rawItems;
+    private final Map<List<TextKey>, ClientRawPool> rawItems;
     public List<ClientBuiltPool> builtItems;
 
     public ClientMobLootTable(){
@@ -35,7 +35,7 @@ public class ClientMobLootTable implements LootReceiver {
         this.rawItems = new HashMap<>();
     }
 
-    public ClientMobLootTable(Identifier id,Identifier mobId, Map<List<TextKey>, ClientMobRawPool> map){
+    public ClientMobLootTable(Identifier id,Identifier mobId, Map<List<TextKey>, ClientRawPool> map){
         this.id = id;
         String ns = id.getNamespace();
         String pth = id.getPath();
@@ -82,7 +82,7 @@ public class ClientMobLootTable implements LootReceiver {
                 Text text = textKey.process(ItemStack.EMPTY,world).text();
                 applyToAllList.add(new Pair<>(textKey.index(),text));
             });
-            pool.map.forEach((poolList,poolItemMap)->{
+            pool.map().forEach((poolList,poolItemMap)->{
                 List<Pair<Integer,Text>> newPoolList = new LinkedList<>();
                 Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
                 List<ItemStack> itemsToRemove = new LinkedList<>();
@@ -159,14 +159,14 @@ public class ClientMobLootTable implements LootReceiver {
         Identifier mobId = buf.readIdentifier();
         int builderCount = buf.readByte();
 
-        Map<List<TextKey>, ClientMobRawPool> itemMap = new HashMap<>();
+        Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
         //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
         if (builderCount == -1){
-            ClientMobRawPool simplePool = new ClientMobRawPool(new HashMap<>());
+            ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
             Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
             ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
             simpleMap.put(simpleStack,100F);
-            simplePool.map.put(new ArrayList<>(),simpleMap);
+            simplePool.map().put(new ArrayList<>(),simpleMap);
             itemMap.put(new ArrayList<>(),simplePool);
             return new ClientMobLootTable(id,mobId,itemMap);
         }
@@ -187,7 +187,7 @@ public class ClientMobLootTable implements LootReceiver {
                 qualifierList.add(key);
             }
 
-            ClientMobRawPool pool = itemMap.getOrDefault(qualifierList,new ClientMobRawPool(new HashMap<>()));
+            ClientRawPool pool = itemMap.getOrDefault(qualifierList,new ClientRawPool(new HashMap<>()));
 
             int pileSize = buf.readByte();
             for (int i = 0; i < pileSize; i++) {
@@ -200,7 +200,7 @@ public class ClientMobLootTable implements LootReceiver {
                     pileQualifierList.add(key);
                 }
 
-                Object2FloatMap<ItemStack> pileItemMap = pool.map.getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
+                Object2FloatMap<ItemStack> pileItemMap = pool.map().getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
 
                 int pileItemSize = buf.readByte();
                 for (int j = 0; j < pileItemSize; j++) {
@@ -209,7 +209,7 @@ public class ClientMobLootTable implements LootReceiver {
                     pileItemMap.put(stack,weight);
                     isEmpty = false;
                 }
-                pool.map.put(pileQualifierList,pileItemMap);
+                pool.map().put(pileQualifierList,pileItemMap);
             }
 
             itemMap.put(qualifierList,pool);
@@ -218,6 +218,4 @@ public class ClientMobLootTable implements LootReceiver {
 
         return new ClientMobLootTable(id,mobId,itemMap);
     }
-
-    public record ClientMobRawPool(Map<List<TextKey>, Object2FloatMap<ItemStack>> map){}
 }

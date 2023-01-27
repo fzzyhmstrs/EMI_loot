@@ -60,7 +60,8 @@
     "TagEntryAccessor",
     "LimitCountLootFunctionAccessor",
     "SetLootTableLootFunctionAccessor",
-    "SetStewEffectLootFunctionAccessor"
+    "SetStewEffectLootFunctionAccessor",
+    "DataPackContentsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

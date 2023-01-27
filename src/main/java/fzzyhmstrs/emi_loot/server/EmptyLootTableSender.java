@@ -9,6 +9,11 @@ import java.util.List;
 public class EmptyLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     @Override
+    public String getId() {
+        return "";
+    }
+
+    @Override
     public void send(ServerPlayerEntity player) {
     }
 
@@ -20,5 +25,10 @@ public class EmptyLootTableSender implements LootSender<ChestLootPoolBuilder> {
     @Override
     public List<ChestLootPoolBuilder> getBuilders() {
         return new LinkedList<>();
+    }
+
+    @Override
+    public void build() {
+
     }
 }

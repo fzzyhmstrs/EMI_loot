@@ -23,6 +23,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     HashMap<ItemStack, Float> floatMap = new HashMap<>();
     public static Identifier CHEST_SENDER = new Identifier("e_l","c_s");
 
+    @Override
     public void build(){
         builderList.forEach((builder) -> {
             builder.build();
@@ -35,6 +36,11 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
                 }
             });
         });
+    }
+
+    @Override
+    public String getId() {
+        return idToSend;
     }
 
     @Override

@@ -7,23 +7,20 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChestLootPoolBuilder implements LootBuilder {
+public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
 
     public ChestLootPoolBuilder(float rollWeight){
-        this.rollWeight = rollWeight;
+        super(rollWeight);
     }
 
     final Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
-    final float rollWeight;
     Integer totalWeight = 0;
     Object2FloatMap<ItemStack> builtMap = new Object2FloatOpenHashMap<>();
-    boolean isSimple = false;
-    boolean isEmpty = false;
-    ItemStack simpleStack = ItemStack.EMPTY;
 
     @Override
     public void addItem(LootTableParser.ItemEntryResult result){

@@ -25,22 +25,32 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     public static Identifier BLOCK_SENDER = new Identifier("e_l","b_s");
     boolean isEmpty = true;
 
+
     @Override
-    public void send(ServerPlayerEntity player) {
-        PacketByteBuf buf = PacketByteBufs.create();
-        //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
-        buf.writeString(idToSend);
-        //pre-build the builders to do empty checks
+    public void build() {
         builderList.forEach((builder)->{
             builder.build();
             if (!builder.isEmpty){
                 isEmpty = false;
             }
         });
+    }
+
+    @Override
+    public String getId() {
+        return idToSend;
+    }
+
+    @Override
+    public void send(ServerPlayerEntity player) {
         if (isEmpty){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
             return;
         }
+        PacketByteBuf buf = PacketByteBufs.create();
+        //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
+        buf.writeString(idToSend);
+        //pre-build the builders to do empty checks
         if (builderList.size() == 1 && builderList.get(0).isSimple){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeByte(-1);
