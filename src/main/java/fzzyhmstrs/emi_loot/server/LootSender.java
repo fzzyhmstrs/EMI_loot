@@ -6,9 +6,11 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public interface LootSender<T extends LootBuilder> {
+    String getId();
     void send(ServerPlayerEntity player);
     void addBuilder(T builder);
     List<T> getBuilders();
+    void build();
 
     static String getIdToSend(Identifier id){
         if (id.getNamespace().equals("minecraft")){

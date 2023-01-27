@@ -11,82 +11,33 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-@SuppressWarnings("deprecation")
-public class ClientBlockLootTable implements LootReceiver {
+abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiver> implements LootReceiver{
 
-    public static ClientBlockLootTable INSTANCE = new ClientBlockLootTable();
-    private static final Identifier EMPTY = new Identifier("blocks/empty");
-    public final Identifier id;
-    public final Identifier blockId;
-    private final Map<List<TextKey>, ClientRawPool> rawItems;
-    public List<ClientBuiltPool> builtItems;
-
-    public ClientBlockLootTable(){
-        this.id = EMPTY;
-        this.blockId = new Identifier("air");
+    public AbstractTextKeyParsingClientLootTable(){
         this.rawItems = new HashMap<>();
     }
 
-    public ClientBlockLootTable(Identifier id, Map<List<TextKey>, ClientRawPool> map){
-        this.id = id;
-        String ns = id.getNamespace();
-        String pth = id.getPath();
-        int lastSlashIndex = pth.lastIndexOf('/');
-        if (lastSlashIndex == -1){
-            blockId = new Identifier(ns,pth);
-        } else {
-            blockId = new Identifier(ns,pth.substring(Math.min(lastSlashIndex + 1,pth.length())));
-        }
+    public AbstractTextKeyParsingClientLootTable(Map<List<TextKey>, ClientRawPool> map){
         this.rawItems = map;
     }
 
-    public boolean isEmpty(){
-        return Objects.equals(id, EMPTY);
-    }
+    private final Map<List<TextKey>, ClientRawPool> rawItems;
+    public List<ClientBuiltPool> builtItems;
+
+    abstract List<Pair<Integer, Text>> getSpecialTextKeyList(World world, Block block);
 
     public void build(World world, Block block){
-        String tool = "";
-        if (block.getRegistryEntry().isIn(BlockTags.PICKAXE_MINEABLE)){
-            tool = "pickaxe";
-        } else if (block.getRegistryEntry().isIn(BlockTags.AXE_MINEABLE)){
-            tool = "axe";
-        } else if (block.getRegistryEntry().isIn(BlockTags.SHOVEL_MINEABLE)){
-            tool = "shovel";
-        } else if (block.getRegistryEntry().isIn(BlockTags.HOE_MINEABLE)){
-            tool = "hoe";
-        }
-        List<Pair<Integer,Text>> toolNeededList = new LinkedList<>();
-        if (!Objects.equals(tool,"")){
-            String type;
-            if (block.getRegistryEntry().isIn(BlockTags.NEEDS_STONE_TOOL)){
-                type = "stone";
-            } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_IRON_TOOL)){
-                type = "iron";
-            } else if (block.getRegistryEntry().isIn(BlockTags.NEEDS_DIAMOND_TOOL)){
-                type = "diamond";
-            } else{
-                type = "wood";
-            }
-            String keyString = "emi_loot." + tool + "." + type;
-            int keyIndex = TextKey.getIndex(keyString);
-            if (keyIndex != -1){
-                toolNeededList.add(new Pair<>(keyIndex,LText.translatable(keyString)));
-            }
-        }
-
         Map<List<Pair<Integer,Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
         rawItems.forEach((list,pool)->{
-            List<Pair<Integer,Text>> applyToAllList = new LinkedList<>(toolNeededList);
+            List<Pair<Integer,Text>> applyToAllList = new LinkedList<>(getSpecialTextKeyList(world, block));
             list.forEach((textKey) -> {
                 Text text = textKey.process(ItemStack.EMPTY,world).text();
                 applyToAllList.add(new Pair<>(textKey.index(),text));
@@ -145,7 +96,7 @@ public class ClientBlockLootTable implements LootReceiver {
             });
             Float2ObjectMap<EmiIngredient> emiConsolidatedMap = new Float2ObjectArrayMap<>();
             consolidatedMap.forEach((consolidatedWeight,consolidatedList)-> {
-                List< EmiStack > emiStacks = new LinkedList<>();
+                List<EmiStack> emiStacks = new LinkedList<>();
                 for (ItemStack i : consolidatedList){
                     emiStacks.add(EmiStack.of(i));
                 }
@@ -156,30 +107,27 @@ public class ClientBlockLootTable implements LootReceiver {
         builtItems = finalList;
     }
 
-    @Override
-    public Identifier getId() {
-        return id;
-    }
+    abstract Identifier getBufId(PacketByteBuf buf);
+
+    abstract T simpleTableToReturn();
+
+    abstract T emptyTableToReturn();
+
+    abstract T filledTableToReturn(Identifier id, Map<List<TextKey>, ClientRawPool> itemMap);
 
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
 
-        String idToParse = buf.readString();
-        Identifier id = new Identifier(idToParse.contains(":") ? idToParse : "blocks/"+idToParse);
+
+        Identifier id = getBufId(buf);
         int builderCount = buf.readByte();
+        if (builderCount == -1){
+            return simpleTableToReturn();
+        }
 
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
         //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
-        if (builderCount == -1){
-            ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
-            Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
-            simpleMap.put(simpleStack,100F);
-            simplePool.map().put(new ArrayList<>(),simpleMap);
-            itemMap.put(new ArrayList<>(),simplePool);
-            return new ClientBlockLootTable(id,itemMap);
-        }
 
         for (int b = 0; b < builderCount; b++) {
 
@@ -224,9 +172,9 @@ public class ClientBlockLootTable implements LootReceiver {
 
             itemMap.put(qualifierList,pool);
         }
-        if (isEmpty) return new ClientBlockLootTable();
+        if (isEmpty) return emptyTableToReturn();
 
-        return new ClientBlockLootTable(id,itemMap);
+        return filledTableToReturn(id, itemMap);
     }
-    
+
 }

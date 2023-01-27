@@ -2,16 +2,14 @@ package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.entry.LootPoolEntry;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MobLootPoolBuilder extends AbstractLootPoolBuilder {
+public class GameplayLootPoolBuilder extends AbstractLootPoolBuilder {
 
-    public MobLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions){
+    public GameplayLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions){
         super(rollWeight);
         this.conditions = conditions;
         this.functions = functions;
@@ -47,12 +45,18 @@ public class MobLootPoolBuilder extends AbstractLootPoolBuilder {
                 isEmpty = true;
                 return;
             }
-            if (map.size() == 1 && builder.isSimple && conditions.isEmpty() && functions.isEmpty() && key.isEmpty()) {
+            if (map.size() == 1 && conditions.isEmpty() && functions.isEmpty() && builder.isSimple && checkKey(key)) {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }
-            builtMap.put(key, builder);
+            builtMap.put(key,builder);
         }
+    }
+
+    private boolean checkKey(List<TextKey> keys){
+        if (keys.isEmpty()) return true;
+        if (keys.size() != 1) return false;
+        return keys.get(0).index() == 0 || keys.get(0).index() == 150;
     }
 
     @Override
