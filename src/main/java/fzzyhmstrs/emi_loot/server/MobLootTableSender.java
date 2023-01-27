@@ -28,22 +28,31 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     boolean isEmpty = true;
 
     @Override
-    public void send(ServerPlayerEntity player) {
-        PacketByteBuf buf = PacketByteBufs.create();
-        //start with the loot pool ID and the number of builders to write
-        buf.writeString(idToSend);
-        buf.writeString(mobIdToSend);
-
-        //pre-build the builders to do empty checks
+    public void build() {
         builderList.forEach((builder)->{
             builder.build();
             if (!builder.isEmpty){
                 isEmpty = false;
             }
         });
+    }
+
+    @Override
+    public String getId() {
+        return idToSend;
+    }
+
+    @Override
+    public void send(ServerPlayerEntity player) {
+        //pre-build the builders to do empty checks
         if (isEmpty){
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
+        PacketByteBuf buf = PacketByteBufs.create();
+        //start with the loot pool ID and the number of builders to write
+        buf.writeString(idToSend);
+        buf.writeString(mobIdToSend);
 
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple mob: " + idToSend);

@@ -3,27 +3,24 @@ package fzzyhmstrs.emi_loot.server;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BlockLootPoolBuilder implements LootBuilder {
+public class BlockLootPoolBuilder extends AbstractLootPoolBuilder {
 
     public BlockLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions){
-        this.rollWeight = rollWeight;
+        super(rollWeight);
         this.conditions = conditions;
         this.functions = functions;
     }
 
     final HashMap<List<TextKey>, ChestLootPoolBuilder> map = new HashMap<>();
-    final float rollWeight;
     final List<LootTableParser.LootConditionResult> conditions;
     final List<LootTableParser.LootFunctionResult> functions;
     HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
-    boolean isSimple = false;
-    boolean isEmpty = false;
-    ItemStack simpleStack = ItemStack.EMPTY;
 
     @Override
     public void addItem(LootTableParser.ItemEntryResult result){
