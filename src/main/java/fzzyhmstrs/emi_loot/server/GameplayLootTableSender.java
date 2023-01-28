@@ -54,7 +54,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
         if (builderList.size() == 1 && builderList.get(0).isSimple){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeByte(-1);
-            buf.writeRegistryValue(Registry.ITEM,builderList.get(0).simpleStack.getItem());
+            buf.writeVarInt(Registry.ITEM.getRawId(builderList.get(0).simpleStack.getItem()));
             ServerPlayNetworking.send(player,GAMEPLAY_SENDER, buf);
             return;
         } else if (builderList.isEmpty()){
