@@ -44,7 +44,7 @@ public class EntityEmiStack extends EmiStack {
         this.entry = new EntityEntry(entity);
         if (entity != null) {
             boolean hasTransform = ClientResourceData.MOB_ROTATIONS.containsKey(entity.getType());
-            Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),new Vector3f(0,0,0));
+            Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),new Vector3f(0,0,0)).mul(0.017453292F);
             ctx = new EntityRenderContext(scale,hasTransform,transform);
         } else {
             ctx = new EntityRenderContext(scale,false,new Vector3f(0,0,0));
@@ -148,9 +148,9 @@ public class EntityEmiStack extends EmiStack {
         matrixStack2.translate(0.0, 0.0, 1000.0);
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
-        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180));
+        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z) - f * 20.0F * 0.017453292F * MathHelper.sin(ctx.transform.z));
         if (ctx.hasTransform){
-            Quaternionf quaternion3 = new Quaternionf(ctx.transform.x,ctx.transform.y,ctx.transform.z,1.0);
+            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x,ctx.transform.y,ctx.transform.z);
             quaternion.mul(quaternion3);
         }
 
@@ -161,9 +161,9 @@ public class EntityEmiStack extends EmiStack {
         float j = entity.getPitch();
         float k = entity.prevHeadYaw;
         float l = entity.headYaw;
-        entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)));
-        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180))));
-        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)) );
+        entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.z) + (g * 20.0F * MathHelper.sin(ctx.transform.z)));
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z) + (g * 40.0F * MathHelper.sin(ctx.transform.z))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z)) );
         entity.headYaw = entity.getYaw();
         entity.prevHeadYaw = entity.getYaw();
         DiffuseLighting.method_34742();
@@ -206,9 +206,9 @@ public class EntityEmiStack extends EmiStack {
         matrixStack2.translate(0.0, 0.0, 1000.0);
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
-        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) - f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180));
+        Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z) - f * 20.0F * 0.017453292F * MathHelper.sin(ctx.transform.z));
         if (ctx.hasTransform){
-            Quaternionf quaternion3 = new Quaternionf(ctx.transform.x,ctx.transform.y,ctx.transform.z,1.0);
+            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x,ctx.transform.y,ctx.transform.z);
             quaternion.mul(quaternion3);
         }
 
@@ -216,8 +216,8 @@ public class EntityEmiStack extends EmiStack {
         matrixStack2.multiply(quaternion);
         float i = entity.getYaw();
         float j = entity.getPitch();
-        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180) + (g * 40.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180))));
-        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z * MathHelper.PI / 180)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z * MathHelper.PI / 180)) );
+        entity.setYaw(180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z) + (g * 40.0F * MathHelper.sin(ctx.transform.z))));
+        entity.setPitch((-g * 20.0F * MathHelper.cos(ctx.transform.z)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z)) );
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
