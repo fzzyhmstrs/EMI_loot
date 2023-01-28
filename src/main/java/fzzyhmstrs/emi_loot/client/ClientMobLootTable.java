@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.client;
 
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
@@ -9,6 +10,7 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -39,31 +41,15 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
         this.id = id;
         String ns = id.getNamespace();
         String pth = id.getPath();
-        if (Objects.equals(mobId, new Identifier("empty"))) {
-            int lastSlashIndex = pth.lastIndexOf('/');
-            if (lastSlashIndex == -1) {
-                this.mobId = new Identifier(ns, pth);
-            } else {
-                String subString = pth.substring(Math.min(lastSlashIndex + 1, pth.length()));
-                Identifier tempMobId = new Identifier(ns, subString);
-                if (!Registry.ENTITY_TYPE.containsId(tempMobId)) {
-                    String choppedString = pth.substring(0, lastSlashIndex);
-                    int nextSlashIndex = choppedString.lastIndexOf('/');
-                    if (nextSlashIndex != -1) {
-                        String sheepString = choppedString.substring(Math.min(nextSlashIndex + 1, pth.length()));
-                        tempMobId = new Identifier(ns, sheepString);
-                        this.mobId = tempMobId;
-                        if (Registry.ENTITY_TYPE.containsId(tempMobId)) {
-                            this.color = subString;
-                        }
-                    } else {
-                        this.mobId = tempMobId;
-                    }
-                } else {
-                    this.mobId = tempMobId;
+        if (!Registries.ENTITY_TYPE.containsId(mobId)) {
+            this.mobId = new Identifier("empty");
+        } else {
+            if (Objects.equals(mobId, Registries.ENTITY_TYPE.getId(EntityType.SHEEP))) {
+                int lastSlashIndex = pth.lastIndexOf('/');
+                if (lastSlashIndex != -1) {
+                    this.color = pth.substring(Math.min(lastSlashIndex + 1, pth.length()));
                 }
             }
-        } else {
             this.mobId = mobId;
         }
     }

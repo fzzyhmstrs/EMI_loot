@@ -102,6 +102,7 @@ public record TextKey(int index, List<String> args){
         mapBuilder(110,"emi_loot.hoe.diamond",(key)-> getBasicText(110), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_diamond.png"));
         mapBuilder(111,"emi_loot.hoe.netherite",(key)-> getBasicText(111), new Identifier(EMILoot.MOD_ID,"textures/gui/hoe_netherite.png"));
         //Direct drops and builtin/lootify conditions
+        mapBuilder(124,"emi_loot.condition.sequence",(key)-> getBasicText(124), new Identifier(EMILoot.MOD_ID,"textures/gui/sequence.png"));
         mapBuilder(125,"emi_loot.condition.direct_drop",(key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID,"textures/gui/direct_drops.png"));
         mapBuilder(126,"emi_loot.condition.spawns_with",(key)-> getBasicText(126), new Identifier(EMILoot.MOD_ID,"textures/gui/spawns_with.png"));
         mapBuilder(127,"emi_loot.condition.creeper",(key)-> getBasicText(127), new Identifier(EMILoot.MOD_ID,"textures/gui/creeper.png"));
@@ -230,6 +231,7 @@ public record TextKey(int index, List<String> args){
         if (keyMap.containsKey(key)){
            return new TextKey(keyMap.get(key), args);
         } else {
+            EMILoot.LOGGER.error("Couldn't parse TextKey with key: " + key + "and args: " + args);
             return new TextKey(0,new LinkedList<>());
         }
     }
