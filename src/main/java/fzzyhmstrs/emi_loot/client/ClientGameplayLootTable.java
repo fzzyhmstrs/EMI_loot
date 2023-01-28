@@ -7,11 +7,11 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -95,7 +95,7 @@ public class ClientGameplayLootTable extends AbstractTextKeyParsingClientLootTab
     ClientGameplayLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids, PacketByteBuf buf) {
         ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
         Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
+        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
         simpleMap.put(simpleStack,100F);
         simplePool.map().put(new ArrayList<>(),simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();

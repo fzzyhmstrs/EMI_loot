@@ -96,7 +96,7 @@ public class ClientBlockLootTable extends AbstractTextKeyParsingClientLootTable<
     ClientBlockLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf) {
         ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
         Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
+        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
         simpleMap.put(simpleStack,100F);
         simplePool.map().put(new ArrayList<>(),simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();

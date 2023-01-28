@@ -132,8 +132,12 @@ public class ChestLootRecipe implements EmiRecipe {
         lootStacksSorted.forEach((weight, items)->{
             if ((loot.items.size() <= (EMILoot.config.chestLootCompact ? 48 : 24)) && !EMILoot.config.chestLootAlwaysStackSame) {
                 items.forEach((stack) -> {
+                    System.out.println(stack.getName());
                     int row = (int) Math.ceil(index.get() / columns) - 1;
                     int column = (index.get() - 1) % (int)columns;
+                    System.out.println(index.get());
+                    System.out.println(row);
+                    System.out.println(column);
                     index.getAndDecrement();
                     String fTrim = trimFloatString(weight);
                     SlotWidget slotWidget = new SlotWidget(stack, column * (EMILoot.config.chestLootCompact ? 18 : 45), titleSpace + row * finalRowHeight).recipeContext(this);

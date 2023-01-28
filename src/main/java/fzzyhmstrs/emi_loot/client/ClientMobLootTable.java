@@ -42,10 +42,10 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
         this.id = id;
         String ns = id.getNamespace();
         String pth = id.getPath();
-        if (!Registries.ENTITY_TYPE.containsId(mobId)) {
+        if (!Registry.ENTITY_TYPE.containsId(mobId)) {
             this.mobId = new Identifier("empty");
         } else {
-            if (Objects.equals(mobId, Registries.ENTITY_TYPE.getId(EntityType.SHEEP))) {
+            if (Objects.equals(mobId, Registry.ENTITY_TYPE.getId(EntityType.SHEEP))) {
                 int lastSlashIndex = pth.lastIndexOf('/');
                 if (lastSlashIndex != -1) {
                     this.color = pth.substring(Math.min(lastSlashIndex + 1, pth.length()));
@@ -81,7 +81,7 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     ClientMobLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf) {
         ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
         Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
+        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
         simpleMap.put(simpleStack,100F);
         simplePool.map().put(new ArrayList<>(),simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
