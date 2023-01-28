@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -19,23 +20,22 @@ import net.minecraft.world.World;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ClientMobLootTable implements LootReceiver {
+public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<ClientMobLootTable> {
 
     public static ClientMobLootTable INSTANCE = new ClientMobLootTable();
     private static final Identifier EMPTY = new Identifier("entity/empty");
     public final Identifier id;
     public final Identifier mobId;
     public String color = "";
-    private final Map<List<TextKey>, ClientRawPool> rawItems;
-    public List<ClientBuiltPool> builtItems;
 
     public ClientMobLootTable(){
+        super();
         this.id = EMPTY;
         this.mobId = new Identifier("empty");
-        this.rawItems = new HashMap<>();
     }
 
     public ClientMobLootTable(Identifier id,Identifier mobId, Map<List<TextKey>, ClientRawPool> map){
+        super(map);
         this.id = id;
         String ns = id.getNamespace();
         String pth = id.getPath();
@@ -66,84 +66,6 @@ public class ClientMobLootTable implements LootReceiver {
         } else {
             this.mobId = mobId;
         }
-
-        this.rawItems = map;
-    }
-
-    public boolean isEmpty(){
-        return Objects.equals(id, EMPTY);
-    }
-
-    public void build(World world){
-        Map<List<Pair<Integer,Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
-        rawItems.forEach((list,pool)->{
-            List<Pair<Integer,Text>> applyToAllList = new LinkedList<>();
-            list.forEach((textKey) -> {
-                Text text = textKey.process(ItemStack.EMPTY,world).text();
-                applyToAllList.add(new Pair<>(textKey.index(),text));
-            });
-            pool.map().forEach((poolList,poolItemMap)->{
-                List<Pair<Integer,Text>> newPoolList = new LinkedList<>();
-                Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
-                List<ItemStack> itemsToRemove = new LinkedList<>();
-
-                poolList.forEach((textKey) -> {
-                    poolItemMap.forEach((poolStack,weight)->{
-                        List<ItemStack> stacks = textKey.process(poolStack,world).stacks();
-                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
-                        if (!stacks.contains(poolStack)){
-                            itemsToRemove.add(poolStack);
-                            toAddWeight.set(poolItemMap.getFloat(poolStack));
-                        }
-                        stacks.forEach(stack->{
-                            if(poolItemMap.containsKey(stack)){
-                                toAddWeight.set(poolItemMap.getFloat(stack));
-                            }
-                        });
-                        stacks.forEach(stack->{
-                            if(!poolItemMap.containsKey(stack)){
-                                itemsToAdd.put(stack,(float)toAddWeight.get());
-                            }
-                        });
-
-                    });
-                    Text text = textKey.process(ItemStack.EMPTY,world).text();
-                    newPoolList.add(new Pair<>(textKey.index(),text));
-
-                });
-                List<Pair<Integer, Text>> summedList = new LinkedList<>(applyToAllList);
-                summedList.addAll(newPoolList);
-                if (summedList.isEmpty()){
-                    summedList.add(new Pair<>(TextKey.getIndex("emi_loot.no_conditions"), LText.translatable("emi_loot.no_conditions")));
-                }
-                Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);
-                builderPoolMap.putAll(itemsToAdd);
-                itemsToRemove.forEach(builderPoolMap::removeFloat);
-                builderItems.put(summedList,builderPoolMap);
-
-            });
-        });
-        List<ClientBuiltPool> finalList = new LinkedList<>();
-        builderItems.forEach((builtList,builtMap)->{
-            Float2ObjectMap<List<ItemStack>> consolidatedMap = new Float2ObjectArrayMap<>();
-            builtMap.forEach((stack,weight)->{
-                List<ItemStack> consolidatedList = consolidatedMap.getOrDefault((float)weight,new LinkedList<>());
-                if (!consolidatedList.contains(stack)){
-                    consolidatedList.add(stack);
-                }
-                consolidatedMap.put((float)weight,consolidatedList);
-            });
-            Float2ObjectMap<EmiIngredient> emiConsolidatedMap = new Float2ObjectArrayMap<>();
-            consolidatedMap.forEach((consolidatedWeight,consolidatedList)-> {
-                List<EmiStack> emiStacks = new LinkedList<>();
-                for (ItemStack i : consolidatedList){
-                    emiStacks.add(EmiStack.of(i));
-                }
-                emiConsolidatedMap.put((float) consolidatedWeight, EmiIngredient.of(emiStacks));
-            });
-            finalList.add(new ClientBuiltPool(builtList,emiConsolidatedMap));
-        });
-        builtItems = finalList;
     }
 
     @Override
@@ -152,70 +74,41 @@ public class ClientMobLootTable implements LootReceiver {
     }
 
     @Override
-    public LootReceiver fromBuf(PacketByteBuf buf) {
-        boolean isEmpty = true;
+    public boolean isEmpty(){
+        return Objects.equals(id, EMPTY);
+    }
 
-        Identifier id = buf.readIdentifier();
-        Identifier mobId = buf.readIdentifier();
-        int builderCount = buf.readByte();
+    @Override
+    List<Pair<Integer, Text>> getSpecialTextKeyList(World world, Block block) {
+        return List.of();
+    }
 
+    @Override
+    Pair<Identifier,Identifier> getBufId(PacketByteBuf buf) {
+        Identifier id = getIdFromBuf(buf);
+        Identifier mobId = getIdFromBuf(buf);
+        return new Pair<>(id,mobId);
+    }
+
+    @Override
+    ClientMobLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf) {
+        ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
+        Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
+        ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
+        simpleMap.put(simpleStack,100F);
+        simplePool.map().put(new ArrayList<>(),simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
-        //shortcut -1 means a simple table. One guaranteed drop of quantity 1 with no conditions.
-        if (builderCount == -1){
-            ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
-            Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
-            ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registry.ITEM));
-            simpleMap.put(simpleStack,100F);
-            simplePool.map().put(new ArrayList<>(),simpleMap);
-            itemMap.put(new ArrayList<>(),simplePool);
-            return new ClientMobLootTable(id,mobId,itemMap);
-        }
+        itemMap.put(new ArrayList<>(),simplePool);
+        return new ClientMobLootTable(ids.getLeft(),ids.getRight(),itemMap);
+    }
 
-        for (int b = 0; b < builderCount; b++) {
+    @Override
+    ClientMobLootTable emptyTableToReturn() {
+        return new ClientMobLootTable();
+    }
 
-            List<TextKey> qualifierList = new LinkedList<>();
-
-            int conditionSize = buf.readByte();
-            for (int i = 0; i < conditionSize; i++) {
-                TextKey key = TextKey.fromBuf(buf);
-                qualifierList.add(key);
-            }
-
-            int functionSize = buf.readByte();
-            for (int i = 0; i < functionSize; i++) {
-                TextKey key = TextKey.fromBuf(buf);
-                qualifierList.add(key);
-            }
-
-            ClientRawPool pool = itemMap.getOrDefault(qualifierList,new ClientRawPool(new HashMap<>()));
-
-            int pileSize = buf.readByte();
-            for (int i = 0; i < pileSize; i++) {
-
-                List<TextKey> pileQualifierList = new LinkedList<>();
-
-                int pileQualifierSize = buf.readByte();
-                for (int j = 0; j < pileQualifierSize; j++) {
-                    TextKey key = TextKey.fromBuf(buf);
-                    pileQualifierList.add(key);
-                }
-
-                Object2FloatMap<ItemStack> pileItemMap = pool.map().getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
-
-                int pileItemSize = buf.readByte();
-                for (int j = 0; j < pileItemSize; j++) {
-                    ItemStack stack = buf.readItemStack();
-                    float weight = buf.readFloat();
-                    pileItemMap.put(stack,weight);
-                    isEmpty = false;
-                }
-                pool.map().put(pileQualifierList,pileItemMap);
-            }
-
-            itemMap.put(qualifierList,pool);
-        }
-        if (isEmpty) return new ClientMobLootTable();
-
-        return new ClientMobLootTable(id,mobId,itemMap);
+    @Override
+    ClientMobLootTable filledTableToReturn(Pair<Identifier,Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap) {
+        return new ClientMobLootTable(ids.getLeft(),ids.getRight(),itemMap);
     }
 }

@@ -59,10 +59,6 @@ public class LootTableParser {
             map.put(value,false);
         }
         postProcessors = map;
-        Object2BooleanOpenHashMap<PostProcessor> map2 = new Object2BooleanOpenHashMap<>();
-        for (var value : PostProcessor.values()){
-            map.put(value,false);
-        }
     }
 
     private static boolean hasPostProcessed(){
@@ -156,6 +152,15 @@ public class LootTableParser {
             for (LootBuilder builder : sender.getBuilders()){
                 for (LootPoolEntry entry: builder.getEntriesToPostProcess(process)){
                     if (EMILoot.DEBUG) EMILoot.LOGGER.info("Post-processing builder in mob sender: " + sender.getId());
+                    parseLootPoolEntry(builder,entry,process);
+                }
+            }
+            sender.build();
+        }
+        for (LootSender<?> sender : gameplaySenders.values()){
+            for (LootBuilder builder : sender.getBuilders()){
+                for (LootPoolEntry entry: builder.getEntriesToPostProcess(process)){
+                    if (EMILoot.DEBUG) EMILoot.LOGGER.info("Post-processing builder in gameplay sender: " + sender.getId());
                     parseLootPoolEntry(builder,entry,process);
                 }
             }

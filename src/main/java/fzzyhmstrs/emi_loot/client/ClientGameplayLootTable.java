@@ -7,30 +7,30 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class ClientBlockLootTable extends AbstractTextKeyParsingClientLootTable<ClientBlockLootTable> {
+public class ClientGameplayLootTable extends AbstractTextKeyParsingClientLootTable<ClientGameplayLootTable> {
 
-    public static ClientBlockLootTable INSTANCE = new ClientBlockLootTable();
+    public static ClientGameplayLootTable INSTANCE = new ClientGameplayLootTable();
     private static final Identifier EMPTY = new Identifier("blocks/empty");
     public final Identifier id;
     public final Identifier blockId;
 
-    public ClientBlockLootTable(){
+    public ClientGameplayLootTable(){
         super();
         this.id = EMPTY;
         this.blockId = new Identifier("air");
     }
 
-    public ClientBlockLootTable(Identifier id, Map<List<TextKey>, ClientRawPool> map){
+    public ClientGameplayLootTable(Identifier id, Map<List<TextKey>, ClientRawPool> map){
         super(map);
         this.id = id;
         String ns = id.getNamespace();
@@ -92,7 +92,7 @@ public class ClientBlockLootTable extends AbstractTextKeyParsingClientLootTable<
     }
 
     @Override
-    ClientBlockLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf) {
+    ClientGameplayLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids, PacketByteBuf buf) {
         ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
         Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
         ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
@@ -100,16 +100,16 @@ public class ClientBlockLootTable extends AbstractTextKeyParsingClientLootTable<
         simplePool.map().put(new ArrayList<>(),simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
         itemMap.put(new ArrayList<>(),simplePool);
-        return new ClientBlockLootTable(ids.getLeft(),itemMap);
+        return new ClientGameplayLootTable(ids.getLeft(),itemMap);
     }
 
     @Override
-    ClientBlockLootTable emptyTableToReturn() {
-        return new ClientBlockLootTable();
+    ClientGameplayLootTable emptyTableToReturn() {
+        return new ClientGameplayLootTable();
     }
 
     @Override
-    ClientBlockLootTable filledTableToReturn(Pair<Identifier,Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap) {
-        return new ClientBlockLootTable(ids.getLeft(),itemMap);
+    ClientGameplayLootTable filledTableToReturn(Pair<Identifier,Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap) {
+        return new ClientGameplayLootTable(ids.getLeft(),itemMap);
     }
 }
