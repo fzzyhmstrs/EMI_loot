@@ -32,6 +32,23 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
     private final Map<List<TextKey>, ClientRawPool> rawItems;
     public List<ClientBuiltPool> builtItems;
 
+    static Identifier getIdFromBuf(PacketByteBuf buf){
+        String idToParse = buf.readString();
+        if (idToParse.contains(":")){
+            return new Identifier(idToParse);
+        } else if (idToParse.startsWith("b/")){
+            return new Identifier("blocks/" + idToParse.substring(2));
+        } else if (idToParse.startsWith("e/")){
+            return new Identifier("entities/" + idToParse.substring(2));
+        } else if (idToParse.startsWith("c/")){
+            return new Identifier("chests/" + idToParse.substring(2));
+        } else if (idToParse.startsWith("g/")){
+            return new Identifier("gameplay/" + idToParse.substring(2));
+        } else {
+            return new Identifier(idToParse);
+        }
+    }
+
     abstract List<Pair<Integer, Text>> getSpecialTextKeyList(World world, Block block);
 
     public void build(World world, Block block){
@@ -107,23 +124,23 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
         builtItems = finalList;
     }
 
-    abstract Identifier getBufId(PacketByteBuf buf);
+    abstract Pair<Identifier,Identifier> getBufId(PacketByteBuf buf);
 
-    abstract T simpleTableToReturn();
+    abstract T simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf);
 
     abstract T emptyTableToReturn();
 
-    abstract T filledTableToReturn(Identifier id, Map<List<TextKey>, ClientRawPool> itemMap);
+    abstract T filledTableToReturn(Pair<Identifier,Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap);
 
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
         boolean isEmpty = true;
 
-
-        Identifier id = getBufId(buf);
+        Pair<Identifier,Identifier> ids = getBufId(buf);
+        Identifier id = ids.getLeft();
         int builderCount = buf.readByte();
         if (builderCount == -1){
-            return simpleTableToReturn();
+            return simpleTableToReturn(ids,buf);
         }
 
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
@@ -174,7 +191,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
         }
         if (isEmpty) return emptyTableToReturn();
 
-        return filledTableToReturn(id, itemMap);
+        return filledTableToReturn(ids, itemMap);
     }
 
 }
