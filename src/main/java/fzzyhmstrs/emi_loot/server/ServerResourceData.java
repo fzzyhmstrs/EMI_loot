@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fzzyhmstrs.emi_loot.EMILoot;
@@ -15,15 +16,13 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServerResourceData {
 
     public static final Multimap<Identifier, LootTable> DIRECT_DROPS = Multimaps.newMultimap(Maps.newLinkedHashMap(), ArrayList::new);
     public static final List<Identifier> SHEEP_TABLES;
+    public static final List<Identifier> TABLE_EXCLUSIONS = new LinkedList<>();
     private static final Gson GSON = LootGsons.getTableGsonBuilder().create();
     private static final int DIRECT_DROPS_PATH_LENGTH = "direct_drops/".length();
     private static final int FILE_SUFFIX_LENGTH = ".json".length();
@@ -31,6 +30,7 @@ public class ServerResourceData {
     public static void loadDirectTables(ResourceManager resourceManager){
         DIRECT_DROPS.clear();
         resourceManager.findResources("direct_drops",path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadDirectTable);
+        resourceManager.findResources("emi_loot_data",path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadTableExclusion);
     }
 
     private static void loadDirectTable(Identifier id, Resource resource){
@@ -55,6 +55,34 @@ public class ServerResourceData {
         } catch(Exception e){
             EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
         }
+    }
+
+    private static void loadTableExclusion(Identifier id, Resource resource){
+        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading exclusion table from file: " + id.toString());
+        try {
+            BufferedReader reader = resource.getReader();
+            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonElement list = json.get("exclusions");
+            if (list != null && list.isJsonArray()){
+                list.getAsJsonArray().forEach(element -> {
+                    if (element.isJsonPrimitive()){
+                        Identifier identifier = new Identifier(element.getAsString());
+                        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: " + identifier);
+                        TABLE_EXCLUSIONS.add(identifier);
+                    } else {
+                        EMILoot.LOGGER.error("Exclusion element not properly formatted: " + element);
+                    }
+                });
+            } else {
+                EMILoot.LOGGER.error("Exclusions in file: " + id + " not readable.");
+            }
+        } catch(Exception e){
+            EMILoot.LOGGER.error("Failed to open or read table exclusions file: " + id);
+        }
+    }
+
+    public static boolean skipTable(Identifier id){
+        return TABLE_EXCLUSIONS.contains(id);
     }
 
     public static Multimap<Identifier, LootTable> getMissedDirectDrops(List<Identifier> parsedList){

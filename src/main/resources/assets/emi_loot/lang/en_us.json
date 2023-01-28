@@ -329,5 +329,12 @@
   "emi_loot.gameplay.minecraft:gameplay/hero_of_the_village/mason_gift": "Mason Hero Gifts",
   "emi_loot.gameplay.minecraft:gameplay/hero_of_the_village/shepherd_gift": "Shepherd Hero Gifts",
   "emi_loot.gameplay.minecraft:gameplay/hero_of_the_village/toolsmith_gift": "Toolsmith Hero Gifts",
-  "emi_loot.gameplay.minecraft:gameplay/hero_of_the_village/weaponsmith_gift": "Weaponsmith Hero Gifts"
+  "emi_loot.gameplay.minecraft:gameplay/hero_of_the_village/weaponsmith_gift": "Weaponsmith Hero Gifts",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/failed_fishing/junk": "Failed Fishing Junk Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/lava_fishing/junk": "Lava Fishing Junk Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/lava_fishing/fish": "Lava Fishing Fish Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/lava_fishing/treasure": "Lava Fishing Treasure Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/junk": "Lava Fishing Junk Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/fish": "Lava Fishing Fish Drops",
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/treasure": "Lava Fishing Treasure Drops"
 }

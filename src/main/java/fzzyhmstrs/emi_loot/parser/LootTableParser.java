@@ -116,6 +116,7 @@ public class LootTableParser {
     }
 
     private static void parseLootTable(Identifier id, LootTable lootTable){
+        if (ServerResourceData.skipTable(id)) return;
         currentTable = id.toString();
         LootContextType type = lootTable.getType();
         if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
@@ -123,7 +124,6 @@ public class LootTableParser {
         } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
             blockSenders.put(id, parseBlockLootTable(lootTable,id));
         } else if ((type == LootContextTypes.FISHING || type == LootContextTypes.GIFT ||type == LootContextTypes.BARTER) && EMILoot.config.parseGameplayLoot){
-            if (Objects.equals(id.getNamespace(), "minecraft") && Objects.equals(id.getPath(), "gameplay/fishing")) return;
             gameplaySenders.put(id, parseGameplayLootTable(lootTable, id));
         }
     }
