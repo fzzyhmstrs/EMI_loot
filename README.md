@@ -47,15 +47,17 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Impl resource-driven mob offsetting overrides|Complete|0.5.0|
 |Optimize packet sending size/number|Complete|0.5.0|
 |Impl handler for code-based mob drops (nether star etc)|Complete|0.5.0|
-|_Not yet released_|---|---|
+|_In Development_|---|---|
 |Impl entry post-processor system that allows for parsing certain entries at later stages of the data-loading lifecycle|In work|0.6.0|
 |Impl tag item entries using post-processing|In work|0.6.0|
+|Refactor client table builders for commonality|In work|0.6.0|
 |Remove test tag entry loot pool|NOT STARTED|0.6.0|
+|Impl group item entries|In work|0.6.0|
+|Impl sequence item entries|In work|0.6.0|
+|Impl fishing/gameplay loot|In work|0.6.0|
+|Add table exclusion system to exclude certain tables from parsing|In work|0.6.0|
+|_Not yet released_|---|---|
 |Impl dynamic item entries|Not started|?.?.?|
-|Impl group item entries|Not started|?.?.?|
-|Impl sequence item entries|Not started|?.?.?|
-|Refactor client table builders for commonality?|Not started|?.?.?|
-|Impl fishing/gameplay loot?|Not started|?.?.?|
 |Improve collation of same-condition stacks|Not started|?.?.?|
 |Add item tile optimizer to improve layout of condition tiles|?.?.?|
 |Implement resource-pack driven custom functions/conditions|Not started|?.?.?|
