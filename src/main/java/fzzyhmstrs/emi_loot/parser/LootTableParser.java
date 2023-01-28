@@ -175,6 +175,8 @@ public class LootTableParser {
         if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
             currentTable = mobTableId.toString();
             mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
+        } else {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Found empty mob table at id: " + mobTableId);
         }
     }
 
