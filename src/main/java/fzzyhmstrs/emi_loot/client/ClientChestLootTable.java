@@ -24,13 +24,18 @@ public class ClientChestLootTable implements LootReceiver {
     }
 
     @Override
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    @Override
     public Identifier getId() {
         return id;
     }
 
     @Override
     public LootReceiver fromBuf(PacketByteBuf buf) {
-        Identifier id = buf.readIdentifier();
+        Identifier id = AbstractTextKeyParsingClientLootTable.getIdFromBuf(buf);
         int mapCount = buf.readShort();
         Object2FloatMap<ItemStack> itemMap = new Object2FloatOpenHashMap<>();
         for (int i = 0; i < mapCount; i++){

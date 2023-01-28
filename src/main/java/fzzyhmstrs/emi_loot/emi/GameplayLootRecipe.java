@@ -9,27 +9,27 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
+import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
-import fzzyhmstrs.emi_loot.util.SlimeEntitySizeSetter;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
@@ -37,48 +37,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MobLootRecipe implements EmiRecipe {
+public class GameplayLootRecipe implements EmiRecipe {
 
-    //private final static Map<EntityType<?>,Integer> needsElevating;
-    private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/downturn_arrow.png");
-
-    public MobLootRecipe(ClientMobLootTable loot){
+    public GameplayLootRecipe(ClientGameplayLootTable loot){
         this.loot = loot;
         loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
-        Identifier mobId = loot.mobId;
-        EntityType<?> type = Registry.ENTITY_TYPE.get(mobId);
-        this.type = type;
-        MinecraftClient client = MinecraftClient.getInstance();
-        Entity entity = type.create(client.world);
-        if (entity != null) {
-            Box box = entity.getBoundingBox();
-            double len = box.getAverageSideLength();
-            if (len > 1.05){
-                len = (len + Math.sqrt(len))/2.0;
-            }
-            if (entity instanceof SlimeEntity){
-                ((SlimeEntitySizeSetter)entity).setSlimeSize(5,false);
-            }
-            if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")){
-                DyeColor color = DyeColor.byName(loot.color,DyeColor.WHITE);
-                MutableText colorName = LText.translatable("color.minecraft." + color.getName());
-                name = LText.translatable("emi_loot.color_name",colorName.getString(),entity.getName().getString());
-                ((SheepEntity)entity).setColor(color);
-
-            } else {
-                name = entity.getName();
-            }
-            double scale = 1.05 / len * 8.0;
-            if (ClientResourceData.MOB_SCALES.containsKey(type)){
-                scale *= ClientResourceData.MOB_SCALES.getOrDefault(type,1.0f);
-            }
-            inputStack = EntityEmiStack.ofScaled(entity,scale);
-        } else{
-            inputStack = EmiStack.EMPTY;
-            name = LText.translatable("emi_loot.missing_entity");
-        }
         List<EmiStack> list = new LinkedList<>();
-        //System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stackMap().forEach((weight, stacks) -> {
                     list.addAll(stacks.getEmiStacks());
@@ -87,13 +51,26 @@ public class MobLootRecipe implements EmiRecipe {
             }
         );
         outputStacks = list;
+        String key = "emi_loot.gameplay." + loot.id.toString();
+        Text text = LText.translatable(key);
+        if (Objects.equals(text.getString(), key)){
+            Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
+            if (modNameOpt.isPresent()){
+                ModContainer modContainer = modNameOpt.get();
+                String modName = modContainer.getMetadata().getName();
+                name = LText.translatable("emi_loot.gameplay.unknown_gameplay",modName);
+            } else {
+                Text unknown = LText.translatable("emi_loot.gameplay.unknown");
+                name = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
+            }
+        } else {
+            name = text;
+        }
     }
 
-    private final ClientMobLootTable loot;
-    private final EmiStack inputStack;
+    private final ClientGameplayLootTable loot;
     private final List<EmiStack> outputStacks;
     private final Text name;
-    private final EntityType<?> type;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
@@ -118,7 +95,7 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public EmiRecipeCategory getCategory() {
-        return EmiClientPlugin.MOB_CATEGORY;
+        return EmiClientPlugin.GAMEPLAY_CATEGORY;
     }
 
     @Override
@@ -148,50 +125,28 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayHeight() {
-        if (rowBuilderList.size() > 1 || rowBuilderList.get(0).getWidth() > 94) {
-            return 28 + 23 + 29 * (rowBuilderList.size() - 1);
-        } else {
-            return 34;
-        }
+        return rowBuilderList.size() * 29 + 11;
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        int rowOffset = 29;
         int x = 0;
         int y = 0;
-        //draw the mob
-        if (!ClientResourceData.MOB_OFFSETS.containsKey(type)) {
-            widgets.addSlot(inputStack, x, y).output(true);
-        } else {
-            int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type,0);
-            widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
-            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5, 6 + offset,delta));
-        }
-        widgets.addText(name.asOrderedText(),30,0,0x404040,false);
-        if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94){
-            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 39, 15, 39, 15, 64, 32), 30, 10);
-            x = 60;
-            y = 11;
-            WidgetRowBuilder builder = rowBuilderList.get(0);
+
+        //draw the gameplay name
+        widgets.addText(name.asOrderedText(),0,0,0x404040,false);
+
+        y += 11;
+        for (WidgetRowBuilder builder: rowBuilderList){
             for (ClientBuiltPool pool: builder.getPoolList()){
                 IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;
             }
-        } else {
-            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
-            y += 28;
-            for (WidgetRowBuilder builder: rowBuilderList){
-                for (ClientBuiltPool pool: builder.getPoolList()){
-                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
-                    widgets.add(widget);
-                    x += widget.getWidth() + 6;
-                }
-                y += 29;
-                x = 0;
-            }
+            y += 29;
+            x = 0;
         }
+
     }
 
     //may revisit later

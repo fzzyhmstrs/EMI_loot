@@ -8,6 +8,7 @@ import java.util.List;
 
 import static fzzyhmstrs.emi_loot.server.BlockLootTableSender.BLOCK_SENDER;
 import static fzzyhmstrs.emi_loot.server.ChestLootTableSender.CHEST_SENDER;
+import static fzzyhmstrs.emi_loot.server.GameplayLootTableSender.GAMEPLAY_SENDER;
 import static fzzyhmstrs.emi_loot.server.MobLootTableSender.MOB_SENDER;
 
 public class ClientLootTables {
@@ -32,6 +33,11 @@ public class ClientLootTables {
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(GAMEPLAY_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+            LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf);
+            loots.add(table);
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
         });
     }
 
