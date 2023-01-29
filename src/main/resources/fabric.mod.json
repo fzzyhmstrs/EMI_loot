@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "EMI Loot",
-  "description":"Plugin for EMI that shows chest loot, block drops, and mob drops.",
+  "description":"Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.",
   "icon": "assets/emi_loot/icon.png",
   "authors": [
     "fzzyhmstrs",
