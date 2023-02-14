@@ -4,6 +4,7 @@
   "emi.category.emi_loot.mob_drops": "Mob Drops",
   "emi.category.emi_loot.gameplay_drops": "Gameplay Drops",
   "enchantment.emi_loot.random": "Randomly Enchanted",
+  "enchantment.emi_loot.random.desc": "Random enchantments applied are applied to this drop from the available list.",
   "emi_loot.pickaxe.wood": "Needs or prefers any pickaxe",
   "emi_loot.pickaxe.stone": "Needs or prefers a stone+ pickaxe",
   "emi_loot.pickaxe.iron": "Needs or prefers a iron+ pickaxe",
