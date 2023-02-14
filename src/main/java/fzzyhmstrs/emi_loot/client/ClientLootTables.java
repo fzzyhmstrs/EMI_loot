@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.client;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,21 +20,27 @@ public class ClientLootTables {
     }
 
     public void registerClient(){
+        
+        ClientPlayConnectionEvents.DISCONNECT.register((handler,client) -> loots.clear());
+        
         ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received chest " + table.getId());
         });
+        
         ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received block " + table.getId());
         });
+        
         ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
         });
+        
         ClientPlayNetworking.registerGlobalReceiver(GAMEPLAY_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
