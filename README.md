@@ -59,6 +59,8 @@ Credit for loot condition icon art goes to [lxly9](https://github.com/lxly9). Th
 |Working on other projects for the moment after the release of 0.6.0|---|---|
 |_Not yet released_|---|---|
 |Fix issue with compact chest loot stacking|Not started|?.?.?|
+|Fix Itemstack.EMPTY getting enchanted with Random|Not started|?.?.?|
+|Chgeck on the NBT tag too big problem|Not started|?.?.?|
 |Impl dynamic item entries|Not started|?.?.?|
 |Improve collation of same-condition stacks|Not started|?.?.?|
 |Add item tile optimizer to improve layout of condition tiles|?.?.?|
