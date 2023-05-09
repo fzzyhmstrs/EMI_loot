@@ -17,10 +17,10 @@ public class EnchantWithLevelsFunctionParser implements FunctionParser {
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
         if (stack.isOf(Items.BOOK)){
             stack = new ItemStack(Items.ENCHANTED_BOOK);
-            EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
+            //EnchantedBookItem.addEnchantment(stack,new EnchantmentLevelEntry(EMILoot.RANDOM,1));
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_book"), stack,conditionTexts);
         } else {
-            stack.addEnchantment(EMILoot.RANDOM,1);
+            //stack.addEnchantment(EMILoot.RANDOM,1);
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_item"), ItemStack.EMPTY,conditionTexts);
         }
     }
