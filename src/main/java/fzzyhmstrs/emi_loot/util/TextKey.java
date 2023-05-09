@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.Math;
 import java.util.*;
 import java.util.function.Function;
 
@@ -286,8 +287,10 @@ public record TextKey(int index, List<String> args){
         if (args.isEmpty()){
             buf.writeByte(0);
         } else {
+            int argSize = Math.max(127,args.size())
             buf.writeByte(args.size());
-            for (String string: args) {
+            for (int i = 0; i< argSize; i++){
+                String string = args.get(i)
                 buf.writeString(string);
             }
         }
