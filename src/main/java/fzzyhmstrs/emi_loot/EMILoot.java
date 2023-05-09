@@ -49,7 +49,7 @@ public class EMILoot implements ModInitializer {
     public static LootFunctionType SET_ANY_DAMAGE = LootFunctionTypes.register("lootify:set_any_damage", new SetAnyDamageLootFunction.Serializer());
     public static LootFunctionType OMINOUS_BANNER = LootFunctionTypes.register("lootify:ominous_banner", new OminousBannerLootFunction.Serializer());
 
-    /*public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
+    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
         @Override
         public boolean isAvailableForEnchantedBookOffer() {
             return false;
@@ -58,7 +58,7 @@ public class EMILoot implements ModInitializer {
         public boolean isAvailableForRandomSelection() {
             return false;
         }
-    };*/
+    };
 
     @Override
     public void onInitialize() {
