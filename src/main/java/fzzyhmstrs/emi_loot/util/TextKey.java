@@ -287,10 +287,10 @@ public record TextKey(int index, List<String> args){
         if (args.isEmpty()){
             buf.writeByte(0);
         } else {
-            int argSize = Math.max(127,args.size())
+            int argSize = Math.min(127,args.size());
             buf.writeByte(args.size());
             for (int i = 0; i< argSize; i++){
-                String string = args.get(i)
+                String string = args.get(i);
                 buf.writeString(string);
             }
         }
