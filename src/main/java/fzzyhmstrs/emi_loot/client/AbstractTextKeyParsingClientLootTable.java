@@ -2,8 +2,10 @@ package fzzyhmstrs.emi_loot.client;
 
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import io.netty.handler.codec.DecoderException;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -138,6 +140,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
         Pair<Identifier,Identifier> ids = getBufId(buf);
         Identifier id = ids.getLeft();
+        if (EMILoot.DEBUG) EMILoot.LOGGER.info("parsing table " + id);
         int builderCount = buf.readByte();
         if (builderCount == -1){
             return simpleTableToReturn(ids,buf);
@@ -152,14 +155,22 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
             int conditionSize = buf.readByte();
             for (int i = 0; i < conditionSize; i++) {
-                TextKey key = TextKey.fromBuf(buf);
-                qualifierList.add(key);
+                try {
+                    TextKey key = TextKey.fromBuf(buf);
+                    qualifierList.add(key);
+                } catch (DecoderException e){
+                    EMILoot.LOGGER.error("Client table " + id + " had a TextKey decoding error while reading a loot condition!");
+                }
             }
 
             int functionSize = buf.readByte();
             for (int i = 0; i < functionSize; i++) {
-                TextKey key = TextKey.fromBuf(buf);
-                qualifierList.add(key);
+                try{
+                    TextKey key = TextKey.fromBuf(buf);
+                    qualifierList.add(key);
+                } catch (DecoderException e){
+                    EMILoot.LOGGER.error("Client table " + id + " had a TextKey decoding error while reading a loot function!");
+                }
             }
 
             ClientRawPool pool = itemMap.getOrDefault(qualifierList,new ClientRawPool(new HashMap<>()));
@@ -171,8 +182,12 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                 int pileQualifierSize = buf.readByte();
                 for (int j = 0; j < pileQualifierSize; j++) {
-                    TextKey key = TextKey.fromBuf(buf);
-                    pileQualifierList.add(key);
+                    try{
+                        TextKey key = TextKey.fromBuf(buf);
+                        pileQualifierList.add(key);
+                    } catch (DecoderException e){
+                        EMILoot.LOGGER.error("Client table " + id + " had a TextKey decoding error while reading an item pile qualifier!");
+                    }
                 }
 
                 Object2FloatMap<ItemStack> pileItemMap = pool.map().getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
