@@ -141,7 +141,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
         Pair<Identifier,Identifier> ids = getBufId(buf);
         Identifier id = ids.getLeft();
         if (EMILoot.DEBUG) EMILoot.LOGGER.info("parsing table " + id);
-        int builderCount = buf.readByte();
+        int builderCount = buf.readShort();
         if (builderCount == -1){
             return simpleTableToReturn(ids,buf);
         }
@@ -153,7 +153,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
             List<TextKey> qualifierList = new LinkedList<>();
 
-            int conditionSize = buf.readByte();
+            int conditionSize = buf.readShort();
             for (int i = 0; i < conditionSize; i++) {
                 try {
                     TextKey key = TextKey.fromBuf(buf);
@@ -163,7 +163,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
                 }
             }
 
-            int functionSize = buf.readByte();
+            int functionSize = buf.readShort();
             for (int i = 0; i < functionSize; i++) {
                 try{
                     TextKey key = TextKey.fromBuf(buf);
@@ -175,12 +175,12 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
             ClientRawPool pool = itemMap.getOrDefault(qualifierList,new ClientRawPool(new HashMap<>()));
 
-            int pileSize = buf.readByte();
+            int pileSize = buf.readShort();
             for (int i = 0; i < pileSize; i++) {
 
                 List<TextKey> pileQualifierList = new LinkedList<>();
 
-                int pileQualifierSize = buf.readByte();
+                int pileQualifierSize = buf.readShort();
                 for (int j = 0; j < pileQualifierSize; j++) {
                     try{
                         TextKey key = TextKey.fromBuf(buf);
@@ -192,7 +192,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                 Object2FloatMap<ItemStack> pileItemMap = pool.map().getOrDefault(pileQualifierList,new Object2FloatOpenHashMap<>());
 
-                int pileItemSize = buf.readByte();
+                int pileItemSize = buf.readShort();
                 for (int j = 0; j < pileItemSize; j++) {
                     ItemStack stack = buf.readItemStack();
                     float weight = buf.readFloat();
