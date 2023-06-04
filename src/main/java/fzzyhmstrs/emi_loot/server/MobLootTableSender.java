@@ -56,7 +56,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
-            buf.writeByte(-1);
+            buf.writeShort(-1);
             buf.writeRegistryValue(Registry.ITEM, builderList.get(0).simpleStack.getItem());
             ServerPlayNetworking.send(player, MOB_SENDER, buf);
             return;
@@ -65,32 +65,32 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             return;
         }
 
-        buf.writeByte(builderList.size());
+        buf.writeShort(builderList.size());
         builderList.forEach((builder)->{
             //start by building the builder
             builder.build();
 
             //write size of the builders condition set
-            buf.writeByte(builder.conditions.size());
+            buf.writeShort(builder.conditions.size());
             //write the textkey of each of those conditions
             builder.conditions.forEach((lootConditionResult -> lootConditionResult.text().toBuf(buf)));
 
             //write size of the builders function set
-            buf.writeByte(builder.functions.size());
+            buf.writeShort(builder.functions.size());
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
             Map<List<TextKey>,ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
-            buf.writeByte(lootPoolBuilderMap.size());
+            buf.writeShort(lootPoolBuilderMap.size());
             lootPoolBuilderMap.forEach((key,chestBuilder)->{
 
                 //for each functional condition, write the size then list of condition textKeys
-                buf.writeByte(key.size());
+                buf.writeShort(key.size());
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
                 Map<ItemStack,Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key,new ChestLootPoolBuilder(1f)).builtMap;
-                buf.writeByte(keyPoolMap.size());
+                buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack,weight)->{
