@@ -3,6 +3,7 @@
   "emi.category.emi_loot.block_drops": "Block Drops",
   "emi.category.emi_loot.mob_drops": "Mob Drops",
   "emi.category.emi_loot.gameplay_drops": "Gameplay Drops",
+  "emi.category.emi_loot.archaeology_drops": "Archaeology Loot",
   "enchantment.emi_loot.random": "Randomly Enchanted",
   "enchantment.emi_loot.random.desc": "Random enchantments applied are applied to this drop from the available list.",
   "emi_loot.pickaxe.wood": "Needs or prefers any pickaxe",
@@ -337,5 +338,11 @@
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/lava_fishing/treasure": "Lava Fishing Treasure Drops",
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/junk": "Lava Fishing Junk Drops",
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/fish": "Lava Fishing Fish Drops",
-  "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/treasure": "Lava Fishing Treasure Drops"
+  "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/treasure": "Lava Fishing Treasure Drops",
+  "emi_loot.archaeology.minecraft:archaeology/desert_pyramid": "Desert Pyramid",
+  "emi_loot.archaeology.minecraft:archaeology/desert_well": "Desert Well",
+  "emi_loot.archaeology.minecraft:archaeology/ocean_ruin_cold": "Cold Ocean Ruins",
+  "emi_loot.archaeology.minecraft:archaeology/ocean_ruin_warm": "Warm Ocean Ruins",
+  "emi_loot.archaeology.minecraft:archaeology/trail_ruins_common": "Common Trail Ruins",
+  "emi_loot.archaeology.minecraft:archaeology/trail_ruins_rare": "Rare Trail Ruins"
 }

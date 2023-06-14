@@ -23,6 +23,8 @@ public interface LootSender<T extends LootBuilder> {
                 return "c/" + path.substring(7);
             } else if (path.contains("gameplay/")){
                 return "g/" + path.substring(9);
+            } else if (path.contains("archaeology/")) {
+                return "a/" + path.substring(12);
             } else {
                 return path;
             }

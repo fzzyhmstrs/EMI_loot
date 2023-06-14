@@ -44,6 +44,7 @@ public class LootTableParser {
     private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static final Map<Identifier, GameplayLootTableSender> gameplaySenders = new HashMap<>();
+    private static final Map<Identifier, ArchaeologyLootTableSender> archaeologySenders = new HashMap<>();
     public static final Object2BooleanMap<PostProcessor> postProcessors;
     private static Map<LootDataKey<LootTable>, LootTable> tables = new HashMap<>();
     public static String currentTable = "none";
@@ -84,7 +85,8 @@ public class LootTableParser {
                 mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player));
             if (EMILoot.config.parseGameplayLoot)
                 gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(handler.player));
-
+            if (EMILoot.config.parseArchaeologyLoot)
+                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(handler.player));
         });
     }
 
@@ -124,8 +126,11 @@ public class LootTableParser {
             blockSenders.put(id, parseBlockLootTable(lootTable,id));
         } else if ((type == LootContextTypes.FISHING || type == LootContextTypes.GIFT ||type == LootContextTypes.BARTER) && EMILoot.config.parseGameplayLoot){
             gameplaySenders.put(id, parseGameplayLootTable(lootTable, id));
+        } else if ((type == LootContextTypes.ARCHAEOLOGY && EMILoot.config.parseArchaeologyLoot)) {
+            archaeologySenders.put(id, parseArchaeologyTable(lootTable, id));
         }
     }
+
 
     public static void postProcess(PostProcessor process){
         if (!hasParsedLootTables) return;
@@ -161,6 +166,15 @@ public class LootTableParser {
                 for (LootPoolEntry entry: builder.getEntriesToPostProcess(process)){
                     if (EMILoot.DEBUG) EMILoot.LOGGER.info("Post-processing builder in gameplay sender: " + sender.getId());
                     parseLootPoolEntry(builder,entry,process);
+                }
+            }
+            sender.build();
+        }
+        for (LootSender<?> sender : archaeologySenders.values()) {
+            for (LootBuilder builder : sender.getBuilders()) {
+                for (LootPoolEntry entry : builder.getEntriesToPostProcess(process)) {
+                    if(EMILoot.DEBUG) EMILoot.LOGGER.info("Post-processing builder in archaeology sender: " + sender.getId());
+                    parseLootPoolEntry(builder, entry, process);
                 }
             }
             sender.build();
@@ -296,6 +310,22 @@ public class LootTableParser {
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder,entry);
+            }
+            sender.addBuilder(builder);
+        }
+        return sender;
+    }
+
+
+    private static ArchaeologyLootTableSender parseArchaeologyTable(LootTable lootTable, Identifier id) {
+        ArchaeologyLootTableSender sender = new ArchaeologyLootTableSender(id);
+        for (LootPool pool : lootTable.pools) {
+            LootNumberProvider rollProvider = pool.rolls;
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
+            ArchaeologyLootPoolBuilder builder = new ArchaeologyLootPoolBuilder(rollAvg);
+            LootPoolEntry[] entries = pool.entries;
+            for (LootPoolEntry entry : entries) {
+                parseLootPoolEntry(builder, entry);
             }
             sender.addBuilder(builder);
         }

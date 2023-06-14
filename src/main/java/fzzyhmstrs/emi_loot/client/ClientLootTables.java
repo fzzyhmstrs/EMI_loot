@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import java.util.LinkedList;
 import java.util.List;
 
+import static fzzyhmstrs.emi_loot.server.ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER;
 import static fzzyhmstrs.emi_loot.server.BlockLootTableSender.BLOCK_SENDER;
 import static fzzyhmstrs.emi_loot.server.ChestLootTableSender.CHEST_SENDER;
 import static fzzyhmstrs.emi_loot.server.GameplayLootTableSender.GAMEPLAY_SENDER;
@@ -45,6 +46,12 @@ public class ClientLootTables {
             LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ARCHAEOLOGY_SENDER, (minecraftClient, playNetworkHandler, buf, sender) -> {
+            LootReceiver table = ClientArchaeologyLootTable.INSTANCE.fromBuf(buf);
+            loots.add(table);
+            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received archaeology loot: " + table.getId());
         });
     }
 

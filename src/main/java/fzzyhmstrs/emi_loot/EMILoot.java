@@ -136,7 +136,8 @@ public class EMILoot implements ModInitializer {
         public boolean chestLootAlwaysStackSame = false;
 
         public boolean mobLootIncludeDirectDrops = true;
-    }
+		public boolean parseArchaeologyLoot = true;
+	}
 
     public static class EmiLootConfigOld{
         public boolean parseChestLoot = true;
