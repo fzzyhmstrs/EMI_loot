@@ -15,11 +15,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootDataKey;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionManager;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
@@ -45,11 +45,11 @@ public class LootTableParser {
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static final Map<Identifier, GameplayLootTableSender> gameplaySenders = new HashMap<>();
     public static final Object2BooleanMap<PostProcessor> postProcessors;
-    private static Map<Identifier, LootTable> tables = new HashMap<>();
-    public static LootConditionManager conditionManager;
+    private static Map<LootDataKey<LootTable>, LootTable> tables = new HashMap<>();
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
+    public static LootManager lootManager = null;
 
 
     static {
@@ -88,12 +88,12 @@ public class LootTableParser {
         });
     }
 
-    public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
+    public static void parseLootTables(LootManager manager, Map<LootDataKey<LootTable>, LootTable> tables) {
         LootTableParser.tables = tables;
+        LootTableParser.lootManager = manager;
         parsedDirectDrops = new LinkedList<>();
-        LootTableParser.conditionManager = ((LootManagerConditionManager)manager).getManager();
         EMILoot.LOGGER.info("parsing loot tables");
-        tables.forEach(LootTableParser::parseLootTable);
+        tables.forEach((key, table) -> parseLootTable(key.id(), table));
         if (EMILoot.config.parseMobLoot) {
             Identifier chk = new Identifier("pig");
             Registries.ENTITY_TYPE.stream().toList().forEach((type) -> {
@@ -170,7 +170,7 @@ public class LootTableParser {
 
     private static void parseEntityType(LootManager manager,EntityType<?> type, Identifier mobTableId, Identifier fallback){
         Identifier mobId = Registries.ENTITY_TYPE.getId(type);
-        LootTable mobTable = manager.getTable(mobTableId);
+        LootTable mobTable = manager.getLootTable(mobTableId);
         if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
             currentTable = mobTableId.toString();
             mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));

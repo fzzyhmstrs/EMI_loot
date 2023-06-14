@@ -84,7 +84,6 @@ public class LootParserRegistry{
         registerCondition(LootConditionTypes.BLOCK_STATE_PROPERTY, new BlockStatePropertyConditionParser(),"Registering vanilla block state property condition parser");
         registerCondition(LootConditionTypes.TABLE_BONUS, new TableBonusConditionParser(),"Registering vanilla table bonus condition parser");
         registerCondition(LootConditionTypes.INVERTED, new InvertedConditionParser(),"Registering vanilla inverted condition parser");
-        registerCondition(LootConditionTypes.ALTERNATIVE, new AlternativesConditionParser(),"Registering vanilla alternatives condition parser");
         registerCondition(LootConditionTypes.KILLED_BY_PLAYER, new SimpleConditionParser("emi_loot.condition.killed_player"),"Registering vanilla killed-by-player condition parser");
         registerCondition(LootConditionTypes.RANDOM_CHANCE, new RandomChanceConditionParser(),"Registering vanilla random chance condition parser");
         registerCondition(LootConditionTypes.RANDOM_CHANCE_WITH_LOOTING, new RandomChanceWithLootingConditionParser(),"Registering vanilla random chance with looting condition parser");
