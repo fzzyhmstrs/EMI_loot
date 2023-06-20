@@ -32,7 +32,6 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class EntityEmiStack extends EmiStack {
     private final @Nullable Entity entity;
-    private final EntityEntry entry;
     private final EntityRenderContext ctx;
 
     protected EntityEmiStack(@Nullable Entity entity) {
@@ -41,7 +40,6 @@ public class EntityEmiStack extends EmiStack {
 
     protected EntityEmiStack(@Nullable Entity entity, double scale) {
         this.entity = entity;
-        this.entry = new EntityEntry(entity);
         if (entity != null) {
             boolean hasTransform = ClientResourceData.MOB_ROTATIONS.containsKey(entity.getType());
             Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),new Vector3f(0,0,0)).mul(0.017453292F);
@@ -90,11 +88,6 @@ public class EntityEmiStack extends EmiStack {
     @Override
     public Object getKey() {
         return entity;
-    }
-
-    @Override
-    public Entry<?> getEntry() {
-        return entry;
     }
 
     @Override
@@ -234,16 +227,5 @@ public class EntityEmiStack extends EmiStack {
 
     private record EntityRenderContext(double size, boolean hasTransform, Vector3f transform){
         static EntityRenderContext EMPTY = new EntityRenderContext(8.0,false,new Vector3f(0,0,0));
-    }
-
-    public static class EntityEntry extends Entry<Entity> {
-        public EntityEntry(Entity value) {
-            super(value);
-        }
-
-        @Override
-        public Class<? extends Entity> getType() {
-            return getValue().getType().getBaseClass();
-        }
     }
 }

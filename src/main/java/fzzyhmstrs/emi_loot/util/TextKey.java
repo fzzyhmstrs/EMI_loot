@@ -252,7 +252,7 @@ public record TextKey(int index, List<String> args){
         if (this.index == 8 && world != null){
             Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
             if (opt.isPresent()){
-                ItemStack tempStack = opt.get().getOutput();
+                ItemStack tempStack = opt.get().getOutput(null);
                 if (!tempStack.isEmpty()) {
                     //System.out.println(tempStack);
                     finalStack = tempStack.copy();
