@@ -15,11 +15,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootDataKey;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionManager;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
@@ -44,12 +44,13 @@ public class LootTableParser {
     private static final Map<Identifier, BlockLootTableSender> blockSenders = new HashMap<>();
     private static final Map<Identifier, MobLootTableSender> mobSenders = new HashMap<>();
     private static final Map<Identifier, GameplayLootTableSender> gameplaySenders = new HashMap<>();
+    private static final Map<Identifier, ArchaeologyLootTableSender> archaeologySenders = new HashMap<>();
     public static final Object2BooleanMap<PostProcessor> postProcessors;
-    private static Map<Identifier, LootTable> tables = new HashMap<>();
-    public static LootConditionManager conditionManager;
+    private static Map<LootDataKey<LootTable>, LootTable> tables = new HashMap<>();
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
+    public static LootManager lootManager = null;
 
 
     static {
@@ -84,16 +85,17 @@ public class LootTableParser {
                 mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player));
             if (EMILoot.config.parseGameplayLoot)
                 gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(handler.player));
-
+            if (EMILoot.config.parseArchaeologyLoot)
+                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(handler.player));
         });
     }
 
-    public static void parseLootTables(LootManager manager, Map<Identifier, LootTable> tables) {
+    public static void parseLootTables(LootManager manager, Map<LootDataKey<LootTable>, LootTable> tables) {
         LootTableParser.tables = tables;
+        LootTableParser.lootManager = manager;
         parsedDirectDrops = new LinkedList<>();
-        LootTableParser.conditionManager = ((LootManagerConditionManager)manager).getManager();
         EMILoot.LOGGER.info("parsing loot tables");
-        tables.forEach(LootTableParser::parseLootTable);
+        tables.forEach((key, table) -> parseLootTable(key.id(), table));
         if (EMILoot.config.parseMobLoot) {
             Identifier chk = new Identifier("pig");
             Registries.ENTITY_TYPE.stream().toList().forEach((type) -> {
@@ -124,8 +126,11 @@ public class LootTableParser {
             blockSenders.put(id, parseBlockLootTable(lootTable,id));
         } else if ((type == LootContextTypes.FISHING || type == LootContextTypes.GIFT ||type == LootContextTypes.BARTER) && EMILoot.config.parseGameplayLoot){
             gameplaySenders.put(id, parseGameplayLootTable(lootTable, id));
+        } else if ((type == LootContextTypes.ARCHAEOLOGY && EMILoot.config.parseArchaeologyLoot)) {
+            archaeologySenders.put(id, parseArchaeologyTable(lootTable, id));
         }
     }
+
 
     public static void postProcess(PostProcessor process){
         if (!hasParsedLootTables) return;
@@ -165,12 +170,21 @@ public class LootTableParser {
             }
             sender.build();
         }
+        for (LootSender<?> sender : archaeologySenders.values()) {
+            for (LootBuilder builder : sender.getBuilders()) {
+                for (LootPoolEntry entry : builder.getEntriesToPostProcess(process)) {
+                    if(EMILoot.DEBUG) EMILoot.LOGGER.info("Post-processing builder in archaeology sender: " + sender.getId());
+                    parseLootPoolEntry(builder, entry, process);
+                }
+            }
+            sender.build();
+        }
         postProcessors.put(process,true);
     }
 
     private static void parseEntityType(LootManager manager,EntityType<?> type, Identifier mobTableId, Identifier fallback){
         Identifier mobId = Registries.ENTITY_TYPE.getId(type);
-        LootTable mobTable = manager.getTable(mobTableId);
+        LootTable mobTable = manager.getLootTable(mobTableId);
         if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
             currentTable = mobTableId.toString();
             mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
@@ -296,6 +310,22 @@ public class LootTableParser {
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder,entry);
+            }
+            sender.addBuilder(builder);
+        }
+        return sender;
+    }
+
+
+    private static ArchaeologyLootTableSender parseArchaeologyTable(LootTable lootTable, Identifier id) {
+        ArchaeologyLootTableSender sender = new ArchaeologyLootTableSender(id);
+        for (LootPool pool : lootTable.pools) {
+            LootNumberProvider rollProvider = pool.rolls;
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
+            ArchaeologyLootPoolBuilder builder = new ArchaeologyLootPoolBuilder(rollAvg);
+            LootPoolEntry[] entries = pool.entries;
+            for (LootPoolEntry entry : entries) {
+                parseLootPoolEntry(builder, entry);
             }
             sender.addBuilder(builder);
         }

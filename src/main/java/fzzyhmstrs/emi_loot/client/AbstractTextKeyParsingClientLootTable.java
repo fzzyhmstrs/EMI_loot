@@ -46,6 +46,8 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
             return new Identifier("chests/" + idToParse.substring(2));
         } else if (idToParse.startsWith("g/")){
             return new Identifier("gameplay/" + idToParse.substring(2));
+        } else if (idToParse.startsWith("a/")) {
+            return new Identifier("archaeology/" + idToParse.substring(2));
         } else {
             return new Identifier(idToParse);
         }

@@ -161,7 +161,7 @@ public class MobLootRecipe implements EmiRecipe {
         int y = 0;
         //draw the mob
         if (!ClientResourceData.MOB_OFFSETS.containsKey(type)) {
-            widgets.addSlot(inputStack, x, y).output(true);
+            widgets.addSlot(inputStack, x, y).large(true);
         } else {
             int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type,0);
             widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
