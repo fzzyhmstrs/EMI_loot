@@ -47,6 +47,7 @@ public class LootTableParser {
     private static final Map<Identifier, ArchaeologyLootTableSender> archaeologySenders = new HashMap<>();
     public static final Object2BooleanMap<PostProcessor> postProcessors;
     private static Map<LootDataKey<LootTable>, LootTable> tables = new HashMap<>();
+    private static final Map<Identifier,LootDataKey<LootTable>> keyLookUp = new HashMap<>();
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
@@ -91,8 +92,12 @@ public class LootTableParser {
     }
 
     public static void parseLootTables(LootManager manager, Map<LootDataKey<LootTable>, LootTable> tables) {
+        keyLookUp.clear();
         LootTableParser.tables = tables;
         LootTableParser.lootManager = manager;
+        for (LootDataKey<LootTable> key : LootTableParser.tables.keySet()){
+            keyLookUp.put(key.id(),key);
+        }
         parsedDirectDrops = new LinkedList<>();
         EMILoot.LOGGER.info("parsing loot tables");
         tables.forEach((key, table) -> parseLootTable(key.id(), table));
@@ -461,8 +466,8 @@ public class LootTableParser {
 
     static List<ItemEntryResult> parseLootTableEntry(LootTableEntry entry, boolean parentIsAlternative){
         Identifier id = ((LootTableEntryAccessor)entry).getId();
-        if (LootTableParser.tables.containsKey(id)) {
-            LootTable table = LootTableParser.tables.get(id);
+        if (LootTableParser.keyLookUp.containsKey(id)) {
+            LootTable table = LootTableParser.tables.get(keyLookUp.get(id));
             LootContextType type = table.getType();
             LootSender<?> results;
             LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
