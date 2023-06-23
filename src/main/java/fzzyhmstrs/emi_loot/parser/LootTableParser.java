@@ -501,7 +501,8 @@ public class LootTableParser {
         try {
             type = function.getType();
         } catch (Exception e){
-            EMILoot.LOGGER.error(Arrays.toString(e.getStackTrace()));
+            EMILoot.LOGGER.error("failed to determine a function type for stack " + stack.getName() + " in table " + currentTable);
+            e.printStackTrace();
             return LootFunctionResult.EMPTY;
         }
         List<TextKey> conditionsTexts;
@@ -511,7 +512,13 @@ public class LootTableParser {
         } else {
             conditionsTexts = new LinkedList<>();
         }
-        return LootParserRegistry.parseFunction(function,stack,type,parentIsAlternative,conditionsTexts);
+        try {
+            return LootParserRegistry.parseFunction(function,stack,type,parentIsAlternative,conditionsTexts);
+        } catch(Exception e){
+            EMILoot.LOGGER.error("Failed to parse LootCondition of type " + type + " for stack " + stack.getName() + " in table " + currentTable);
+            e.printStackTrace();
+            return LootFunctionResult.EMPTY;
+        }
     }
 
     private static List<ItemEntryResult> applyLootFunctionsToTableResults(LootFunction[] functions, List<ItemEntryResult> parsedList, boolean parentIsAlternative){
@@ -593,10 +600,16 @@ public class LootTableParser {
         try {
             type = condition.getType();
         } catch (Exception e){
-            EMILoot.LOGGER.error("failed to determine a loot type for stack " + stack.getName() + " in table " + currentTable);
+            EMILoot.LOGGER.error("failed to determine a condition type for stack " + stack.getName() + " in table " + currentTable);
             return Collections.singletonList(LootConditionResult.EMPTY);
         }
-        return LootParserRegistry.parseCondition(condition,type,stack,parentIsAlternative);
+        try {
+            return LootParserRegistry.parseCondition(condition,type,stack,parentIsAlternative);
+        } catch (Exception e){
+            EMILoot.LOGGER.error("Failed to parse LootCondition of type " + condition.getType() + " for stack " + stack.getName() + " in table " + currentTable);
+            e.printStackTrace();
+            return Collections.singletonList(LootConditionResult.EMPTY);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
