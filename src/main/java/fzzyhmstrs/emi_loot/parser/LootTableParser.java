@@ -467,30 +467,32 @@ public class LootTableParser {
     static List<ItemEntryResult> parseLootTableEntry(LootTableEntry entry, boolean parentIsAlternative){
         Identifier id = ((LootTableEntryAccessor)entry).getId();
         if (LootTableParser.keyLookUp.containsKey(id)) {
-            LootTable table = LootTableParser.tables.get(keyLookUp.get(id));
-            LootContextType type = table.getType();
-            LootSender<?> results;
-            LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
-            List<TextKey> conditionsTexts = parseLootConditionTexts(conditions,ItemStack.EMPTY,parentIsAlternative);
-            if (type == LootContextTypes.CHEST) {
-                results = parseChestLootTable(table,id);
-            } else if (type == LootContextTypes.BLOCK) {
-                results = parseBlockLootTable(table,id);
-            } else if (type == LootContextTypes.ENTITY) {
-                results = parseMobLootTable(table,id, new Identifier("empty"));
-            } else if (type == LootContextTypes.FISHING) {
-                results = parseGameplayLootTable(table,id);
-            }else {
-                results = new EmptyLootTableSender();
+            if (LootTableParser.tables.containsKey(keyLookUp.get(id))) {
+                LootTable table = LootTableParser.tables.get(keyLookUp.get(id));
+                LootContextType type = table.getType();
+                LootSender<?> results;
+                LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
+                List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
+                if (type == LootContextTypes.CHEST) {
+                    results = parseChestLootTable(table, id);
+                } else if (type == LootContextTypes.BLOCK) {
+                    results = parseBlockLootTable(table, id);
+                } else if (type == LootContextTypes.ENTITY) {
+                    results = parseMobLootTable(table, id, new Identifier("empty"));
+                } else if (type == LootContextTypes.FISHING) {
+                    results = parseGameplayLootTable(table, id);
+                } else {
+                    results = new EmptyLootTableSender();
+                }
+                List<? extends LootBuilder> parsedBuilders = results.getBuilders();
+                List<ItemEntryResult> parsedList = new LinkedList<>();
+                parsedBuilders.forEach(parsedBuilder ->
+                        parsedList.addAll(parsedBuilder.revert())
+                );
+                parsedList.forEach(result -> result.conditions.addAll(conditionsTexts));
+                LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
+                return applyLootFunctionsToTableResults(functions, parsedList, parentIsAlternative);
             }
-            List<? extends LootBuilder> parsedBuilders = results.getBuilders();
-            List<ItemEntryResult> parsedList = new LinkedList<>();
-            parsedBuilders.forEach(parsedBuilder->
-                    parsedList.addAll(parsedBuilder.revert())
-            );
-            parsedList.forEach(result -> result.conditions.addAll(conditionsTexts));
-            LootFunction[] functions = ((LeafEntryAccessor) entry).getFunctions();
-            return applyLootFunctionsToTableResults(functions,parsedList,parentIsAlternative);
         }
         return List.of();
     }
