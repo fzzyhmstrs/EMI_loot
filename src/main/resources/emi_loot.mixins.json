@@ -61,7 +61,9 @@
     "LimitCountLootFunctionAccessor",
     "SetLootTableLootFunctionAccessor",
     "SetStewEffectLootFunctionAccessor",
-    "DataPackContentsMixin"
+    "DataPackContentsMixin",
+    "SimpleResourceReloadMixin",
+    "ProfiledResourceReloadMixin"
   ],
   "injectors": {
     "defaultRequire": 1
