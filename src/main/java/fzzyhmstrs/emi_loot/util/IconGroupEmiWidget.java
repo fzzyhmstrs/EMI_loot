@@ -98,7 +98,7 @@ public class IconGroupEmiWidget extends Widget {
             xNew += newWidth;
             widthRemaining -= newWidth;
         } while (widthRemaining > 0);
-        draw.fill(RenderLayer.getGui(),x,y,x + width,y+1,0x555555);
+        draw.fill(RenderLayer.getGui(),x,x + width,y,y+1,0x555555);
         for (IconEmiWidget icon: icons){
             icon.render(draw, mouseX, mouseY, delta);
         }
