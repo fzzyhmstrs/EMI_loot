@@ -39,7 +39,8 @@ public class IconGroupEmiWidget extends Widget {
         List<SlotWidget> list2 = new LinkedList<>();
         int itemXOffset = iconsWidth + 2;
         for(Map.Entry<Float, EmiIngredient> entry: pool.stackMap().float2ObjectEntrySet()){
-            SlotWidget widget = new SlotWidget(entry.getValue(),itemXOffset + x,y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance",entry.getKey()));
+            String rounded = FloatTrimmer.trimFloatString(entry.getKey());
+            SlotWidget widget = new SlotWidget(entry.getValue(),itemXOffset + x,y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance",rounded));
             itemXOffset +=20;
             list2.add(widget);
         }
