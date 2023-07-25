@@ -74,9 +74,9 @@ public class EntityEmiStack extends EmiStack {
     public void render(MatrixStack matrices, int x, int y, float delta, int flags) {
         if (entity != null) {
             if (entity instanceof LivingEntity living)
-                renderEntity(x + 8, (int) (y + 8 + ctx.size), ctx, living);
+                renderEntity(matrices.getMatrices(),x + 8, (int) (y + 8 + ctx.size), ctx, living);
             else
-                renderEntity((int) (x + (2 * ctx.size / 2)), (int) (y + (2 * ctx.size)), ctx, entity);
+                renderEntity(matrices.getMatrices(),(int) (x + (2 * ctx.size / 2)), (int) (y + (2 * ctx.size)), ctx, entity);
         }
     }
 
@@ -120,7 +120,7 @@ public class EntityEmiStack extends EmiStack {
         return entity != null ? entity.getName() : EmiPort.literal("yet another missingno");
     }
 
-    public static void renderEntity(int x, int y, EntityRenderContext ctx, LivingEntity entity) {
+    public static void renderEntity(MatrixStack matrices,int x, int y, EntityRenderContext ctx, LivingEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         double width = client.getWindow().getScaledWidth();
@@ -134,6 +134,7 @@ public class EntityEmiStack extends EmiStack {
 
         MatrixStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.push();
+        matrixStack.multiplyPositionMatrix(matrices.peek().getPositionMatrix());
         matrixStack.translate(x, y, 1050.0);
         matrixStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
@@ -176,7 +177,7 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    public static void renderEntity(int x, int y, EntityRenderContext ctx, Entity entity) {
+    public static void renderEntity(MatrixStack matrices,int x, int y, EntityRenderContext ctx, Entity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
         Mouse mouse = client.mouse;
         float w = 1920;
@@ -192,6 +193,7 @@ public class EntityEmiStack extends EmiStack {
         float g = (float)Math.atan(mouseY / 40.0F);
         MatrixStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.push();
+        matrixStack.multiplyPositionMatrix(matrices.peek().getPositionMatrix());
         matrixStack.translate(x, y, 1050.0);
         matrixStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
