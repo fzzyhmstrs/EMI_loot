@@ -1,13 +1,9 @@
 package fzzyhmstrs.emi_loot.emi;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.render.EmiRenderable;
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import org.joml.Matrix4f;
 
 public class LootSimplifiedRenderer implements EmiRenderable {
 
