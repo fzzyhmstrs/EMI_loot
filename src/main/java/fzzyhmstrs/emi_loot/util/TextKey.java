@@ -4,6 +4,7 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.text.MutableText;
@@ -13,7 +14,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.Math;
 import java.util.*;
 import java.util.function.Function;
 
@@ -250,10 +250,10 @@ public record TextKey(int index, List<String> args){
         List<ItemStack> finalStacks = new LinkedList<>();
         //finalStacks.add(stack);
         if (this.index == 8 && world != null){
-            Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
+            Optional<RecipeEntry<SmeltingRecipe>> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING,new SimpleInventory(stack),world);
             if (opt.isPresent()){
                 // Since AbstractCookingRecipe doesn't use the registryManager we can safely pass null here
-                ItemStack tempStack = opt.get().getOutput(null);
+                ItemStack tempStack = opt.get().value().getResult(null);
                 if (!tempStack.isEmpty()) {
                     //System.out.println(tempStack);
                     finalStack = tempStack.copy();

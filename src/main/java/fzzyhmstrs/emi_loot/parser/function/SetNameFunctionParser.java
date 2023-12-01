@@ -13,7 +13,7 @@ public class SetNameFunctionParser implements FunctionParser {
     
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
-        Text text = ((SetNameLootFunctionAccessor)function).getName();
+        Text text = ((SetNameLootFunctionAccessor)function).getName().orElseThrow(); // TODO?
         stack.setCustomName(text);
         return new LootTableParser.LootFunctionResult(TextKey.empty(), stack, conditionTexts);
     }

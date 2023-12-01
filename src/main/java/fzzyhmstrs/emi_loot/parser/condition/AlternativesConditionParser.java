@@ -16,15 +16,15 @@ public class AlternativesConditionParser implements ConditionParser{
 
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
-        LootCondition[] terms = ((AlternativeLootConditionAccessor)condition).getConditions();
-        int size = terms.length;
+        List<LootCondition> terms = ((AlternativeLootConditionAccessor)condition).getConditions();
+        int size = terms.size();
         if (size == 1){
-            List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(terms[0], stack);
+            List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(terms.get(0), stack);
             Text termText = LootTableParser.compileConditionTexts(stack,termResults);
             return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.alternates",termText.getString())));
         } else if (size == 2){
-            List<LootTableParser.LootConditionResult> termResults1 = LootTableParser.parseLootCondition(terms[0], stack);
-            List<LootTableParser.LootConditionResult> termResults2 = LootTableParser.parseLootCondition(terms[1], stack);
+            List<LootTableParser.LootConditionResult> termResults1 = LootTableParser.parseLootCondition(terms.get(0), stack);
+            List<LootTableParser.LootConditionResult> termResults2 = LootTableParser.parseLootCondition(terms.get(1), stack);
             Text termText1 = LootTableParser.compileConditionTexts(stack,termResults1);
             Text termText2;
             if (termResults2.size() == 1){
@@ -41,7 +41,7 @@ public class AlternativesConditionParser implements ConditionParser{
             return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.alternates_2",args)));
         } else {
             List<String> args = new LinkedList<>();
-            Arrays.stream(terms).toList().forEach((term)-> {
+            terms.forEach((term)-> {
                 List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(term, stack);
                 Text termText = LootTableParser.compileConditionTexts(stack,termResults);
                 args.add(termText.getString());

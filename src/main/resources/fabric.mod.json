@@ -27,7 +27,7 @@
   "accessWidener": "emi_loot.accesswidener",
   "depends": {
     "fabricloader": "*",
-    "minecraft": ">=1.20",
+    "minecraft": ">=1.20.2",
     "fabric-api": "*",
     "emi": "*"
   }

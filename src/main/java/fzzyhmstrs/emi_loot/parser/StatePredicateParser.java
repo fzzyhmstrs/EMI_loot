@@ -2,7 +2,6 @@ package fzzyhmstrs.emi_loot.parser;
 
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.StatePredicateAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.StatePredicate;
@@ -16,18 +15,18 @@ import java.util.List;
 public class StatePredicateParser {
   
     public static Text parseStatePredicate(StatePredicate predicate){
-        List<Condition> list = ((StatePredicateAccessor)predicate).getConditions();
+        List<Condition> list = predicate.conditions();
         if (!list.isEmpty()){
             List<MutableText> list2 = new LinkedList<>();
             for (Condition condition : list){
-                if (condition instanceof StatePredicate.RangedValueCondition){
-                    String key = condition.key;
-                    String min = ((StatePredicate.RangedValueCondition) condition).min;
-                    String max = ((StatePredicate.RangedValueCondition) condition).max;
+                if (condition.valueMatcher() instanceof StatePredicate.RangedValueMatcher){
+                    String key = condition.key();
+                    String min = ((StatePredicate.RangedValueMatcher) condition.valueMatcher()).min().orElse(null);
+                    String max = ((StatePredicate.RangedValueMatcher) condition.valueMatcher()).max().orElse(null);
                     list2.add(LText.translatable("emi_loot.state_predicate.state_between",key,min,max));
-                } else if (condition instanceof StatePredicate.ExactValueCondition){
-                    String key = condition.key;
-                    String value = ((StatePredicate.ExactValueCondition) condition).value;
+                } else if (condition.valueMatcher() instanceof StatePredicate.ExactValueMatcher){
+                    String key = condition.key();
+                    String value = ((StatePredicate.ExactValueMatcher) condition.valueMatcher()).value();
                     list2.add(LText.translatable("emi_loot.state_predicate.state_exact",key,value));
                 }
             }

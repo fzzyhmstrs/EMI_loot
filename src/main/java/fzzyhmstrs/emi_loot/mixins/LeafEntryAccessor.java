@@ -5,6 +5,8 @@ import net.minecraft.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.List;
+
 @Mixin(LeafEntry.class)
 public interface LeafEntryAccessor {
 
@@ -12,5 +14,5 @@ public interface LeafEntryAccessor {
     int getWeight();
 
     @Accessor(value = "functions")
-    LootFunction[] getFunctions();
+    List<LootFunction> getFunctions();
 }
