@@ -10,7 +10,9 @@ import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,6 +50,7 @@ public class LootTableParser {
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
     public static LootManager lootManager = null;
+    public static final Identifier CLEAR_LOOTS = new Identifier("e_l", "clear");
 
 
     static {
@@ -66,7 +69,7 @@ public class LootTableParser {
     }
 
     public void registerServer(){
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->{
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) ->{
             if (!hasPostProcessed()){
                 EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
                 for (PostProcessor process: PostProcessor.values()){
@@ -74,16 +77,17 @@ public class LootTableParser {
                 }
                 EMILoot.LOGGER.warn("Post-processing complete!");
             }
+            ServerPlayNetworking.send(player, CLEAR_LOOTS, PacketByteBufs.empty());
             if (EMILoot.config.parseChestLoot)
-                chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player));
+                chestSenders.forEach((id,chestSender) -> chestSender.send(player));
             if (EMILoot.config.parseBlockLoot)
-                blockSenders.forEach((id,blockSender) -> blockSender.send(handler.player));
+                blockSenders.forEach((id,blockSender) -> blockSender.send(player));
             if (EMILoot.config.parseMobLoot)
-                mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player));
+                mobSenders.forEach((id,mobSender) -> mobSender.send(player));
             if (EMILoot.config.parseGameplayLoot)
-                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(handler.player));
+                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(player));
             if (EMILoot.config.parseArchaeologyLoot)
-                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(handler.player));
+                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(player));
         });
     }
 
@@ -96,6 +100,11 @@ public class LootTableParser {
                 keyLookUp.put(key.id(),key);
         }
         parsedDirectDrops = new LinkedList<>();
+        chestSenders.clear();
+        blockSenders.clear();
+        mobSenders.clear();
+        gameplaySenders.clear();
+        archaeologySenders.clear();
         EMILoot.LOGGER.info("parsing loot tables");
         tables.forEach((key, table) -> {
             if (table instanceof LootTable)
