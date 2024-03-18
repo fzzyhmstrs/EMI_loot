@@ -78,7 +78,7 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new LinkedList<>();
+        return List.of(inputStack);
     }
 
     @Override
