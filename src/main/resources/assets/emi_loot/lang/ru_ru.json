@@ -80,7 +80,7 @@
   "emi_loot.condition.alternates_3": "%s, ",
   "emi_loot.condition.alternates_3a": "%s, или ",
   "emi_loot.condition.killed_player": "Выпадает при убийстве игроком",
-  "emi_loot.condition.chance": "Выпадает %s%% от времени",
+  "emi_loot.condition.chance": "Выпадает в %s%% случаях",
   "emi_loot.condition.chance_looting": "%1$s%%  %2$s%% за каждый уровень Добычи",
   "emi_loot.condition.damage_source": "Убит %s",
   "emi_loot.condition.location": "Выпадает в определенных местах/мультиблоках",
