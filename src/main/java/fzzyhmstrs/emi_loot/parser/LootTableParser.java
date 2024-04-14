@@ -69,7 +69,7 @@ public class LootTableParser {
     }
 
     public void registerServer(){
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) ->{
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
             if (!hasPostProcessed()){
                 EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
                 for (PostProcessor process: PostProcessor.values()){
@@ -390,7 +390,7 @@ public class LootTableParser {
         LootCondition[] conditions = ((LootPoolEntryAccessor) entry).getConditions();
         return parseItemEntry(weight, item, functions, conditions, parentIsAlternative);
     }
-    
+
     static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, LootFunction[] functions, LootCondition[] conditions, boolean parentIsAlternative){
         FunctionApplierResult functionApplierResult = applyLootFunctionToItem(functions,item,weight,parentIsAlternative);
         List<ItemEntryResult> conditionalEntryResults = functionApplierResult.conditionalResults;
@@ -423,7 +423,7 @@ public class LootTableParser {
             returnList.addAll(parseItemEntry(weight, stack, functions, conditions, parentIsAlternative));
         }
         return returnList;
-        
+
     }
 
     static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry){
@@ -583,7 +583,7 @@ public class LootTableParser {
         }
         return new FunctionApplierResult(conditionalEntryResults,functionTexts,item);
     }
-    
+
     ///////////////////////////////////////////////////////////////
 
     public static List<TextKey> parseLootConditionTexts(LootCondition[] conditions, ItemStack item, boolean parentIsAlternative){

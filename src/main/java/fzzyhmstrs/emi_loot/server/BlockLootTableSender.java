@@ -43,6 +43,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
+        if (!ServerPlayNetworking.canSend(player,BLOCK_SENDER)) return;
         if (isEmpty){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
             return;
