@@ -44,6 +44,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
+        if (!ServerPlayNetworking.canSend(player,MOB_SENDER)) return;
         //pre-build the builders to do empty checks
         if (isEmpty){
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
