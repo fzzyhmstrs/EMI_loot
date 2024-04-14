@@ -54,6 +54,7 @@ public class LootTableParser {
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
+    public static final Identifier CLEAR_LOOTS = new Identifier("e_l", "clear");
 
 
     static {
@@ -88,7 +89,7 @@ public class LootTableParser {
             if (EMILoot.config.parseMobLoot)
                 mobSenders.forEach((id,mobSender) -> mobSender.send(player));
             if (EMILoot.config.parseGameplayLoot)
-                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(handler.player));
+                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(player));
 
         });
     }
