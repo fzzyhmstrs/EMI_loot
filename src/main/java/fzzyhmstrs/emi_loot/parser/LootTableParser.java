@@ -70,7 +70,7 @@ public class LootTableParser {
     }
 
     public void registerServer(){
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) ->{
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
             if (!hasPostProcessed()){
                 EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
                 for (PostProcessor process: PostProcessor.values()){
