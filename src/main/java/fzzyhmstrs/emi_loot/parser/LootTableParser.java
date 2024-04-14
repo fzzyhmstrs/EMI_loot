@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.*;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.*;
@@ -211,7 +212,13 @@ public class LootTableParser {
         ChestLootTableSender sender = new ChestLootTableSender(id);
         for (LootPool pool : lootTable.pools) {
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
+            float conditionalMultiplier = 1f;
+            for (LootCondition condition : pool.conditions){
+                if (condition instanceof RandomChanceLootCondition){
+                    conditionalMultiplier *= ((RandomChanceLootConditionAccessor)condition).getChance();
+                }
+            }
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
             LootPoolEntry[] entries = pool.entries;
             for (LootPoolEntry entry : entries) {
