@@ -48,7 +48,7 @@
   "emi_loot.function.map": "Создаёт карту исследования %s",
   "emi_loot.function.set_contents": "Сохраняет содержимое блока при разрушении",
   "emi_loot.function.damage": "Предметы поврежденны примерно на %s%%",
-  "emi_loot.function.copy_state": "Свойства блока, скопированные к выпадаемому",
+  "emi_loot.function.copy_state": "Свойства блока копируются в выпадающий предмет",
   "emi_loot.function.copy_name": "Предмет копирует свое название из %s",
   "emi_loot.function.copy_name.this": "этого",
   "emi_loot.function.copy_name.killer": "этого убийцы моба",
