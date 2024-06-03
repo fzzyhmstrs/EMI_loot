@@ -99,6 +99,8 @@
   "emi_loot.condition.direct_drop": "Directly dropped without using a loot table",
   "emi_loot.condition.spawns_with": "Drops if it was spawned naturally with the mob",
   "emi_loot.condition.creeper": "Drops when this mob is blown up by a charged creeper",
+  "emi_loot.condition.thundering_true": "Drops when it is thundering",
+  "emi_loot.condition.thundering_false" : "Drops when it is not thundering",
   "emi_loot.condition.wither_kill": "Mobs killed by the Wither drop this",
   "emi_loot.number_provider.constant": "exactly %s",
   "emi_loot.number_provider.binomial": "the result of %1$s tests of a binomial distribution of period $2%s (average %3$s)",

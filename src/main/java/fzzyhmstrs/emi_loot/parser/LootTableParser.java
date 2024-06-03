@@ -10,13 +10,16 @@ import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.*;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.*;
@@ -48,6 +51,7 @@ public class LootTableParser {
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
     public static LootManager lootManager = null;
+    public static final Identifier CLEAR_LOOTS = new Identifier("e_l", "clear");
 
 
     static {
@@ -66,7 +70,7 @@ public class LootTableParser {
     }
 
     public void registerServer(){
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->{
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
             if (!hasPostProcessed()){
                 EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
                 for (PostProcessor process: PostProcessor.values()){
@@ -74,16 +78,17 @@ public class LootTableParser {
                 }
                 EMILoot.LOGGER.warn("Post-processing complete!");
             }
+            ServerPlayNetworking.send(player, CLEAR_LOOTS, PacketByteBufs.empty());
             if (EMILoot.config.parseChestLoot)
-                chestSenders.forEach((id,chestSender) -> chestSender.send(handler.player));
+                chestSenders.forEach((id,chestSender) -> chestSender.send(player));
             if (EMILoot.config.parseBlockLoot)
-                blockSenders.forEach((id,blockSender) -> blockSender.send(handler.player));
+                blockSenders.forEach((id,blockSender) -> blockSender.send(player));
             if (EMILoot.config.parseMobLoot)
-                mobSenders.forEach((id,mobSender) -> mobSender.send(handler.player));
+                mobSenders.forEach((id,mobSender) -> mobSender.send(player));
             if (EMILoot.config.parseGameplayLoot)
-                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(handler.player));
+                gameplaySenders.forEach((id,gameplaySender) -> gameplaySender.send(player));
             if (EMILoot.config.parseArchaeologyLoot)
-                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(handler.player));
+                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(player));
         });
     }
 
@@ -96,6 +101,11 @@ public class LootTableParser {
                 keyLookUp.put(key.id(),key);
         }
         parsedDirectDrops = new LinkedList<>();
+        chestSenders.clear();
+        blockSenders.clear();
+        mobSenders.clear();
+        gameplaySenders.clear();
+        archaeologySenders.clear();
         EMILoot.LOGGER.info("parsing loot tables");
         tables.forEach((key, table) -> {
             if (table instanceof LootTable)
@@ -202,7 +212,13 @@ public class LootTableParser {
         ChestLootTableSender sender = new ChestLootTableSender(id);
         for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
             LootNumberProvider rollProvider = pool.rolls;
-            float rollAvg = NumberProcessors.getRollAvg(rollProvider);
+            float conditionalMultiplier = 1f;
+            for (LootCondition condition : pool.conditions){
+                if (condition instanceof RandomChanceLootCondition randomChanceLootCondition){
+                    conditionalMultiplier *= randomChanceLootCondition.chance();
+                }
+            }
+            float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
             List<LootPoolEntry> entries = pool.entries;
             for (LootPoolEntry entry : entries) {
@@ -381,7 +397,7 @@ public class LootTableParser {
         List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
         return parseItemEntry(weight, item, functions, conditions, parentIsAlternative);
     }
-    
+
     static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, List<LootFunction> functions, List<LootCondition> conditions, boolean parentIsAlternative){
         FunctionApplierResult functionApplierResult = applyLootFunctionToItem(functions,item,weight,parentIsAlternative);
         List<ItemEntryResult> conditionalEntryResults = functionApplierResult.conditionalResults;
@@ -414,7 +430,7 @@ public class LootTableParser {
             returnList.addAll(parseItemEntry(weight, stack, functions, conditions, parentIsAlternative));
         }
         return returnList;
-        
+
     }
 
     static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry){
@@ -574,7 +590,7 @@ public class LootTableParser {
         }
         return new FunctionApplierResult(conditionalEntryResults,functionTexts,item);
     }
-    
+
     ///////////////////////////////////////////////////////////////
 
     public static List<TextKey> parseLootConditionTexts(List<LootCondition> conditions, ItemStack item, boolean parentIsAlternative){
