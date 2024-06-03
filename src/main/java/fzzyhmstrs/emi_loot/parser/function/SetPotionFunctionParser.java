@@ -17,7 +17,7 @@ public class SetPotionFunctionParser implements FunctionParser {
     
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
-        Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion();
+        Potion potion = ((SetPotionLootFunctionAccessor)function).getPotion().value();
         PotionUtil.setPotion(stack, potion);
         Text potionName = LText.translatable(potion.finishTranslationKey(Items.POTION.getTranslationKey() + ".effect."));
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.potion",potionName.getString()), ItemStack.EMPTY,conditionTexts);

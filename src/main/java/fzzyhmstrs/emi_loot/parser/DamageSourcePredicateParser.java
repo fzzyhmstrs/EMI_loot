@@ -1,23 +1,24 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.DamageSourcePredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.text.Text;
 
+import java.util.Optional;
+
 public class DamageSourcePredicateParser {
 
     public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate){
-        EntityPredicate directPredicate = ((DamageSourcePredicateAccessor)predicate).getDirectEntity();
-        if (!directPredicate.equals(EntityPredicate.ANY)){
-            return EntityPredicateParser.parseEntityPredicate(directPredicate);
+        Optional<EntityPredicate> directPredicate = predicate.directEntity();
+        if (directPredicate.isPresent()){
+            return EntityPredicateParser.parseEntityPredicate(directPredicate.get());
         }
 
-        EntityPredicate sourcePredicate = ((DamageSourcePredicateAccessor)predicate).getSourceEntity();
-        if (!sourcePredicate.equals(EntityPredicate.ANY)){
-            return EntityPredicateParser.parseEntityPredicate(sourcePredicate);
+        Optional<EntityPredicate> sourcePredicate = predicate.sourceEntity();
+        if (sourcePredicate.isPresent()){
+            return EntityPredicateParser.parseEntityPredicate(sourcePredicate.get());
         }
 
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable damage source predicate in table: "  + LootTableParser.currentTable);

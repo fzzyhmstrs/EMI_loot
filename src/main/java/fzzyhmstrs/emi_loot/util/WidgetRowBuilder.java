@@ -1,6 +1,5 @@
 package fzzyhmstrs.emi_loot.util;
 
-import com.google.common.collect.ImmutableList;
 import dev.emi.emi.api.stack.EmiIngredient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
@@ -10,7 +9,6 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
