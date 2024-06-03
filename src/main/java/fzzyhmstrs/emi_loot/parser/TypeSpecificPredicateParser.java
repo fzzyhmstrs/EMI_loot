@@ -40,17 +40,16 @@ public class TypeSpecificPredicateParser {
             return parseSlimePredicate((SlimePredicate)predicate);
         }
 
-        // TODO: this is bad
         if (predicate instanceof VariantPredicates.Predicate<?> variantPredicate) {
             if (variantPredicate.variant() instanceof CatVariant cat) {
-                Identifier id = new Identifier(cat.texture().getNamespace(), StringUtils.substringBetween(cat.texture().getPath(), "textures/entity/cat/", ".png"));
-                if (Registries.CAT_VARIANT.containsId(id)){
+                Identifier id = Registries.CAT_VARIANT.getId(cat);
+                if (id != null){
                     MutableText catVar = LText.translatable("emi_loot.entity_predicate.type_specific.cat." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.cat",catVar.getString());
                 }
             } else if (variantPredicate.variant() instanceof FrogVariant frog) {
-                Identifier id = new Identifier(frog.texture().getNamespace(), StringUtils.substringBetween(frog.texture().getPath(), "textures/entity/frog/", "_frog.png"));
-                if (Registries.FROG_VARIANT.containsId(id)){
+                Identifier id = Registries.FROG_VARIANT.getId(frog);
+                if (id != null){
                     MutableText frogVar = LText.translatable("emi_loot.entity_predicate.type_specific.frog." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.frog",frogVar.getString());
                 }
