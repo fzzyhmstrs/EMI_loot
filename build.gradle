@@ -23,6 +23,14 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+
+    flatDir {
+        dirs "E:\\Documents\\Mod Libraries\\fzzy_config\\build\\libs"
+    }
+
+    flatDir {
+        dirs "E:\\Documents\\Mod Libraries\\sns\\build\\libs"
+    }
 }
 
 dependencies {
@@ -36,6 +44,9 @@ dependencies {
 
     modImplementation "dev.emi:emi-fabric:${project.emi_version}"
 
+    modImplementation ":fzzy_config-${fzzy_config_version}"
+
+    modImplementation ":symbols_n_stuff-${sns_version}"
 }
 
 processResources {

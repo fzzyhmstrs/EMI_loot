@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
-    public MobLootTableSender(Identifier id, Identifier mobId){
+    public MobLootTableSender(Identifier id, Identifier mobId) {
         this.idToSend = LootSender.getIdToSend(id);
         this.mobIdToSend = LootSender.getIdToSend(mobId);
     }
@@ -24,14 +24,14 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     private final String idToSend;
     private final String mobIdToSend;
     final List<MobLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier MOB_SENDER = new Identifier("e_l","m_s");
+    public static Identifier MOB_SENDER = new Identifier("e_l", "m_s");
     boolean isEmpty = true;
 
     @Override
     public void build() {
-        builderList.forEach((builder)->{
+        builderList.forEach((builder)-> {
             builder.build();
-            if (!builder.isEmpty){
+            if (!builder.isEmpty) {
                 isEmpty = false;
             }
         });
@@ -44,9 +44,9 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player,MOB_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, MOB_SENDER)) return;
         //pre-build the builders to do empty checks
-        if (isEmpty){
+        if (isEmpty) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
@@ -61,13 +61,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
             ServerPlayNetworking.send(player, MOB_SENDER, buf);
             return;
-        } else if (builderList.isEmpty()){
+        } else if (builderList.isEmpty()) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
 
         buf.writeShort(builderList.size());
-        builderList.forEach((builder)->{
+        builderList.forEach((builder)-> {
             //start by building the builder
             builder.build();
 
@@ -81,27 +81,27 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
-            Map<List<TextKey>,ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
+            Map<List<TextKey>, ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
             buf.writeShort(lootPoolBuilderMap.size());
-            lootPoolBuilderMap.forEach((key,chestBuilder)->{
+            lootPoolBuilderMap.forEach((key, chestBuilder)-> {
 
                 //for each functional condition, write the size then list of condition textKeys
                 buf.writeShort(key.size());
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
-                Map<ItemStack,Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key,new ChestLootPoolBuilder(1f)).builtMap;
+                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new ChestLootPoolBuilder(1f)).builtMap;
                 buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
-                keyPoolMap.forEach((stack,weight)->{
+                keyPoolMap.forEach((stack, weight)-> {
                     buf.writeItemStack(stack);
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ServerPlayNetworking.send(player,MOB_SENDER, buf);
+        ServerPlayNetworking.send(player, MOB_SENDER, buf);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class BlownUpByCreeperLootCondition implements LootCondition {
         return false;
     }
 
-    public static class Serializer implements JsonSerializer<BlownUpByCreeperLootCondition>{
+    public static class Serializer implements JsonSerializer<BlownUpByCreeperLootCondition> {
 
         @Override
         public void toJson(JsonObject json, BlownUpByCreeperLootCondition object, JsonSerializationContext context) {

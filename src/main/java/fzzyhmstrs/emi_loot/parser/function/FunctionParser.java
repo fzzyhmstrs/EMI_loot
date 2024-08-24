@@ -7,12 +7,12 @@ import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public interface FunctionParser{
-    FunctionParser EMPTY = (function,stack, conditionTexts, parentIsAlternative) -> LootTableParser.LootFunctionResult.EMPTY;
+public interface FunctionParser {
+    FunctionParser EMPTY = (function, stack, conditionTexts, parentIsAlternative) -> LootTableParser.LootFunctionResult.EMPTY;
     
-    LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts);
+    LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts);
 
-    default ItemStack parseStack(ItemStack stack){
+    default ItemStack parseStack(ItemStack stack) {
         return stack;
     }
 }

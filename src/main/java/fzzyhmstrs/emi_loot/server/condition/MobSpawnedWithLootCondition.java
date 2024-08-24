@@ -20,7 +20,7 @@ public class MobSpawnedWithLootCondition implements LootCondition {
         return false;
     }
 
-    public static class Serializer implements JsonSerializer<MobSpawnedWithLootCondition>{
+    public static class Serializer implements JsonSerializer<MobSpawnedWithLootCondition> {
 
         @Override
         public void toJson(JsonObject json, MobSpawnedWithLootCondition object, JsonSerializationContext context) {

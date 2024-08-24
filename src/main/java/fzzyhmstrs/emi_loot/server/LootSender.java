@@ -12,16 +12,16 @@ public interface LootSender<T extends LootBuilder> {
     List<T> getBuilders();
     void build();
 
-    static String getIdToSend(Identifier id){
-        if (id.getNamespace().equals("minecraft")){
+    static String getIdToSend(Identifier id) {
+        if (id.getNamespace().equals("minecraft")) {
             String path = id.getPath();
-            if (path.contains("blocks/")){
+            if (path.contains("blocks/")) {
                 return "b/" + path.substring(7);
-            } else if (path.contains("entities/")){
+            } else if (path.contains("entities/")) {
                 return "e/"+ path.substring(9);
-            } else if (path.contains("chests/")){
+            } else if (path.contains("chests/")) {
                 return "c/" + path.substring(7);
-            } else if (path.contains("gameplay/")){
+            } else if (path.contains("gameplay/")) {
                 return "g/" + path.substring(9);
             } else if (path.contains("archaeology/")) {
                 return "a/" + path.substring(12);

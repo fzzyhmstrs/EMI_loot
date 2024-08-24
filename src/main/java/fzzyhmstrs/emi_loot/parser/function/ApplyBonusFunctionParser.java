@@ -9,10 +9,10 @@ import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public class ApplyBonusFunctionParser implements FunctionParser{
+public class ApplyBonusFunctionParser implements FunctionParser {
     
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
         String name = enchant.getName(1).getString();
         String nTrim;
@@ -21,6 +21,6 @@ public class ApplyBonusFunctionParser implements FunctionParser{
         } else {
             nTrim = name;
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus",nTrim), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", nTrim), ItemStack.EMPTY, conditionTexts);
     }
 }

@@ -28,19 +28,19 @@ import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class ChestLootRecipe implements EmiRecipe {
 
-    public ChestLootRecipe(ClientChestLootTable loot){
+    public ChestLootRecipe(ClientChestLootTable loot) {
         this.loot = loot;
-        if (loot.items.size() == 1){
-            if (loot.items.values().toFloatArray()[0] == 1f){
+        if (loot.items.size() == 1) {
+            if (loot.items.values().toFloatArray()[0] == 1f) {
                 isGuaranteedNonChance = true;
             }
         }
 
         ArrayListMultimap<Float, EmiStack> map2 = ArrayListMultimap.create();
         List<EmiStack> outputsList = new LinkedList<>();
-        loot.items.forEach((item,weight)-> {
+        loot.items.forEach((item, weight)-> {
             EmiStack stack = EmiStack.of(item);
-            map2.put(weight,stack);
+            map2.put(weight, stack);
             outputsList.add(stack);
         });
         lootStacksSorted = map2;
@@ -56,12 +56,12 @@ public class ChestLootRecipe implements EmiRecipe {
         String key = "emi_loot.chest." + loot.id.toString();
         MutableText text = LText.translatable(key);
         MutableText rawTitle;
-        if (Objects.equals(text.getString(), key)){
+        if (Objects.equals(text.getString(), key)) {
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
-            if (modNameOpt.isPresent()){
+            if (modNameOpt.isPresent()) {
                 ModContainer modContainer = modNameOpt.get();
                 String modName = modContainer.getMetadata().getName();
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest",modName);
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");
                 rawTitle = LText.translatable("emi_loot.chest.unknown_chest", unknown.getString());
@@ -71,8 +71,8 @@ public class ChestLootRecipe implements EmiRecipe {
         }
         Text dots = LText.literal("...");
         int dotsWidth = MinecraftClient.getInstance().textRenderer.getWidth(dots);
-        if (MinecraftClient.getInstance().textRenderer.getWidth(rawTitle) >(138 - dotsWidth)){
-            String trimmed = MinecraftClient.getInstance().textRenderer.trimToWidth(rawTitle.getString(),138 - dotsWidth) + "...";
+        if (MinecraftClient.getInstance().textRenderer.getWidth(rawTitle) >(138 - dotsWidth)) {
+            String trimmed = MinecraftClient.getInstance().textRenderer.trimToWidth(rawTitle.getString(), 138 - dotsWidth) + "...";
             title = LText.literal(trimmed);
         } else {
             title = rawTitle;
@@ -129,16 +129,16 @@ public class ChestLootRecipe implements EmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
         final int titleSpace;
         final int finalRowHeight;
-        if (widgets.getHeight() < getDisplayHeight()){
+        if (widgets.getHeight() < getDisplayHeight()) {
             titleSpace = 9;
             finalRowHeight = (widgets.getHeight() - titleSpace) / ((int) Math.ceil(lootStacksSortedSize / 8.0));
         } else {
             titleSpace = 11;
             finalRowHeight =  18;
         }
-        widgets.addText(title.asOrderedText(),1,0,0x404040,false);
+        widgets.addText(title.asOrderedText(), 1, 0, 0x404040, false);
         AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
-        for (var entry : lootStacksSorted.asMap().entrySet()){
+        for (var entry : lootStacksSorted.asMap().entrySet()) {
             float weight = entry.getKey();
             Collection<EmiStack> items = entry.getValue();
             if ((loot.items.size() <= 48) && !EMILoot.config.chestLootAlwaysStackSame) {
@@ -155,9 +155,9 @@ public class ChestLootRecipe implements EmiRecipe {
                 int column = (int)((index.get() - 1) % columns);
                 index.getAndDecrement();
                 EmiIngredient ingredient = EmiIngredient.of(items.stream().toList());
-                String fTrim = trimFloatString(Math.max(weight/100f,0.01f),2);
+                String fTrim = trimFloatString(Math.max(weight/100f, 0.01f), 2);
                 SlotWidget slotWidget = new SlotWidget(ingredient, column * 18, titleSpace + row * finalRowHeight).recipeContext(this);
-                widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.rolls", fTrim).formatted(Formatting.ITALIC,Formatting.GOLD)));
+                widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.rolls", fTrim).formatted(Formatting.ITALIC, Formatting.GOLD)));
             }
         }
     }

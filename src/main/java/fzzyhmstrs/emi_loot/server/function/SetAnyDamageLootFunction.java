@@ -22,7 +22,7 @@ public class SetAnyDamageLootFunction implements LootFunction {
         return ItemStack.EMPTY;
     }
 
-    public static class Serializer implements JsonSerializer<SetAnyDamageLootFunction>{
+    public static class Serializer implements JsonSerializer<SetAnyDamageLootFunction> {
 
         @Override
         public void toJson(JsonObject json, SetAnyDamageLootFunction object, JsonSerializationContext context) {

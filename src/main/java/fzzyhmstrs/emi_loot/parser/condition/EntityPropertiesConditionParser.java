@@ -14,18 +14,18 @@ import net.minecraft.text.MutableText;
 import java.util.Collections;
 import java.util.List;
 
-public class EntityPropertiesConditionParser implements ConditionParser{
+public class EntityPropertiesConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
         EntityPredicate predicate = ((EntityPropertiesLootConditionAccessor)condition).getPredicate();
         MutableText propText;
-        if (entity == LootContext.EntityTarget.THIS){
+        if (entity == LootContext.EntityTarget.THIS) {
             propText = LText.translatable("emi_loot.entity_predicate.entity_this", EntityPredicateParser.parseEntityPredicate(predicate));
         } else {
             propText = LText.translatable("emi_loot.entity_predicate.entity_killer", EntityPredicateParser.parseEntityPredicate(predicate));
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props",propText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", propText.getString())));
     }
 }

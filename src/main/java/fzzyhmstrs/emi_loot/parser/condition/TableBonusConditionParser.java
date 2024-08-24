@@ -10,10 +10,10 @@ import net.minecraft.loot.condition.LootCondition;
 import java.util.Collections;
 import java.util.List;
 
-public class TableBonusConditionParser implements ConditionParser{
+public class TableBonusConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         Enchantment enchant = ((TableBonusLootConditionAccessor)condition).getEnchantment();
         String name = enchant.getName(1).getString();
         String nTrim;
@@ -22,6 +22,6 @@ public class TableBonusConditionParser implements ConditionParser{
         } else {
             nTrim = name;
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus",nTrim)));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", nTrim)));
     }
 }

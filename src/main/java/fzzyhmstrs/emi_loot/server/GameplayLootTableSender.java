@@ -17,13 +17,13 @@ import java.util.Map;
 
 public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuilder> {
 
-    public GameplayLootTableSender(Identifier id){
+    public GameplayLootTableSender(Identifier id) {
         this.idToSend = LootSender.getIdToSend(id);
     }
 
     private final String idToSend;
     final List<GameplayLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier GAMEPLAY_SENDER = new Identifier("e_l","g_s");
+    public static Identifier GAMEPLAY_SENDER = new Identifier("e_l", "g_s");
     boolean isEmpty = true;
 
     @Override
@@ -33,9 +33,9 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     @Override
     public void build() {
-        builderList.forEach((builder)->{
+        builderList.forEach((builder)-> {
             builder.build();
-            if (!builder.isEmpty){
+            if (!builder.isEmpty) {
                 isEmpty = false;
             }
         });
@@ -43,8 +43,8 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player,GAMEPLAY_SENDER)) return;
-        if (isEmpty){
+        if (!ServerPlayNetworking.canSend(player, GAMEPLAY_SENDER)) return;
+        if (isEmpty) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
             return;
         }
@@ -52,17 +52,17 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
         //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
         buf.writeString(idToSend);
 
-        if (builderList.size() == 1 && builderList.get(0).isSimple){
+        if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM,builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player,GAMEPLAY_SENDER, buf);
+            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
+            ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
             return;
-        } else if (builderList.isEmpty()){
+        } else if (builderList.isEmpty()) {
             return;
         }
         buf.writeShort(builderList.size());
-        builderList.forEach((builder)->{
+        builderList.forEach((builder)-> {
 
             //write size of the builders condition set
             buf.writeShort(builder.conditions.size());
@@ -74,27 +74,27 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
-            Map<List<TextKey>,ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
+            Map<List<TextKey>, ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
             buf.writeShort(lootPoolBuilderMap.size());
-            lootPoolBuilderMap.forEach((key,chestBuilder)->{
+            lootPoolBuilderMap.forEach((key, chestBuilder)-> {
 
                 //for each functional condition, write the size then list of condition textKeys
                 buf.writeShort(key.size());
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
-                Map<ItemStack,Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key,new ChestLootPoolBuilder(1f)).builtMap;
+                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new ChestLootPoolBuilder(1f)).builtMap;
                 buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
-                keyPoolMap.forEach((stack,weight)->{
+                keyPoolMap.forEach((stack, weight)-> {
                     buf.writeItemStack(stack);
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ServerPlayNetworking.send(player,GAMEPLAY_SENDER, buf);
+        ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
     }
 
     @Override

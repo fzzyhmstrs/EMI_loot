@@ -36,17 +36,17 @@ public class EntityEmiStack extends EmiStack {
     private final EntityRenderContext ctx;
 
     protected EntityEmiStack(@Nullable Entity entity) {
-        this(entity,8.0);
+        this(entity, 8.0);
     }
 
     protected EntityEmiStack(@Nullable Entity entity, double scale) {
         this.entity = entity;
         if (entity != null) {
             boolean hasTransform = ClientResourceData.MOB_ROTATIONS.containsKey(entity.getType());
-            Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(),new Vector3f(0,0,0)).mul(0.017453292F);
-            ctx = new EntityRenderContext(scale,hasTransform,transform);
+            Vector3f transform = ClientResourceData.MOB_ROTATIONS.getOrDefault(entity.getType(), new Vector3f(0, 0, 0)).mul(0.017453292F);
+            ctx = new EntityRenderContext(scale, hasTransform, transform);
         } else {
-            ctx = new EntityRenderContext(scale,false,new Vector3f(0,0,0));
+            ctx = new EntityRenderContext(scale, false, new Vector3f(0, 0, 0));
         }
     }
 
@@ -75,9 +75,9 @@ public class EntityEmiStack extends EmiStack {
     public void render(DrawContext matrices, int x, int y, float delta, int flags) {
         if (entity != null) {
             if (entity instanceof LivingEntity living)
-                renderEntity(matrices.getMatrices(),x + 8, (int) (y + 8 + ctx.size), ctx, living);
+                renderEntity(matrices.getMatrices(), x + 8, (int) (y + 8 + ctx.size), ctx, living);
             else
-                renderEntity(matrices.getMatrices(),(int) (x + (2 * ctx.size / 2)), (int) (y + (2 * ctx.size)), ctx, entity);
+                renderEntity(matrices.getMatrices(), (int) (x + (2 * ctx.size / 2)), (int) (y + (2 * ctx.size)), ctx, entity);
         }
     }
 
@@ -121,7 +121,7 @@ public class EntityEmiStack extends EmiStack {
         return entity != null ? entity.getName() : EmiPort.literal("yet another missingno");
     }
 
-    public static void renderEntity(MatrixStack matrices,int x, int y, EntityRenderContext ctx, LivingEntity entity) {
+    public static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, LivingEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         double width = client.getWindow().getScaledWidth();
@@ -144,8 +144,8 @@ public class EntityEmiStack extends EmiStack {
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
         Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z) - f * 20.0F * 0.017453292F * MathHelper.sin(ctx.transform.z));
-        if (ctx.hasTransform){
-            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x,ctx.transform.y,ctx.transform.z);
+        if (ctx.hasTransform) {
+            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x, ctx.transform.y, ctx.transform.z);
             quaternion.mul(quaternion3);
         }
 
@@ -164,9 +164,13 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
-        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
-        immediate.draw();
+        try {
+            VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+            RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
+            immediate.draw();
+        } catch (Exception e) {
+            //
+        }
         entityRenderDispatcher.setRenderShadows(true);
         entity.bodyYaw = h;
         entity.setYaw(i);
@@ -178,7 +182,7 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    public static void renderEntity(MatrixStack matrices,int x, int y, EntityRenderContext ctx, Entity entity) {
+    public static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, Entity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
         Mouse mouse = client.mouse;
         float w = 1920;
@@ -203,8 +207,8 @@ public class EntityEmiStack extends EmiStack {
         matrixStack2.scale((float) ctx.size, (float) ctx.size, (float) ctx.size);
         Quaternionf quaternion = new Quaternionf().rotateZ(3.1415927F);
         Quaternionf quaternion2 = new Quaternionf().rotateX(g * 20.0F * 0.017453292F * MathHelper.cos(ctx.transform.z) - f * 20.0F * 0.017453292F * MathHelper.sin(ctx.transform.z));
-        if (ctx.hasTransform){
-            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x,ctx.transform.y,ctx.transform.z);
+        if (ctx.hasTransform) {
+            Quaternionf quaternion3 = new Quaternionf().rotateXYZ(ctx.transform.x, ctx.transform.y, ctx.transform.z);
             quaternion.mul(quaternion3);
         }
 
@@ -217,9 +221,13 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
-        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
-        immediate.draw();
+        try {
+            VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+            RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
+            immediate.draw();
+        } catch (Exception e) {
+            //
+        }
         entityRenderDispatcher.setRenderShadows(true);
         entity.setYaw(i);
         entity.setPitch(j);
@@ -228,7 +236,7 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    private record EntityRenderContext(double size, boolean hasTransform, Vector3f transform){
-        static EntityRenderContext EMPTY = new EntityRenderContext(8.0,false,new Vector3f(0,0,0));
+    private record EntityRenderContext(double size, boolean hasTransform, Vector3f transform) {
+        static EntityRenderContext EMPTY = new EntityRenderContext(8.0, false, new Vector3f(0, 0, 0));
     }
 }

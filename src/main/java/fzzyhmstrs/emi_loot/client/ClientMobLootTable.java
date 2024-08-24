@@ -30,13 +30,13 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     public final Identifier mobId;
     public String color = "";
 
-    public ClientMobLootTable(){
+    public ClientMobLootTable() {
         super();
         this.id = EMPTY;
         this.mobId = new Identifier("empty");
     }
 
-    public ClientMobLootTable(Identifier id,Identifier mobId, Map<List<TextKey>, ClientRawPool> map){
+    public ClientMobLootTable(Identifier id, Identifier mobId, Map<List<TextKey>, ClientRawPool> map) {
         super(map);
         this.id = id;
         String ns = id.getNamespace();
@@ -60,7 +60,7 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     }
 
     @Override
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return Objects.equals(id, EMPTY);
     }
 
@@ -70,22 +70,22 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     }
 
     @Override
-    Pair<Identifier,Identifier> getBufId(PacketByteBuf buf) {
+    Pair<Identifier, Identifier> getBufId(PacketByteBuf buf) {
         Identifier id = getIdFromBuf(buf);
         Identifier mobId = getIdFromBuf(buf);
-        return new Pair<>(id,mobId);
+        return new Pair<>(id, mobId);
     }
 
     @Override
-    ClientMobLootTable simpleTableToReturn(Pair<Identifier,Identifier> ids,PacketByteBuf buf) {
+    ClientMobLootTable simpleTableToReturn(Pair<Identifier, Identifier> ids, PacketByteBuf buf) {
         ClientRawPool simplePool = new ClientRawPool(new HashMap<>());
         Object2FloatMap<ItemStack> simpleMap = new Object2FloatOpenHashMap<>();
         ItemStack simpleStack = new ItemStack(buf.readRegistryValue(Registries.ITEM));
-        simpleMap.put(simpleStack,100F);
-        simplePool.map().put(new ArrayList<>(),simpleMap);
+        simpleMap.put(simpleStack, 100F);
+        simplePool.map().put(new ArrayList<>(), simpleMap);
         Map<List<TextKey>, ClientRawPool> itemMap = new HashMap<>();
-        itemMap.put(new ArrayList<>(),simplePool);
-        return new ClientMobLootTable(ids.getLeft(),ids.getRight(),itemMap);
+        itemMap.put(new ArrayList<>(), simplePool);
+        return new ClientMobLootTable(ids.getLeft(), ids.getRight(), itemMap);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     }
 
     @Override
-    ClientMobLootTable filledTableToReturn(Pair<Identifier,Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap) {
-        return new ClientMobLootTable(ids.getLeft(),ids.getRight(),itemMap);
+    ClientMobLootTable filledTableToReturn(Pair<Identifier, Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap) {
+        return new ClientMobLootTable(ids.getLeft(), ids.getRight(), itemMap);
     }
 }

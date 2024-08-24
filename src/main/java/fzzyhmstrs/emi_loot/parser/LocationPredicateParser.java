@@ -16,40 +16,40 @@ import net.minecraft.world.gen.structure.Structure;
 
 public class LocationPredicateParser {
 
-    public static Text parseLocationPredicate(LocationPredicate predicate){
+    public static Text parseLocationPredicate(LocationPredicate predicate) {
         NumberRange.FloatRange x = ((LocationPredicateAccessor)predicate).getX();
-        if (!x.equals(NumberRange.FloatRange.ANY)){
-            return LText.translatable("emi_loot.location_predicate.x",x.getMin(),x.getMax());
+        if (!x.equals(NumberRange.FloatRange.ANY)) {
+            return LText.translatable("emi_loot.location_predicate.x", x.getMin(), x.getMax());
         }
 
         NumberRange.FloatRange y = ((LocationPredicateAccessor)predicate).getY();
-        if (!y.equals(NumberRange.FloatRange.ANY)){
-            return LText.translatable("emi_loot.location_predicate.y",y.getMin(),y.getMax());
+        if (!y.equals(NumberRange.FloatRange.ANY)) {
+            return LText.translatable("emi_loot.location_predicate.y", y.getMin(), y.getMax());
         }
 
         NumberRange.FloatRange z = ((LocationPredicateAccessor)predicate).getZ();
-        if (!z.equals(NumberRange.FloatRange.ANY)){
-            return LText.translatable("emi_loot.location_predicate.z",z.getMin(),z.getMax());
+        if (!z.equals(NumberRange.FloatRange.ANY)) {
+            return LText.translatable("emi_loot.location_predicate.z", z.getMin(), z.getMax());
         }
 
         RegistryKey<World> dim = ((LocationPredicateAccessor)predicate).getDimension();
-        if (dim != null){
-            return LText.translatable("emi_loot.location_predicate.dim",dim.getValue().toString());
+        if (dim != null) {
+            return LText.translatable("emi_loot.location_predicate.dim", dim.getValue().toString());
         }
 
         RegistryKey<Biome> biome = ((LocationPredicateAccessor)predicate).getBiome();
-        if (biome != null){
-            return LText.translatable("emi_loot.location_predicate.biome",biome.getValue().toString());
+        if (biome != null) {
+            return LText.translatable("emi_loot.location_predicate.biome", biome.getValue().toString());
         }
 
         RegistryKey<Structure> feature = ((LocationPredicateAccessor)predicate).getFeature();
-        if (feature != null){
-            return LText.translatable("emi_loot.location_predicate.structure",feature.getValue().toString());
+        if (feature != null) {
+            return LText.translatable("emi_loot.location_predicate.structure", feature.getValue().toString());
         }
 
         Boolean smokey = ((LocationPredicateAccessor)predicate).getSmokey();
-        if (smokey != null){
-            if (smokey){
+        if (smokey != null) {
+            if (smokey) {
                 return LText.translatable("emi_loot.location_predicate.smoke_true");
             } else {
                 return LText.translatable("emi_loot.location_predicate.smoke_false");
@@ -67,7 +67,7 @@ public class LocationPredicateParser {
         }
 
         FluidPredicate fluid = ((LocationPredicateAccessor)predicate).getFluid();
-        if (!fluid.equals(FluidPredicate.ANY)){
+        if (!fluid.equals(FluidPredicate.ANY)) {
             return FluidPredicateParser.parseFluidPredicate(fluid);
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable location predicate in table: "  + LootTableParser.currentTable);

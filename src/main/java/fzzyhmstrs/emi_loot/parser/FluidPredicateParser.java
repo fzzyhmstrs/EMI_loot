@@ -12,24 +12,24 @@ import net.minecraft.text.Text;
 
 public class FluidPredicateParser {
 
-    public static Text parseFluidPredicate(FluidPredicate predicate){
-        return LText.translatable("emi_loot.fluid_predicate.base",parseFluidPredicateInternal(predicate).getString());
+    public static Text parseFluidPredicate(FluidPredicate predicate) {
+        return LText.translatable("emi_loot.fluid_predicate.base", parseFluidPredicateInternal(predicate).getString());
     }
 
-    private static Text parseFluidPredicateInternal(FluidPredicate predicate){
+    private static Text parseFluidPredicateInternal(FluidPredicate predicate) {
 
         TagKey<Fluid> tag = ((FluidPredicateAccessor)predicate).getTag();
-        if (tag != null){
-            return LText.translatable("emi_loot.fluid_predicate.tag",tag.id().toString());
+        if (tag != null) {
+            return LText.translatable("emi_loot.fluid_predicate.tag", tag.id().toString());
         }
 
         Fluid fluid = ((FluidPredicateAccessor)predicate).getFluid();
-        if (fluid != null){
+        if (fluid != null) {
             return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid).toString());
         }
 
         StatePredicate statePredicate = ((FluidPredicateAccessor)predicate).getState();
-        if (!statePredicate.equals(StatePredicate.ANY)){
+        if (!statePredicate.equals(StatePredicate.ANY)) {
             return StatePredicateParser.parseStatePredicate(statePredicate);
         }
 

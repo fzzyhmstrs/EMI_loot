@@ -28,16 +28,16 @@ public class ClientResourceData {
     public static final Object2FloatMap<EntityType<?>> MOB_SCALES = new Object2FloatOpenHashMap<>();
     public static final Map<EntityType<?>, Vector3f> MOB_ROTATIONS = new HashMap<>();
 
-    public static void register(){
+    public static void register() {
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new EntityOffsetsReloadListener());
     }
 
 
-    private static class EntityOffsetsReloadListener implements SimpleSynchronousResourceReloadListener{
+    private static class EntityOffsetsReloadListener implements SimpleSynchronousResourceReloadListener {
 
         @Override
         public Identifier getFabricId() {
-            return new Identifier(EMILoot.MOD_ID,"client_loot_resources");
+            return new Identifier(EMILoot.MOD_ID, "client_loot_resources");
         }
 
         @Override
@@ -45,18 +45,18 @@ public class ClientResourceData {
             MOB_OFFSETS.clear();
             MOB_SCALES.clear();
             MOB_ROTATIONS.clear();
-            manager.findResources("entity_fixers",path -> path.getPath().endsWith(".json")).forEach(this::load);
+            manager.findResources("entity_fixers", path -> path.getPath().endsWith(".json")).forEach(this::load);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_OFFSETS.toString());
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_ROTATIONS.toString());
             if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_SCALES.toString());
         }
 
-        private void load(Identifier fileId, Resource resource){
+        private void load(Identifier fileId, Resource resource) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading entity fixers from file: " + fileId.toString());
             try {
                 BufferedReader reader = resource.getReader();
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-                json.entrySet().forEach((entry)->{
+                json.entrySet().forEach((entry)-> {
                     JsonElement element = entry.getValue();
                     Identifier mobId = new Identifier(entry.getKey());
                     if (Registries.ENTITY_TYPE.containsId(mobId)) {
@@ -96,7 +96,7 @@ public class ClientResourceData {
                         }
                     }
                 });
-            } catch (Exception e){
+            } catch (Exception e) {
                 EMILoot.LOGGER.error("Failed to open or read Entity Offsets file: " + fileId);
             }
         }

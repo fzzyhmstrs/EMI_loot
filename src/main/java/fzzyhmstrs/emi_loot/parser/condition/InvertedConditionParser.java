@@ -10,16 +10,16 @@ import net.minecraft.text.Text;
 import java.util.LinkedList;
 import java.util.List;
 
-public class InvertedConditionParser implements ConditionParser{
+public class InvertedConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootCondition term = ((InvertedLootConditionAccessor)condition).getCondition();
         List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(term, stack);
         List<LootTableParser.LootConditionResult> finalResults = new LinkedList<>();
-        termResults.forEach((result)->{
-            Text resultText = result.getText().process(stack,null).text();
-            finalResults.add(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.invert",resultText.getString())));
+        termResults.forEach((result)-> {
+            Text resultText = result.getText().process(stack, null).text();
+            finalResults.add(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.invert", resultText.getString())));
         });
         return finalResults;
     }

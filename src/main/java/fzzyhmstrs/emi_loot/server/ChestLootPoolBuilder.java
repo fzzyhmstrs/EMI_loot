@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
 
-    public ChestLootPoolBuilder(float rollWeight){
+    public ChestLootPoolBuilder(float rollWeight) {
         super(rollWeight);
     }
 
@@ -23,21 +23,21 @@ public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
     Object2FloatMap<ItemStack> builtMap = new Object2FloatOpenHashMap<>();
 
     @Override
-    public void addItem(LootTableParser.ItemEntryResult result){
+    public void addItem(LootTableParser.ItemEntryResult result) {
         ItemStack item = result.item();
         int weight = result.weight();
         totalWeight += weight;
-        if (map.containsKey(item)){
-            int oldWeight = map.getOrDefault(item,0);
-            map.put(item,oldWeight + weight);
+        if (map.containsKey(item)) {
+            int oldWeight = map.getOrDefault(item, 0);
+            map.put(item, oldWeight + weight);
         } else {
-            map.put(item,weight);
+            map.put(item, weight);
         }
     }
 
     @Override
     public void build() {
-        if (map.isEmpty()){
+        if (map.isEmpty()) {
             isEmpty = true;
             return;
         }
@@ -48,9 +48,9 @@ public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
             }
         });
         builtMap = floatMap;
-        if (builtMap.size() == 1){
+        if (builtMap.size() == 1) {
             isSimple = true;
-            for (Object2FloatMap.Entry<ItemStack> entry: builtMap.object2FloatEntrySet()){
+            for (Object2FloatMap.Entry<ItemStack> entry: builtMap.object2FloatEntrySet()) {
                 simpleStack = entry.getKey();
                 if (entry.getFloatValue() != 100F || entry.getKey().getCount() != 1) {
                     isSimple = false;
@@ -63,7 +63,7 @@ public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
     @Override
     public List<LootTableParser.ItemEntryResult> revert() {
         List<LootTableParser.ItemEntryResult> list = new LinkedList<>();
-        map.forEach((stack,weight)-> list.add(new LootTableParser.ItemEntryResult(stack,weight,new LinkedList<>(), new LinkedList<>())));
+        map.forEach((stack, weight)-> list.add(new LootTableParser.ItemEntryResult(stack, weight, new LinkedList<>(), new LinkedList<>())));
         return list;
     }
 }

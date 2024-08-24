@@ -30,7 +30,7 @@ public class LootManagerMixin implements LootManagerConditionManager {
     }
 
     /*@Inject(method = "validate(Ljava/util/Map;)V", at = @At("RETURN"))
-    private void emi_loot_lootTablesAfterFabric(Map<LootDataType<?>, Map<Identifier, ?>> lootData, CallbackInfo ci){
+    private void emi_loot_lootTablesAfterFabric(Map<LootDataType<?>, Map<Identifier, ?>> lootData, CallbackInfo ci) {
         LootTableParser.parseLootTables((LootManager)(Object)this, keyToValue);
     }*/
 

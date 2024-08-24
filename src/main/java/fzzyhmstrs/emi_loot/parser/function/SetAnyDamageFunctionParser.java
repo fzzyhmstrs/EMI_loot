@@ -8,10 +8,10 @@ import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public class SetAnyDamageFunctionParser implements FunctionParser{
+public class SetAnyDamageFunctionParser implements FunctionParser {
 
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an any-damage function");
         stack.setDamage((1 + stack.getMaxDamage())/2);
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_any_damage"), stack, conditionTexts);

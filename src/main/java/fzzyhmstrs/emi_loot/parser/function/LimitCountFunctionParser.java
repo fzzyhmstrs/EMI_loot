@@ -11,12 +11,12 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class LimitCountFunctionParser implements FunctionParser{
+public class LimitCountFunctionParser implements FunctionParser {
 
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         BoundedIntUnaryOperator operator = ((LimitCountLootFunctionAccessor)function).getLimit();
         Text limit = NumberProcessors.processBoundedIntUnaryOperator(operator);
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.limit_count", limit.getString()),ItemStack.EMPTY,conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.limit_count", limit.getString()), ItemStack.EMPTY, conditionTexts);
     }
 }

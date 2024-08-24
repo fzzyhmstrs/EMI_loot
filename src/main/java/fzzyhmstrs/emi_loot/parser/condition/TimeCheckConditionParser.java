@@ -11,14 +11,14 @@ import net.minecraft.loot.operator.BoundedIntUnaryOperator;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeCheckConditionParser implements ConditionParser{
+public class TimeCheckConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         Long period = ((TimeCheckLootConditionAccessor)condition).getPeriod();
         BoundedIntUnaryOperator value = ((TimeCheckLootConditionAccessor)condition).getValue();
         String processedValue = NumberProcessors.processBoundedIntUnaryOperator(value).getString();
-        if (period != null){
+        if (period != null) {
             return Collections.singletonList(
                     new LootTableParser.LootConditionResult(TextKey.of(
                             "emi_loot.condition.time_check_period",
@@ -28,6 +28,6 @@ public class TimeCheckConditionParser implements ConditionParser{
                     )
             );
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.time_check",processedValue)));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.time_check", processedValue)));
     }
 }

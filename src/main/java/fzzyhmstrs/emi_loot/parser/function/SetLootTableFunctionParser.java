@@ -9,10 +9,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class SetLootTableFunctionParser implements FunctionParser{
+public class SetLootTableFunctionParser implements FunctionParser {
 
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         Identifier id = ((SetLootTableLootFunctionAccessor)function).getId();
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_loot_table", id.toString()), ItemStack.EMPTY, conditionTexts);
     }

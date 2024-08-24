@@ -14,20 +14,20 @@ import java.util.List;
 
 public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
-    public ChestLootTableSender(Identifier id){
+    public ChestLootTableSender(Identifier id) {
         this.idToSend = LootSender.getIdToSend(id);
     }
 
     private final String idToSend;
     final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
     HashMap<ItemStack, Float> floatMap = new HashMap<>();
-    public static Identifier CHEST_SENDER = new Identifier("e_l","c_s");
+    public static Identifier CHEST_SENDER = new Identifier("e_l", "c_s");
 
     @Override
-    public void build(){
+    public void build() {
         builderList.forEach((builder) -> {
             builder.build();
-            builder.builtMap.forEach((item,weight)->{
+            builder.builtMap.forEach((item, weight)-> {
                 if (floatMap.containsKey(item)) {
                     float oldWeight = floatMap.getOrDefault(item, 0f);
                     floatMap.put(item, oldWeight + weight);
@@ -45,7 +45,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player,CHEST_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, CHEST_SENDER)) return;
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeString(idToSend);
         buf.writeShort(floatMap.size());

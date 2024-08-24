@@ -38,10 +38,10 @@ import java.util.Optional;
 
 public class MobLootRecipe implements EmiRecipe {
 
-    //private final static Map<EntityType<?>,Integer> needsElevating;
-    private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/downturn_arrow.png");
+    //private final static Map<EntityType<?>, Integer> needsElevating;
+    private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/downturn_arrow.png");
 
-    public MobLootRecipe(ClientMobLootTable loot){
+    public MobLootRecipe(ClientMobLootTable loot) {
         this.loot = loot;
         loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
         Identifier mobId = loot.mobId;
@@ -52,27 +52,27 @@ public class MobLootRecipe implements EmiRecipe {
         if (entity != null) {
             Box box = entity.getBoundingBox();
             double len = box.getAverageSideLength();
-            if (len > 1.05){
+            if (len > 1.05) {
                 len = (len + Math.sqrt(len))/2.0;
             }
-            if (entity instanceof SlimeEntity){
-                ((SlimeEntity)entity).setSize(5,false);
+            if (entity instanceof SlimeEntity) {
+                ((SlimeEntity)entity).setSize(5, false);
             }
-            if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")){
-                DyeColor color = DyeColor.byName(loot.color,DyeColor.WHITE);
+            if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")) {
+                DyeColor color = DyeColor.byName(loot.color, DyeColor.WHITE);
                 MutableText colorName = LText.translatable("color.minecraft." + color.getName());
-                name = LText.translatable("emi_loot.color_name",colorName.getString(),entity.getName().getString());
+                name = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
                 ((SheepEntity)entity).setColor(color);
 
             } else {
                 name = entity.getName();
             }
             double scale = 1.05 / len * 8.0;
-            if (ClientResourceData.MOB_SCALES.containsKey(type)){
-                scale *= ClientResourceData.MOB_SCALES.getOrDefault(type,1.0f);
+            if (ClientResourceData.MOB_SCALES.containsKey(type)) {
+                scale *= ClientResourceData.MOB_SCALES.getOrDefault(type, 1.0f);
             }
-            inputStack = EntityEmiStack.ofScaled(entity,scale);
-        } else{
+            inputStack = EntityEmiStack.ofScaled(entity, scale);
+        } else {
             inputStack = EmiStack.EMPTY;
             name = LText.translatable("emi_loot.missing_entity");
         }
@@ -82,7 +82,7 @@ public class MobLootRecipe implements EmiRecipe {
                 builtPool.stackMap().forEach((weight, stacks) -> {
                     list.addAll(stacks.getEmiStacks());
                 });
-                addWidgetBuilders(builtPool,false);
+                addWidgetBuilders(builtPool, false);
             }
         );
         outputStacks = list;
@@ -95,19 +95,19 @@ public class MobLootRecipe implements EmiRecipe {
     private final EntityType<?> type;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
-    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
-        if (recursive || rowBuilderList.isEmpty()){
+    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
+        if (recursive || rowBuilderList.isEmpty()) {
             rowBuilderList.add(new WidgetRowBuilder(154));
         }
         boolean added = false;
-        for (WidgetRowBuilder builder : rowBuilderList){
-            if (builder.canAddPool(newPool)){
+        for (WidgetRowBuilder builder : rowBuilderList) {
+            if (builder.canAddPool(newPool)) {
                 builder.addAndTrim(newPool);
                 added = true;
                 break;
             }
         }
-        if (!added){
+        if (!added) {
             Optional<ClientBuiltPool> opt = rowBuilderList.get(rowBuilderList.size() - 1).addAndTrim(newPool);
             opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
         }
@@ -163,27 +163,27 @@ public class MobLootRecipe implements EmiRecipe {
         if (!ClientResourceData.MOB_OFFSETS.containsKey(type)) {
             widgets.addSlot(inputStack, x, y).large(true);
         } else {
-            int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type,0);
-            widgets.addTexture(EmiTexture.LARGE_SLOT,x,y);
-            widgets.addDrawable(x,y,16,16,(matrices,mx,my,delta)->inputStack.render(matrices,5, 6 + offset,delta));
+            int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type, 0);
+            widgets.addTexture(EmiTexture.LARGE_SLOT, x, y);
+            widgets.addDrawable(x, y, 16, 16, (matrices, mx, my, delta)->inputStack.render(matrices, 5, 6 + offset, delta));
         }
-        widgets.addText(name.asOrderedText(),30,0,0x404040,false);
-        if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94){
+        widgets.addText(name.asOrderedText(), 30, 0, 0x404040, false);
+        if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94) {
             widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 39, 15, 39, 15, 64, 32), 30, 10);
             x = 60;
             y = 11;
             WidgetRowBuilder builder = rowBuilderList.get(0);
-            for (ClientBuiltPool pool: builder.getPoolList()){
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+            for (ClientBuiltPool pool: builder.getPoolList()) {
+                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;
             }
         } else {
             widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
             y += 28;
-            for (WidgetRowBuilder builder: rowBuilderList){
-                for (ClientBuiltPool pool: builder.getPoolList()){
-                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+            for (WidgetRowBuilder builder: rowBuilderList) {
+                for (ClientBuiltPool pool: builder.getPoolList()) {
+                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }

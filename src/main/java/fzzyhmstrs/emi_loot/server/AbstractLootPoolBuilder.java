@@ -10,7 +10,7 @@ import java.util.Collection;
 
 abstract public class AbstractLootPoolBuilder implements LootBuilder {
 
-    public AbstractLootPoolBuilder(float rollWeight){
+    public AbstractLootPoolBuilder(float rollWeight) {
         this.rollWeight = rollWeight;
     }
 
@@ -18,11 +18,11 @@ abstract public class AbstractLootPoolBuilder implements LootBuilder {
     boolean isSimple = false;
     boolean isEmpty = false;
     ItemStack simpleStack = ItemStack.EMPTY;
-    private final Multimap<LootTableParser.PostProcessor,LootPoolEntry> map = ArrayListMultimap.create();
+    private final Multimap<LootTableParser.PostProcessor, LootPoolEntry> map = ArrayListMultimap.create();
 
     @Override
     public void addEntryForPostProcessing(LootTableParser.PostProcessor process, LootPoolEntry entry) {
-        map.put(process,entry);
+        map.put(process, entry);
     }
 
     @Override

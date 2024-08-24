@@ -12,10 +12,10 @@ import net.minecraft.text.Text;
 import java.util.Collections;
 import java.util.List;
 
-public class LocationCheckConditionParser implements ConditionParser{
+public class LocationCheckConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LocationPredicate predicate = ((LocationCheckLootConditionAccessor)condition).getPredicate();
         Text locText = LocationPredicateParser.parseLocationPredicate(predicate);
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));

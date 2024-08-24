@@ -18,16 +18,16 @@ import java.util.List;
 public class ExplorationMapFunctionParser implements FunctionParser {
     
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function,ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         ItemStack mapStack;
         String typeKey = "emi_loot.map.unknown";
-        if (!stack.isOf(Items.MAP)){
+        if (!stack.isOf(Items.MAP)) {
             mapStack = stack;
         } else {
             MapIcon.Type decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
             TagKey<Structure> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
             mapStack = new ItemStack(Items.FILLED_MAP);
-            MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN,"+",decoration);
+            MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN, "+", decoration);
             typeKey = "emi_loot.map."+ destination.id().getPath();
         }
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.map", LText.translatable(typeKey).getString()), mapStack, conditionTexts);

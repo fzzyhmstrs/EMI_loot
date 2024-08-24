@@ -14,16 +14,16 @@ import java.util.List;
 
 public class IconEmiWidget extends Widget {
 
-    public IconEmiWidget(int x, int y, int keyIndex, Text text){
+    public IconEmiWidget(int x, int y, int keyIndex, Text text) {
         this.tex = TextKey.getSpriteId(keyIndex);
         this.x = x;
         this.y = y;
-        this.bounds = new Bounds(x,y,12,12);
+        this.bounds = new Bounds(x, y, 12, 12);
         this.tooltipText = Collections.singletonList(TooltipComponent.of(text.asOrderedText()));
     }
 
-    static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_frame.png");
-    //private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID,"textures/gui/icon_sprites.png");
+    static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/icon_frame.png");
+    //private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/icon_sprites.png");
 
     private final Identifier tex;
     private int x, y;
@@ -33,7 +33,7 @@ public class IconEmiWidget extends Widget {
 
 
     @Override
-    public List<TooltipComponent> getTooltip(int mouseX, int mouseY){
+    public List<TooltipComponent> getTooltip(int mouseX, int mouseY) {
         return tooltipText;
     }
 

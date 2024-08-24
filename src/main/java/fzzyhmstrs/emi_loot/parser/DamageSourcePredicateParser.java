@@ -9,14 +9,14 @@ import net.minecraft.text.Text;
 
 public class DamageSourcePredicateParser {
 
-    public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate){
+    public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate) {
         EntityPredicate directPredicate = ((DamageSourcePredicateAccessor)predicate).getDirectEntity();
-        if (!directPredicate.equals(EntityPredicate.ANY)){
+        if (!directPredicate.equals(EntityPredicate.ANY)) {
             return EntityPredicateParser.parseEntityPredicate(directPredicate);
         }
 
         EntityPredicate sourcePredicate = ((DamageSourcePredicateAccessor)predicate).getSourceEntity();
-        if (!sourcePredicate.equals(EntityPredicate.ANY)){
+        if (!sourcePredicate.equals(EntityPredicate.ANY)) {
             return EntityPredicateParser.parseEntityPredicate(sourcePredicate);
         }
 

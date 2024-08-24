@@ -20,26 +20,26 @@ import static fzzyhmstrs.emi_loot.util.IconEmiWidget.FRAME_ID;
 
 public class IconGroupEmiWidget extends Widget {
 
-    public IconGroupEmiWidget(int x, int y, ClientBuiltPool pool){
+    public IconGroupEmiWidget(int x, int y, ClientBuiltPool pool) {
         this.x = x;
         this.y = y;
         List<IconEmiWidget> list = new LinkedList<>();
-        for (int i = 0; i < pool.list().size(); i++){
+        for (int i = 0; i < pool.list().size(); i++) {
             Pair<Integer, Text> pair = pool.list().get(i);
             int xOffset = i / 2 * 11;
             int yOffset = i % 2 * 11;
-            list.add(new IconEmiWidget(x + xOffset, y + yOffset,pair.getLeft(),pair.getRight()));
+            list.add(new IconEmiWidget(x + xOffset, y + yOffset, pair.getLeft(), pair.getRight()));
         }
         this.icons = list;
         this.iconsWidth = 12 + (((icons.size() - 1)/2) * 11);
         this.itemsWidth = 2 + pool.stackMap().size() * 20;
         this.width = iconsWidth + this.itemsWidth;
-        this.bounds = new Bounds(x,y, width,23);
+        this.bounds = new Bounds(x, y, width, 23);
         List<SlotWidget> list2 = new LinkedList<>();
         int itemXOffset = iconsWidth + 2;
-        for(Map.Entry<Float, EmiIngredient> entry: pool.stackMap().float2ObjectEntrySet()){
+        for(Map.Entry<Float, EmiIngredient> entry: pool.stackMap().float2ObjectEntrySet()) {
             String rounded = FloatTrimmer.trimFloatString(entry.getKey());
-            SlotWidget widget = new SlotWidget(entry.getValue(),itemXOffset + x,y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance",rounded));
+            SlotWidget widget = new SlotWidget(entry.getValue(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
             itemXOffset +=20;
             list2.add(widget);
         }
@@ -48,25 +48,25 @@ public class IconGroupEmiWidget extends Widget {
 
     private final List<IconEmiWidget> icons;
     private final List<SlotWidget> items;
-    private final int x,y;
+    private final int x, y;
     private final int iconsWidth;
     private final int itemsWidth;
     private final int width;
     private final Bounds bounds;
 
-    public int getIconsWidth(){
+    public int getIconsWidth() {
         return iconsWidth;
     }
-    public int getWidth(){
+    public int getWidth() {
         return width;
     }
 
     @Override
-    public List<TooltipComponent> getTooltip(int mouseX, int mouseY){
-        for (IconEmiWidget icon : icons){
-            if (icon.getBounds().contains(mouseX,mouseY)) return icon.getTooltip(mouseX, mouseY);
+    public List<TooltipComponent> getTooltip(int mouseX, int mouseY) {
+        for (IconEmiWidget icon : icons) {
+            if (icon.getBounds().contains(mouseX, mouseY)) return icon.getTooltip(mouseX, mouseY);
         }
-        for (SlotWidget slot: items){
+        for (SlotWidget slot: items) {
             if (slot.getBounds().contains(mouseX, mouseY)) return slot.getTooltip(mouseX, mouseY);
         }
         return List.of();
@@ -74,12 +74,12 @@ public class IconGroupEmiWidget extends Widget {
     
     @Override
 	public boolean mouseClicked(int mouseX, int mouseY, int button) {
-        for (SlotWidget slot: items){
-            if (slot.getBounds().contains(mouseX, mouseY)){
+        for (SlotWidget slot: items) {
+            if (slot.getBounds().contains(mouseX, mouseY)) {
                 if(slot.mouseClicked(mouseX, mouseY, button)) return true;
             }
         }
-        return super.mouseClicked(mouseX,mouseY,button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -92,17 +92,17 @@ public class IconGroupEmiWidget extends Widget {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         int widthRemaining = itemsWidth;
         int xNew = x + iconsWidth;
-        do{
-            int newWidth = Math.min(64,widthRemaining);
+        do {
+            int newWidth = Math.min(64, widthRemaining);
             draw.drawTexture(FRAME_ID, xNew, y, newWidth, 1, 0, 0, newWidth, 1, 64, 16);
             xNew += newWidth;
             widthRemaining -= newWidth;
         } while (widthRemaining > 0);
-        draw.fill(RenderLayer.getGui(),x,x + width,y,y+1,0x555555);
-        for (IconEmiWidget icon: icons){
+        draw.fill(RenderLayer.getGui(), x, x + width, y, y+1, 0x555555);
+        for (IconEmiWidget icon: icons) {
             icon.render(draw, mouseX, mouseY, delta);
         }
-        for (SlotWidget slot: items){
+        for (SlotWidget slot: items) {
             slot.render(draw, mouseX, mouseY, delta);
         }
     }

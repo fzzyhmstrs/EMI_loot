@@ -7,16 +7,16 @@ import net.minecraft.loot.function.LootFunction;
 
 import java.util.List;
 
-public class SimpleFunctionParser implements FunctionParser{
+public class SimpleFunctionParser implements FunctionParser {
     
     private final TextKey key;
   
-    public SimpleFunctionParser(String key){
+    public SimpleFunctionParser(String key) {
       this.key = TextKey.of(key);
     }
     
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
-        return new LootTableParser.LootFunctionResult(key,ItemStack.EMPTY,conditionTexts);
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
+        return new LootTableParser.LootFunctionResult(key, ItemStack.EMPTY, conditionTexts);
     }
 }

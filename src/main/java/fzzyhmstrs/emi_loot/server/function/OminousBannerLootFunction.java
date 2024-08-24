@@ -22,7 +22,7 @@ public class OminousBannerLootFunction implements LootFunction {
         return ItemStack.EMPTY;
     }
 
-    public static class Serializer implements JsonSerializer<OminousBannerLootFunction>{
+    public static class Serializer implements JsonSerializer<OminousBannerLootFunction> {
 
         @Override
         public void toJson(JsonObject json, OminousBannerLootFunction object, JsonSerializationContext context) {

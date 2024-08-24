@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WidgetRowBuilder {
 
-    public WidgetRowBuilder(int maxWidth){
+    public WidgetRowBuilder(int maxWidth) {
         this.maxWidth = maxWidth;
     }
 
@@ -24,14 +24,14 @@ public class WidgetRowBuilder {
     private final List<ClientBuiltPool> poolList = new LinkedList<>();
     private int width = 0;
 
-    public List<ClientBuiltPool> getPoolList(){
+    public List<ClientBuiltPool> getPoolList() {
         return poolList;
     }
     public int getWidth() {
         return width;
     }
 
-    private boolean add(ClientBuiltPool newPool){
+    private boolean add(ClientBuiltPool newPool) {
         int newWidth = getNewWidth(newPool);
         //System.out.println(newPool.stackMap());
         //System.out.println("width: " + (width + newWidth));
@@ -41,7 +41,7 @@ public class WidgetRowBuilder {
         return true;
     }
 
-    public Optional<ClientBuiltPool> addAndTrim(ClientBuiltPool newPool){
+    public Optional<ClientBuiltPool> addAndTrim(ClientBuiltPool newPool) {
         if (add(newPool)) return Optional.empty();
         if (width == 0) {
             Float2ObjectMap<EmiIngredient> madeItIn = new Float2ObjectArrayMap<>();
@@ -61,9 +61,9 @@ public class WidgetRowBuilder {
         }
     }
 
-    private int getNewWidth(ClientBuiltPool newPool){
+    private int getNewWidth(ClientBuiltPool newPool) {
         int newWidth;
-        if (poolList.isEmpty()){
+        if (poolList.isEmpty()) {
             newWidth = 14 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
         } else {
             newWidth = 20 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
@@ -71,31 +71,31 @@ public class WidgetRowBuilder {
         return newWidth;
     }
 
-    public boolean canAddPool(ClientBuiltPool newPool){
+    public boolean canAddPool(ClientBuiltPool newPool) {
         int newWidth = getNewWidth(newPool);
         return width + newWidth <= maxWidth;
     }
 
-    public boolean canAddOther(WidgetRowBuilder other){
+    public boolean canAddOther(WidgetRowBuilder other) {
         return (width + other.width + 6) <= maxWidth;
     }
 
-    public void addOther(WidgetRowBuilder other){
+    public void addOther(WidgetRowBuilder other) {
         this.poolList.addAll(other.poolList);
     }
 
-    public static void collate(List<WidgetRowBuilder> builders){
+    public static void collate(List<WidgetRowBuilder> builders) {
         if (builders.isEmpty()) return;
         Int2IntMap collateMap = new Int2IntOpenHashMap();
-        for (int i = 0; i < builders.size(); i++){
-            for (int j = 0; j < builders.size(); j++){
+        for (int i = 0; i < builders.size(); i++) {
+            for (int j = 0; j < builders.size(); j++) {
                 if (i==j) continue;
-                if (builders.get(j).canAddOther(builders.get(i))){
-                    collateMap.put(j,i);
+                if (builders.get(j).canAddOther(builders.get(i))) {
+                    collateMap.put(j, i);
                 }
             }
         }
-        if (!collateMap.isEmpty()){
+        if (!collateMap.isEmpty()) {
             Int2IntMap.Entry start = collateMap.int2IntEntrySet().stream().toList().get(0);
         }
     }

@@ -13,17 +13,17 @@ import net.minecraft.util.Identifier;
 import java.util.Collections;
 import java.util.List;
 
-public class ReferenceConditionParser implements ConditionParser{
+public class ReferenceConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         Identifier id = ((ReferenceLootConditionAccessor)condition).getId();
-        if (LootTableParser.lootManager != null){
+        if (LootTableParser.lootManager != null) {
             LootCondition referenceCondition = (LootCondition) LootTableParser.lootManager.getElement(new LootDataKey(LootDataType.PREDICATES, id));
-            if (referenceCondition != null && referenceCondition.getType() != LootConditionTypes.REFERENCE){
-                return LootTableParser.parseLootCondition(referenceCondition,stack,parentIsAlternative);
+            if (referenceCondition != null && referenceCondition.getType() != LootConditionTypes.REFERENCE) {
+                return LootTableParser.parseLootCondition(referenceCondition, stack, parentIsAlternative);
             }
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.reference",id.toString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.reference", id.toString())));
     }
 }

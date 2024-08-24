@@ -39,7 +39,7 @@ import java.util.Optional;
 
 public class GameplayLootRecipe implements EmiRecipe {
 
-    public GameplayLootRecipe(ClientGameplayLootTable loot){
+    public GameplayLootRecipe(ClientGameplayLootTable loot) {
         this.loot = loot;
         loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
         List<EmiStack> list = new LinkedList<>();
@@ -47,18 +47,18 @@ public class GameplayLootRecipe implements EmiRecipe {
                 builtPool.stackMap().forEach((weight, stacks) -> {
                     list.addAll(stacks.getEmiStacks());
                 });
-                addWidgetBuilders(builtPool,false);
+                addWidgetBuilders(builtPool, false);
             }
         );
         outputStacks = list;
         String key = "emi_loot.gameplay." + loot.id.toString();
         Text text = LText.translatable(key);
-        if (Objects.equals(text.getString(), key)){
+        if (Objects.equals(text.getString(), key)) {
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
-            if (modNameOpt.isPresent()){
+            if (modNameOpt.isPresent()) {
                 ModContainer modContainer = modNameOpt.get();
                 String modName = modContainer.getMetadata().getName();
-                name = LText.translatable("emi_loot.gameplay.unknown_gameplay",modName);
+                name = LText.translatable("emi_loot.gameplay.unknown_gameplay", modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");
                 name = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
@@ -73,19 +73,19 @@ public class GameplayLootRecipe implements EmiRecipe {
     private final Text name;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
-    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
-        if (recursive || rowBuilderList.isEmpty()){
+    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
+        if (recursive || rowBuilderList.isEmpty()) {
             rowBuilderList.add(new WidgetRowBuilder(154));
         }
         boolean added = false;
-        for (WidgetRowBuilder builder : rowBuilderList){
-            if (builder.canAddPool(newPool)){
+        for (WidgetRowBuilder builder : rowBuilderList) {
+            if (builder.canAddPool(newPool)) {
                 builder.addAndTrim(newPool);
                 added = true;
                 break;
             }
         }
-        if (!added){
+        if (!added) {
             Optional<ClientBuiltPool> opt = rowBuilderList.get(rowBuilderList.size() - 1).addAndTrim(newPool);
             opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
         }
@@ -134,12 +134,12 @@ public class GameplayLootRecipe implements EmiRecipe {
         int y = 0;
 
         //draw the gameplay name
-        widgets.addText(name.asOrderedText(),0,0,0x404040,false);
+        widgets.addText(name.asOrderedText(), 0, 0, 0x404040, false);
 
         y += 11;
-        for (WidgetRowBuilder builder: rowBuilderList){
-            for (ClientBuiltPool pool: builder.getPoolList()){
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+        for (WidgetRowBuilder builder: rowBuilderList) {
+            for (ClientBuiltPool pool: builder.getPoolList()) {
+                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;
             }

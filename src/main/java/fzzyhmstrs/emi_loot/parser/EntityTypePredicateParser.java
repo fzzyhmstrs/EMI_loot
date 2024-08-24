@@ -9,12 +9,12 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class EntityTypePredicateParser{
+public class EntityTypePredicateParser {
 
-    public static Text parseEntityTypePredicate(EntityTypePredicate predicate){
+    public static Text parseEntityTypePredicate(EntityTypePredicate predicate) {
         JsonElement element = predicate.toJson();
         String jsonString = element.getAsString();
-        if (jsonString != null){
+        if (jsonString != null) {
             if (jsonString.startsWith("#")) {
                 return LText.translatable("emi_loot.entity_predicate.type_tag", jsonString);
             } else {

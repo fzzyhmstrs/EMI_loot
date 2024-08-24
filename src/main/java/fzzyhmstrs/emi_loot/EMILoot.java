@@ -8,6 +8,16 @@ import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
 import fzzyhmstrs.emi_loot.server.function.OminousBannerLootFunction;
 import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
+import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
+import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
+import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
+import me.fzzyhmstrs.fzzy_config.config.Config;
+import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable;
+import me.fzzyhmstrs.fzzy_config.util.FcText;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
@@ -22,6 +32,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 
 public class EMILoot implements ModInitializer {
 
@@ -37,8 +49,7 @@ public class EMILoot implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("emi_loot");
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static EmiLootConfig config = readOrCreate();
+    public static EmiLootConfig config = ConfigApi.registerAndLoadConfig(EmiLootConfig::new);
     public static boolean DEBUG = config.debugMode;
 
     //conditions & functions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
@@ -48,7 +59,7 @@ public class EMILoot implements ModInitializer {
     public static LootFunctionType SET_ANY_DAMAGE = LootFunctionTypes.register("lootify:set_any_damage", new SetAnyDamageLootFunction.Serializer());
     public static LootFunctionType OMINOUS_BANNER = LootFunctionTypes.register("lootify:ominous_banner", new OminousBannerLootFunction.Serializer());
 
-    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()){
+    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
         @Override
         public boolean isAvailableForEnchantedBookOffer() {
             return false;
@@ -62,99 +73,48 @@ public class EMILoot implements ModInitializer {
     @Override
     public void onInitialize() {
         parser.registerServer();
-        //Registry.register(Registries.ENCHANTMENT,new Identifier(MOD_ID,"random"),RANDOM);
+        //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
-    
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static EmiLootConfig readOrCreate(){
-        File dir = FabricLoader.getInstance().getConfigDir().toFile();
-        
-        if (!dir.exists() && !dir.mkdirs()) {
-            LOGGER.error("EMI Loot could not find or create config directory, using default configs");
-            return new EmiLootConfig();
+
+    @ConvertFrom(fileName = "EmiLootConfig_v1.json")
+    public static class EmiLootConfig extends Config {
+
+        EmiLootConfig() {
+            super(new Identifier(MOD_ID, "emi_loot_config"));
         }
-        String f_old_name = "EmiLootConfig.json";
-        String f_name = "EmiLootConfig_v1.json";
-        
-        File f_old = new File(dir,f_old_name);
-        
-        try{
-            if (f_old.exists()){
-                EmiLootConfigOld oldConfig = gson.fromJson(new InputStreamReader(new FileInputStream(f_old)),EmiLootConfigOld.class);
-                EmiLootConfig newConfig = oldConfig.generateNewConfig();
-                File f = new File(dir,f_name);
-                if (f.exists()){
-                    f_old.delete();
-                    return gson.fromJson(new InputStreamReader(new FileInputStream(f)),EmiLootConfig.class);
-                } else if (!f.createNewFile()){
-                    LOGGER.error("Failed to create new config file, using old config with new defaults.");
-                } else {
-                    f_old.delete();
-                    FileWriter fw = new FileWriter(f);
-                    String json = gson.toJson(newConfig);
-                    if (EMILoot.DEBUG) EMILoot.LOGGER.info(json);
-                    fw.write(json);
-                    fw.close();
-                }
-                return newConfig;
-            } else {
-                File f = new File(dir,f_name);
-                if (f.exists()) {
-                    return gson.fromJson(new InputStreamReader(new FileInputStream(f)), EmiLootConfig.class);
-                } else if (!f.createNewFile()) {
-                    throw new UnsupportedOperationException("couldn't generate config file");
-                } else {
-                    FileWriter fw = new FileWriter(f);
-                    EmiLootConfig emc = new EmiLootConfig();
-                    String json = gson.toJson(emc);
-                    if (EMILoot.DEBUG) EMILoot.LOGGER.info(json);
-                    fw.write(json);
-                    fw.close();
-                    return emc;
-                }
-            }
-        } catch(Exception e){
-            LOGGER.error("Emi Loot failed to create or read it's config file!");
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
-            return new EmiLootConfig();
-        }
-    }
-    
-    public static class EmiLootConfig{
+
+        @RequiresRestart
         public boolean debugMode = false;
 
+        @RequiresRestart
         public boolean parseChestLoot = true;
-        
+
+        @RequiresRestart
         public boolean parseBlockLoot = true;
-        
+
+        @RequiresRestart
         public boolean parseMobLoot = true;
-    
+
+        @RequiresRestart
         public boolean parseGameplayLoot = true;
 
+        @RequiresRestart
+        public boolean parseArchaeologyLoot = true;
+
+        @NonSync
         public boolean chestLootCompact = true;
 
+        @NonSync
         public boolean chestLootAlwaysStackSame = false;
 
+        @NonSync
         public boolean mobLootIncludeDirectDrops = true;
-		public boolean parseArchaeologyLoot = true;
+
+        @NonSync
+        public ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
+                                                            ?
+                                                        ValidatedList.ofString("default", "tooltip").toChoices(ValidatedChoice.WidgetType.POPUP, (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t))
+                                                            :
+                                                        new ValidatedChoice<>(List.of("default", "install_sns"), ValidatedString.fromList(List.of("default")), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t));
 	}
-
-    public static class EmiLootConfigOld{
-        public boolean parseChestLoot = true;
-
-        public boolean parseBlockLoot = true;
-
-        public boolean parseMobLoot = true;
-
-        public boolean parseGameplayLoot = true;
-
-        public EmiLootConfig generateNewConfig(){
-            EmiLootConfig newConfig = new EmiLootConfig();
-            newConfig.parseChestLoot = this.parseChestLoot;
-            newConfig.parseBlockLoot = this.parseBlockLoot;
-            newConfig.parseMobLoot = this.parseMobLoot;
-            newConfig.parseGameplayLoot = this.parseGameplayLoot;
-            return newConfig;
-        }
-    }
 }

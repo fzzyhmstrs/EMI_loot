@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GameplayLootPoolBuilder extends AbstractLootPoolBuilder {
 
-    public GameplayLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions){
+    public GameplayLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions) {
         super(rollWeight);
         this.conditions = conditions;
         this.functions = functions;
@@ -21,27 +21,27 @@ public class GameplayLootPoolBuilder extends AbstractLootPoolBuilder {
     HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
 
     @Override
-    public void addItem(LootTableParser.ItemEntryResult result){
+    public void addItem(LootTableParser.ItemEntryResult result) {
         List<TextKey> testKey = new LinkedList<>();
         testKey.addAll(result.functions());
         testKey.addAll(result.conditions());
-        ChestLootPoolBuilder builder = map.getOrDefault(testKey,new ChestLootPoolBuilder(rollWeight));
+        ChestLootPoolBuilder builder = map.getOrDefault(testKey, new ChestLootPoolBuilder(rollWeight));
         builder.addItem(result);
-        map.put(testKey,builder);
+        map.put(testKey, builder);
     }
 
     @Override
     public void build() {
 
-        if (map.isEmpty()){
+        if (map.isEmpty()) {
             isEmpty = true;
             return;
         }
 
-        for (List<TextKey> key: map.keySet()){
-            ChestLootPoolBuilder builder = map.getOrDefault(key,new ChestLootPoolBuilder(rollWeight));
+        for (List<TextKey> key: map.keySet()) {
+            ChestLootPoolBuilder builder = map.getOrDefault(key, new ChestLootPoolBuilder(rollWeight));
             builder.build();
-            if (map.size() == 1 && builder.isEmpty){
+            if (map.size() == 1 && builder.isEmpty) {
                 isEmpty = true;
                 return;
             }
@@ -49,11 +49,11 @@ public class GameplayLootPoolBuilder extends AbstractLootPoolBuilder {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }
-            builtMap.put(key,builder);
+            builtMap.put(key, builder);
         }
     }
 
-    private boolean checkKey(List<TextKey> keys){
+    private boolean checkKey(List<TextKey> keys) {
         if (keys.isEmpty()) return true;
         if (keys.size() != 1) return false;
         return keys.get(0).index() == 0 || keys.get(0).index() == 150;
@@ -67,9 +67,9 @@ public class GameplayLootPoolBuilder extends AbstractLootPoolBuilder {
         conditions.forEach((condition)-> topLevelKeys.add(condition.text()));
         functions.forEach((function)-> topLevelKeys.add(function.text()));
 
-        map.forEach((keyList,builder)->{
+        map.forEach((keyList, builder)-> {
             List<LootTableParser.ItemEntryResult> builderList = builder.revert();
-            builderList.forEach((builderEntry)->{
+            builderList.forEach((builderEntry)-> {
                 builderEntry.functions().addAll(keyList);
                 builderEntry.conditions().addAll(topLevelKeys);
             });

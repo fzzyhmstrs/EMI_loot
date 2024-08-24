@@ -28,7 +28,7 @@ public class BlockLootRecipe implements EmiRecipe {
     //fire
     //candle cakes
 
-    public BlockLootRecipe(ClientBlockLootTable loot){
+    public BlockLootRecipe(ClientBlockLootTable loot) {
         this.loot = loot;
         Identifier blockId = loot.blockId;
         Block block = Registries.BLOCK.get(blockId);
@@ -52,10 +52,10 @@ public class BlockLootRecipe implements EmiRecipe {
     private final List<EmiStack> outputStacks;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
-    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive){
+    private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
         WidgetRowBuilder builder;
         boolean newBuilder = false;
-        if (recursive || rowBuilderList.isEmpty()){
+        if (recursive || rowBuilderList.isEmpty()) {
             builder = new WidgetRowBuilder(115);
             newBuilder = true;
         } else {
@@ -103,14 +103,14 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addSlot(inputStack,0,0);
+        widgets.addSlot(inputStack, 0, 0);
         widgets.addTexture(EmiTexture.EMPTY_ARROW, 20, 0);
         int x = 46;
         int y = 0;
 
-        for (WidgetRowBuilder builder: rowBuilderList){
-            for (ClientBuiltPool pool: builder.getPoolList()){
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x,y,pool);
+        for (WidgetRowBuilder builder: rowBuilderList) {
+            for (ClientBuiltPool pool: builder.getPoolList()) {
+                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
                 widgets.add(widget);
                 x += widget.getWidth() + 6;
             }

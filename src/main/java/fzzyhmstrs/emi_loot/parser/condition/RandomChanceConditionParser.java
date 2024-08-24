@@ -9,10 +9,10 @@ import net.minecraft.loot.condition.LootCondition;
 import java.util.Collections;
 import java.util.List;
 
-public class RandomChanceConditionParser implements ConditionParser{
+public class RandomChanceConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         float chance = ((RandomChanceLootConditionAccessor)condition).getChance();
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.chance", Float.toString((chance*100)))));
     }

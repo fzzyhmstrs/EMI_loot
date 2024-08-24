@@ -12,15 +12,15 @@ import net.minecraft.text.Text;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EnchantmentPredicateParser{
+public class EnchantmentPredicateParser {
 
-    public static Text parseEnchantmentPredicates(List<EnchantmentPredicate> list){
+    public static Text parseEnchantmentPredicates(List<EnchantmentPredicate> list) {
         List<MutableText> list2 = new LinkedList<>();
-        for (EnchantmentPredicate predicate : list){
+        for (EnchantmentPredicate predicate : list) {
             Enchantment enchant = ((EnchantmentPredicateAccessor)predicate).getEnchantment();
             list2.add((MutableText) enchant.getName(1));
         }
-        if (!list2.isEmpty()){
+        if (!list2.isEmpty()) {
             return LText.translatable("emi_loot.item_predicate.enchant", ListProcessors.buildAndList(list2));
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable enchantment predicate in table: "  + LootTableParser.currentTable);

@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RandomChanceWithLootingConditionParser implements ConditionParser{
+public class RandomChanceWithLootingConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         float chance = ((RandomChanceWithLootingLootConditionAccessor)condition).getChance();
         float multiplier = ((RandomChanceWithLootingLootConditionAccessor)condition).getLootingMultiplier();
         List<String> args = new LinkedList<>(Arrays.stream(new String[]{Float.toString((chance*100)), Float.toString((multiplier*100))}).toList());

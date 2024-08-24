@@ -18,9 +18,9 @@ import java.util.concurrent.Executor;
 public class SimpleResourceReloadMixin {
 
     @Inject(method = "method_18368", at = @At("RETURN"), cancellable = true)
-    private static void emi_loot_readTablesAfterFabricForRealSimple(Executor executor, ResourceReloader.Synchronizer synchronizer, ResourceManager resourceManager, ResourceReloader reloader, Executor prepare, Executor apply, CallbackInfoReturnable<CompletableFuture> cir){
-        if (reloader instanceof LootManager){
-            cir.setReturnValue(cir.getReturnValue().thenRun(() -> LootTableParser.parseLootTables((LootManager) reloader,((LootManagerConditionManager)reloader).getKeysToValues())));
+    private static void emi_loot_readTablesAfterFabricForRealSimple(Executor executor, ResourceReloader.Synchronizer synchronizer, ResourceManager resourceManager, ResourceReloader reloader, Executor prepare, Executor apply, CallbackInfoReturnable<CompletableFuture> cir) {
+        if (reloader instanceof LootManager) {
+            cir.setReturnValue(cir.getReturnValue().thenRun(() -> LootTableParser.parseLootTables((LootManager) reloader, ((LootManagerConditionManager)reloader).getKeysToValues())));
         }
     }
 

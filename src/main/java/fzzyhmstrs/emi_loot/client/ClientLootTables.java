@@ -17,36 +17,36 @@ import static fzzyhmstrs.emi_loot.server.MobLootTableSender.MOB_SENDER;
 public class ClientLootTables {
     private final List<LootReceiver> loots = new LinkedList<>();
 
-    public List<LootReceiver> getLoots(){
+    public List<LootReceiver> getLoots() {
         return loots;
     }
 
-    public void registerClient(){
+    public void registerClient() {
         
-        ClientPlayConnectionEvents.DISCONNECT.register((handler,client) -> loots.clear());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> loots.clear());
 
         ClientPlayNetworking.registerGlobalReceiver(LootTableParser.CLEAR_LOOTS, (minecraftClient, playNetworkHandler, buf, sender) ->
                 loots.clear());
         
-        ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received chest " + table.getId());
         });
         
-        ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received block " + table.getId());
         });
         
-        ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
         });
         
-        ClientPlayNetworking.registerGlobalReceiver(GAMEPLAY_SENDER,(minecraftClient, playNetworkHandler, buf, sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(GAMEPLAY_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());

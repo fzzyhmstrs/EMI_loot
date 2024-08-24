@@ -20,7 +20,7 @@ public class KilledByWitherLootCondition implements LootCondition {
         return false;
     }
 
-    public static class Serializer implements JsonSerializer<KilledByWitherLootCondition>{
+    public static class Serializer implements JsonSerializer<KilledByWitherLootCondition> {
 
         @Override
         public void toJson(JsonObject json, KilledByWitherLootCondition object, JsonSerializationContext context) {

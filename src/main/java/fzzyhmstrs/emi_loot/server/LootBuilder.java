@@ -6,7 +6,7 @@ import net.minecraft.loot.entry.LootPoolEntry;
 import java.util.Collection;
 import java.util.List;
 
-public interface LootBuilder{
+public interface LootBuilder {
     void addEntryForPostProcessing(LootTableParser.PostProcessor process, LootPoolEntry entry);
     Collection<LootPoolEntry> getEntriesToPostProcess(LootTableParser.PostProcessor process);
     void addItem(LootTableParser.ItemEntryResult result);

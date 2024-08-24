@@ -13,12 +13,12 @@ public class ClientChestLootTable implements LootReceiver {
     public final Identifier id;
     public final Object2FloatMap<ItemStack> items;
 
-    public ClientChestLootTable(){
+    public ClientChestLootTable() {
         this.id = new Identifier("empty");
         this.items = new Object2FloatOpenHashMap<>();
     }
 
-    public ClientChestLootTable(Identifier id, Object2FloatMap<ItemStack> map){
+    public ClientChestLootTable(Identifier id, Object2FloatMap<ItemStack> map) {
         this.id = id;
         this.items = map;
     }
@@ -38,12 +38,12 @@ public class ClientChestLootTable implements LootReceiver {
         Identifier id = AbstractTextKeyParsingClientLootTable.getIdFromBuf(buf);
         int mapCount = buf.readShort();
         Object2FloatMap<ItemStack> itemMap = new Object2FloatOpenHashMap<>();
-        for (int i = 0; i < mapCount; i++){
+        for (int i = 0; i < mapCount; i++) {
             ItemStack item = buf.readItemStack();
             float itemWeight = buf.readFloat();
             if (item.isOf(Items.AIR)) continue;
-            itemMap.put(item,itemWeight);
+            itemMap.put(item, itemWeight);
         }
-        return new ClientChestLootTable(id,itemMap);
+        return new ClientChestLootTable(id, itemMap);
     }
 }

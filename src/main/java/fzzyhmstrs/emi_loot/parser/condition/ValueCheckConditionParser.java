@@ -12,14 +12,14 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
 import java.util.Collections;
 import java.util.List;
 
-public class ValueCheckConditionParser implements ConditionParser{
+public class ValueCheckConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootNumberProvider value = ((ValueCheckLootConditionAccessor)condition).getValue();
         String processedValue = NumberProcessors.processLootNumberProvider(value).getString();
         BoundedIntUnaryOperator range = ((ValueCheckLootConditionAccessor)condition).getRange();
         String processedRange = NumberProcessors.processBoundedIntUnaryOperator(range).getString();
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.value_check",processedValue,processedRange)));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.value_check", processedValue, processedRange)));
     }
 }

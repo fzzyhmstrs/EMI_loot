@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(BlockStatePropertyLootCondition.class)
-public interface BlockStatePropertyLootConditionAccessor{
+public interface BlockStatePropertyLootConditionAccessor {
 
   @Accessor(value = "block")
   Block getBlock();

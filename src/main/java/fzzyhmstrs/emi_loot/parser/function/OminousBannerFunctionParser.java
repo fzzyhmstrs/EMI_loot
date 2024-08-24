@@ -9,10 +9,10 @@ import net.minecraft.village.raid.Raid;
 
 import java.util.List;
 
-public class OminousBannerFunctionParser implements FunctionParser{
+public class OminousBannerFunctionParser implements FunctionParser {
 
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts){
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Parsing an ominous banner function");
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.ominous_banner"), Raid.getOminousBanner(), conditionTexts);
     }
