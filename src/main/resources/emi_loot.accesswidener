@@ -1,7 +1,5 @@
 accessWidener   v1  named
 
-# accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
-
 # StatePredicate stuff
 accessible class net/minecraft/predicate/StatePredicate$Condition
 accessible class net/minecraft/predicate/StatePredicate$ExactValueMatcher
@@ -19,13 +17,9 @@ accessible class net/minecraft/predicate/entity/PlayerPredicate$StatMatcher
 # SetAttributeLootFunction stuff
 accessible field net/minecraft/loot/function/SetAttributesLootFunction attributes Ljava/util/List;
 accessible class net/minecraft/loot/function/SetAttributesLootFunction$Attribute
+accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute amount Lnet/minecraft/loot/provider/number/LootNumberProvider;
 accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute name Ljava/lang/String;
 accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute operation Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;
-accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute amount Lnet/minecraft/loot/provider/number/LootNumberProvider;
 
 # SetStewEffectLootFunction stuff
 accessible class net/minecraft/loot/function/SetStewEffectLootFunction$StewEffect
-
-# Loot Condition/function Types
-accessible method net/minecraft/loot/condition/LootConditionTypes register (Ljava/lang/String;Lcom/mojang/serialization/Codec;)Lnet/minecraft/loot/condition/LootConditionType;
-accessible method net/minecraft/loot/function/LootFunctionTypes register (Ljava/lang/String;Lcom/mojang/serialization/Codec;)Lnet/minecraft/loot/function/LootFunctionType;

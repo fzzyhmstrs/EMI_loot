@@ -77,8 +77,8 @@ public class LootParserRegistry{
         registerFunction(LootFunctionTypes.SET_STEW_EFFECT,new SetStewFunctionParser(),"Registering vanilla set stew effect function parser");
         registerFunction(LootFunctionTypes.SET_NBT,new SimpleFunctionParser("emi_loot.function.set_nbt"),"Registering vanilla set nbt function parser");
         registerFunction(LootFunctionTypes.SET_LOOT_TABLE,new SetLootTableFunctionParser(),"Registering vanilla set loot table function parser");
-        //registerFunction(EMILoot.OMINOUS_BANNER,new OminousBannerFunctionParser(),"Registering Lootify ominous banner function parser");
-        //registerFunction(EMILoot.SET_ANY_DAMAGE,new SetAnyDamageFunctionParser(),"Registering Lootify set-any-damage function parser");
+        registerFunction(EMILoot.OMINOUS_BANNER,new OminousBannerFunctionParser(),"Registering Lootify ominous banner function parser");
+        registerFunction(EMILoot.SET_ANY_DAMAGE,new SetAnyDamageFunctionParser(),"Registering Lootify set-any-damage function parser");
 
         registerCondition(LootConditionTypes.SURVIVES_EXPLOSION, new SurvivesExplosionConditionParser(),"Registering vanilla survives-explosion condition parser");
         registerCondition(LootConditionTypes.BLOCK_STATE_PROPERTY, new BlockStatePropertyConditionParser(),"Registering vanilla block state property condition parser");
@@ -96,9 +96,9 @@ public class LootParserRegistry{
         registerCondition(LootConditionTypes.TIME_CHECK, new TimeCheckConditionParser(),"Registering vanilla time check condition parser");
         registerCondition(LootConditionTypes.VALUE_CHECK, new ValueCheckConditionParser(),"Registering vanilla value check condition parser");
         registerCondition(LootConditionTypes.WEATHER_CHECK, new WeatherCheckConditionParser(),"Registering vanilla weather check condition parser");
-        //registerCondition(EMILoot.SPAWNS_WITH, new SimpleConditionParser("emi_loot.condition.spawns_with"),"Registering lootify spawns with condition parser");
-        //registerCondition(EMILoot.CREEPER, new SimpleConditionParser("emi_loot.condition.creeper"),"Registering lootify creeper condition parser");
-        //registerCondition(EMILoot.WITHER_KILL, new SimpleConditionParser("emi_loot.condition.wither_kill"),"Registering lootify wither-killed condition parser");
+        registerCondition(EMILoot.SPAWNS_WITH, new SimpleConditionParser("emi_loot.condition.spawns_with"),"Registering lootify spawns with condition parser");
+        registerCondition(EMILoot.CREEPER, new SimpleConditionParser("emi_loot.condition.creeper"),"Registering lootify creeper condition parser");
+        registerCondition(EMILoot.WITHER_KILL, new SimpleConditionParser("emi_loot.condition.wither_kill"),"Registering lootify wither-killed condition parser");
     }
 }
 

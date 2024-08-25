@@ -19,14 +19,14 @@ public class StatePredicateParser {
         if (!list.isEmpty()){
             List<MutableText> list2 = new LinkedList<>();
             for (Condition condition : list){
-                if (condition.valueMatcher() instanceof StatePredicate.RangedValueMatcher){
+                if (condition.valueMatcher() instanceof StatePredicate.RangedValueMatcher rangedValueMatcher){
                     String key = condition.key();
-                    String min = ((StatePredicate.RangedValueMatcher) condition.valueMatcher()).min().orElse(null);
-                    String max = ((StatePredicate.RangedValueMatcher) condition.valueMatcher()).max().orElse(null);
+                    String min = rangedValueMatcher.min().orElse(null);
+                    String max = rangedValueMatcher.max().orElse(null);
                     list2.add(LText.translatable("emi_loot.state_predicate.state_between",key,min,max));
-                } else if (condition.valueMatcher() instanceof StatePredicate.ExactValueMatcher){
+                } else if (condition.valueMatcher() instanceof StatePredicate.ExactValueMatcher exactValueMatcher){
                     String key = condition.key();
-                    String value = ((StatePredicate.ExactValueMatcher) condition.valueMatcher()).value();
+                    String value = exactValueMatcher.value();
                     list2.add(LText.translatable("emi_loot.state_predicate.state_exact",key,value));
                 }
             }
