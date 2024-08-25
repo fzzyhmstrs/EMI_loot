@@ -2,7 +2,6 @@ package fzzyhmstrs.emi_loot.emi;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
@@ -11,10 +10,7 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
-import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
-import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
-import fzzyhmstrs.emi_loot.util.EntityEmiStack;
 import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
@@ -25,17 +21,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -137,7 +125,7 @@ public class GameplayLootRecipe implements EmiRecipe {
             if (stacks <= 8) {
                 return 18 + 11;
             } else {
-                if (EMILoot.config.isCompact(EMILoot.Type.BLOCK)) {
+                if (EMILoot.config.isCompact(EMILoot.Type.GAMEPLAY)) {
                     int ingredients = 0;
                     for (WidgetRowBuilder builder: rowBuilderList) {
                         ingredients += builder.ingredientCount();
@@ -166,7 +154,7 @@ public class GameplayLootRecipe implements EmiRecipe {
 
 
         if (EMILoot.config.isTooltipStyle()) {
-            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
+            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.GAMEPLAY))
                     ?
                     rowBuilderList.stream().map(WidgetRowBuilder::stacks).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
                     :

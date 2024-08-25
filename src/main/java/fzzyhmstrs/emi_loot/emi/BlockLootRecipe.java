@@ -19,7 +19,6 @@ import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
@@ -137,7 +136,7 @@ public class BlockLootRecipe implements EmiRecipe {
         int y = 0;
 
         if (EMILoot.config.isTooltipStyle()) {
-            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
+            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.BLOCK))
                 ?
                 rowBuilderList.stream().map(WidgetRowBuilder::stacks).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
                 :

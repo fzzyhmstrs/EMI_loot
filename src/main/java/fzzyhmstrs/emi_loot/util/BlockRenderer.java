@@ -1,6 +1,5 @@
 package fzzyhmstrs.emi_loot.util;
 
-import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -85,7 +84,7 @@ public class BlockRenderer {
 		Transformation t = B2T.find(world, blockPos, blockState, null, null);
 		Objects.requireNonNullElse(t, T_CUBE).apply(false, matrices);
 		BlockRenderManager brm = MinecraftClient.getInstance().getBlockRenderManager();
-		DiffuseLighting.disableGuiDepthLighting();
+		//DiffuseLighting.disableGuiDepthLighting();
 		VertexConsumerProvider vcp = draw.getVertexConsumers();
 		VertexConsumer consumer = vcp.getBuffer(TexturedRenderLayers.getEntityTranslucentCull());
 		if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {

@@ -5,7 +5,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import net.minecraft.util.Pair;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

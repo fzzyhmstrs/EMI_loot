@@ -1,12 +1,6 @@
 package fzzyhmstrs.emi_loot.client;
 
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
-import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
@@ -19,8 +13,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<ClientMobLootTable> {
 

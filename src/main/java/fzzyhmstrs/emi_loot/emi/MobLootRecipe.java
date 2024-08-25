@@ -19,8 +19,6 @@ import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -44,7 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class MobLootRecipe implements EmiRecipe {
 
@@ -213,9 +210,9 @@ public class MobLootRecipe implements EmiRecipe {
         //draw the items
         if (EMILoot.config.isTooltipStyle()) {
             if (egg == null) {
-                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 27, 15, 27, 15, 64, 32), 30, 10);
+                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 28, 15, 28, 15, 64, 32), 30, 10);
             } else {
-                widgets.addTexture(new EmiTexture(ARROW_ID, 32, 16, 27, 15, 27, 15, 64, 32), 30, 15);
+                widgets.addTexture(new EmiTexture(ARROW_ID, 32, 16, 28, 15, 28, 15, 64, 32), 28, 15);
             }
             List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
                     ?
@@ -239,7 +236,11 @@ public class MobLootRecipe implements EmiRecipe {
             }
         } else {
             if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94) {
-                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 27, 15, 27, 15, 64, 32), 30, 10);
+                if (egg == null) {
+                    widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 27, 15, 27, 15, 64, 32), 30, 10);
+                } else {
+                    widgets.addTexture(new EmiTexture(ARROW_ID, 32, 16, 28, 15, 28, 15, 64, 32), 28, 15);
+                }
                 x = 60;
                 y = 11;
                 WidgetRowBuilder builder = rowBuilderList.get(0);
@@ -249,7 +250,11 @@ public class MobLootRecipe implements EmiRecipe {
                     x += widget.getWidth() + 6;
                 }
             } else {
-                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
+                if (egg == null) {
+                    widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
+                } else {
+                    widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 49, 10);
+                }
                 y += 28;
                 for (WidgetRowBuilder builder: rowBuilderList) {
                     for (ClientBuiltPool pool: builder.getPoolList()) {

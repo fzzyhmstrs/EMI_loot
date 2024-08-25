@@ -1,7 +1,11 @@
 package fzzyhmstrs.emi_loot.parser.processor;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.*;
+import fzzyhmstrs.emi_loot.mixins.BinomialLootNumberProviderAccessor;
+import fzzyhmstrs.emi_loot.mixins.BoundedIntUnaryOperatorAccessor;
+import fzzyhmstrs.emi_loot.mixins.ConstantLootNumberProviderAccessor;
+import fzzyhmstrs.emi_loot.mixins.ScoreLootNumberProviderAccessor;
+import fzzyhmstrs.emi_loot.mixins.UniformLootNumberProviderAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.loot.operator.BoundedIntUnaryOperator;

@@ -1,7 +1,5 @@
 package fzzyhmstrs.emi_loot;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
@@ -12,17 +10,12 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
-import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
-import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
-import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
-import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -33,25 +26,15 @@ import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.function.LootFunctionTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class EMILoot implements ModInitializer {
 
@@ -95,7 +78,7 @@ public class EMILoot implements ModInitializer {
     public static class EmiLootConfig extends Config {
 
         EmiLootConfig() {
-            super(new Identifier(MOD_ID, "emi_loot_config"));
+            super(new Identifier(MOD_ID, "emi_loot_config"), "", "");
         }
 
         @RequiresRestart
@@ -143,6 +126,7 @@ public class EMILoot implements ModInitializer {
         }
 	}
 
+    @IgnoreVisibility
     private static class CompactLoot {
         public boolean block = true;
 
@@ -164,7 +148,7 @@ public class EMILoot implements ModInitializer {
 
         final BooleanSupplier supplier;
 
-        private Type(BooleanSupplier supplier) {
+        Type(BooleanSupplier supplier) {
             this.supplier = supplier;
         }
     }

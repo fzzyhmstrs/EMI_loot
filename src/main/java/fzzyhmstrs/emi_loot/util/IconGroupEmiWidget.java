@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
@@ -14,7 +13,6 @@ import net.minecraft.util.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static fzzyhmstrs.emi_loot.util.IconEmiWidget.FRAME_ID;
 

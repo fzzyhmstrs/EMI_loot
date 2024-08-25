@@ -1,7 +1,14 @@
 package fzzyhmstrs.emi_loot.mixins;
 
 import net.minecraft.predicate.NbtPredicate;
-import net.minecraft.predicate.entity.*;
+import net.minecraft.predicate.entity.DistancePredicate;
+import net.minecraft.predicate.entity.EntityEffectPredicate;
+import net.minecraft.predicate.entity.EntityEquipmentPredicate;
+import net.minecraft.predicate.entity.EntityFlagsPredicate;
+import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.EntityTypePredicate;
+import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.predicate.entity.TypeSpecificPredicate;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

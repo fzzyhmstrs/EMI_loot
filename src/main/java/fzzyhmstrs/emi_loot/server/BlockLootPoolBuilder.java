@@ -2,8 +2,6 @@ package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.entry.LootPoolEntry;
 
 import java.util.HashMap;
 import java.util.LinkedList;
