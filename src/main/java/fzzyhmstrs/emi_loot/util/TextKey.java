@@ -305,7 +305,7 @@ public record TextKey(int index, List<String> args) {
         }
     }
 
-    public String symbolKey() {
+    public static String symbolKey(int index) {
         return String.valueOf((char)(0xe700 + index));
     }
 

@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.client;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import io.netty.handler.codec.DecoderException;
@@ -123,7 +124,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
                 }
                 emiConsolidatedMap.put((float) consolidatedWeight, EmiIngredient.of(emiStacks));
             });
-            finalList.add(new ClientBuiltPool(builtList, emiConsolidatedMap));
+            finalList.add(new ClientBuiltPool(builtList, emiConsolidatedMap.float2ObjectEntrySet().stream().map(entry -> new ConditionalStack(builtList, entry.getFloatKey(), entry.getValue())).toList()));
         });
         builtItems = finalList;
     }

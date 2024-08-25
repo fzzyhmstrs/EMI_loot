@@ -24,22 +24,22 @@ public class IconGroupEmiWidget extends Widget {
         this.x = x;
         this.y = y;
         List<IconEmiWidget> list = new LinkedList<>();
-        for (int i = 0; i < pool.list().size(); i++) {
-            Pair<Integer, Text> pair = pool.list().get(i);
+        for (int i = 0; i < pool.conditions().size(); i++) {
+            Pair<Integer, Text> pair = pool.conditions().get(i);
             int xOffset = i / 2 * 11;
             int yOffset = i % 2 * 11;
             list.add(new IconEmiWidget(x + xOffset, y + yOffset, pair.getLeft(), pair.getRight()));
         }
         this.icons = list;
         this.iconsWidth = 12 + (((icons.size() - 1)/2) * 11);
-        this.itemsWidth = 2 + pool.stackMap().size() * 20;
+        this.itemsWidth = 2 + pool.stacks().size() * 20;
         this.width = iconsWidth + this.itemsWidth;
         this.bounds = new Bounds(x, y, width, 23);
         List<SlotWidget> list2 = new LinkedList<>();
         int itemXOffset = iconsWidth + 2;
-        for(Map.Entry<Float, EmiIngredient> entry: pool.stackMap().float2ObjectEntrySet()) {
-            String rounded = FloatTrimmer.trimFloatString(entry.getKey());
-            SlotWidget widget = new SlotWidget(entry.getValue(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
+        for(ConditionalStack entry: pool.stacks()) {
+            String rounded = FloatTrimmer.trimFloatString(entry.weight());
+            SlotWidget widget = new SlotWidget(entry.ingredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
             itemXOffset +=20;
             list2.add(widget);
         }
@@ -71,7 +71,7 @@ public class IconGroupEmiWidget extends Widget {
         }
         return List.of();
     }
-    
+
     @Override
 	public boolean mouseClicked(int mouseX, int mouseY, int button) {
         for (SlotWidget slot: items) {

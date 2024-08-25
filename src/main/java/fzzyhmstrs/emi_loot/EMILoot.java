@@ -9,14 +9,20 @@ import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
 import fzzyhmstrs.emi_loot.server.function.OminousBannerLootFunction;
 import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
+import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
+import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -42,6 +48,10 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class EMILoot implements ModInitializer {
 
@@ -49,7 +59,7 @@ public class EMILoot implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("emi_loot");
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
-    public static EmiLootConfig config = ConfigApi.registerAndLoadConfig(EmiLootConfig::new);
+    public static EmiLootConfig config = ConfigApiJava.registerAndLoadConfig(EmiLootConfig::new, RegisterType.BOTH);
     public static boolean DEBUG = config.debugMode;
 
     //conditions & functions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
@@ -70,12 +80,17 @@ public class EMILoot implements ModInitializer {
         }
     };
 
+    public static Identifier identity(String path) {
+        return Identifier.of(MOD_ID, path);
+    }
+
     @Override
     public void onInitialize() {
         parser.registerServer();
         //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
 
+    @IgnoreVisibility
     @ConvertFrom(fileName = "EmiLootConfig_v1.json")
     public static class EmiLootConfig extends Config {
 
@@ -102,7 +117,8 @@ public class EMILoot implements ModInitializer {
         public boolean parseArchaeologyLoot = true;
 
         @NonSync
-        public boolean chestLootCompact = true;
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedAny<CompactLoot> compactLoot = new ValidatedAny<>(new CompactLoot());
 
         @NonSync
         public boolean chestLootAlwaysStackSame = false;
@@ -110,11 +126,46 @@ public class EMILoot implements ModInitializer {
         @NonSync
         public boolean mobLootIncludeDirectDrops = true;
 
-        @NonSync
-        public ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
-                                                            ?
-                                                        ValidatedList.ofString("default", "tooltip").toChoices(ValidatedChoice.WidgetType.POPUP, (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t))
-                                                            :
-                                                        new ValidatedChoice<>(List.of("default", "install_sns"), ValidatedString.fromList(List.of("default")), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t));
+		@NonSync
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
+                ?
+            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t))
+				:
+            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"));
+
+        public boolean isTooltipStyle() {
+            return Objects.equals(conditionStyle.get(), "tooltip") && FabricLoader.getInstance().isModLoaded("symbols_n_stuff");
+        }
+
+        public boolean isCompact(Type type) {
+            return type.supplier.getAsBoolean();
+        }
 	}
+
+    private static class CompactLoot {
+        public boolean block = true;
+
+        public boolean chest = true;
+
+        public boolean mob = true;
+
+        public boolean gameplay = true;
+
+        public boolean archaeology = true;
+    }
+
+    public enum Type {
+        BLOCK(() -> EMILoot.config.compactLoot.get().block),
+        CHEST(() -> EMILoot.config.compactLoot.get().chest),
+        MOB(() -> EMILoot.config.compactLoot.get().mob),
+        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay),
+        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology);
+
+        final BooleanSupplier supplier;
+
+        private Type(BooleanSupplier supplier) {
+            this.supplier = supplier;
+        }
+    }
 }

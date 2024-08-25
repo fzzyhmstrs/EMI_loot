@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
@@ -12,10 +13,14 @@ import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
+import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
+import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
+import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Blocks;
@@ -29,9 +34,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -44,8 +51,8 @@ public class GameplayLootRecipe implements EmiRecipe {
         loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((builtPool)-> {
-                builtPool.stackMap().forEach((weight, stacks) -> {
-                    list.addAll(stacks.getEmiStacks());
+                builtPool.stacks().forEach(stack -> {
+                    list.addAll(stack.ingredient().getEmiStacks());
                 });
                 addWidgetBuilders(builtPool, false);
             }
@@ -120,12 +127,33 @@ public class GameplayLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 154;
+        return EMILoot.config.isTooltipStyle() ? 144 : 154;
     }
 
     @Override
     public int getDisplayHeight() {
-        return rowBuilderList.size() * 29 + 11;
+        if (EMILoot.config.isTooltipStyle()) {
+            int stacks = outputStacks.size();
+            if (stacks <= 8) {
+                return 18 + 11;
+            } else {
+                if (EMILoot.config.isCompact(EMILoot.Type.BLOCK)) {
+                    int ingredients = 0;
+                    for (WidgetRowBuilder builder: rowBuilderList) {
+                        ingredients += builder.ingredientCount();
+                    }
+                    if (ingredients <= 4) {
+                        return 29;
+                    } else {
+                        return ((ingredients - 5) / 8) + 1;
+                    }
+                } else {
+                    return 11 + 18 * ((stacks - 1) / 8);
+                }
+            }
+        } else {
+            return rowBuilderList.size() * 29 + 11;
+        }
     }
 
     @Override
@@ -136,17 +164,40 @@ public class GameplayLootRecipe implements EmiRecipe {
         //draw the gameplay name
         widgets.addText(name.asOrderedText(), 0, 0, 0x404040, false);
 
-        y += 11;
-        for (WidgetRowBuilder builder: rowBuilderList) {
-            for (ClientBuiltPool pool: builder.getPoolList()) {
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
-                widgets.add(widget);
-                x += widget.getWidth() + 6;
-            }
-            y += 29;
-            x = 0;
-        }
 
+        if (EMILoot.config.isTooltipStyle()) {
+            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
+                    ?
+                    rowBuilderList.stream().map(WidgetRowBuilder::stacks).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                    :
+                    rowBuilderList.stream().map(WidgetRowBuilder::ingredients).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+            int i = 0;
+            int j = 0;
+            for (ConditionalStack stack: stacks) {
+                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 11 + (18 * j));
+                String rounded = FloatTrimmer.trimFloatString(stack.weight());
+                widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
+                for (Pair<Integer, Text> pair : stack.conditions()) {
+                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                }
+                ++i;
+                if (i > 7) {
+                    i = 0;
+                    ++j;
+                }
+            }
+        } else {
+            y += 11;
+            for (WidgetRowBuilder builder : rowBuilderList) {
+                for (ClientBuiltPool pool : builder.getPoolList()) {
+                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                    widgets.add(widget);
+                    x += widget.getWidth() + 6;
+                }
+                y += 29;
+                x = 0;
+            }
+        }
     }
 
     //may revisit later

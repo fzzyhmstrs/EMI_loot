@@ -1,18 +1,17 @@
 package fzzyhmstrs.emi_loot.util;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.Suppliers;
 import dev.emi.emi.api.stack.EmiIngredient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
-import it.unimi.dsi.fastutil.floats.Float2ObjectArrayMap;
-import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-
+import net.minecraft.util.Pair;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class WidgetRowBuilder {
 
@@ -22,11 +21,47 @@ public class WidgetRowBuilder {
 
     private final int maxWidth;
     private final List<ClientBuiltPool> poolList = new LinkedList<>();
+    private final Supplier<List<ConditionalStack>> stacks = Suppliers.memoize(() -> {
+        List<ConditionalStack> list = new ArrayList<>();
+        for (ClientBuiltPool pool: poolList) {
+            list.addAll(
+                    pool.stacks().stream().map(
+                            stack -> stack.ingredient().getEmiStacks().stream().map(
+                                    s -> new ConditionalStack(stack.conditions(), stack.weight(), s)
+                            ).toList()
+                    ).collect(
+                            ArrayList::new, ArrayList::addAll, ArrayList::addAll
+                    )
+            );
+        }
+        return list;
+    });
     private int width = 0;
 
     public List<ClientBuiltPool> getPoolList() {
         return poolList;
     }
+
+    public int ingredientCount() {
+        int count = 0;
+        for (ClientBuiltPool pool: poolList) {
+            count += pool.stacks().size();
+        }
+        return count;
+    }
+
+    public List<ConditionalStack> ingredients() {
+        List<ConditionalStack> list = new ArrayList<>();
+        for (ClientBuiltPool pool: poolList) {
+            list.addAll(pool.stacks());
+        }
+        return list;
+    }
+
+    public List<ConditionalStack> stacks() {
+        return stacks.get();
+    }
+
     public int getWidth() {
         return width;
     }
@@ -44,18 +79,20 @@ public class WidgetRowBuilder {
     public Optional<ClientBuiltPool> addAndTrim(ClientBuiltPool newPool) {
         if (add(newPool)) return Optional.empty();
         if (width == 0) {
-            Float2ObjectMap<EmiIngredient> madeItIn = new Float2ObjectArrayMap<>();
-            Float2ObjectMap<EmiIngredient> leftOvers = new Float2ObjectArrayMap<>();
-            AtomicInteger newWidth = new AtomicInteger(14 + (11 * (((newPool.list().size() - 1) / 2) - 1)));
-            newPool.stackMap().forEach((weight, stacks) -> {
+            List<ConditionalStack> madeItIn = new ArrayList<>();
+            List<ConditionalStack> leftOvers = new ArrayList<>();
+            AtomicInteger newWidth = new AtomicInteger(14 + (11 * (((newPool.conditions().size() - 1) / 2) - 1)));
+            newPool.stacks().forEach(s -> {
+                float weight = s.weight();
+                EmiIngredient stacks = s.ingredient();
                 if (newWidth.addAndGet(20) <= maxWidth) {
-                    madeItIn.put((float) weight, stacks);
+                    madeItIn.add(new ConditionalStack(s.conditions(), weight, stacks));
                 } else {
-                    leftOvers.put((float) weight, stacks);
+                    leftOvers.add(new ConditionalStack(s.conditions(), weight, stacks));
                 }
             });
-            add(new ClientBuiltPool(newPool.list(), madeItIn));
-            return Optional.of(new ClientBuiltPool(newPool.list(), leftOvers));
+            add(new ClientBuiltPool(newPool.conditions(), madeItIn));
+            return Optional.of(new ClientBuiltPool(newPool.conditions(), leftOvers));
         } else {
             return Optional.of(newPool);
         }
@@ -64,9 +101,9 @@ public class WidgetRowBuilder {
     private int getNewWidth(ClientBuiltPool newPool) {
         int newWidth;
         if (poolList.isEmpty()) {
-            newWidth = 14 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
+            newWidth = 14 + (11 * ((newPool.conditions().size() - 1)/2)) + 20 * newPool.stacks().size();
         } else {
-            newWidth = 20 + (11 * ((newPool.list().size() - 1)/2)) + 20 * newPool.stackMap().size();
+            newWidth = 20 + (11 * ((newPool.conditions().size() - 1)/2)) + 20 * newPool.stacks().size();
         }
         return newWidth;
     }

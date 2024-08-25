@@ -5,36 +5,46 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
+import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.EntityEmiStack;
+import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MobLootRecipe implements EmiRecipe {
 
@@ -42,11 +52,13 @@ public class MobLootRecipe implements EmiRecipe {
     private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/downturn_arrow.png");
 
     public MobLootRecipe(ClientMobLootTable loot) {
-        this.loot = loot;
+        this.lootId = loot.id;
         loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
         Identifier mobId = loot.mobId;
         EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
         this.type = type;
+        SpawnEggItem eggItem = SpawnEggItem.forEntity(type);
+        this.egg = eggItem != null ? EmiStack.of(eggItem) : null;
         MinecraftClient client = MinecraftClient.getInstance();
         Entity entity = type.create(client.world);
         if (entity != null) {
@@ -79,8 +91,8 @@ public class MobLootRecipe implements EmiRecipe {
         List<EmiStack> list = new LinkedList<>();
         //System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
-                builtPool.stackMap().forEach((weight, stacks) -> {
-                    list.addAll(stacks.getEmiStacks());
+                builtPool.stacks().forEach(cs -> {
+                    list.addAll(cs.ingredient().getEmiStacks());
                 });
                 addWidgetBuilders(builtPool, false);
             }
@@ -88,11 +100,13 @@ public class MobLootRecipe implements EmiRecipe {
         outputStacks = list;
     }
 
-    private final ClientMobLootTable loot;
+    private final Identifier lootId;
     private final EmiStack inputStack;
     private final List<EmiStack> outputStacks;
     private final Text name;
     private final EntityType<?> type;
+    @Nullable
+    private final EmiStack egg;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
@@ -122,12 +136,12 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public @Nullable Identifier getId() {
-        return new Identifier(EMILootClient.MOD_ID, "/" + getCategory().id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());
+        return new Identifier(EMILootClient.MOD_ID, "/" + getCategory().id.getPath() + "/" + lootId.getNamespace() + "/" + lootId.getPath());
     }
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new LinkedList<>();
+        return egg != null ? List.of(egg) : Collections.emptyList();
     }
 
     @Override
@@ -142,21 +156,41 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 154;
+        return EMILoot.config.isTooltipStyle() ? 144 : 154;
     }
 
     @Override
     public int getDisplayHeight() {
-        if (rowBuilderList.size() > 1 || rowBuilderList.get(0).getWidth() > 94) {
-            return 28 + 23 + 29 * (rowBuilderList.size() - 1);
+        if (EMILoot.config.isTooltipStyle()) {
+            int stacks = outputStacks.size();
+            if (stacks <= 4) {
+                return 29;
+            } else {
+                if (EMILoot.config.isCompact(EMILoot.Type.MOB)) {
+                    int ingredients = 0;
+                    for (WidgetRowBuilder builder: rowBuilderList) {
+                        ingredients += builder.ingredientCount();
+                    }
+                    if (ingredients <= 4) {
+                        return 29;
+                    } else {
+                        return ((ingredients - 5) / 8) + 1;
+                    }
+                } else {
+                    return 29 + 18 * (((stacks - 5) / 8) + 1);
+                }
+            }
         } else {
-            return 34;
+            if (rowBuilderList.size() > 1 || rowBuilderList.get(0).getWidth() > 94) {
+                return 28 + 23 + 29 * (rowBuilderList.size() - 1);
+            } else {
+                return 34;
+            }
         }
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        int rowOffset = 29;
         int x = 0;
         int y = 0;
         //draw the mob
@@ -165,32 +199,70 @@ public class MobLootRecipe implements EmiRecipe {
         } else {
             int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type, 0);
             widgets.addTexture(EmiTexture.LARGE_SLOT, x, y);
-            widgets.addDrawable(x, y, 16, 16, (matrices, mx, my, delta)->inputStack.render(matrices, 5, 6 + offset, delta));
+            widgets.addDrawable(x, y, 16, 16, (matrices, mx, my, delta) -> inputStack.render(matrices, 5, 6 + offset, delta));
         }
-        widgets.addText(name.asOrderedText(), 30, 0, 0x404040, false);
-        if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94) {
-            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 39, 15, 39, 15, 64, 32), 30, 10);
-            x = 60;
-            y = 11;
-            WidgetRowBuilder builder = rowBuilderList.get(0);
-            for (ClientBuiltPool pool: builder.getPoolList()) {
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
-                widgets.add(widget);
-                x += widget.getWidth() + 6;
+
+        //draw the name, moved over if the spawn egg is available
+        if (egg == null) {
+            widgets.addText(name.asOrderedText(), 30, 0, 0x404040, false);
+        } else {
+            widgets.addText(name.asOrderedText(), 49, 0, 0x404040, false);
+            widgets.addSlot(egg, 28, 0);
+        }
+
+        //draw the items
+        if (EMILoot.config.isTooltipStyle()) {
+            if (egg == null) {
+                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 27, 15, 27, 15, 64, 32), 30, 10);
+            } else {
+                widgets.addTexture(new EmiTexture(ARROW_ID, 32, 16, 27, 15, 27, 15, 64, 32), 30, 15);
+            }
+            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
+                    ?
+                rowBuilderList.stream().map(WidgetRowBuilder::stacks).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                    :
+                rowBuilderList.stream().map(WidgetRowBuilder::ingredients).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+            int i = 4;
+            int j = 0;
+            for (ConditionalStack stack: stacks) {
+                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 11 + (18 * j));
+                String rounded = FloatTrimmer.trimFloatString(stack.weight());
+                widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
+                for (Pair<Integer, Text> pair : stack.conditions()) {
+                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                }
+                ++i;
+                if (i > 7) {
+                    i = 0;
+                    ++j;
+                }
             }
         } else {
-            widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
-            y += 28;
-            for (WidgetRowBuilder builder: rowBuilderList) {
+            if (rowBuilderList.size() == 1 && rowBuilderList.get(0).getWidth() <= 94) {
+                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 16, 27, 15, 27, 15, 64, 32), 30, 10);
+                x = 60;
+                y = 11;
+                WidgetRowBuilder builder = rowBuilderList.get(0);
                 for (ClientBuiltPool pool: builder.getPoolList()) {
                     IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }
-                y += 29;
-                x = 0;
+            } else {
+                widgets.addTexture(new EmiTexture(ARROW_ID, 0, 0, 39, 15, 39, 15, 64, 32), 30, 10);
+                y += 28;
+                for (WidgetRowBuilder builder: rowBuilderList) {
+                    for (ClientBuiltPool pool: builder.getPoolList()) {
+                        IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                        widgets.add(widget);
+                        x += widget.getWidth() + 6;
+                    }
+                    y += 29;
+                    x = 0;
+                }
             }
         }
+
     }
 
     //may revisit later

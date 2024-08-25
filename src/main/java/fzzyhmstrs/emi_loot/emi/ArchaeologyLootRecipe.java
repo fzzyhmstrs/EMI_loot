@@ -119,7 +119,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 	@Override
 	public int getDisplayHeight() {
 		int titleHeight = 11;
-		int boxesHeight = ((int) Math.ceil(lootStacksSortedSize / columns) * (EMILoot.config.chestLootCompact ? 18 : 19)) - 1;
+		int boxesHeight = ((int) Math.ceil(lootStacksSortedSize / columns) * (EMILoot.config.isCompact(EMILoot.Type.ARCHAEOLOGY) ? 18 : 19)) - 1;
 		return titleHeight + boxesHeight;
 	}
 

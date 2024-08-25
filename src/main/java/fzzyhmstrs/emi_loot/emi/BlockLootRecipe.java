@@ -5,42 +5,49 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
+import fzzyhmstrs.emi_loot.util.BlockStateEmiStack;
+import fzzyhmstrs.emi_loot.util.ConditionalStack;
+import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
+import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
+import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class BlockLootRecipe implements EmiRecipe {
 
-    //kelp
-    //potted plants
-    //fire
-    //candle cakes
-
     public BlockLootRecipe(ClientBlockLootTable loot) {
         this.loot = loot;
         Identifier blockId = loot.blockId;
         Block block = Registries.BLOCK.get(blockId);
         loot.build(MinecraftClient.getInstance().world, block);
-        inputStack = EmiStack.of(block);
+        inputStack = block.asItem() == Items.AIR ? new BlockStateEmiStack(block.getDefaultState(), blockId) : EmiStack.of(block);
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((builtPool)-> {
-            builtPool.stackMap().forEach((weight, stacks) -> {
+            builtPool.stacks().forEach(stack -> {
                 /*if (weight < 100f) {
                     allStacksGuaranteed = false;
                 }*/
-                list.addAll(stacks.getEmiStacks());
+                list.addAll(stack.ingredient().getEmiStacks());
             });
             addWidgetBuilders(builtPool, false);
         });
@@ -93,12 +100,33 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 160;
+        return EMILoot.config.isTooltipStyle() ? 144 : 160;
     }
 
     @Override
     public int getDisplayHeight() {
-        return 23 + 29 * (rowBuilderList.size() - 1);
+        if (EMILoot.config.isTooltipStyle()) {
+            int stacks = outputStacks.size();
+            if (stacks <= 5) {
+                return 18;
+            } else {
+                if (EMILoot.config.isCompact(EMILoot.Type.BLOCK)) {
+                    int ingredients = 0;
+                    for (WidgetRowBuilder builder: rowBuilderList) {
+                        ingredients += builder.ingredientCount();
+                    }
+                    if (ingredients <= 4) {
+                        return 29;
+                    } else {
+                        return ((ingredients - 5) / 8) + 1;
+                    }
+                } else {
+                    return 18 + 18 * (((stacks - 6) / 8) + 1);
+                }
+            }
+        } else {
+            return 23 + 29 * (rowBuilderList.size() - 1);
+        }
     }
 
     @Override
@@ -108,14 +136,37 @@ public class BlockLootRecipe implements EmiRecipe {
         int x = 46;
         int y = 0;
 
-        for (WidgetRowBuilder builder: rowBuilderList) {
-            for (ClientBuiltPool pool: builder.getPoolList()) {
-                IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
-                widgets.add(widget);
-                x += widget.getWidth() + 6;
+        if (EMILoot.config.isTooltipStyle()) {
+            List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.MOB))
+                ?
+                rowBuilderList.stream().map(WidgetRowBuilder::stacks).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                :
+                rowBuilderList.stream().map(WidgetRowBuilder::ingredients).collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+            int i = 3;
+            int j = 0;
+            for (ConditionalStack stack: stacks) {
+                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 18 * j);
+                String rounded = FloatTrimmer.trimFloatString(stack.weight());
+                widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
+                for (Pair<Integer, Text> pair : stack.conditions()) {
+                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                }
+                ++i;
+                if (i > 7) {
+                    i = 0;
+                    ++j;
+                }
             }
-            y += 29;
-            x = 46;
+        } else {
+            for (WidgetRowBuilder builder : rowBuilderList) {
+                for (ClientBuiltPool pool : builder.getPoolList()) {
+                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                    widgets.add(widget);
+                    x += widget.getWidth() + 6;
+                }
+                y += 29;
+                x = 46;
+            }
         }
     }
 
