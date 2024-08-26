@@ -89,7 +89,7 @@ public class MobLootRecipe implements EmiRecipe {
         //System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stacks().forEach(cs -> {
-                    list.addAll(cs.ingredient().getEmiStacks());
+                    list.addAll(cs.ingredient());
                 });
                 addWidgetBuilders(builtPool, false);
             }
@@ -171,7 +171,7 @@ public class MobLootRecipe implements EmiRecipe {
                     if (ingredients <= 4) {
                         return 29;
                     } else {
-                        return ((ingredients - 5) / 8) + 1;
+                        return 29 + 18 * (((ingredients - 5) / 8) + 1);
                     }
                 } else {
                     return 29 + 18 * (((stacks - 5) / 8) + 1);
@@ -222,7 +222,7 @@ public class MobLootRecipe implements EmiRecipe {
             int i = 4;
             int j = 0;
             for (ConditionalStack stack: stacks) {
-                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 11 + (18 * j));
+                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 11 + (18 * j));
                 String rounded = FloatTrimmer.trimFloatString(stack.weight());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
                 for (Pair<Integer, Text> pair : stack.conditions()) {

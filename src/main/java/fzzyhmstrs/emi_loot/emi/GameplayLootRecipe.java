@@ -40,7 +40,7 @@ public class GameplayLootRecipe implements EmiRecipe {
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stacks().forEach(stack -> {
-                    list.addAll(stack.ingredient().getEmiStacks());
+                    list.addAll(stack.ingredient());
                 });
                 addWidgetBuilders(builtPool, false);
             }
@@ -133,7 +133,7 @@ public class GameplayLootRecipe implements EmiRecipe {
                     if (ingredients <= 4) {
                         return 29;
                     } else {
-                        return ((ingredients - 5) / 8) + 1;
+                        return 11 + 18 * (((ingredients - 5) / 8) + 1);
                     }
                 } else {
                     return 11 + 18 * ((stacks - 1) / 8);
@@ -162,7 +162,7 @@ public class GameplayLootRecipe implements EmiRecipe {
             int i = 0;
             int j = 0;
             for (ConditionalStack stack: stacks) {
-                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 11 + (18 * j));
+                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 11 + (18 * j));
                 String rounded = FloatTrimmer.trimFloatString(stack.weight());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
                 for (Pair<Integer, Text> pair : stack.conditions()) {

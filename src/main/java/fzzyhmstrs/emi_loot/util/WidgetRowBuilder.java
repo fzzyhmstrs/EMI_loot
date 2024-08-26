@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.util;
 
 import com.google.common.base.Suppliers;
 import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -26,8 +27,8 @@ public class WidgetRowBuilder {
         for (ClientBuiltPool pool: poolList) {
             list.addAll(
                     pool.stacks().stream().map(
-                            stack -> stack.ingredient().getEmiStacks().stream().map(
-                                    s -> new ConditionalStack(stack.conditions(), stack.weight(), s)
+                            stack -> stack.ingredient().stream().map(
+                                    s -> new ConditionalStack(stack.conditions(), stack.weight(), List.of(s))
                             ).toList()
                     ).collect(
                             ArrayList::new, ArrayList::addAll, ArrayList::addAll
@@ -84,7 +85,7 @@ public class WidgetRowBuilder {
             AtomicInteger newWidth = new AtomicInteger(14 + (11 * (((newPool.conditions().size() - 1) / 2) - 1)));
             newPool.stacks().forEach(s -> {
                 float weight = s.weight();
-                EmiIngredient stacks = s.ingredient();
+                List<EmiStack> stacks = s.ingredient();
                 if (newWidth.addAndGet(20) <= maxWidth) {
                     madeItIn.add(new ConditionalStack(s.conditions(), weight, stacks));
                 } else {

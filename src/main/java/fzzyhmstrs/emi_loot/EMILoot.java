@@ -113,9 +113,9 @@ public class EMILoot implements ModInitializer {
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
                 ?
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t))
+            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
 				:
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"));
+            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
 
         public boolean isTooltipStyle() {
             return Objects.equals(conditionStyle.get(), "tooltip") && FabricLoader.getInstance().isModLoaded("symbols_n_stuff");
