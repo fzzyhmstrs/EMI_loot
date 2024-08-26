@@ -10,6 +10,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -68,13 +69,15 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
         buf.writeShort(builderList.size());
         builderList.forEach((builder)-> {
-            //start by building the builder
-            builder.build();
+
+            List<TextKey> totalConditions = new ArrayList<>();
+            builder.conditions.forEach((lootConditionResult -> totalConditions.add(lootConditionResult.text())));
+            builder.functions.forEach((lootFunctionResult)-> totalConditions.addAll(lootFunctionResult.conditions()));
 
             //write size of the builders condition set
-            buf.writeShort(builder.conditions.size());
+            buf.writeShort(totalConditions.size());
             //write the textkey of each of those conditions
-            builder.conditions.forEach((lootConditionResult -> lootConditionResult.text().toBuf(buf)));
+            totalConditions.forEach((lootConditionResult -> lootConditionResult.toBuf(buf)));
 
             //write size of the builders function set
             buf.writeShort(builder.functions.size());

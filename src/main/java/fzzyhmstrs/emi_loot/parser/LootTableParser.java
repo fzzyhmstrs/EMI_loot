@@ -65,6 +65,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -182,7 +183,6 @@ public class LootTableParser {
         }
     }
 
-
     public static void postProcess(PostProcessor process) {
         if (!hasParsedLootTables) return;
         for (LootSender<?> sender : chestSenders.values()) {
@@ -295,7 +295,9 @@ public class LootTableParser {
             LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
-                parsedFunctions.add(parseLootFunction(function));
+                LootFunctionResult r = parseLootFunction(function);
+                if (!r.skip())
+                    parsedFunctions.add(r);
             }
             LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
@@ -338,7 +340,9 @@ public class LootTableParser {
             LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
-                parsedFunctions.add(parseLootFunction(function));
+                LootFunctionResult r = parseLootFunction(function);
+                if (!r.skip())
+                    parsedFunctions.add(r);
             }
             LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
@@ -359,7 +363,9 @@ public class LootTableParser {
             LootFunction[] functions = pool.functions;
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
-                parsedFunctions.add(parseLootFunction(function));
+                LootFunctionResult r = parseLootFunction(function);
+                if (!r.skip())
+                    parsedFunctions.add(r);
             }
             LootNumberProvider rollProvider = pool.rolls;
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
@@ -534,6 +540,8 @@ public class LootTableParser {
                     results = parseMobLootTable(table, id, new Identifier("empty"));
                 } else if (type == LootContextTypes.FISHING) {
                     results = parseGameplayLootTable(table, id);
+                } else if (type == LootContextTypes.ARCHAEOLOGY) {
+                    results = parseArchaeologyTable(table, id);
                 } else {
                     results = new EmptyLootTableSender();
                 }
@@ -612,11 +620,11 @@ public class LootTableParser {
                 } else {
                     conditionalItem = item;
                 }
-                List<TextKey> conditionalFunctionTexts = new LinkedList<>();
+                List<TextKey> conditionalFunctionTexts = new ArrayList<>();
                 conditionalFunctionTexts.add(lootText);
                 conditionalEntryResults.add(new ItemEntryResult(conditionalItem, weight, resultConditions, conditionalFunctionTexts));
             } else {
-                if (lootText.isNotEmpty()) {
+                if (lootText.isNotEmpty() && !lootText.skip()) {
                     functionTexts.add(lootText);
                 }
                 if (newStack != ItemStack.EMPTY) {
@@ -703,7 +711,11 @@ public class LootTableParser {
             ItemStack stack,
             List<TextKey> conditions
     ) {
-        public static LootFunctionResult EMPTY = new LootFunctionResult(TextKey.empty(), ItemStack.EMPTY, new LinkedList<>());
+        public static LootFunctionResult EMPTY = new LootFunctionResult(TextKey.empty(), net.minecraft.item.ItemStack.EMPTY, new LinkedList<>());
+
+        public boolean skip() {
+            return conditions.isEmpty() && text.skip();
+        }
     }
 
     public record LootConditionResult(

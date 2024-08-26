@@ -10,7 +10,7 @@ import java.util.List;
 public record ConditionalStack(List<Pair<Integer, Text>> conditions, float weight, List<EmiStack> ingredient) {
 
 	public EmiIngredient getIngredient() {
-		return ingredient.size() == 1 ? ingredient.get(0) : EmiIngredient.of(ingredient);
+		return ingredient.size() == 1 ? ingredient.get(0) : new QuantityListEmiIngredient(ingredient);
 	}
 
 }

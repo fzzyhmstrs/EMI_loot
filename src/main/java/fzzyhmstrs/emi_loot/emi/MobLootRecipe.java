@@ -18,6 +18,7 @@ import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.SymbolText;
+import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
@@ -58,6 +59,7 @@ public class MobLootRecipe implements EmiRecipe {
         this.egg = eggItem != null ? EmiStack.of(eggItem) : null;
         MinecraftClient client = MinecraftClient.getInstance();
         Entity entity = type.create(client.world);
+        Text rawTitle;
         if (entity != null) {
             Box box = entity.getBoundingBox();
             double len = box.getAverageSideLength();
@@ -70,11 +72,11 @@ public class MobLootRecipe implements EmiRecipe {
             if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")) {
                 DyeColor color = DyeColor.byName(loot.color, DyeColor.WHITE);
                 MutableText colorName = LText.translatable("color.minecraft." + color.getName());
-                name = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
+                rawTitle = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
                 ((SheepEntity)entity).setColor(color);
 
             } else {
-                name = entity.getName();
+                rawTitle = entity.getName();
             }
             double scale = 1.05 / len * 8.0;
             if (ClientResourceData.MOB_SCALES.containsKey(type)) {
@@ -83,8 +85,9 @@ public class MobLootRecipe implements EmiRecipe {
             inputStack = EntityEmiStack.ofScaled(entity, scale);
         } else {
             inputStack = EmiStack.EMPTY;
-            name = LText.translatable("emi_loot.missing_entity");
+            rawTitle = LText.translatable("emi_loot.missing_entity");
         }
+        this.name = TrimmedTitle.of(rawTitle, (EMILoot.config.isTooltipStyle() ? 138 : 158) - ((egg != null) ? 49 : 30));
         List<EmiStack> list = new LinkedList<>();
         //System.out.println(getId());
         loot.builtItems.forEach((builtPool)-> {
@@ -100,7 +103,7 @@ public class MobLootRecipe implements EmiRecipe {
     private final Identifier lootId;
     private final EmiStack inputStack;
     private final List<EmiStack> outputStacks;
-    private final Text name;
+    private final TrimmedTitle name;
     private final EntityType<?> type;
     @Nullable
     private final EmiStack egg;
@@ -201,9 +204,15 @@ public class MobLootRecipe implements EmiRecipe {
 
         //draw the name, moved over if the spawn egg is available
         if (egg == null) {
-            widgets.addText(name.asOrderedText(), 30, 0, 0x404040, false);
+            widgets.addText(name.title(), 30, 0, 0x404040, false);
+            if (name.trimmed()) {
+                widgets.addTooltipText(List.of(name.rawTitle()), 30, 0, EMILoot.config.isTooltipStyle() ? 108 : 118, 10);
+            }
         } else {
-            widgets.addText(name.asOrderedText(), 49, 0, 0x404040, false);
+            widgets.addText(name.title(), 49, 0, 0x404040, false);
+            if (name.trimmed()) {
+                widgets.addTooltipText(List.of(name.rawTitle()), 30, 0, EMILoot.config.isTooltipStyle() ? 89 : 99, 10);
+            }
             widgets.addSlot(egg, 28, 0);
         }
 
@@ -225,8 +234,10 @@ public class MobLootRecipe implements EmiRecipe {
                 SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 11 + (18 * j));
                 String rounded = FloatTrimmer.trimFloatString(stack.weight());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
-                for (Pair<Integer, Text> pair : stack.conditions()) {
-                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                if (EMILoot.config.isNotPlain()) {
+                    for (Pair<Integer, Text> pair : stack.conditions()) {
+                        widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                    }
                 }
                 ++i;
                 if (i > 7) {

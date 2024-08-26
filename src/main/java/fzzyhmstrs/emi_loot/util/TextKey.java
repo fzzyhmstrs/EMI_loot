@@ -10,9 +10,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.village.raid.Raid;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public record TextKey(int index, List<String> args) {
@@ -28,12 +32,38 @@ public record TextKey(int index, List<String> args) {
     static final Map<String, Integer> keyMap = new HashMap<>();
     static final Map<Integer, String> keyReverseMap = new HashMap<>();
     static final Map<Integer, Function<TextKey, Text>> keyTextBuilderMap = new HashMap<>();
+    static final Map<Integer, BiFunction<ItemStack, World, List<ItemStack>>> processorMap = new HashMap<>();
     static final Map<Integer, Identifier> keySpriteIdMap = new HashMap<>();
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
+    static final BiFunction<ItemStack, World, List<ItemStack>> DEFAULT_PROCESSOR = (stack, world) -> List.of(stack);
     static final Identifier EMPTY = new Identifier(EMILoot.MOD_ID, "textures/gui/empty.png");
     static int curDynamicIndex = 1000;
 
+    public static final Set<String> defaultSkips = Set.of("emi_loot.function.set_count_add", "emi_loot.function.set_count_set", "emi_loot.function.fill_player_head", "emi_loot.function.limit_count", "emi_loot.no_conditions");
+
     static {
+        BiFunction<ItemStack, World, List<ItemStack>> smeltProcessor = (stack, world) -> {
+            List<ItemStack> finalStacks = new LinkedList<>();
+            //finalStacks.add(stack);
+            if (world != null) {
+                Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
+                if (opt.isPresent()) {
+                    ItemStack tempStack = opt.get().getOutput(world.getRegistryManager());
+                    if (!tempStack.isEmpty()) {
+                        //System.out.println(tempStack);
+                        finalStacks.add(tempStack.copy());
+                    }
+                } else {
+                    finalStacks.add(stack);
+                }
+            } else {
+                finalStacks.add(stack);
+            }
+            return finalStacks;
+        };
+
+        BiFunction<ItemStack, World, List<ItemStack>> ominousProcessor = (stack, world) -> List.of(Raid.getOminousBanner());
+
         mapBuilder(0, "emi_loot.function.empty", (key)->LText.empty(), EMPTY);
         mapBuilder(1, "emi_loot.function.bonus", (key)-> getOneArgText(1, key), new Identifier(EMILoot.MOD_ID, "textures/gui/bonus.png"));
         mapBuilder(2, "emi_loot.function.potion", (key) -> getOneArgText(2, key), new Identifier(EMILoot.MOD_ID, "textures/gui/potion.png"));
@@ -43,7 +73,7 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(6, "emi_loot.function.randomly_enchanted_item", (key)-> getBasicText(6), new Identifier(EMILoot.MOD_ID, "textures/gui/random_item.png"));
         mapBuilder(7, "emi_loot.function.set_enchant_book", (key)-> getBasicText(7), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
         mapBuilder(8, "emi_loot.function.set_enchant_item", (key)-> getBasicText(8), new Identifier(EMILoot.MOD_ID, "textures/gui/set_item.png"));
-        mapBuilder(9, "emi_loot.function.smelt", (key)-> getBasicText(9), new Identifier(EMILoot.MOD_ID, "textures/gui/smelt.png"));
+        mapBuilder(9, "emi_loot.function.smelt", (key)-> getBasicText(9), new Identifier(EMILoot.MOD_ID, "textures/gui/smelt.png"), smeltProcessor);
         mapBuilder(10, "emi_loot.function.looting", (key)-> getBasicText(10), new Identifier(EMILoot.MOD_ID, "textures/gui/looting.png"));
         mapBuilder(11, "emi_loot.function.map", (key) -> getOneArgText(11, key), new Identifier(EMILoot.MOD_ID, "textures/gui/map.png"));
         mapBuilder(12, "emi_loot.function.set_contents", (key)-> getBasicText(12), new Identifier(EMILoot.MOD_ID, "textures/gui/set_contents.png"));
@@ -64,9 +94,9 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
         mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
         mapBuilder(37, "emi_loot.condition.invert", (key)-> getInvertedText(37, key), new Identifier(EMILoot.MOD_ID, "textures/gui/invert.png"));
-        mapBuilder(38, "emi_loot.condition.alternates", (key)-> getOneArgText(38, key), new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(39, "emi_loot.condition.alternates_2", (key)-> getTwoArgText(39, key), new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(40, "emi_loot.condition.alternates_3", (key)-> getAlternates3Text(40, key), new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
+        //mapBuilder(38, "emi_loot.condition.alternates", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(39, "emi_loot.condition.any_of", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
         mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), new Identifier(EMILoot.MOD_ID, "textures/gui/steve.png"));
         mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
         mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getTwoArgText(43, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
@@ -82,6 +112,7 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID, "textures/gui/sunny.png"));
         mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID, "textures/gui/thundering.png"));
         mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
+
 
         //tool tag textkeys
         //pickaxe
@@ -115,7 +146,7 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(127, "emi_loot.condition.creeper", (key)-> getBasicText(127), new Identifier(EMILoot.MOD_ID, "textures/gui/creeper.png"));
         mapBuilder(128, "emi_loot.condition.wither_kill", (key)-> getBasicText(128), new Identifier(EMILoot.MOD_ID, "textures/gui/wither.png"));
         mapBuilder(129, "emi_loot.function.set_any_damage", (key)-> getBasicText(129), new Identifier(EMILoot.MOD_ID, "textures/gui/damage.png"));
-        mapBuilder(130, "emi_loot.function.ominous_banner", (key)-> getBasicText(130), new Identifier(EMILoot.MOD_ID, "textures/gui/ominous.png"));
+        mapBuilder(130, "emi_loot.function.ominous_banner", (key)-> getBasicText(130), new Identifier(EMILoot.MOD_ID, "textures/gui/ominous.png"), ominousProcessor);
         //No conditions
         mapBuilder(150, "emi_loot.no_conditions", (key)-> getBasicText(150), EMPTY);
     }
@@ -127,6 +158,27 @@ public record TextKey(int index, List<String> args) {
         keySpriteIdMap.put(index, spriteId);
     }
 
+    private static void mapBuilder(int index, String key, Function<TextKey, Text> function, Identifier spriteId, BiFunction<ItemStack, World, List<ItemStack>> processor) {
+        keyMap.put(key, index);
+        keyReverseMap.put(index, key);
+        keyTextBuilderMap.put(index, function);
+        keySpriteIdMap.put(index, spriteId);
+        processorMap.put(index, processor);
+    }
+
+    public static void register(String key, int args, Identifier sprite, BiFunction<ItemStack, World, List<ItemStack>> processor) {
+        if (keyMap.containsKey(key)) throw new IllegalArgumentException("Text key [" + key + "] already registered!");
+        if (!sprite.toString().contains(".png")) throw new IllegalArgumentException("Text key [" + key + "] registered with sprite identifier [" + sprite + "] that isn't a png!)");
+        int index = curDynamicIndex;
+        curDynamicIndex++;
+        switch (args) {
+            case 0 -> mapBuilder(index, key, (tk) -> getBasicText(index), sprite, processor);
+            case 1 -> mapBuilder(index, key, (tk) -> getOneArgText(index, tk), sprite, processor);
+            case 2 -> mapBuilder(index, key, (tk) -> getTwoArgText(index, tk), sprite, processor);
+            default -> mapBuilder(index, key, TextKey::getAnyOfText, sprite, processor);
+        }
+    }
+
     public static void register(String key, int args, Identifier sprite) {
         if (keyMap.containsKey(key)) throw new IllegalArgumentException("Text key [" + key + "] already registered!");
         if (!sprite.toString().contains(".png")) throw new IllegalArgumentException("Text key [" + key + "] registered with sprite identifier [" + sprite + "] that isn't a png!)");
@@ -136,7 +188,7 @@ public record TextKey(int index, List<String> args) {
             case 0 -> mapBuilder(index, key, (tk) -> getBasicText(index), sprite);
             case 1 -> mapBuilder(index, key, (tk) -> getOneArgText(index, tk), sprite);
             case 2 -> mapBuilder(index, key, (tk) -> getTwoArgText(index, tk), sprite);
-            default -> mapBuilder(index, key, (tk) -> getAlternates3Text(index, tk), sprite);
+            default -> mapBuilder(index, key, TextKey::getAnyOfText, sprite);
         }
     }
 
@@ -182,22 +234,50 @@ public record TextKey(int index, List<String> args) {
         return LText.translatable(translationKey, arg1, arg2);
     }
 
-    private static Text getAlternates3Text(int index, TextKey key) {
-        String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        MutableText finalText = LText.empty();
+    private static Text getAnyOfText(TextKey key) {
         List<String> args = key.args;
         int size = args.size();
-        for (int i = 0;i<size;i++) {
-            String arg = args.get(i);
-            if (i == (size - 2)) {
-                finalText.append(LText.translatable("emi_loot.condition.alternates_3a", arg));
-            } else if (i == (size - 1)) {
-                finalText.append(LText.translatable("emi_loot.condition.alternates", arg));
-            } else {
-                finalText.append(LText.translatable(translationKey, arg));
+        if (size == 1) {
+            return LText.translatable("emi_loot.condition.any_of", args.get(0));
+        } else if (size == 2) {
+            return LText.translatable("emi_loot.condition.any_of_2", args.get(0), args.get(1));
+        } else {
+            MutableText finalText = LText.empty();
+            for (int i = 0; i < size; i++) {
+                String arg = args.get(i);
+                if (i == (size - 2)) {
+                    finalText.append(LText.translatable("emi_loot.condition.any_of_3a", arg));
+                } else if (i == (size - 1)) {
+                    finalText.append(LText.translatable("emi_loot.condition.any_of", arg));
+                } else {
+                    finalText.append(LText.translatable("emi_loot.condition.any_of_3", arg));
+                }
             }
+            return finalText;
         }
-        return finalText;
+    }
+
+    private static Text getAllOfText(TextKey key) {
+        List<String> args = key.args;
+        int size = args.size();
+        if (size == 1) {
+            return LText.translatable("emi_loot.condition.all_of", args.get(0));
+        } else if (size == 2) {
+            return LText.translatable("emi_loot.condition.all_of_2", args.get(0), args.get(1));
+        } else {
+            MutableText finalText = LText.empty();
+            for (int i = 0; i < size; i++) {
+                String arg = args.get(i);
+                if (i == (size - 2)) {
+                    finalText.append(LText.translatable("emi_loot.condition.all_of_3a", arg));
+                } else if (i == (size - 1)) {
+                    finalText.append(LText.translatable("emi_loot.condition.all_of", arg));
+                } else {
+                    finalText.append(LText.translatable("emi_loot.condition.all_of_3", arg));
+                }
+            }
+            return finalText;
+        }
     }
 
     private static Text getInvertedText(int index, TextKey key) {
@@ -216,6 +296,10 @@ public record TextKey(int index, List<String> args) {
 
     public boolean isNotEmpty() {
         return index != 0;
+    }
+
+    public static Set<String> keys() {
+        return keyMap.keySet();
     }
 
     public static int getIndex(String key) {
@@ -259,28 +343,19 @@ public record TextKey(int index, List<String> args) {
         return TextKey.of(key, Collections.singletonList(arg));
     }
 
+    public static String symbolKey(int index) {
+        return String.valueOf((char)(0xe700 + index));
+    }
+
     public TextKeyResult process(ItemStack stack, @Nullable World world) {
-        ItemStack finalStack;
-        List<ItemStack> finalStacks = new LinkedList<>();
-        //finalStacks.add(stack);
-        if (this.index == 8 && world != null) {
-            Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
-            if (opt.isPresent()) {
-                // Since AbstractCookingRecipe doesn't use the registryManager we can safely pass null here
-                ItemStack tempStack = opt.get().getOutput(null);
-                if (!tempStack.isEmpty()) {
-                    //System.out.println(tempStack);
-                    finalStack = tempStack.copy();
-                    finalStacks.add(finalStack);
-                }
-            } else {
-                finalStacks.add(stack);
-            }
-        } else {
-            finalStacks.add(stack);
-        }
+        BiFunction<ItemStack, World, List<ItemStack>> processor = processorMap.getOrDefault(this.index, DEFAULT_PROCESSOR);
+        List<ItemStack> finalStacks = processor.apply(stack, world);
         Text text = keyTextBuilderMap.getOrDefault(this.index, DEFAULT_FUNCTION).apply(this);
         return new TextKeyResult(text, finalStacks);
+    }
+
+    public boolean skip() {
+        return EMILoot.config.skippedKeys.contains(getKey(this.index));
     }
 
     public record TextKeyResult(Text text, List<ItemStack> stacks){}
@@ -311,9 +386,6 @@ public record TextKey(int index, List<String> args) {
         }
     }
 
-    public static String symbolKey(int index) {
-        return String.valueOf((char)(0xe700 + index));
-    }
 
     @Override
     public boolean equals(Object o) {

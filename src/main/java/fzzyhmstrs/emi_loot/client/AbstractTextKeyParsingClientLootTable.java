@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,15 +63,20 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
     public void build(World world, Block block) {
         Map<List<Pair<Integer, Text>>, Object2FloatMap<ItemStack>> builderItems = new HashMap<>();
         rawItems.forEach((list, pool)-> {
-            List<Pair<Integer, Text>> applyToAllList = new LinkedList<>(getSpecialTextKeyList(world, block));
+            List<Pair<Integer, Text>> applyToAllList = new ArrayList<>(getSpecialTextKeyList(world, block));
             list.forEach((textKey) -> {
                 Text text = textKey.process(ItemStack.EMPTY, world).text();
+                if (textKey.index() == 37) {
+                    System.out.println(getId());
+                    System.out.println(textKey);
+                    System.out.println(text);
+                }
                 applyToAllList.add(new Pair<>(textKey.index(), text));
             });
             pool.map().forEach((poolList, poolItemMap)-> {
-                List<Pair<Integer, Text>> newPoolList = new LinkedList<>();
+                List<Pair<Integer, Text>> newPoolList = new ArrayList<>();
                 Object2FloatMap<ItemStack> itemsToAdd = new Object2FloatOpenHashMap<>();
-                List<ItemStack> itemsToRemove = new LinkedList<>();
+                List<ItemStack> itemsToRemove = new ArrayList<>();
 
                 poolList.forEach((textKey) -> {
                     poolItemMap.forEach((poolStack, weight)-> {
@@ -94,12 +100,40 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                     });
                     Text text = textKey.process(ItemStack.EMPTY, world).text();
+                    if (textKey.index() == 37) {
+                        System.out.println(getId());
+                        System.out.println(textKey);
+                        System.out.println(text);
+                    }
                     newPoolList.add(new Pair<>(textKey.index(), text));
 
                 });
-                List<Pair<Integer, Text>> summedList = new LinkedList<>(applyToAllList);
+                list.forEach((textKey) -> {
+                    poolItemMap.forEach((poolStack, weight)-> {
+                        List<ItemStack> stacks = textKey.process(poolStack, world).stacks();
+                        AtomicReference<Float> toAddWeight = new AtomicReference<>(1.0f);
+                        if (!stacks.contains(poolStack)) {
+                            itemsToRemove.add(poolStack);
+                            toAddWeight.set(poolItemMap.getFloat(poolStack));
+                        }
+
+                        stacks.forEach(stack-> {
+                            if(poolItemMap.containsKey(stack)) {
+                                toAddWeight.set(poolItemMap.getFloat(stack));
+                            }
+                        });
+                        stacks.forEach(stack-> {
+                            if(!poolItemMap.containsKey(stack)) {
+                                itemsToAdd.put(stack, (float)toAddWeight.get());
+                            }
+                        });
+
+                    });
+
+                });
+                List<Pair<Integer, Text>> summedList = new ArrayList<>(applyToAllList);
                 summedList.addAll(newPoolList);
-                if (summedList.isEmpty()) {
+                if (summedList.isEmpty() && (!EMILoot.config.skippedKeys.contains("emi_loot.no_conditions") || !EMILoot.config.isTooltipStyle())) {
                     summedList.add(new Pair<>(TextKey.getIndex("emi_loot.no_conditions"), LText.translatable("emi_loot.no_conditions")));
                 }
                 Object2FloatMap<ItemStack> builderPoolMap = builderItems.getOrDefault(summedList, poolItemMap);

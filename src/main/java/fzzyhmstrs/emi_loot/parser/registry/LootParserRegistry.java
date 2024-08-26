@@ -9,6 +9,7 @@ import fzzyhmstrs.emi_loot.parser.condition.EntityPropertiesConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.InvertedConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.LocationCheckConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.MatchToolConditionParser;
+import fzzyhmstrs.emi_loot.parser.condition.MultiplesConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.RandomChanceConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.RandomChanceWithLootingConditionParser;
 import fzzyhmstrs.emi_loot.parser.condition.ReferenceConditionParser;
@@ -111,9 +112,11 @@ public class LootParserRegistry {
         registerFunction(LootFunctionTypes.SET_STEW_EFFECT, new SetStewFunctionParser(), "Registering vanilla set stew effect function parser");
         registerFunction(LootFunctionTypes.SET_NBT, new SimpleFunctionParser("emi_loot.function.set_nbt"), "Registering vanilla set nbt function parser");
         registerFunction(LootFunctionTypes.SET_LOOT_TABLE, new SetLootTableFunctionParser(), "Registering vanilla set loot table function parser");
-        registerFunction(EMILoot.OMINOUS_BANNER, new OminousBannerFunctionParser(), "Registering Lootify ominous banner function parser");
+        registerFunction(EMILoot.OMINOUS_BANNER, new SimpleFunctionParser("emi_loot.function.ominous_banner"), "Registering Lootify ominous banner function parser");
         registerFunction(EMILoot.SET_ANY_DAMAGE, new SetAnyDamageFunctionParser(), "Registering Lootify set-any-damage function parser");
 
+        registerCondition(LootConditionTypes.ANY_OF, new MultiplesConditionParser("emi_loot.condition.any_of"), "Registering vanilla any-of condition parser");
+        registerCondition(LootConditionTypes.ALL_OF, new MultiplesConditionParser("emi_loot.condition.all_of"), "Registering vanilla all-of condition parser");
         registerCondition(LootConditionTypes.SURVIVES_EXPLOSION, new SurvivesExplosionConditionParser(), "Registering vanilla survives-explosion condition parser");
         registerCondition(LootConditionTypes.BLOCK_STATE_PROPERTY, new BlockStatePropertyConditionParser(), "Registering vanilla block state property condition parser");
         registerCondition(LootConditionTypes.TABLE_BONUS, new TableBonusConditionParser(), "Registering vanilla table bonus condition parser");

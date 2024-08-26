@@ -6,6 +6,7 @@ import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
 import fzzyhmstrs.emi_loot.server.function.OminousBannerLootFunction;
 import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
+import fzzyhmstrs.emi_loot.util.TextKey;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
@@ -14,6 +15,7 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
@@ -34,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 public class EMILoot implements ModInitializer {
@@ -99,6 +102,9 @@ public class EMILoot implements ModInitializer {
         @RequiresRestart
         public boolean parseArchaeologyLoot = true;
 
+        @RequiresRestart
+        public Set<String> skippedKeys = new ValidatedSet<>(TextKey.defaultSkips, ValidatedString.fromList(TextKey.keys().stream().toList()));
+
         @NonSync
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedAny<CompactLoot> compactLoot = new ValidatedAny<>(new CompactLoot());
@@ -113,12 +119,16 @@ public class EMILoot implements ModInitializer {
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
                 ?
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
+            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
 				:
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
+            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
 
         public boolean isTooltipStyle() {
-            return Objects.equals(conditionStyle.get(), "tooltip") && FabricLoader.getInstance().isModLoaded("symbols_n_stuff");
+            return Objects.equals(conditionStyle.get(), "tooltip") || Objects.equals(conditionStyle.get(), "plain");
+        }
+
+        public boolean isNotPlain() {
+            return !((Objects.equals(conditionStyle.get(), "tooltip") && !FabricLoader.getInstance().isModLoaded("symbols_n_stuff")) || Objects.equals(conditionStyle.get(), "plain"));
         }
 
         public boolean isCompact(Type type) {

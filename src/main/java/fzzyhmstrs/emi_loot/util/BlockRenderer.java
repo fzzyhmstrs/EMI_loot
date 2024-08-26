@@ -90,6 +90,7 @@ public class BlockRenderer {
 		if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
 			Random random = Random.create();
 			random.setSeed(42);
+			consumer.light(LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			brm.renderBlock(blockState, blockPos, world, matrices, consumer, false, random);
 		}
 		FluidState fluidState = blockState.getFluidState();
