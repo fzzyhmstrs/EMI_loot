@@ -1,14 +1,16 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.FluidPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
+
+import java.util.Optional;
 
 public class FluidPredicateParser {
 
@@ -18,19 +20,19 @@ public class FluidPredicateParser {
 
     private static Text parseFluidPredicateInternal(FluidPredicate predicate) {
 
-        TagKey<Fluid> tag = ((FluidPredicateAccessor)predicate).getTag();
-        if (tag != null) {
-            return LText.translatable("emi_loot.fluid_predicate.tag", tag.id().toString());
+        Optional<TagKey<Fluid>> tag = predicate.tag();
+        if (tag.isPresent()){
+            return LText.translatable("emi_loot.fluid_predicate.tag",tag.get().id().toString());
         }
 
-        Fluid fluid = ((FluidPredicateAccessor)predicate).getFluid();
-        if (fluid != null) {
-            return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid).toString());
+        Optional<RegistryEntry<Fluid>> fluid = predicate.fluid();
+        if (fluid.isPresent()){
+            return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid.get().value()).toString());
         }
 
-        StatePredicate statePredicate = ((FluidPredicateAccessor)predicate).getState();
-        if (!statePredicate.equals(StatePredicate.ANY)) {
-            return StatePredicateParser.parseStatePredicate(statePredicate);
+        Optional<StatePredicate> statePredicate = predicate.state();
+        if (statePredicate.isPresent()){
+            return StatePredicateParser.parseStatePredicate(statePredicate.get());
         }
 
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable fluid predicate in table: "  + LootTableParser.currentTable);

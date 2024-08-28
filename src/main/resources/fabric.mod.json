@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "emi_loot",
   "version": "${version}",
   "name": "EMI Loot",
   "description":"Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.",
@@ -26,6 +26,9 @@
   "license": "MIT License",
   "accessWidener": "emi_loot.accesswidener",
   "depends": {
-    "minecraft": ">=1.20"
+    "fabricloader": "*",
+    "minecraft": ">=1.20.4",
+    "fabric-api": "*",
+    "emi": "*"
   }
 }

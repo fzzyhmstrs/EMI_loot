@@ -25,8 +25,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.loot.function.LootFunctionTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
@@ -41,7 +42,7 @@ import java.util.function.BooleanSupplier;
 
 public class EMILoot implements ModInitializer {
 
-    public static String MOD_ID = "emi_loot";
+    public static final String MOD_ID = "emi_loot";
     public static final Logger LOGGER = LoggerFactory.getLogger("emi_loot");
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
@@ -49,11 +50,11 @@ public class EMILoot implements ModInitializer {
     public static boolean DEBUG = config.debugMode;
 
     //conditions & functions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
-    public static LootConditionType WITHER_KILL = LootConditionTypes.register("lootify:wither_kill", new KilledByWitherLootCondition.Serializer());
-    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("lootify:spawns_with", new MobSpawnedWithLootCondition.Serializer());
-    public static LootConditionType CREEPER = LootConditionTypes.register("lootify:creeper", new BlownUpByCreeperLootCondition.Serializer());
-    public static LootFunctionType SET_ANY_DAMAGE = LootFunctionTypes.register("lootify:set_any_damage", new SetAnyDamageLootFunction.Serializer());
-    public static LootFunctionType OMINOUS_BANNER = LootFunctionTypes.register("lootify:ominous_banner", new OminousBannerLootFunction.Serializer());
+    public static LootConditionType WITHER_KILL = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:wither_kill", new LootConditionType(KilledByWitherLootCondition.CODEC));
+    public static LootConditionType SPAWNS_WITH = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:spawns_with", new LootConditionType(MobSpawnedWithLootCondition.CODEC));
+    public static LootConditionType CREEPER = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:creeper", new LootConditionType(BlownUpByCreeperLootCondition.CODEC));
+    public static LootFunctionType SET_ANY_DAMAGE = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:set_any_damage", new LootFunctionType(SetAnyDamageLootFunction.CODEC));
+    public static LootFunctionType OMINOUS_BANNER = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:ominous_banner", new LootFunctionType(OminousBannerLootFunction.CODEC));
 
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
         @Override
@@ -61,6 +62,7 @@ public class EMILoot implements ModInitializer {
             return false;
         }
 
+        @Override
         public boolean isAvailableForRandomSelection() {
             return false;
         }

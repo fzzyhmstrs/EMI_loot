@@ -1,11 +1,11 @@
 package fzzyhmstrs.emi_loot.parser.condition;
 
-import fzzyhmstrs.emi_loot.mixins.EntityPropertiesLootConditionAccessor;
 import fzzyhmstrs.emi_loot.parser.EntityPredicateParser;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.predicate.entity.EntityPredicate;
@@ -17,9 +17,12 @@ import java.util.List;
 public class EntityPropertiesConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
-        LootContext.EntityTarget entity = ((EntityPropertiesLootConditionAccessor)condition).getEntity();
-        EntityPredicate predicate = ((EntityPropertiesLootConditionAccessor)condition).getPredicate();
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+        LootContext.EntityTarget entity = ((EntityPropertiesLootCondition)condition).entity();
+        EntityPredicate predicate = ((EntityPropertiesLootCondition)condition).predicate().orElse(null); // TODO?
+		if (predicate == null) {
+			Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", LText.literal("unknown"))));
+		}
         MutableText propText;
         if (entity == LootContext.EntityTarget.THIS) {
             propText = LText.translatable("emi_loot.entity_predicate.entity_this", EntityPredicateParser.parseEntityPredicate(predicate));

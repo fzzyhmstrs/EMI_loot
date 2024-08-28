@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fzzyhmstrs.emi_loot.EMILoot;
-import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.resource.Resource;
@@ -27,7 +26,7 @@ public class ServerResourceData {
     public static final Multimap<Identifier, LootTable> DIRECT_DROPS = Multimaps.newMultimap(Maps.newLinkedHashMap(), ArrayList::new);
     public static final List<Identifier> SHEEP_TABLES;
     public static final List<Identifier> TABLE_EXCLUSIONS = new LinkedList<>();
-    private static final Gson GSON = LootGsons.getTableGsonBuilder().create();
+    private static final Gson GSON = new Gson();
     private static final int DIRECT_DROPS_PATH_LENGTH = "direct_drops/".length();
     private static final int FILE_SUFFIX_LENGTH = ".json".length();
 

@@ -1,43 +1,44 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.EntityEquipmentPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.entity.EntityEquipmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.text.Text;
 
-public class EntityEquipmentPredicateParser {
+import java.util.Optional;
 
-    public static Text parseEntityEquipmentPredicate(EntityEquipmentPredicate predicate) {
-        ItemPredicate head = ((EntityEquipmentPredicateAccessor)predicate).getHead();
-        if (!head.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(head);
+public class EntityEquipmentPredicateParser{
+
+    public static Text parseEntityEquipmentPredicate(EntityEquipmentPredicate predicate){
+        Optional<ItemPredicate> head = predicate.head();
+        if (head.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(head.get());
         }
 
-        ItemPredicate chest = ((EntityEquipmentPredicateAccessor)predicate).getChest();
-        if (!chest.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(chest);
+        Optional<ItemPredicate> chest = predicate.chest();
+        if (chest.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(chest.get());
         }
 
-        ItemPredicate legs = ((EntityEquipmentPredicateAccessor)predicate).getLegs();
-        if (!legs.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(legs);
+        Optional<ItemPredicate> legs = predicate.legs();
+        if (legs.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(legs.get());
         }
 
-        ItemPredicate feet = ((EntityEquipmentPredicateAccessor)predicate).getFeet();
-        if (!feet.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(feet);
+        Optional<ItemPredicate> feet = predicate.feet();
+        if (feet.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(feet.get());
         }
 
-        ItemPredicate mainhand = ((EntityEquipmentPredicateAccessor)predicate).getMainhand();
-        if (!mainhand.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(mainhand);
+        Optional<ItemPredicate> mainhand = predicate.mainhand();
+        if (mainhand.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(mainhand.get());
         }
 
-        ItemPredicate offhand = ((EntityEquipmentPredicateAccessor)predicate).getOffhand();
-        if (!offhand.equals(ItemPredicate.ANY)) {
-            return ItemPredicateParser.parseItemPredicate(offhand);
+        Optional<ItemPredicate> offhand = predicate.offhand();
+        if (offhand.isPresent()) {
+            return ItemPredicateParser.parseItemPredicate(offhand.get());
         }
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable equipment predicate in table: "  + LootTableParser.currentTable);
         return LText.translatable("emi_loot.predicate.invalid");

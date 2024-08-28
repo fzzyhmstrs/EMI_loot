@@ -243,7 +243,7 @@
   "emi_loot.entity_predicate.type_specific.cat": "that is a %s cat",
   "emi_loot.entity_predicate.type_specific.cat.minecraft:all_black": "all-black",
   "emi_loot.entity_predicate.type_specific.cat.minecraft:black": "black",
-  "emi_loot.entity_predicate.type_specific.cat.minecraft:british": "british",
+  "emi_loot.entity_predicate.type_specific.cat.minecraft:british_shorthair": "british shorthair",
   "emi_loot.entity_predicate.type_specific.cat.minecraft:calico": "calico",
   "emi_loot.entity_predicate.type_specific.cat.minecraft:jellie": "jellie",
   "emi_loot.entity_predicate.type_specific.cat.minecraft:persian": "persian",
