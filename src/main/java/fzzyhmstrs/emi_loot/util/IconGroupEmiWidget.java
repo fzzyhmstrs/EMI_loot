@@ -37,7 +37,7 @@ public class IconGroupEmiWidget extends Widget {
         int itemXOffset = iconsWidth + 2;
         for(ConditionalStack entry: pool.stacks()) {
             String rounded = FloatTrimmer.trimFloatString(entry.weight());
-            SlotWidget widget = new SlotWidget(entry.ingredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
+            SlotWidget widget = new SlotWidget(entry.getIngredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
             itemXOffset +=20;
             list2.add(widget);
         }

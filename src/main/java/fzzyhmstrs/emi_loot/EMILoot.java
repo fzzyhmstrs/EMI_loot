@@ -6,6 +6,7 @@ import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
 import fzzyhmstrs.emi_loot.server.function.OminousBannerLootFunction;
 import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
+import fzzyhmstrs.emi_loot.util.TextKey;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
@@ -14,6 +15,7 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
@@ -23,8 +25,9 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.loot.function.LootFunctionTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
@@ -34,11 +37,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 public class EMILoot implements ModInitializer {
 
-    public static String MOD_ID = "emi_loot";
+    public static final String MOD_ID = "emi_loot";
     public static final Logger LOGGER = LoggerFactory.getLogger("emi_loot");
     public static Random emiLootRandom = new LocalRandom(System.currentTimeMillis());
     public static LootTableParser parser = new LootTableParser();
@@ -46,11 +50,11 @@ public class EMILoot implements ModInitializer {
     public static boolean DEBUG = config.debugMode;
 
     //conditions & functions will be used in Lootify also, copying the identifier here so both mods can serialize the same conditions separately
-    public static LootConditionType WITHER_KILL = LootConditionTypes.register("lootify:wither_kill", new KilledByWitherLootCondition.Serializer());
-    public static LootConditionType SPAWNS_WITH = LootConditionTypes.register("lootify:spawns_with", new MobSpawnedWithLootCondition.Serializer());
-    public static LootConditionType CREEPER = LootConditionTypes.register("lootify:creeper", new BlownUpByCreeperLootCondition.Serializer());
-    public static LootFunctionType SET_ANY_DAMAGE = LootFunctionTypes.register("lootify:set_any_damage", new SetAnyDamageLootFunction.Serializer());
-    public static LootFunctionType OMINOUS_BANNER = LootFunctionTypes.register("lootify:ominous_banner", new OminousBannerLootFunction.Serializer());
+    public static LootConditionType WITHER_KILL = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:wither_kill", new LootConditionType(KilledByWitherLootCondition.CODEC));
+    public static LootConditionType SPAWNS_WITH = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:spawns_with", new LootConditionType(MobSpawnedWithLootCondition.CODEC));
+    public static LootConditionType CREEPER = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:creeper", new LootConditionType(BlownUpByCreeperLootCondition.CODEC));
+    public static LootFunctionType SET_ANY_DAMAGE = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:set_any_damage", new LootFunctionType(SetAnyDamageLootFunction.CODEC));
+    public static LootFunctionType OMINOUS_BANNER = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:ominous_banner", new LootFunctionType(OminousBannerLootFunction.CODEC));
 
     public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
         @Override
@@ -58,6 +62,7 @@ public class EMILoot implements ModInitializer {
             return false;
         }
 
+        @Override
         public boolean isAvailableForRandomSelection() {
             return false;
         }
@@ -70,7 +75,7 @@ public class EMILoot implements ModInitializer {
     @Override
     public void onInitialize() {
         parser.registerServer();
-        //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
+        Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
 
     @IgnoreVisibility
@@ -99,6 +104,9 @@ public class EMILoot implements ModInitializer {
         @RequiresRestart
         public boolean parseArchaeologyLoot = true;
 
+        @RequiresRestart
+        public Set<String> skippedKeys = new ValidatedSet<>(TextKey.defaultSkips, ValidatedString.fromList(TextKey.keys().stream().toList()));
+
         @NonSync
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedAny<CompactLoot> compactLoot = new ValidatedAny<>(new CompactLoot());
@@ -113,12 +121,16 @@ public class EMILoot implements ModInitializer {
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
                 ?
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t))
+            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
 				:
-            new ValidatedChoice<>(List.of("default", "tooltip"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"));
+            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
 
         public boolean isTooltipStyle() {
-            return Objects.equals(conditionStyle.get(), "tooltip") && FabricLoader.getInstance().isModLoaded("symbols_n_stuff");
+            return Objects.equals(conditionStyle.get(), "tooltip") || Objects.equals(conditionStyle.get(), "plain");
+        }
+
+        public boolean isNotPlain() {
+            return !((Objects.equals(conditionStyle.get(), "tooltip") && !FabricLoader.getInstance().isModLoaded("symbols_n_stuff")) || Objects.equals(conditionStyle.get(), "plain"));
         }
 
         public boolean isCompact(Type type) {

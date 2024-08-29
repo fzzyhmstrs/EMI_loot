@@ -5,10 +5,12 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.Optional;
+
 @Mixin(SetNameLootFunction.class)
 public interface SetNameLootFunctionAccessor {
 
     @Accessor(value = "name")
-    Text getName();
+    Optional<Text> getName();
 
 }

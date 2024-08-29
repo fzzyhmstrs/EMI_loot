@@ -10,10 +10,10 @@ import net.minecraft.loot.function.LootFunction;
 import java.util.List;
 
 public class ApplyBonusFunctionParser implements FunctionParser {
-    
+
     @Override
-    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
-        Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
+    public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack,boolean parentIsAlternative, List<TextKey> conditionTexts) {
+        Enchantment enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment().value();
         String name = enchant.getName(1).getString();
         String nTrim;
         if (enchant.getMaxLevel() != 1) {

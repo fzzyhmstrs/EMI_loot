@@ -15,6 +15,7 @@ import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.SymbolText;
+import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.fabricmc.loader.api.FabricLoader;
@@ -40,7 +41,7 @@ public class GameplayLootRecipe implements EmiRecipe {
         List<EmiStack> list = new LinkedList<>();
         loot.builtItems.forEach((builtPool)-> {
                 builtPool.stacks().forEach(stack -> {
-                    list.addAll(stack.ingredient().getEmiStacks());
+                    list.addAll(stack.ingredient());
                 });
                 addWidgetBuilders(builtPool, false);
             }
@@ -48,24 +49,26 @@ public class GameplayLootRecipe implements EmiRecipe {
         outputStacks = list;
         String key = "emi_loot.gameplay." + loot.id.toString();
         Text text = LText.translatable(key);
+        Text rawTitle;
         if (Objects.equals(text.getString(), key)) {
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
             if (modNameOpt.isPresent()) {
                 ModContainer modContainer = modNameOpt.get();
                 String modName = modContainer.getMetadata().getName();
-                name = LText.translatable("emi_loot.gameplay.unknown_gameplay", modName);
+                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");
-                name = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
+                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
             }
         } else {
-            name = text;
+            rawTitle = text;
         }
+        name = TrimmedTitle.of(rawTitle, EMILoot.config.isTooltipStyle() ? 138 : 148);
     }
 
     private final ClientGameplayLootTable loot;
     private final List<EmiStack> outputStacks;
-    private final Text name;
+    private final TrimmedTitle name;
     private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
@@ -130,13 +133,13 @@ public class GameplayLootRecipe implements EmiRecipe {
                     for (WidgetRowBuilder builder: rowBuilderList) {
                         ingredients += builder.ingredientCount();
                     }
-                    if (ingredients <= 4) {
+                    if (ingredients <= 8) {
                         return 29;
                     } else {
-                        return ((ingredients - 5) / 8) + 1;
+                        return 11 + 18 * ((ingredients + 7) / 8);
                     }
                 } else {
-                    return 11 + 18 * ((stacks - 1) / 8);
+                    return 11 + 18 * ((stacks + 7) / 8);
                 }
             }
         } else {
@@ -150,9 +153,10 @@ public class GameplayLootRecipe implements EmiRecipe {
         int y = 0;
 
         //draw the gameplay name
-        widgets.addText(name.asOrderedText(), 0, 0, 0x404040, false);
-
-
+        widgets.addText(name.title(), 0, 0, 0x404040, false);
+        if (name.trimmed()) {
+            widgets.addTooltipText(List.of(name.rawTitle()), 0, 0, EMILoot.config.isTooltipStyle() ? 144 : 154, 10);
+        }
         if (EMILoot.config.isTooltipStyle()) {
             List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.GAMEPLAY))
                     ?
@@ -162,11 +166,13 @@ public class GameplayLootRecipe implements EmiRecipe {
             int i = 0;
             int j = 0;
             for (ConditionalStack stack: stacks) {
-                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 11 + (18 * j));
+                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 11 + (18 * j));
                 String rounded = FloatTrimmer.trimFloatString(stack.weight());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
-                for (Pair<Integer, Text> pair : stack.conditions()) {
-                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                if (EMILoot.config.isNotPlain()) {
+                    for (Pair<Integer, Text> pair : stack.conditions()) {
+                        widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                    }
                 }
                 ++i;
                 if (i > 7) {

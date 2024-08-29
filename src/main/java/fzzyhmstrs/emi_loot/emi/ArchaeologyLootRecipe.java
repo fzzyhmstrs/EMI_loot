@@ -11,6 +11,7 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientArchaeologyLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
@@ -33,13 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class ArchaeologyLootRecipe implements EmiRecipe {
-	private final ClientArchaeologyLootTable loot;
-	private final ArrayListMultimap<Float, EmiStack> lootStacksSorted;
-	private final int lootStacksSortedSize;
-	private final List<EmiStack> outputs;
-	private boolean isGuaranteedNonChance = false;
-	private final Text title;
-	private final float columns = 8f;
 
 	public ArchaeologyLootRecipe(ClientArchaeologyLootTable loot) {
 		this.loot = loot;
@@ -82,17 +76,16 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			rawTitle = text;
 		}
 
-		Text dots = LText.literal("...");
-		int dotsWidth = MinecraftClient.getInstance().textRenderer.getWidth(dots);
-		if(MinecraftClient.getInstance().textRenderer.getWidth(rawTitle) > 138 - dotsWidth) {
-			String trimmed = MinecraftClient.getInstance().textRenderer.trimToWidth(rawTitle.getString(), 138 - dotsWidth) + "...";
-			title = LText.literal(trimmed);
-		} else {
-			title = rawTitle;
-		}
+		this.title = TrimmedTitle.of(rawTitle, 138);
 	}
 
-
+	private final ClientArchaeologyLootTable loot;
+	private final ArrayListMultimap<Float, EmiStack> lootStacksSorted;
+	private final int lootStacksSortedSize;
+	private final List<EmiStack> outputs;
+	private boolean isGuaranteedNonChance = false;
+	private final TrimmedTitle title;
+	private final float columns = 8f;
 
 	@Override
 	public EmiRecipeCategory getCategory() {
@@ -140,7 +133,10 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			finalRowHeight = 18;
 		}
 
-		widgets.addText(title.asOrderedText(), 1, 0, 0x404040, false);
+		widgets.addText(title.title(), 1, 0, 0x404040, false);
+		if (title.trimmed()) {
+			widgets.addTooltipText(List.of(title.rawTitle()), 0, 0, 144, 10);
+		}
 		AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
 		for (var entry : lootStacksSorted.asMap().entrySet()) {
 			float weight = entry.getKey();

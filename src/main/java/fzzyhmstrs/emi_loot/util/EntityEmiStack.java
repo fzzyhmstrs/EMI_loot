@@ -121,7 +121,7 @@ public class EntityEmiStack extends EmiStack {
         return entity != null ? entity.getName() : EmiPort.literal("yet another missingno");
     }
 
-    public static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, LivingEntity entity) {
+    static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, LivingEntity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         double width = client.getWindow().getScaledWidth();
@@ -178,12 +178,11 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
+        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         try {
-            VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
             RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
+        } finally {
             immediate.draw();
-        } catch (Exception e) {
-            //
         }
         entityRenderDispatcher.setRenderShadows(true);
         entity.bodyYaw = h;
@@ -196,7 +195,7 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.enableGuiDepthLighting();
     }
 
-    public static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, Entity entity) {
+    static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, Entity entity) {
         MinecraftClient client = MinecraftClient.getInstance();
         Mouse mouse = client.mouse;
         float w = 1920;
@@ -235,12 +234,11 @@ public class EntityEmiStack extends EmiStack {
         DiffuseLighting.method_34742();
         EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         entityRenderDispatcher.setRenderShadows(false);
+        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
         try {
-            VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
             RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack2, immediate, 15728880));
+        } finally {
             immediate.draw();
-        } catch (Exception e) {
-            //
         }
         entityRenderDispatcher.setRenderShadows(true);
         entity.setYaw(i);

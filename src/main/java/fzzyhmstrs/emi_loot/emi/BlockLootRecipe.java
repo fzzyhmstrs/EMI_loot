@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.ItemEmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
@@ -28,6 +29,7 @@ import net.minecraft.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +48,7 @@ public class BlockLootRecipe implements EmiRecipe {
                 /*if (weight < 100f) {
                     allStacksGuaranteed = false;
                 }*/
-                list.addAll(stack.ingredient().getEmiStacks());
+                list.addAll(stack.ingredient());
             });
             addWidgetBuilders(builtPool, false);
         });
@@ -84,7 +86,7 @@ public class BlockLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new LinkedList<>();
+        return inputStack.getItemStack().isEmpty() ? Collections.emptyList() : List.of(inputStack);
     }
 
     @Override
@@ -117,7 +119,7 @@ public class BlockLootRecipe implements EmiRecipe {
                     if (ingredients <= 4) {
                         return 29;
                     } else {
-                        return ((ingredients - 5) / 8) + 1;
+                        return 18 + 18 * (((ingredients - 5) / 8) + 1);
                     }
                 } else {
                     return 18 + 18 * (((stacks - 6) / 8) + 1);
@@ -144,11 +146,13 @@ public class BlockLootRecipe implements EmiRecipe {
             int i = 3;
             int j = 0;
             for (ConditionalStack stack: stacks) {
-                SlotWidget widget = widgets.addSlot(stack.ingredient(), i * 18, 18 * j);
+                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 18 * j);
                 String rounded = FloatTrimmer.trimFloatString(stack.weight());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
-                for (Pair<Integer, Text> pair : stack.conditions()) {
-                    widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                if (EMILoot.config.isNotPlain()) {
+                    for (Pair<Integer, Text> pair : stack.conditions()) {
+                        widget.appendTooltip(SymbolText.of(pair.getLeft(), pair.getRight()));
+                    }
                 }
                 ++i;
                 if (i > 7) {

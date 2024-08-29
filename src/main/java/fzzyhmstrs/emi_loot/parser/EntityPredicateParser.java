@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.mixins.EntityPredicateAccessor;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.entity.DistancePredicate;
@@ -14,6 +13,8 @@ import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.predicate.entity.TypeSpecificPredicate;
 import net.minecraft.text.Text;
 
+import java.util.Optional;
+
 public class EntityPredicateParser {
 
     public static Text parseEntityPredicate(EntityPredicate predicate) {
@@ -21,81 +22,81 @@ public class EntityPredicateParser {
     }
 
     private static Text parseEntityPredicateInternal(EntityPredicate predicate) {
-        if (predicate.equals(EntityPredicate.ANY)) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate empty in table: "  + LootTableParser.currentTable);
-            return LText.empty();
-        }
+        //if (predicate.equals(EntityPredicate.ANY)) {
+        //    if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate empty in table: "  + LootTableParser.currentTable);
+        //    return LText.empty();
+        //}
 
         //entity type check
-        EntityTypePredicate typePredicate = ((EntityPredicateAccessor)predicate).getType();
-        if (!typePredicate.equals(EntityTypePredicate.ANY)) {
-           return EntityTypePredicateParser.parseEntityTypePredicate(typePredicate);
+        Optional<EntityTypePredicate> typePredicate = predicate.type();
+        if (typePredicate.isPresent()) {
+           return EntityTypePredicateParser.parseEntityTypePredicate(typePredicate.get());
         }
 
         //distance check
-        DistancePredicate distancePredicate = ((EntityPredicateAccessor)predicate).getDistance();
-        if (!distancePredicate.equals(DistancePredicate.ANY)) {
-            return DistancePredicateParser.parseDistancePredicate(distancePredicate);
+        Optional<DistancePredicate> distancePredicate = predicate.distance();
+        if (distancePredicate.isPresent()) {
+            return DistancePredicateParser.parseDistancePredicate(distancePredicate.get());
         }
 
         //location check
-        LocationPredicate locationPredicate = ((EntityPredicateAccessor)predicate).getLocation();
-        if (!locationPredicate.equals(LocationPredicate.ANY)) {
-            return LocationPredicateParser.parseLocationPredicate(locationPredicate);
+        Optional<LocationPredicate> locationPredicate = predicate.location();
+        if (locationPredicate.isPresent()) {
+            return LocationPredicateParser.parseLocationPredicate(locationPredicate.get());
         }
 
         //stepping on check
-        LocationPredicate steppingOnPredicate = ((EntityPredicateAccessor)predicate).getSteppingOn();
-        if (!steppingOnPredicate.equals(LocationPredicate.ANY)) {
-            return LocationPredicateParser.parseLocationPredicate(locationPredicate);
+        Optional<LocationPredicate> steppingOnPredicate = predicate.steppingOn();
+        if (steppingOnPredicate.isPresent()) {
+            return LocationPredicateParser.parseLocationPredicate(locationPredicate.get());
         }
 
         //effects check
-        EntityEffectPredicate entityEffectPredicate = ((EntityPredicateAccessor)predicate).getEffects();
-        if (!entityEffectPredicate.equals(EntityEffectPredicate.EMPTY)) {
-            return EntityEffectPredicateParser.parseEntityEffectPredicate(entityEffectPredicate);
+        Optional<EntityEffectPredicate> entityEffectPredicate = predicate.effects();
+        if (entityEffectPredicate.isPresent()) {
+            return EntityEffectPredicateParser.parseEntityEffectPredicate(entityEffectPredicate.get());
         }
 
         //nbt check
-        NbtPredicate nbt = ((EntityPredicateAccessor)predicate).getNbt();
-        if (!nbt.equals(NbtPredicate.ANY)) {
-            return NbtPredicateParser.parseNbtPredicate(nbt);
+        Optional<NbtPredicate> nbt = predicate.nbt();
+        if (nbt.isPresent()) {
+            return NbtPredicateParser.parseNbtPredicate(nbt.get());
         }
 
         //flags check
-        EntityFlagsPredicate entityFlagsPredicate = ((EntityPredicateAccessor)predicate).getFlags();
-        if (!entityFlagsPredicate.equals(EntityFlagsPredicate.ANY)) {
-            return EntityFlagsPredicateParser.parseEntityFlagsPredicate(entityFlagsPredicate);
+        Optional<EntityFlagsPredicate> entityFlagsPredicate = predicate.flags();
+        if (entityFlagsPredicate.isPresent()) {
+            return EntityFlagsPredicateParser.parseEntityFlagsPredicate(entityFlagsPredicate.get());
         }
 
         //equipment check
-        EntityEquipmentPredicate entityEquipmentPredicate = ((EntityPredicateAccessor)predicate).getEquipment();
-        if (!entityEquipmentPredicate.equals(EntityEquipmentPredicate.ANY)) {
-            return EntityEquipmentPredicateParser.parseEntityEquipmentPredicate(entityEquipmentPredicate);
+        Optional<EntityEquipmentPredicate> entityEquipmentPredicate = predicate.equipment();
+        if (entityEquipmentPredicate.isPresent()) {
+            return EntityEquipmentPredicateParser.parseEntityEquipmentPredicate(entityEquipmentPredicate.get());
         }
 
         //Type Specific checks
-        TypeSpecificPredicate typeSpecificPredicate = ((EntityPredicateAccessor)predicate).getTypeSpecific();
-        if (!typeSpecificPredicate.equals(TypeSpecificPredicate.ANY)) {
-            return TypeSpecificPredicateParser.parseTypeSpecificPredicate(typeSpecificPredicate);
+        Optional<TypeSpecificPredicate> typeSpecificPredicate = predicate.typeSpecific();
+        if (typeSpecificPredicate.isPresent()) {
+            return TypeSpecificPredicateParser.parseTypeSpecificPredicate(typeSpecificPredicate.get());
         }
 
         //vehicle checks
-        EntityPredicate vehicle = ((EntityPredicateAccessor)predicate).getVehicle();
-        if (!vehicle.equals(EntityPredicate.ANY)) {
-            return EntityPredicateParser.parseEntityPredicate(vehicle);
+        Optional<EntityPredicate> vehicle = predicate.vehicle();
+        if (vehicle.isPresent()) {
+            return EntityPredicateParser.parseEntityPredicate(vehicle.get());
         }
 
         //passenger checks
-        EntityPredicate passenger = ((EntityPredicateAccessor)predicate).getPassenger();
-        if (!passenger.equals(EntityPredicate.ANY)) {
-            return EntityPredicateParser.parseEntityPredicate(passenger);
+        Optional<EntityPredicate> passenger = predicate.passenger();
+        if (passenger.isPresent()) {
+            return EntityPredicateParser.parseEntityPredicate(passenger.get());
         }
 
         //targeted entity checks
-        EntityPredicate targetedEntity = ((EntityPredicateAccessor)predicate).getTargetedEntity();
-        if (!targetedEntity.equals(EntityPredicate.ANY)) {
-            return EntityPredicateParser.parseEntityPredicate(targetedEntity);
+        Optional<EntityPredicate> targetedEntity = predicate.targetedEntity();
+        if (targetedEntity.isPresent()) {
+            return EntityPredicateParser.parseEntityPredicate(targetedEntity.get());
         }
 
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate undefined in table: "  + LootTableParser.currentTable);

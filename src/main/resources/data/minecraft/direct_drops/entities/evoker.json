@@ -8,13 +8,13 @@
           "condition": "lootify:spawns_with"
         }
       ],
-      "functions": [
-        {
-          "function": "lootify:ominous_banner"
-        }
-      ],
       "entries": [
         {
+          "functions": [
+            {
+              "function": "lootify:ominous_banner"
+            }
+          ],
           "type": "minecraft:item",
           "name": "minecraft:white_banner"
         }
