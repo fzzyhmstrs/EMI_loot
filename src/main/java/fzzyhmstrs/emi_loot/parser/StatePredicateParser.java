@@ -18,7 +18,7 @@ public class StatePredicateParser {
         List<Condition> list = predicate.conditions();
         if (!list.isEmpty()) {
             List<MutableText> list2 = new LinkedList<>();
-            for (Condition condition : list){
+            for (Condition condition : list) {
                 if (condition.valueMatcher() instanceof StatePredicate.RangedValueMatcher rangedValueMatcher) {
                     String key = condition.key();
                     String min = rangedValueMatcher.min().orElse(null);

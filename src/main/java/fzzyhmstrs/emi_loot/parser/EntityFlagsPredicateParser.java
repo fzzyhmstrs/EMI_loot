@@ -7,14 +7,14 @@ import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-public class EntityFlagsPredicateParser{
+public class EntityFlagsPredicateParser {
 
 
     public static Text parseEntityFlagsPredicate(EntityFlagsPredicate predicate) {
         return LText.translatable("emi_loot.entity_predicate.flag", parseEntityFlagsPredicateInternal(predicate).getString());
     }
 
-    private static Text parseEntityFlagsPredicateInternal(EntityFlagsPredicate predicate){
+    private static Text parseEntityFlagsPredicateInternal(EntityFlagsPredicate predicate) {
         Optional<Boolean> isOnFire = predicate.isOnFire();
         if (isOnFire.isPresent()) {
             if (isOnFire.get()) {

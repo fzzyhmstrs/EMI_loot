@@ -15,7 +15,7 @@ import java.util.List;
 public class LocationCheckConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LocationPredicate predicate = ((LocationCheckLootCondition)condition).predicate().orElse(null); // TODO?
 
         Text locText = LocationPredicateParser.parseLocationPredicate(predicate);

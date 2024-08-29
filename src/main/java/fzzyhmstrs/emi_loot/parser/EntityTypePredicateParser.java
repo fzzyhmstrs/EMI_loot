@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class EntityTypePredicateParser {
 
-    public static Text parseEntityTypePredicate(EntityTypePredicate predicate){
+    public static Text parseEntityTypePredicate(EntityTypePredicate predicate) {
         RegistryEntryList<EntityType<?>> registryEntryList = predicate.types();
         Optional<TagKey<EntityType<?>>> tag = registryEntryList.getTagKey();
         if (tag.isPresent()) {

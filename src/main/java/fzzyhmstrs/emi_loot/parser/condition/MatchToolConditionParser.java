@@ -16,10 +16,10 @@ import java.util.List;
 public class MatchToolConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         ItemPredicate predicate = ((MatchToolLootCondition)condition).predicate().orElse(null); // TODO?
 		if (predicate == null) {
-			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", LText.literal("unknown"))));
+			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", "unknown")));
 		}
         Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));

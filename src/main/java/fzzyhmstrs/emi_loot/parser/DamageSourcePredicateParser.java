@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class DamageSourcePredicateParser {
 
-    public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate){
+    public static Text parseDamageSourcePredicate(DamageSourcePredicate predicate) {
         Optional<EntityPredicate> directPredicate = predicate.directEntity();
         if (directPredicate.isPresent()) {
             return EntityPredicateParser.parseEntityPredicate(directPredicate.get());

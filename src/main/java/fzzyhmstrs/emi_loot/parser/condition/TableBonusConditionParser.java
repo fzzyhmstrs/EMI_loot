@@ -13,7 +13,7 @@ import java.util.List;
 public class TableBonusConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         Enchantment enchant = ((TableBonusLootCondition)condition).enchantment().value();
         String name = enchant.getName(1).getString();
         String nTrim;

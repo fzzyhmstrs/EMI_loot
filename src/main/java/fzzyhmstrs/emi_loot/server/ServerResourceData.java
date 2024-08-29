@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
@@ -49,12 +51,13 @@ public class ServerResourceData {
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            LootTable lootTable = GSON.fromJson(json, LootTable.class);
+            LootTable lootTable = LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, EMILoot.LOGGER::error);
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
                 EMILoot.LOGGER.error("Loot table in file [" + id + "] is empty!");
             }
+
         } catch(Exception e) {
             EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
         }

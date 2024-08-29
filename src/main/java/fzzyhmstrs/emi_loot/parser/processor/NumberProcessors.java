@@ -26,7 +26,7 @@ public class NumberProcessors {
         return LText.empty();
     }
 
-    public static MutableText processNumberRange(NumberRange<?> range, String exact, String between, String atLeast, String atMost, String fallback, Object ... args){
+    public static MutableText processNumberRange(NumberRange<?> range, String exact, String between, String atLeast, String atMost, String fallback, Object ... args) {
         if (!range.equals(NumberRange.IntRange.ANY) && !range.equals(NumberRange.DoubleRange.ANY)) {
             Optional<? extends Number> min = range.min();
             Optional<? extends Number> max = range.max();
@@ -71,9 +71,9 @@ public class NumberProcessors {
 
     public static MutableText processLootNumberProvider(LootNumberProvider provider) {
         LootNumberProviderType type = provider.getType();
-        if(type == LootNumberProviderTypes.CONSTANT){
+        if(type == LootNumberProviderTypes.CONSTANT) {
             return LText.translatable ("emi_loot.number_provider.constant",((ConstantLootNumberProvider)provider).value());
-        } else if(type == LootNumberProviderTypes.BINOMIAL){
+        } else if(type == LootNumberProviderTypes.BINOMIAL) {
             LootNumberProvider n = ((BinomialLootNumberProvider)provider).n();
             LootNumberProvider p = ((BinomialLootNumberProvider)provider).p();
             float nVal = getRollAvg(n);
@@ -82,7 +82,7 @@ public class NumberProcessors {
             MutableText pValText = processLootNumberProvider(p);
             float avg = nVal * pVal;
             return LText.translatable("emi_loot.number_provider.binomial",nValText,pValText,avg);
-        } else if(type == LootNumberProviderTypes.UNIFORM){
+        } else if(type == LootNumberProviderTypes.UNIFORM) {
             LootNumberProvider min = ((UniformLootNumberProvider)provider).min();
             LootNumberProvider max = ((UniformLootNumberProvider)provider).max();
             float minVal = getRollAvg(min);
@@ -91,7 +91,7 @@ public class NumberProcessors {
             MutableText maxValText = processLootNumberProvider(max);
             float avg = (minVal + maxVal) / 2f;
             return LText.translatable("emi_loot.number_provider.uniform",minValText,maxValText,avg);
-        } else if (type == LootNumberProviderTypes.SCORE){
+        } else if (type == LootNumberProviderTypes.SCORE) {
             //LootScoreProvider lootScoreProvider = ((ScoreLootNumberProvider)provider).target();
             String lootScore = ((ScoreLootNumberProvider)provider).score();
             float lootScale = ((ScoreLootNumberProvider)provider).scale();
@@ -104,15 +104,15 @@ public class NumberProcessors {
 
     public static float getRollAvg(LootNumberProvider provider) {
         LootNumberProviderType type = provider.getType();
-        if(type == LootNumberProviderTypes.CONSTANT){
+        if(type == LootNumberProviderTypes.CONSTANT) {
             return ((ConstantLootNumberProvider)provider).value();
-        } else if(type == LootNumberProviderTypes.BINOMIAL){
+        } else if(type == LootNumberProviderTypes.BINOMIAL) {
             LootNumberProvider n = ((BinomialLootNumberProvider)provider).n();
             LootNumberProvider p = ((BinomialLootNumberProvider)provider).p();
             float nVal = getRollAvg(n);
             float pVal = getRollAvg(p);
             return nVal * pVal;
-        } else if(type == LootNumberProviderTypes.UNIFORM){
+        } else if(type == LootNumberProviderTypes.UNIFORM) {
             LootNumberProvider min = ((UniformLootNumberProvider)provider).min();
             LootNumberProvider max = ((UniformLootNumberProvider)provider).max();
             float minVal = getRollAvg(min);

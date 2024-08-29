@@ -17,11 +17,11 @@ import java.util.List;
 public class EntityPropertiesConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootContext.EntityTarget entity = ((EntityPropertiesLootCondition)condition).entity();
         EntityPredicate predicate = ((EntityPropertiesLootCondition)condition).predicate().orElse(null); // TODO?
 		if (predicate == null) {
-			Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", LText.literal("unknown"))));
+			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", "unknown")));
 		}
         MutableText propText;
         if (entity == LootContext.EntityTarget.THIS) {

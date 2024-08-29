@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 
 public class DistancePredicateParser {
 
-    public static Text parseDistancePredicate(DistancePredicate predicate){
+    public static Text parseDistancePredicate(DistancePredicate predicate) {
         NumberRange.DoubleRange abs = predicate.absolute();
         if (!abs.equals(NumberRange.DoubleRange.ANY)) {
             return LText.translatable("emi_loot.entity_predicate.distance_abs",abs.min().orElse(null),abs.max().orElse(null));

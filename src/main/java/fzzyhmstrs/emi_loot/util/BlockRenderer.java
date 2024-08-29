@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CobwebBlock;
-import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.SeagrassBlock;
@@ -21,7 +20,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.TexturedRenderLayers;
@@ -66,7 +64,7 @@ public class BlockRenderer {
 	static {
 		B2T.registerFallback((world, pos, state, blockEntity, context) -> {
 			Block block = state.getBlock();
-			return block instanceof FlowerBlock || block instanceof SaplingBlock || block instanceof CobwebBlock || block instanceof FernBlock || block instanceof SeagrassBlock || block instanceof TallPlantBlock ? T_CROSS : null;
+			return block instanceof FlowerBlock || block instanceof SaplingBlock || block instanceof CobwebBlock || block instanceof SeagrassBlock || block instanceof TallPlantBlock ? T_CROSS : null;
 		});
 		ClientTickEvents.START_CLIENT_TICK.register(client -> TICKED_BE.clear());
 	}

@@ -8,9 +8,9 @@ import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-public class EntityEquipmentPredicateParser{
+public class EntityEquipmentPredicateParser {
 
-    public static Text parseEntityEquipmentPredicate(EntityEquipmentPredicate predicate){
+    public static Text parseEntityEquipmentPredicate(EntityEquipmentPredicate predicate) {
         Optional<ItemPredicate> head = predicate.head();
         if (head.isPresent()) {
             return ItemPredicateParser.parseItemPredicate(head.get());

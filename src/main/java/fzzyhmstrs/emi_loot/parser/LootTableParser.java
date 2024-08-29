@@ -7,8 +7,8 @@ import fzzyhmstrs.emi_loot.mixins.ConditionalLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.mixins.ItemEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.LeafEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootPoolEntryAccessor;
+import fzzyhmstrs.emi_loot.mixins.LootTableAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootTableEntryAccessor;
-import fzzyhmstrs.emi_loot.mixins.RandomChanceLootConditionAccessor;
 import fzzyhmstrs.emi_loot.mixins.TagEntryAccessor;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
@@ -250,7 +250,7 @@ public class LootTableParser {
             LootNumberProvider rollProvider = pool.rolls;
             float conditionalMultiplier = 1f;
             for (LootCondition condition : pool.conditions) {
-                if (condition instanceof RandomChanceLootCondition randomChanceLootCondition){
+                if (condition instanceof RandomChanceLootCondition randomChanceLootCondition) {
                     conditionalMultiplier *= randomChanceLootCondition.chance();
                 }
             }
@@ -284,7 +284,7 @@ public class LootTableParser {
         }
     }
 
-    private static void parseBlockLootTableInternal(LootTable lootTable, BlockLootTableSender sender, boolean isDirect){
+    private static void parseBlockLootTableInternal(LootTable lootTable, BlockLootTableSender sender, boolean isDirect) {
         for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
             List<LootCondition> conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY,false);
@@ -329,11 +329,11 @@ public class LootTableParser {
         }
     }
 
-    private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect){
+    private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect) {
         for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
             List<LootCondition> conditions = pool.conditions;
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
-            if (isDirect){
+            if (isDirect) {
                 if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding direct drop condition to " + currentTable);
                 parsedConditions.add(new LootConditionResult(TextKey.of("emi_loot.condition.direct_drop")));
             }
@@ -440,7 +440,7 @@ public class LootTableParser {
         return parseItemEntry(weight, item, functions, conditions, parentIsAlternative);
     }
 
-    static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, List<LootFunction> functions, List<LootCondition> conditions, boolean parentIsAlternative){
+    static List<ItemEntryResult> parseItemEntry(int weight, ItemStack item, List<LootFunction> functions, List<LootCondition> conditions, boolean parentIsAlternative) {
         FunctionApplierResult functionApplierResult = applyLootFunctionToItem(functions, item, weight, parentIsAlternative);
         List<ItemEntryResult> conditionalEntryResults = functionApplierResult.conditionalResults;
         List<TextKey> functionTexts = functionApplierResult.functionTexts;
@@ -475,7 +475,7 @@ public class LootTableParser {
 
     }
 
-    static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry){
+    static List<ItemEntryResult> parseAlternativeEntry(AlternativeEntry entry) {
         List<LootPoolEntry> children = ((CombinedEntryAccessor)entry).getChildren();
         List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
         List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, true);
@@ -490,7 +490,7 @@ public class LootTableParser {
         return results;
     }
 
-    static List<ItemEntryResult> parseGroupEntry(GroupEntry entry, boolean parentIsAlternative){
+    static List<ItemEntryResult> parseGroupEntry(GroupEntry entry, boolean parentIsAlternative) {
         List<LootPoolEntry> children = ((CombinedEntryAccessor)entry).getChildren();
         List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
         List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
@@ -505,7 +505,7 @@ public class LootTableParser {
         return results;
     }
 
-    static List<ItemEntryResult> parseSequenceEntry(SequenceEntry entry, boolean parentIsAlternative){
+    static List<ItemEntryResult> parseSequenceEntry(SequenceEntry entry, boolean parentIsAlternative) {
         List<LootPoolEntry> children = ((CombinedEntryAccessor)entry).getChildren();
         List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
         List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
@@ -574,7 +574,7 @@ public class LootTableParser {
             return LootFunctionResult.EMPTY;
         }
         List<TextKey> conditionsTexts;
-        if (function instanceof ConditionalLootFunction){
+        if (function instanceof ConditionalLootFunction) {
             List<LootCondition> conditions = ((ConditionalLootFunctionAccessor)function).getConditions();
             conditionsTexts = parseLootConditionTexts(conditions, stack, parentIsAlternative);
         } else {
@@ -589,7 +589,7 @@ public class LootTableParser {
         }
     }
 
-    private static List<ItemEntryResult> applyLootFunctionsToTableResults(List<LootFunction> functions, List<ItemEntryResult> parsedList, boolean parentIsAlternative){
+    private static List<ItemEntryResult> applyLootFunctionsToTableResults(List<LootFunction> functions, List<ItemEntryResult> parsedList, boolean parentIsAlternative) {
         List<ItemEntryResult> conditionalEntryResults = new LinkedList<>();
         List<ItemEntryResult> processedEntryResults = new LinkedList<>();
         parsedList.forEach(itemEntry -> {

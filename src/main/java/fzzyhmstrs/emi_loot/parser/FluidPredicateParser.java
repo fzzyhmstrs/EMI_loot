@@ -21,17 +21,17 @@ public class FluidPredicateParser {
     private static Text parseFluidPredicateInternal(FluidPredicate predicate) {
 
         Optional<TagKey<Fluid>> tag = predicate.tag();
-        if (tag.isPresent()){
+        if (tag.isPresent()) {
             return LText.translatable("emi_loot.fluid_predicate.tag",tag.get().id().toString());
         }
 
         Optional<RegistryEntry<Fluid>> fluid = predicate.fluid();
-        if (fluid.isPresent()){
+        if (fluid.isPresent()) {
             return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid.get().value()).toString());
         }
 
         Optional<StatePredicate> statePredicate = predicate.state();
-        if (statePredicate.isPresent()){
+        if (statePredicate.isPresent()) {
             return StatePredicateParser.parseStatePredicate(statePredicate.get());
         }
 

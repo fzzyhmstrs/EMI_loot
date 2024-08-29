@@ -14,7 +14,7 @@ import java.util.List;
 public class InvertedConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootCondition term = ((InvertedLootCondition)condition).term();
         List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(term, stack);
         List<LootTableParser.LootConditionResult> finalResults = new ArrayList<>();

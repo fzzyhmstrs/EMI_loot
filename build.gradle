@@ -45,8 +45,8 @@ dependencies {
 
     modImplementation ":fzzy_config-${fzzy_config_version}"
 
-    //modImplementation ":symbols_n_stuff-${sns_version}"
-    modCompileOnly ":symbols_n_stuff-${sns_version}"
+    modImplementation ":symbols_n_stuff-${sns_version}"
+    //modCompileOnly ":symbols_n_stuff-${sns_version}"
 }
 
 processResources {

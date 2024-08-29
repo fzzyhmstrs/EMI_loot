@@ -14,6 +14,7 @@ import net.minecraft.predicate.entity.LightningBoltPredicate;
 import net.minecraft.predicate.entity.PlayerPredicate;
 import net.minecraft.predicate.entity.SlimePredicate;
 import net.minecraft.predicate.entity.TypeSpecificPredicate;
+import net.minecraft.predicate.entity.VariantPredicates;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -47,13 +48,13 @@ public class TypeSpecificPredicateParser {
         if (predicate instanceof VariantPredicates.Predicate<?> variantPredicate) {
             if (variantPredicate.variant() instanceof CatVariant cat) {
                 Identifier id = Registries.CAT_VARIANT.getId(cat);
-                if (id != null){
+                if (id != null) {
                     MutableText catVar = LText.translatable("emi_loot.entity_predicate.type_specific.cat." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.cat",catVar.getString());
                 }
             } else if (variantPredicate.variant() instanceof FrogVariant frog) {
                 Identifier id = Registries.FROG_VARIANT.getId(frog);
-                if (id != null){
+                if (id != null) {
                     MutableText frogVar = LText.translatable("emi_loot.entity_predicate.type_specific.frog." + id);
                     return LText.translatable("emi_loot.entity_predicate.type_specific.frog", frogVar.getString());
                 }

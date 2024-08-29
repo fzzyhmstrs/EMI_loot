@@ -75,7 +75,7 @@ public class EMILoot implements ModInitializer {
     @Override
     public void onInitialize() {
         parser.registerServer();
-        //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
+        Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
 
     @IgnoreVisibility

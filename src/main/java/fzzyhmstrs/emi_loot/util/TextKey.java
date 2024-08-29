@@ -7,6 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -16,6 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public record TextKey(int index, List<String> args) {
@@ -37,9 +39,9 @@ public record TextKey(int index, List<String> args) {
             List<ItemStack> finalStacks = new LinkedList<>();
             //finalStacks.add(stack);
             if (world != null) {
-                Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
+                Optional<RecipeEntry<SmeltingRecipe>> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
                 if (opt.isPresent()) {
-                    ItemStack tempStack = opt.get().getOutput(world.getRegistryManager());
+                    ItemStack tempStack = opt.get().value().getResult(world.getRegistryManager());
                     if (!tempStack.isEmpty()) {
                         //System.out.println(tempStack);
                         finalStacks.add(tempStack.copy());

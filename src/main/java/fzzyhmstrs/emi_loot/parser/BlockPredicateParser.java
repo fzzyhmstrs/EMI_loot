@@ -21,7 +21,7 @@ public class BlockPredicateParser {
         return LText.translatable("emi_loot.block_predicate.base", parseBlockPredicateInternal(predicate).getString());
     }
 
-    private static Text parseBlockPredicateInternal(BlockPredicate predicate){
+    private static Text parseBlockPredicateInternal(BlockPredicate predicate) {
         Optional<TagKey<Block>> tag = predicate.tag();
         if (tag.isPresent()) {
             return LText.translatable("emi_loot.block_predicate.tag",tag.get().id().toString());

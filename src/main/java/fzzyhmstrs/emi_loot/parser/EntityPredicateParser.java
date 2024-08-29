@@ -21,7 +21,7 @@ public class EntityPredicateParser {
         return LText.translatable("emi_loot.entity_predicate.base", parseEntityPredicateInternal(predicate).getString());
     }
 
-    private static Text parseEntityPredicateInternal(EntityPredicate predicate){
+    private static Text parseEntityPredicateInternal(EntityPredicate predicate) {
         //if (predicate.equals(EntityPredicate.ANY)) {
         //    if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Entity predicate empty in table: "  + LootTableParser.currentTable);
         //    return LText.empty();

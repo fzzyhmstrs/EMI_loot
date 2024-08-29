@@ -16,10 +16,10 @@ import java.util.List;
 public class DamageSourceConditionParser implements ConditionParser {
 
     @Override
-    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative){
+    public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         DamageSourcePredicate damageSourcePredicate = ((DamageSourcePropertiesLootCondition)condition).predicate().orElse(null); // TODO?
 		if (damageSourcePredicate == null) {
-			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", LText.literal("Unkknown"))));
+			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", "Unknown")));
 		}
 		Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", damageText.getString())));

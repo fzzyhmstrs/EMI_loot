@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class LocationPredicateParser {
 
-    public static Text parseLocationPredicate(LocationPredicate predicate){
+    public static Text parseLocationPredicate(LocationPredicate predicate) {
         Optional<LocationPredicate.PositionRange> position = predicate.position();
         if (position.isPresent()) {
             NumberRange.DoubleRange x = position.get().x();
