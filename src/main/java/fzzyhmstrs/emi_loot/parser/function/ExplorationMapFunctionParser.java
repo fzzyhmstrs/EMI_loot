@@ -6,9 +6,10 @@ import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.map.MapIcon;
+import net.minecraft.item.map.MapDecorationType;
 import net.minecraft.item.map.MapState;
 import net.minecraft.loot.function.LootFunction;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.Structure;
@@ -16,7 +17,7 @@ import net.minecraft.world.gen.structure.Structure;
 import java.util.List;
 
 public class ExplorationMapFunctionParser implements FunctionParser {
-    
+
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         ItemStack mapStack;
@@ -24,7 +25,7 @@ public class ExplorationMapFunctionParser implements FunctionParser {
         if (!stack.isOf(Items.MAP)) {
             mapStack = stack;
         } else {
-            MapIcon.Type decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
+            RegistryEntry<MapDecorationType> decoration = ((ExplorationMapLootFunctionAccessor)function).getDecoration();
             TagKey<Structure> destination = ((ExplorationMapLootFunctionAccessor)function).getDestination();
             mapStack = new ItemStack(Items.FILLED_MAP);
             MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN, "+", decoration);

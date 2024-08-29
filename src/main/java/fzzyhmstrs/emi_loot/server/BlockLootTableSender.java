@@ -1,12 +1,15 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.networking.BlockBufCustomPayload;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -24,7 +27,6 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
 
     private final String idToSend;
     final List<BlockLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier BLOCK_SENDER = new Identifier("e_l", "b_s");
     boolean isEmpty = true;
 
 
@@ -45,7 +47,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, BLOCK_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, BlockBufCustomPayload.TYPE)) return;
         if (isEmpty) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
             return;
@@ -57,8 +59,8 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, BLOCK_SENDER, buf);
+            buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
+            ServerPlayNetworking.send(player, new BlockBufCustomPayload(buf));
             return;
         } else if (builderList.isEmpty()) {
             return;
@@ -95,13 +97,13 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack, weight)-> {
-                    buf.writeItemStack(stack);
+                    writeItemStack(buf, stack, player.getServerWorld());
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ServerPlayNetworking.send(player, BLOCK_SENDER, buf);
+        ServerPlayNetworking.send(player, new BlockBufCustomPayload(buf));
     }
 
     @Override

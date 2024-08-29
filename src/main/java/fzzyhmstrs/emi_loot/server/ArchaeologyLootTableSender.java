@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.server;
 
+import fzzyhmstrs.emi_loot.networking.ArchaeologyBufCustomPayload;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,6 @@ public class ArchaeologyLootTableSender implements LootSender<ArchaeologyLootPoo
 	private final String idToSend;
 	final List<ArchaeologyLootPoolBuilder> builderList = new LinkedList<>();
 	HashMap<ItemStack, Float> floatMap = new HashMap<>();
-	public static Identifier ARCHAEOLOGY_SENDER = new Identifier("e_1", "a_s");
 
 	public ArchaeologyLootTableSender(Identifier id) {
 		this.idToSend = LootSender.getIdToSend(id);
@@ -29,15 +29,15 @@ public class ArchaeologyLootTableSender implements LootSender<ArchaeologyLootPoo
 
 	@Override
 	public void send(ServerPlayerEntity player) {
-		if (!ServerPlayNetworking.canSend(player, ARCHAEOLOGY_SENDER)) return;
+		if (!ServerPlayNetworking.canSend(player, ArchaeologyBufCustomPayload.TYPE)) return;
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeString(idToSend);
 		buf.writeShort(floatMap.size());
 		floatMap.forEach((item, floatWeight) -> {
-			buf.writeItemStack(item);
+			writeItemStack(buf, item, player.getServerWorld());
 			buf.writeFloat(floatWeight);
 		});
-		ServerPlayNetworking.send(player, ARCHAEOLOGY_SENDER, buf);
+		ServerPlayNetworking.send(player, new ArchaeologyBufCustomPayload(buf));
 	}
 
 	@Override

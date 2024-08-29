@@ -1,6 +1,9 @@
 package fzzyhmstrs.emi_loot;
 
+import fzzyhmstrs.emi_loot.networking.BlockBufCustomPayload;
+import fzzyhmstrs.emi_loot.networking.ClearLootCustomPayload;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
@@ -20,15 +23,17 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.loot.function.LootFunctionTypes;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -53,10 +58,10 @@ public class EMILoot implements ModInitializer {
     public static LootConditionType WITHER_KILL = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:wither_kill", new LootConditionType(KilledByWitherLootCondition.CODEC));
     public static LootConditionType SPAWNS_WITH = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:spawns_with", new LootConditionType(MobSpawnedWithLootCondition.CODEC));
     public static LootConditionType CREEPER = Registry.register(Registries.LOOT_CONDITION_TYPE, "lootify:creeper", new LootConditionType(BlownUpByCreeperLootCondition.CODEC));
-    public static LootFunctionType SET_ANY_DAMAGE = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:set_any_damage", new LootFunctionType(SetAnyDamageLootFunction.CODEC));
-    public static LootFunctionType OMINOUS_BANNER = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:ominous_banner", new LootFunctionType(OminousBannerLootFunction.CODEC));
+    public static LootFunctionType<SetAnyDamageLootFunction> SET_ANY_DAMAGE = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:set_any_damage", new LootFunctionType<>(SetAnyDamageLootFunction.CODEC));
+    public static LootFunctionType<OminousBannerLootFunction> OMINOUS_BANNER = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:ominous_banner", new LootFunctionType<>(OminousBannerLootFunction.CODEC));
 
-    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
+    public static Enchantment RANDOM = new Enchantment(Enchantment.properties(ItemTags.ANVIL, ItemTags.ANVIL, 1, 1, new Enchantment.Cost(10, 0), new Enchantment.Cost(30, 0), 30, EquipmentSlot.MAINHAND)) {
         @Override
         public boolean isAvailableForEnchantedBookOffer() {
             return false;
@@ -75,7 +80,24 @@ public class EMILoot implements ModInitializer {
     @Override
     public void onInitialize() {
         parser.registerServer();
+
+        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BlockBufCustomPayload.TYPE, BlockBufCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+
         Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
+
+        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
+            LootTableParser.registryManager = server.getRegistryManager();
+        });
+
+        LootTableEvents.ALL_LOADED.register((resourceManager, lootManager) -> {
+            ServerResourceData.loadDirectTables(resourceManager);
+            LootTableParser.parseLootTables(lootManager);
+        });
     }
 
     @IgnoreVisibility

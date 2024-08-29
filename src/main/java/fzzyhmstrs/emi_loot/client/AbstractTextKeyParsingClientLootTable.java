@@ -12,8 +12,14 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -175,7 +181,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
     abstract T filledTableToReturn(Pair<Identifier, Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap);
 
     @Override
-    public LootReceiver fromBuf(PacketByteBuf buf) {
+    public LootReceiver fromBuf(PacketByteBuf buf, World world) {
         boolean isEmpty = true;
 
         Pair<Identifier, Identifier> ids = getBufId(buf);
@@ -234,7 +240,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                 int pileItemSize = buf.readShort();
                 for (int j = 0; j < pileItemSize; j++) {
-                    ItemStack stack = buf.readItemStack();
+                    ItemStack stack = readItemStack(buf, world);
                     float weight = buf.readFloat();
                     pileItemMap.put(stack, weight);
                     isEmpty = false;
@@ -248,5 +254,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
         return filledTableToReturn(ids, itemMap);
     }
+
+
 
 }

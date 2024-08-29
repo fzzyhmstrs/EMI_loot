@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.networking.GameplayBufCustomPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -24,7 +25,6 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     private final String idToSend;
     final List<GameplayLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier GAMEPLAY_SENDER = new Identifier("e_l", "g_s");
     boolean isEmpty = true;
 
     @Override
@@ -44,7 +44,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, GAMEPLAY_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, GameplayBufCustomPayload.TYPE)) return;
         if (isEmpty) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
             return;
@@ -56,8 +56,8 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
+            buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
+            ServerPlayNetworking.send(player, new GameplayBufCustomPayload(buf));
             return;
         } else if (builderList.isEmpty()) {
             return;
@@ -93,13 +93,13 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack, weight)-> {
-                    buf.writeItemStack(stack);
+                    writeItemStack(buf, stack, player.getServerWorld());
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
+        ServerPlayNetworking.send(player, new GameplayBufCustomPayload(buf));
     }
 
     @Override

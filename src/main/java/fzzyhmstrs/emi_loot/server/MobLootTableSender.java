@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.networking.MobBufCustomPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -25,7 +26,6 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     private final String idToSend;
     private final String mobIdToSend;
     final List<MobLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier MOB_SENDER = new Identifier("e_l", "m_s");
     boolean isEmpty = true;
 
     @Override
@@ -45,7 +45,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, MOB_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, MobBufCustomPayload.TYPE)) return;
         //pre-build the builders to do empty checks
         if (isEmpty) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
@@ -59,8 +59,8 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, MOB_SENDER, buf);
+            buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
+            ServerPlayNetworking.send(player, new MobBufCustomPayload(buf));
             return;
         } else if (builderList.isEmpty()) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
@@ -98,13 +98,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack, weight)-> {
-                    buf.writeItemStack(stack);
+                    writeItemStack(buf, stack, player.getServerWorld());
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ServerPlayNetworking.send(player, MOB_SENDER, buf);
+        ServerPlayNetworking.send(player, new MobBufCustomPayload(buf));
     }
 
     @Override

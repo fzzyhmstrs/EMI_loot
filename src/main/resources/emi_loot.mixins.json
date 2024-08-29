@@ -10,6 +10,7 @@
     "ConditionalLootFunctionAccessor",
     "CopyNameLootFunctionAccessor",
     "DataPackContentsMixin",
+    "EnchantmentsPredicateAccessor",
     "ExplorationMapLootFunctionAccessor",
     "ItemEntryAccessor",
     "LeafEntryAccessor",
@@ -28,7 +29,8 @@
     "SetPotionLootFunctionAccessor",
     "SetStewEffectLootFunctionAccessor",
     "SimpleResourceReloadMixin",
-    "TagEntryAccessor"
+    "TagEntryAccessor",
+    "VariantPredicateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

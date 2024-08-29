@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Either;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.CombinedEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.ConditionalLootFunctionAccessor;
@@ -10,6 +11,7 @@ import fzzyhmstrs.emi_loot.mixins.LootPoolEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootTableAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootTableEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.TagEntryAccessor;
+import fzzyhmstrs.emi_loot.networking.ClearLootCustomPayload;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
 import fzzyhmstrs.emi_loot.server.ArchaeologyLootPoolBuilder;
@@ -31,14 +33,10 @@ import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootDataKey;
-import net.minecraft.loot.LootDataType;
-import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
@@ -57,7 +55,10 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
@@ -73,6 +74,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class LootTableParser {
 
@@ -82,12 +84,11 @@ public class LootTableParser {
     private static final Map<Identifier, GameplayLootTableSender> gameplaySenders = new HashMap<>();
     private static final Map<Identifier, ArchaeologyLootTableSender> archaeologySenders = new HashMap<>();
     public static final Object2BooleanMap<PostProcessor> postProcessors;
-    private static Map<LootDataKey<?>, ?> tables = new HashMap<>();
-    private static final Map<Identifier, LootDataKey<?>> keyLookUp = new HashMap<>();
     public static String currentTable = "none";
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
-    public static LootManager lootManager = null;
+    public static Registry<LootTable> lootManager = null;
+    public static DynamicRegistryManager registryManager = null;
     public static final Identifier CLEAR_LOOTS = new Identifier("e_l", "clear");
 
 
@@ -115,7 +116,7 @@ public class LootTableParser {
                 }
                 EMILoot.LOGGER.warn("Post-processing complete!");
             }
-            ServerPlayNetworking.send(player, CLEAR_LOOTS, PacketByteBufs.empty());
+            ServerPlayNetworking.send(player, ClearLootCustomPayload.INSTANCE);
             if (EMILoot.config.parseChestLoot)
                 chestSenders.forEach((id, chestSender) -> chestSender.send(player));
             if (EMILoot.config.parseBlockLoot)
@@ -129,14 +130,8 @@ public class LootTableParser {
         });
     }
 
-    public static void parseLootTables(LootManager manager, Map<LootDataKey<?>, ?> tables) {
-        keyLookUp.clear();
-        LootTableParser.tables = tables;
+    public static void parseLootTables(Registry<LootTable> manager) {
         LootTableParser.lootManager = manager;
-        for (LootDataKey<?> key : LootTableParser.tables.keySet()) {
-            if (key.type() == LootDataType.LOOT_TABLES)
-                keyLookUp.put(key.id(), key);
-        }
         parsedDirectDrops = new LinkedList<>();
         chestSenders.clear();
         blockSenders.clear();
@@ -144,9 +139,9 @@ public class LootTableParser {
         gameplaySenders.clear();
         archaeologySenders.clear();
         EMILoot.LOGGER.info("parsing loot tables");
-        tables.forEach((key, table) -> {
-            if (table instanceof LootTable)
-                parseLootTable(key.id(), (LootTable) table);
+        manager.getEntrySet().forEach(entry -> {
+            LootTable table = entry.getValue();
+            parseLootTable(entry.getKey().getValue(), table);
         });
         if (EMILoot.config.parseMobLoot) {
             Identifier chk = new Identifier("pig");
@@ -156,7 +151,7 @@ public class LootTableParser {
                         parseEntityType(manager, type, sheepId, chk);
                     }
                 }
-                parseEntityType(manager, type, type.getLootTableId(), chk);
+                parseEntityType(manager, type, type.getLootTableId().getValue(), chk);
             });
         }
         Multimap<Identifier, LootTable> missedDrops = ServerResourceData.getMissedDirectDrops(parsedDirectDrops);
@@ -233,9 +228,9 @@ public class LootTableParser {
         postProcessors.put(process, true);
     }
 
-    private static void parseEntityType(LootManager manager, EntityType<?> type, Identifier mobTableId, Identifier fallback) {
+    private static void parseEntityType(Registry<LootTable> manager, EntityType<?> type, Identifier mobTableId, Identifier fallback) {
         Identifier mobId = Registries.ENTITY_TYPE.getId(type);
-        LootTable mobTable = manager.getLootTable(mobTableId);
+        LootTable mobTable = manager.get(mobTableId);
         if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
             currentTable = mobTableId.toString();
             mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
@@ -523,39 +518,36 @@ public class LootTableParser {
     }
 
     static List<ItemEntryResult> parseLootTableEntry(LootTableEntry entry, boolean parentIsAlternative) {
-        Identifier id = ((LootTableEntryAccessor)entry).getId();
-        if (LootTableParser.keyLookUp.containsKey(id)) {
-            if (LootTableParser.tables.containsKey(keyLookUp.get(id))) {
-                Object temp = LootTableParser.tables.get(keyLookUp.get(id));
-                if (!(temp instanceof LootTable table)) return List.of();
-                LootContextType type = table.getType();
-                LootSender<?> results;
-                List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
-                List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
-                if (type == LootContextTypes.CHEST) {
-                    results = parseChestLootTable(table, id);
-                } else if (type == LootContextTypes.BLOCK) {
-                    results = parseBlockLootTable(table, id);
-                } else if (type == LootContextTypes.ENTITY) {
-                    results = parseMobLootTable(table, id, new Identifier("empty"));
-                } else if (type == LootContextTypes.FISHING) {
-                    results = parseGameplayLootTable(table, id);
-                } else if (type == LootContextTypes.ARCHAEOLOGY) {
-                    results = parseArchaeologyTable(table, id);
-                } else {
-                    results = new EmptyLootTableSender();
-                }
-                List<? extends LootBuilder> parsedBuilders = results.getBuilders();
-                List<ItemEntryResult> parsedList = new LinkedList<>();
-                parsedBuilders.forEach(parsedBuilder ->
-                        parsedList.addAll(parsedBuilder.revert())
-                );
-                parsedList.forEach(result -> result.conditions.addAll(conditionsTexts));
-                List<LootFunction> functions = ((LeafEntryAccessor) entry).getFunctions();
-                return applyLootFunctionsToTableResults(functions, parsedList, parentIsAlternative);
-            }
+        Either<RegistryKey<LootTable>, LootTable> value = ((LootTableEntryAccessor)entry).getValue();
+        LootTable table = value.map(LootTableParser.lootManager::get, Function.identity());
+        if (table == null) return List.of();
+        Identifier id = LootTableParser.lootManager.getId(table);
+        if (id == null) return List.of();
+        LootContextType type = table.getType();
+        LootSender<?> results;
+        List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
+        List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
+        if (type == LootContextTypes.CHEST) {
+            results = parseChestLootTable(table, id);
+        } else if (type == LootContextTypes.BLOCK) {
+            results = parseBlockLootTable(table, id);
+        } else if (type == LootContextTypes.ENTITY) {
+            results = parseMobLootTable(table, id, new Identifier("empty"));
+        } else if (type == LootContextTypes.FISHING) {
+            results = parseGameplayLootTable(table, id);
+        } else if (type == LootContextTypes.ARCHAEOLOGY) {
+            results = parseArchaeologyTable(table, id);
+        } else {
+            results = new EmptyLootTableSender();
         }
-        return List.of();
+        List<? extends LootBuilder> parsedBuilders = results.getBuilders();
+        List<ItemEntryResult> parsedList = new LinkedList<>();
+        parsedBuilders.forEach(parsedBuilder ->
+                parsedList.addAll(parsedBuilder.revert())
+        );
+        parsedList.forEach(result -> result.conditions.addAll(conditionsTexts));
+        List<LootFunction> functions = ((LeafEntryAccessor) entry).getFunctions();
+        return applyLootFunctionsToTableResults(functions, parsedList, parentIsAlternative);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -51,7 +51,7 @@ public class ServerResourceData {
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            LootTable lootTable = LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, EMILoot.LOGGER::error);
+            LootTable lootTable = LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
@@ -103,22 +103,22 @@ public class ServerResourceData {
 
     static {
         Identifier[] ids = {
-                LootTables.WHITE_SHEEP_ENTITY,
-                LootTables.ORANGE_SHEEP_ENTITY,
-                LootTables.MAGENTA_SHEEP_ENTITY,
-                LootTables.LIGHT_BLUE_SHEEP_ENTITY,
-                LootTables.YELLOW_SHEEP_ENTITY,
-                LootTables.LIME_SHEEP_ENTITY,
-                LootTables.PINK_SHEEP_ENTITY,
-                LootTables.GRAY_SHEEP_ENTITY,
-                LootTables.LIGHT_GRAY_SHEEP_ENTITY,
-                LootTables.CYAN_SHEEP_ENTITY,
-                LootTables.PURPLE_SHEEP_ENTITY,
-                LootTables.BLUE_SHEEP_ENTITY,
-                LootTables.BROWN_SHEEP_ENTITY,
-                LootTables.GREEN_SHEEP_ENTITY,
-                LootTables.RED_SHEEP_ENTITY,
-                LootTables.BLACK_SHEEP_ENTITY
+                LootTables.WHITE_SHEEP_ENTITY.getValue(),
+                LootTables.ORANGE_SHEEP_ENTITY.getValue(),
+                LootTables.MAGENTA_SHEEP_ENTITY.getValue(),
+                LootTables.LIGHT_BLUE_SHEEP_ENTITY.getValue(),
+                LootTables.YELLOW_SHEEP_ENTITY.getValue(),
+                LootTables.LIME_SHEEP_ENTITY.getValue(),
+                LootTables.PINK_SHEEP_ENTITY.getValue(),
+                LootTables.GRAY_SHEEP_ENTITY.getValue(),
+                LootTables.LIGHT_GRAY_SHEEP_ENTITY.getValue(),
+                LootTables.CYAN_SHEEP_ENTITY.getValue(),
+                LootTables.PURPLE_SHEEP_ENTITY.getValue(),
+                LootTables.BLUE_SHEEP_ENTITY.getValue(),
+                LootTables.BROWN_SHEEP_ENTITY.getValue(),
+                LootTables.GREEN_SHEEP_ENTITY.getValue(),
+                LootTables.RED_SHEEP_ENTITY.getValue(),
+                LootTables.BLACK_SHEEP_ENTITY.getValue()
         };
         SHEEP_TABLES = Arrays.stream(ids).toList();
     }

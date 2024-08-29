@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.server;
 
+import fzzyhmstrs.emi_loot.networking.ChestBufCustomPayload;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,6 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     private final String idToSend;
     final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
     HashMap<ItemStack, Float> floatMap = new HashMap<>();
-    public static Identifier CHEST_SENDER = new Identifier("e_l", "c_s");
 
     @Override
     public void build() {
@@ -45,15 +45,15 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, CHEST_SENDER)) return;
+        if (!ServerPlayNetworking.canSend(player, ChestBufCustomPayload.TYPE)) return;
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeString(idToSend);
         buf.writeShort(floatMap.size());
         floatMap.forEach((item, floatWeight) -> {
-            buf.writeItemStack(item);
+            writeItemStack(buf, item, player.getServerWorld());
             buf.writeFloat(floatWeight);
         });
-        ServerPlayNetworking.send(player, CHEST_SENDER, buf);
+        ServerPlayNetworking.send(player, new ChestBufCustomPayload(buf));
 
     }
 

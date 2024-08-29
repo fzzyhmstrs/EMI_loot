@@ -1,15 +1,19 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FluidPredicateParser {
@@ -19,15 +23,15 @@ public class FluidPredicateParser {
     }
 
     private static Text parseFluidPredicateInternal(FluidPredicate predicate) {
-
-        Optional<TagKey<Fluid>> tag = predicate.tag();
-        if (tag.isPresent()) {
-            return LText.translatable("emi_loot.fluid_predicate.tag",tag.get().id().toString());
+        Optional<RegistryEntryList<Fluid>> fluid = predicate.fluids();
+        if (fluid.isPresent() && fluid.get().getTagKey().isPresent()) {
+            return LText.translatable("emi_loot.fluid_predicate.tag", fluid.get().getTagKey().get().id().toString());
         }
 
-        Optional<RegistryEntry<Fluid>> fluid = predicate.fluid();
-        if (fluid.isPresent()) {
-            return LText.translatable("emi_loot.fluid_predicate.fluid", Registries.FLUID.getId(fluid.get().value()).toString());
+
+        if (fluid.isPresent() && fluid.get().size() > 0) {
+            List<MutableText> list = fluid.get().stream().map(entry -> entry.value().getDefaultState().getBlockState().getBlock().getName()).toList();
+            return LText.translatable("emi_loot.fluid_predicate.fluid", ListProcessors.buildOrList(list));
         }
 
         Optional<StatePredicate> statePredicate = predicate.state();

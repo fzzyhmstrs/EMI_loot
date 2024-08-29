@@ -25,9 +25,9 @@ public class SetAttributesFunctionParser implements FunctionParser {
             String name = attribute.name;
             LootNumberProvider amount = attribute.amount;
             EntityAttributeModifier.Operation operation = attribute.operation;
-            if (operation == EntityAttributeModifier.Operation.ADDITION) {
+            if (operation == EntityAttributeModifier.Operation.ADD_VALUE) {
                 list.add(LText.translatable("emi_loot.function.set_attributes.add", NumberProcessors.getRollAvg(amount), name));
-            } else if (operation == EntityAttributeModifier.Operation.MULTIPLY_BASE) {
+            } else if (operation == EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE) {
                 list.add(LText.translatable("emi_loot.function.set_attributes.multiply_base", NumberProcessors.getRollAvg(amount) + 1, name));
             } else {
                 list.add(LText.translatable("emi_loot.function.set_attributes.multiply", NumberProcessors.getRollAvg(amount) + 1, name));

@@ -22,12 +22,10 @@ public class BlockPredicateParser {
     }
 
     private static Text parseBlockPredicateInternal(BlockPredicate predicate) {
-        Optional<TagKey<Block>> tag = predicate.tag();
-        if (tag.isPresent()) {
-            return LText.translatable("emi_loot.block_predicate.tag",tag.get().id().toString());
-        }
-
         Optional<RegistryEntryList<Block>> blocks = predicate.blocks();
+        if (blocks.isPresent() && blocks.get().getTagKey().isPresent()) {
+            return LText.translatable("emi_loot.block_predicate.tag", blocks.get().getTagKey().get().id().toString());
+        }
         if (blocks.isPresent() && blocks.get().size() > 0) {
             List<MutableText> list = blocks.get().stream().map(entry -> entry.value().getName()).toList();
             return LText.translatable("emi_loot.block_predicate.list_1", ListProcessors.buildOrList(list));

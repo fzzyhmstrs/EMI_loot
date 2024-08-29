@@ -7,6 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -55,7 +56,7 @@ public record TextKey(int index, List<String> args) {
             return finalStacks;
         };
 
-        BiFunction<ItemStack, World, List<ItemStack>> ominousProcessor = (stack, world) -> List.of(Raid.getOminousBanner());
+        BiFunction<ItemStack, World, List<ItemStack>> ominousProcessor = (stack, world) -> List.of(Raid.getOminousBanner(world.getRegistryManager().getWrapperOrThrow(RegistryKeys.BANNER_PATTERN)));
 
         mapBuilder(0, "emi_loot.function.empty", (key)->LText.empty(), EMPTY);
         mapBuilder(1, "emi_loot.function.bonus", (key)-> getOneArgText(1, key), new Identifier(EMILoot.MOD_ID, "textures/gui/bonus.png"));

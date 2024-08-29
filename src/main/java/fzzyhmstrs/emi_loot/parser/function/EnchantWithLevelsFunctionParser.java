@@ -12,12 +12,11 @@ import net.minecraft.loot.function.LootFunction;
 import java.util.List;
 
 public class EnchantWithLevelsFunctionParser implements FunctionParser {
-    
+
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         if (stack.isOf(Items.BOOK)) {
-            stack = new ItemStack(Items.ENCHANTED_BOOK);
-            EnchantedBookItem.addEnchantment(stack, new EnchantmentLevelEntry(EMILoot.RANDOM, 1));
+            stack = EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(EMILoot.RANDOM, 1));
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.randomly_enchanted_book"), stack, conditionTexts);
         } else {
             if (!stack.isEmpty())
