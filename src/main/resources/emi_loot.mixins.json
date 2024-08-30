@@ -19,6 +19,7 @@
     "LootTableAccessor",
     "LootTableEntryAccessor",
     "ProfiledResourceReloadMixin",
+    "ReferenceLootFunctionAccessor",
     "SetCountLootFunctionAccessor",
     "SetDamageLootFunctionAccessor",
     "SetEnchantmentsLootFunctionAccessor",
