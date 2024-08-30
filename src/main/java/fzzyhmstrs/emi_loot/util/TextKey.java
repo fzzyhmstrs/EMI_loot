@@ -86,12 +86,12 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chest.png"));
         mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(26, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
         mapBuilder(27, "emi_loot.function.sequence", (key)-> getOneArgText(27, key), new Identifier(EMILoot.MOD_ID, "textures/gui/sequence.png"));
-        mapBuilder(28, "emi_loot.function.set_item", (key)-> getOneArgText(28, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_item.png")); //TODO
-        mapBuilder(29, "emi_loot.function.modify_contents", (key)-> getOneArgText(29, key), new Identifier(EMILoot.MOD_ID, "textures/gui/modify_contents.png")); //TODO
-        mapBuilder(30, "emi_loot.function.filtered", (key)-> getTwoArgText(30, key), new Identifier(EMILoot.MOD_ID, "textures/gui/filtered.png")); //TODO
-        mapBuilder(31, "emi_loot.function.fireworks", (key)-> getBasicText(31), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png")); //TODO
-        mapBuilder(32, "emi_loot.function.firework_explosion", (key)-> getOneArgText(32, key), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png")); //TODO
-        mapBuilder(33, "emi_loot.function.set_book_cover", (key)-> getOneArgText(33, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png")); //TODO
+        mapBuilder(28, "emi_loot.function.set_item", (key)-> getOneArgText(28, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_item.png"));
+        mapBuilder(29, "emi_loot.function.modify_contents", (key)-> getOneArgText(29, key), new Identifier(EMILoot.MOD_ID, "textures/gui/modify_contents.png"));
+        mapBuilder(30, "emi_loot.function.filtered", (key)-> getTwoArgText(30, key), new Identifier(EMILoot.MOD_ID, "textures/gui/filtered.png"));
+        mapBuilder(31, "emi_loot.function.fireworks", (key)-> getBasicText(31), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png"));
+        mapBuilder(32, "emi_loot.function.firework_explosion", (key)-> getOneArgText(32, key), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png"));
+        mapBuilder(33, "emi_loot.function.set_book_cover", (key)-> getOneArgText(33, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
 
         mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
         mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
@@ -150,10 +150,10 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(128, "emi_loot.condition.wither_kill", (key)-> getBasicText(128), new Identifier(EMILoot.MOD_ID, "textures/gui/wither.png"));
         mapBuilder(129, "emi_loot.function.set_any_damage", (key)-> getBasicText(129), new Identifier(EMILoot.MOD_ID, "textures/gui/damage.png"));
         mapBuilder(130, "emi_loot.function.ominous_banner", (key)-> getBasicText(130), new Identifier(EMILoot.MOD_ID, "textures/gui/ominous.png"), ominousProcessor);
-        mapBuilder(131, "emi_loot.function.set_pages", (key)-> getBasicText(131), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png")); //TODO
-        mapBuilder(132, "emi_loot.function.ominous_bottle", (key)-> getOneArgText(132, key), new Identifier(EMILoot.MOD_ID, "textures/gui/potion.png")); //TODO
-        mapBuilder(133, "emi_loot.function.custom_model_data", (key)-> getBasicText(133), new Identifier(EMILoot.MOD_ID, "textures/gui/random_item.png")); //TODO
-        mapBuilder(134, "emi_loot.function.toggle_tooltip", (key)-> getBasicText(134), new Identifier(EMILoot.MOD_ID, "textures/gui/tooltip.png")); //TODO
+        mapBuilder(131, "emi_loot.function.set_pages", (key)-> getBasicText(131), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
+        mapBuilder(132, "emi_loot.function.ominous_bottle", (key)-> getOneArgText(132, key), new Identifier(EMILoot.MOD_ID, "textures/gui/potion.png"));
+        mapBuilder(133, "emi_loot.function.custom_model_data", (key)-> getBasicText(133), new Identifier(EMILoot.MOD_ID, "textures/gui/random_item.png"));
+        mapBuilder(134, "emi_loot.function.toggle_tooltip", (key)-> getBasicText(134), new Identifier(EMILoot.MOD_ID, "textures/gui/tooltip.png"));
 
         //No conditions
         mapBuilder(150, "emi_loot.no_conditions", (key)-> getBasicText(150), EMPTY);
