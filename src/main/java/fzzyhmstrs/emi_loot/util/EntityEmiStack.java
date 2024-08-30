@@ -129,7 +129,9 @@ public class EntityEmiStack extends EmiStack {
         float mouseX = (float)(client.mouse.getX() * width / (double)client.getWindow().getWidth());
         float mouseY = (float)(client.mouse.getY() * height / (double)client.getWindow().getHeight());
         double posX = mouseX - width/2 + 63;
+        if (Double.isNaN(posX)) return;
         double posY = mouseY - height/2;
+        if (Double.isNaN(posY)) return;
         float f = (float)Math.atan(-posX / 40.0F);
         float g = (float)Math.atan(-posY / 40.0F);
 
