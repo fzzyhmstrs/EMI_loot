@@ -27,7 +27,7 @@ import fzzyhmstrs.emi_loot.parser.function.ExplorationMapFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.ExplosionDecayFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.FunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.LimitCountFunctionParser;
-import fzzyhmstrs.emi_loot.parser.function.OminousBannerFunctionParser;
+import fzzyhmstrs.emi_loot.parser.function.ReferenceFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetAnyDamageFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetAttributesFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetCountFunctionParser;
@@ -112,6 +112,7 @@ public class LootParserRegistry {
         registerFunction(LootFunctionTypes.SET_STEW_EFFECT, new SetStewFunctionParser(), "Registering vanilla set stew effect function parser");
         registerFunction(LootFunctionTypes.SET_NBT, new SimpleFunctionParser("emi_loot.function.set_nbt"), "Registering vanilla set nbt function parser");
         registerFunction(LootFunctionTypes.SET_LOOT_TABLE, new SetLootTableFunctionParser(), "Registering vanilla set loot table function parser");
+        registerFunction(LootFunctionTypes.REFERENCE, new ReferenceFunctionParser(), "Registering vanilla reference function parser");
         registerFunction(EMILoot.OMINOUS_BANNER, new SimpleFunctionParser("emi_loot.function.ominous_banner"), "Registering Lootify ominous banner function parser");
         registerFunction(EMILoot.SET_ANY_DAMAGE, new SetAnyDamageFunctionParser(), "Registering Lootify set-any-damage function parser");
 

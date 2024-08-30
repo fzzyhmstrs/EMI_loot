@@ -46,6 +46,7 @@
     "RandomChanceLootConditionAccessor",
     "RandomChanceWithLootingLootConditionAccessor",
     "ReferenceLootConditionAccessor",
+    "ReferenceLootFunctionAccessor",
     "ScoreLootNumberProviderAccessor",
     "SetCountLootFunctionAccessor",
     "SetDamageLootFunctionAccessor",
