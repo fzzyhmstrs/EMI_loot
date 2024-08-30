@@ -114,6 +114,7 @@
   "emi_loot.function.set_stew_unknown": "an unknown list of effects...",
   "emi_loot.function.set_nbt": "This items NBT is set with custom data",
   "emi_loot.function.set_loot_table": "This item's loot table is set to %s",
+  "emi_loot.function.reference": "Custom un-parsable modifier %s is applied",
   "emi_loot.function.set_any_damage": "Items damaged to any durability value",
   "emi_loot.function.ominous_banner": "Dropped by an illager raid captain",
   "emi_loot.condition.survives_explosion": "Must survive explosion",

@@ -83,6 +83,8 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(23, "emi_loot.function.set_stew", (key)-> getOneArgText(23, key), new Identifier(EMILoot.MOD_ID, "textures/gui/stew.png"));
         mapBuilder(24, "emi_loot.function.set_nbt", (key)-> getBasicText(24), new Identifier(EMILoot.MOD_ID, "textures/gui/nbt.png"));
         mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chest.png"));
+        mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
+
         mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
         mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
         mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
