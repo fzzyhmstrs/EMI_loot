@@ -7,11 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -32,16 +33,18 @@ public class ServerResourceData {
     private static final int DIRECT_DROPS_PATH_LENGTH = "direct_drops/".length();
     private static final int FILE_SUFFIX_LENGTH = ".json".length();
 
-    public static void loadDirectTables(ResourceManager resourceManager) {
-        DIRECT_DROPS.clear();
-        resourceManager.findResources("direct_drops", path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadDirectTable);
-        resourceManager.findResources("emi_loot_data", path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadTableExclusion);
+    public static void loadDirectTables(ResourceManager resourceManager, RegistryOps<JsonElement> ops) {
+        //if (LootTableParser.registryManager != null) {
+            DIRECT_DROPS.clear();
+            resourceManager.findResources("direct_drops", path -> path.getPath().endsWith(".json")).forEach((id, resource) -> loadDirectTable(id, resource, ops));
+            resourceManager.findResources("emi_loot_data", path -> path.getPath().endsWith(".json")).forEach(ServerResourceData::loadTableExclusion);
+        //}
     }
 
-    private static void loadDirectTable(Identifier id, Resource resource) {
+    private static void loadDirectTable(Identifier id, Resource resource, RegistryOps<JsonElement> ops) {
         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading direct drop table from file: " + id.toString());
         String path = id.getPath();
-        Identifier id2 = new Identifier(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
+        Identifier id2 = Identifier.of(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
         String path2 = id2.getPath();
         if (!(path2.startsWith("blocks/") || path2.startsWith("entities/"))) {
             EMILoot.LOGGER.error("File path for [" + id + "] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.");
@@ -51,7 +54,7 @@ public class ServerResourceData {
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            LootTable lootTable = LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+            LootTable lootTable = LootTable.CODEC.parse(ops, json).getOrThrow();
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
@@ -60,6 +63,7 @@ public class ServerResourceData {
 
         } catch(Exception e) {
             EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +76,7 @@ public class ServerResourceData {
             if (list != null && list.isJsonArray()) {
                 list.getAsJsonArray().forEach(element -> {
                     if (element.isJsonPrimitive()) {
-                        Identifier identifier = new Identifier(element.getAsString());
+                        Identifier identifier = Identifier.of(element.getAsString());
                         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: " + identifier);
                         TABLE_EXCLUSIONS.add(identifier);
                     } else {
