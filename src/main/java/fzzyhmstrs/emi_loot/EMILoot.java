@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.networking.ArchaeologyBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.BlockBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.ChestBufCustomPayload;
@@ -33,11 +34,14 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -93,15 +97,12 @@ public class EMILoot implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(ArchaeologyBufCustomPayload.TYPE, ArchaeologyBufCustomPayload.CODEC);
 
         Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
+    }
 
-        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
-            LootTableParser.registryManager = server.getRegistryManager();
-        });
-
-        LootTableEvents.ALL_LOADED.register((resourceManager, lootManager) -> {
-            ServerResourceData.loadDirectTables(resourceManager);
-            LootTableParser.parseLootTables(lootManager);
-        });
+    public static void parseTables(ResourceManager resourceManager, Registry<LootTable> lootManager, RegistryOps<JsonElement> ops) {
+        LootTableParser.registryOps = ops;
+        ServerResourceData.loadDirectTables(resourceManager, ops);
+        LootTableParser.parseLootTables(lootManager);
     }
 
     @IgnoreVisibility
