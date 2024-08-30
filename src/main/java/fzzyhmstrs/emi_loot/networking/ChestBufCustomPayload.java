@@ -16,6 +16,6 @@ public record ChestBufCustomPayload(PacketByteBuf buf) implements CustomPayload 
 
 	public static Id<ChestBufCustomPayload> TYPE = new Id<>(Identifier.of(EMILoot.MOD_ID, "chest"));
 
-	public static PacketCodec<ByteBuf, ChestBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf), (b) -> new ChestBufCustomPayload((PacketByteBuf) b.readBytes(PacketByteBufs.create())));
+	public static PacketCodec<ByteBuf, ChestBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf, p.buf.readerIndex(), p.buf.readableBytes()), (b) -> new ChestBufCustomPayload(PacketByteBufs.readBytes(b, b.readableBytes())));
 
 }

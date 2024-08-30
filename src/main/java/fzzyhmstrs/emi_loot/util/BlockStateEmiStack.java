@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.util;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
@@ -36,7 +37,7 @@ public class BlockStateEmiStack extends EmiStack {
 	}
 
 	@Override
-	public NbtCompound getNbt() {
+	public ComponentChanges getComponentChanges() {
 		return null;
 	}
 

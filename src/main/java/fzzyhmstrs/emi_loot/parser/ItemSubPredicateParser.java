@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class ItemSubPredicateParser {
 
-    public static <T extends ItemSubPredicate> Text parseItemSubPredicate(ItemSubPredicate.Type<T> type, T predicate) {
+    public static Text parseItemSubPredicate(ItemSubPredicate.Type<? extends ItemSubPredicate> type, ItemSubPredicate predicate) {
         if (predicate instanceof DamagePredicate damagePredicate) {
             NumberRange.IntRange durability = damagePredicate.durability();
             if (durability != NumberRange.IntRange.ANY) {

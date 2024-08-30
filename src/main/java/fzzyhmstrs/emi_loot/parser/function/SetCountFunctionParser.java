@@ -17,10 +17,12 @@ public class SetCountFunctionParser implements FunctionParser {
         LootNumberProvider provider = ((SetCountLootFunctionAccessor)function).getCountRange();
         float rollAvg = NumberProcessors.getRollAvg(provider);
         boolean add = ((SetCountLootFunctionAccessor)function).getAdd();
-        if (add) {
-            stack.setCount(Math.max(stack.getCount() + (int)rollAvg, 1));
-        } else {
-            stack.setCount(Math.max((int)rollAvg, 1));
+        if (!stack.isEmpty()) {
+            if (add) {
+                stack.setCount(Math.max(stack.getCount() + (int) rollAvg, 1));
+            } else {
+                stack.setCount(Math.max((int) rollAvg, 1));
+            }
         }
         if (add) {
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_count_add"), ItemStack.EMPTY, conditionTexts);

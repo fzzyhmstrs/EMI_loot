@@ -15,6 +15,7 @@ import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -24,6 +25,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -82,7 +84,7 @@ public class EntityEmiStack extends EmiStack {
     }
 
     @Override
-    public NbtCompound getNbt() {
+    public ComponentChanges getComponentChanges() {
         throw new UnsupportedOperationException("EntityEmiStack is not intended for NBT handling");
     }
 
@@ -133,10 +135,10 @@ public class EntityEmiStack extends EmiStack {
         float f = (float)Math.atan(-posX / 40.0F);
         float g = (float)Math.atan(-posY / 40.0F);
 
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
-        matrixStack.multiplyPositionMatrix(matrices.peek().getPositionMatrix());
-        matrixStack.translate(x, y, 1050.0);
+        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushMatrix();
+        matrixStack.mul(matrices.peek().getPositionMatrix());
+        matrixStack.translate(x, y, 1050.0f);
         matrixStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
         MatrixStack matrixStack2 = new MatrixStack();
@@ -158,12 +160,6 @@ public class EntityEmiStack extends EmiStack {
         float l = entity.headYaw;
         entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.z) + (g * 20.0F * MathHelper.sin(ctx.transform.z)));
         float yaw = 180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z) + (g * 40.0F * MathHelper.sin(ctx.transform.z)));
-        if (Float.isNaN(yaw)) {
-            System.out.println("NaN yaw found!");
-            System.out.println(f);
-            System.out.println(g);
-            System.out.println(ctx.transform.z);
-        }
         entity.setYaw(yaw);
         float pitch = (-g * 20.0F * MathHelper.cos(ctx.transform.z)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z));
         if (Float.isNaN(pitch)) {
@@ -190,7 +186,7 @@ public class EntityEmiStack extends EmiStack {
         entity.setPitch(j);
         entity.prevHeadYaw = k;
         entity.headYaw = l;
-        matrixStack.pop();
+        matrixStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
         DiffuseLighting.enableGuiDepthLighting();
     }
@@ -209,10 +205,10 @@ public class EntityEmiStack extends EmiStack {
         float mouseY = (float) ((h + 75 - 50) - mouse.getY());
         float f = (float)Math.atan(mouseX / 40.0F);
         float g = (float)Math.atan(mouseY / 40.0F);
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
-        matrixStack.multiplyPositionMatrix(matrices.peek().getPositionMatrix());
-        matrixStack.translate(x, y, 1050.0);
+        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushMatrix();
+        matrixStack.mul(matrices.peek().getPositionMatrix());
+        matrixStack.translate(x, y, 1050.0f);
         matrixStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
         MatrixStack matrixStack2 = new MatrixStack();
@@ -243,7 +239,7 @@ public class EntityEmiStack extends EmiStack {
         entityRenderDispatcher.setRenderShadows(true);
         entity.setYaw(i);
         entity.setPitch(j);
-        matrixStack.pop();
+        matrixStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
         DiffuseLighting.enableGuiDepthLighting();
     }

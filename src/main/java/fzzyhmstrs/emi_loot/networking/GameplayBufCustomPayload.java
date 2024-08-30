@@ -16,6 +16,6 @@ public record GameplayBufCustomPayload(PacketByteBuf buf) implements CustomPaylo
 
 	public static Id<GameplayBufCustomPayload> TYPE = new Id<>(Identifier.of(EMILoot.MOD_ID, "gameplay"));
 
-	public static PacketCodec<ByteBuf, GameplayBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf), (b) -> new GameplayBufCustomPayload((PacketByteBuf) b.readBytes(PacketByteBufs.create())));
+	public static PacketCodec<ByteBuf, GameplayBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf, p.buf.readerIndex(), p.buf.readableBytes()), (b) -> new GameplayBufCustomPayload(PacketByteBufs.readBytes(b, b.readableBytes())));
 
 }

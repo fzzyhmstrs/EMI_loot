@@ -37,7 +37,7 @@ public class SetEnchantmentsFunctionParser implements FunctionParser {
                 finalStack.set(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, (int) rollAvg)));
             });
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_book"), finalStack.get(), conditionTexts);
-        } else {
+        } else if (!stack.isEmpty()) {
             ItemEnchantmentsComponent.Builder finalStackMap = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
             if (add) {
                 ItemEnchantmentsComponent stackMap = stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
@@ -54,5 +54,6 @@ public class SetEnchantmentsFunctionParser implements FunctionParser {
             stack.set(DataComponentTypes.ENCHANTMENTS, finalStackMap.build());
             return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_item"), stack, conditionTexts);
         }
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_enchant_item"), ItemStack.EMPTY, conditionTexts);
     }
 }

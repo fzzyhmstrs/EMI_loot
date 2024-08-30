@@ -1,7 +1,11 @@
 package fzzyhmstrs.emi_loot;
 
+import fzzyhmstrs.emi_loot.networking.ArchaeologyBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.BlockBufCustomPayload;
+import fzzyhmstrs.emi_loot.networking.ChestBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.ClearLootCustomPayload;
+import fzzyhmstrs.emi_loot.networking.GameplayBufCustomPayload;
+import fzzyhmstrs.emi_loot.networking.MobBufCustomPayload;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
@@ -83,10 +87,10 @@ public class EMILoot implements ModInitializer {
 
         PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BlockBufCustomPayload.TYPE, BlockBufCustomPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(ClearLootCustomPayload.TYPE, ClearLootCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ChestBufCustomPayload.TYPE, ChestBufCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(MobBufCustomPayload.TYPE, MobBufCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(GameplayBufCustomPayload.TYPE, GameplayBufCustomPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ArchaeologyBufCustomPayload.TYPE, ArchaeologyBufCustomPayload.CODEC);
 
         Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
 

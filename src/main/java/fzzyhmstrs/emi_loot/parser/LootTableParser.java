@@ -231,7 +231,7 @@ public class LootTableParser {
     private static void parseEntityType(Registry<LootTable> manager, EntityType<?> type, Identifier mobTableId, Identifier fallback) {
         Identifier mobId = Registries.ENTITY_TYPE.getId(type);
         LootTable mobTable = manager.get(mobTableId);
-        if (type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) {
+        if ((type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) && mobTable != null) {
             currentTable = mobTableId.toString();
             mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
         } else {

@@ -17,7 +17,8 @@ public class SetNameFunctionParser implements FunctionParser {
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         Optional<Text> text = ((SetNameLootFunctionAccessor)function).getName();
-		text.ifPresent(value -> stack.set(DataComponentTypes.CUSTOM_NAME, value));
+        if (!stack.isEmpty())
+		    text.ifPresent(value -> stack.set(DataComponentTypes.CUSTOM_NAME, value));
         return new LootTableParser.LootFunctionResult(TextKey.empty(), stack, conditionTexts);
     }
 }

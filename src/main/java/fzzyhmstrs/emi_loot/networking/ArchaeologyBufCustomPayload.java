@@ -16,6 +16,6 @@ public record ArchaeologyBufCustomPayload(PacketByteBuf buf) implements CustomPa
 
 	public static Id<ArchaeologyBufCustomPayload> TYPE = new Id<>(Identifier.of(EMILoot.MOD_ID, "archaeology"));
 
-	public static PacketCodec<ByteBuf, ArchaeologyBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf), (b) -> new ArchaeologyBufCustomPayload((PacketByteBuf) b.readBytes(PacketByteBufs.create())));
+	public static PacketCodec<ByteBuf, ArchaeologyBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf, p.buf.readerIndex(), p.buf.readableBytes()), (b) -> new ArchaeologyBufCustomPayload(PacketByteBufs.readBytes(b, b.readableBytes())));
 
 }

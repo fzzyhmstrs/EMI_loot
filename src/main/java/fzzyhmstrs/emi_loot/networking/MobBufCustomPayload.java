@@ -16,6 +16,6 @@ public record MobBufCustomPayload(PacketByteBuf buf) implements CustomPayload {
 
 	public static Id<MobBufCustomPayload> TYPE = new Id<>(Identifier.of(EMILoot.MOD_ID, "mob"));
 
-	public static PacketCodec<ByteBuf, MobBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf), (b) -> new MobBufCustomPayload((PacketByteBuf) b.readBytes(PacketByteBufs.create())));
+	public static PacketCodec<ByteBuf, MobBufCustomPayload> CODEC = CustomPayload.codecOf((p, b) -> b.writeBytes(p.buf, p.buf.readerIndex(), p.buf.readableBytes()), (b) -> new MobBufCustomPayload(PacketByteBufs.readBytes(b, b.readableBytes())));
 
 }

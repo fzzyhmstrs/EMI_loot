@@ -1,17 +1,12 @@
 package fzzyhmstrs.emi_loot.parser.function;
 
 import fzzyhmstrs.emi_loot.mixins.AndLootFunctionAccessor;
-import fzzyhmstrs.emi_loot.mixins.ReferenceLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootDataKey;
-import net.minecraft.loot.LootDataType;
 import net.minecraft.loot.function.LootFunction;
-import net.minecraft.loot.function.LootFunctionTypes;
-import net.minecraft.util.Identifier;
 
 import java.util.List;
 

@@ -17,7 +17,8 @@ public class SetInstrumentFunctionParser implements FunctionParser {
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         TagKey<Instrument> tag = ((SetInstrumentLootFunctionAccessor)function).getInstrumentTag();
-        GoatHornItem.setRandomInstrumentFromTag(stack, tag, EMILoot.emiLootRandom);
+        if (!stack.isEmpty())
+            GoatHornItem.setRandomInstrumentFromTag(stack, tag, EMILoot.emiLootRandom);
         return new LootTableParser.LootFunctionResult(TextKey.empty(), stack, conditionTexts);
     }
 }

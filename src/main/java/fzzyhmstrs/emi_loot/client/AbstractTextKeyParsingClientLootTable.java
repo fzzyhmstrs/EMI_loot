@@ -72,11 +72,6 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
             List<Pair<Integer, Text>> applyToAllList = new ArrayList<>(getSpecialTextKeyList(world, block));
             list.forEach((textKey) -> {
                 Text text = textKey.process(ItemStack.EMPTY, world).text();
-                if (textKey.index() == 37) {
-                    System.out.println(getId());
-                    System.out.println(textKey);
-                    System.out.println(text);
-                }
                 applyToAllList.add(new Pair<>(textKey.index(), text));
             });
             pool.map().forEach((poolList, poolItemMap)-> {
@@ -106,11 +101,6 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                     });
                     Text text = textKey.process(ItemStack.EMPTY, world).text();
-                    if (textKey.index() == 37) {
-                        System.out.println(getId());
-                        System.out.println(textKey);
-                        System.out.println(text);
-                    }
                     newPoolList.add(new Pair<>(textKey.index(), text));
 
                 });

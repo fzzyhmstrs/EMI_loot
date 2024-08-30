@@ -20,13 +20,15 @@ public class SetDamageFunctionParser implements FunctionParser {
         boolean add = ((SetDamageLootFunctionAccessor)function).getAdd();
         int md = stack.getMaxDamage();
         float damage;
-        if (add) {
-            int dmg = stack.getDamage();
-            damage = MathHelper.clamp(((float )dmg)/md + (rollAvg * md), 0, md);
-        } else {
-            damage = MathHelper.clamp(rollAvg * md, 0, md);
+        if (!stack.isEmpty()) {
+            if (add) {
+                int dmg = stack.getDamage();
+                damage = MathHelper.clamp(((float) dmg) / md + (rollAvg * md), 0, md);
+            } else {
+                damage = MathHelper.clamp(rollAvg * md, 0, md);
+            }
+            stack.setDamage(MathHelper.floor(damage));
         }
-        stack.setDamage(MathHelper.floor(damage));
         return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.damage", Integer.toString((int)(rollAvg*100))), stack, conditionTexts);
     }
 }

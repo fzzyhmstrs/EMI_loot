@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class DataPackContentsMixin {
 
     @Inject(method = "refresh", at = @At("TAIL"))
-    private void emi_loot_postProcessBuildersAfterTagReload(DynamicRegistryManager dynamicRegistryManager, CallbackInfo ci) {
+    private void emi_loot_postProcessBuildersAfterTagReload(CallbackInfo ci) {
         LootTableParser.postProcess(LootTableParser.PostProcessor.TAG);
     }
 
