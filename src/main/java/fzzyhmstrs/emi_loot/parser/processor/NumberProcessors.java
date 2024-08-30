@@ -34,12 +34,12 @@ public class NumberProcessors {
                 return LText.translatable(exact, min.get(), args);
             } else if (min.isPresent() && max.isPresent()) {
                 return LText.translatable(between, min.get(), max.get(), args);
-            }else if (min.isPresent()) {
+            } else if (min.isPresent()) {
                 return LText.translatable(atLeast, min.get(), args);
-            }else if (max.isPresent()) {
+            } else if (max.isPresent()) {
                 return LText.translatable(atMost, max.get(), args);
             } else {
-                if (fallback.equals("")) return LText.empty();
+                if (fallback.isEmpty()) return LText.empty();
                 return LText.translatable(fallback);
             }
         }

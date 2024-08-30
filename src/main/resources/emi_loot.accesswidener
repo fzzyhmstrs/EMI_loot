@@ -20,9 +20,6 @@ accessible class net/minecraft/predicate/entity/PlayerPredicate$StatMatcher
 # SetAttributeLootFunction stuff
 accessible field net/minecraft/loot/function/SetAttributesLootFunction attributes Ljava/util/List;
 accessible class net/minecraft/loot/function/SetAttributesLootFunction$Attribute
-accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute amount Lnet/minecraft/loot/provider/number/LootNumberProvider;
-accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute name Ljava/lang/String;
-accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute operation Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;
 
 # SetStewEffectLootFunction stuff
 accessible class net/minecraft/loot/function/SetStewEffectLootFunction$StewEffect

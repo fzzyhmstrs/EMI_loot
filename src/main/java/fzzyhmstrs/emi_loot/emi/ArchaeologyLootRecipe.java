@@ -94,7 +94,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 
 	@Override
 	public @Nullable Identifier getId() {
-		return new Identifier(EMILootClient.MOD_ID, "/" + getCategory().id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());
+		return Identifier.of(EMILootClient.MOD_ID, "/" + getCategory().id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());
 	}
 
 	@Override

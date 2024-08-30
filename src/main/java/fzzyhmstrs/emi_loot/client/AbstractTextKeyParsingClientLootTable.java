@@ -48,19 +48,19 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
     static Identifier getIdFromBuf(PacketByteBuf buf) {
         String idToParse = buf.readString();
         if (idToParse.contains(":")) {
-            return new Identifier(idToParse);
+            return Identifier.of(idToParse);
         } else if (idToParse.startsWith("b/")) {
-            return new Identifier("blocks/" + idToParse.substring(2));
+            return Identifier.of("blocks/" + idToParse.substring(2));
         } else if (idToParse.startsWith("e/")) {
-            return new Identifier("entities/" + idToParse.substring(2));
+            return Identifier.of("entities/" + idToParse.substring(2));
         } else if (idToParse.startsWith("c/")) {
-            return new Identifier("chests/" + idToParse.substring(2));
+            return Identifier.of("chests/" + idToParse.substring(2));
         } else if (idToParse.startsWith("g/")) {
-            return new Identifier("gameplay/" + idToParse.substring(2));
+            return Identifier.of("gameplay/" + idToParse.substring(2));
         } else if (idToParse.startsWith("a/")) {
-            return new Identifier("archaeology/" + idToParse.substring(2));
+            return Identifier.of("archaeology/" + idToParse.substring(2));
         } else {
-            return new Identifier(idToParse);
+            return Identifier.of(idToParse);
         }
     }
 

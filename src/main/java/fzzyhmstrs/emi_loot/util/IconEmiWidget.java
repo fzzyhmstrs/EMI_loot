@@ -22,8 +22,8 @@ public class IconEmiWidget extends Widget {
         this.tooltipText = Collections.singletonList(TooltipComponent.of(text.asOrderedText()));
     }
 
-    static final Identifier FRAME_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/icon_frame.png");
-    //private static final Identifier SPRITE_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/icon_sprites.png");
+    static final Identifier FRAME_ID = Identifier.of(EMILoot.MOD_ID, "textures/gui/icon_frame.png");
+    //private static final Identifier SPRITE_ID = Identifier.of(EMILoot.MOD_ID, "textures/gui/icon_sprites.png");
 
     private final Identifier tex;
     private int x, y;

@@ -27,7 +27,7 @@ public class SetEnchantmentsFunctionParser implements FunctionParser {
 
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
-        Map<Enchantment, LootNumberProvider> enchantments = ((SetEnchantmentsLootFunctionAccessor)function).getEnchantments();
+        Map<RegistryEntry<Enchantment>, LootNumberProvider> enchantments = ((SetEnchantmentsLootFunctionAccessor)function).getEnchantments();
         boolean add = ((SetEnchantmentsLootFunctionAccessor)function).getAdd();
         if (stack.isOf(Items.BOOK)) {
             stack = new ItemStack(Items.ENCHANTED_BOOK);

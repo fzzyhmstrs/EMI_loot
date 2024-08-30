@@ -37,7 +37,7 @@ public class ClientResourceData {
 
         @Override
         public Identifier getFabricId() {
-            return new Identifier(EMILoot.MOD_ID, "client_loot_resources");
+            return Identifier.of(EMILoot.MOD_ID, "client_loot_resources");
         }
 
         @Override
@@ -58,7 +58,7 @@ public class ClientResourceData {
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 json.entrySet().forEach((entry)-> {
                     JsonElement element = entry.getValue();
-                    Identifier mobId = new Identifier(entry.getKey());
+                    Identifier mobId = Identifier.of(entry.getKey());
                     if (Registries.ENTITY_TYPE.containsId(mobId)) {
                         if (element.isJsonObject()) {
                             JsonObject object = element.getAsJsonObject();

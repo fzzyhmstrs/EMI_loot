@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.networking.ArchaeologyBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.BlockBufCustomPayload;
 import fzzyhmstrs.emi_loot.networking.ChestBufCustomPayload;
@@ -28,16 +29,16 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -65,17 +66,6 @@ public class EMILoot implements ModInitializer {
     public static LootFunctionType<SetAnyDamageLootFunction> SET_ANY_DAMAGE = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:set_any_damage", new LootFunctionType<>(SetAnyDamageLootFunction.CODEC));
     public static LootFunctionType<OminousBannerLootFunction> OMINOUS_BANNER = Registry.register(Registries.LOOT_FUNCTION_TYPE, "lootify:ominous_banner", new LootFunctionType<>(OminousBannerLootFunction.CODEC));
 
-    public static Enchantment RANDOM = new Enchantment(Enchantment.properties(ItemTags.ANVIL, ItemTags.ANVIL, 1, 1, new Enchantment.Cost(10, 0), new Enchantment.Cost(30, 0), 30, EquipmentSlot.MAINHAND)) {
-        @Override
-        public boolean isAvailableForEnchantedBookOffer() {
-            return false;
-        }
-
-        @Override
-        public boolean isAvailableForRandomSelection() {
-            return false;
-        }
-    };
 
     public static Identifier identity(String path) {
         return Identifier.of(MOD_ID, path);
@@ -91,17 +81,12 @@ public class EMILoot implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(MobBufCustomPayload.TYPE, MobBufCustomPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(GameplayBufCustomPayload.TYPE, GameplayBufCustomPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ArchaeologyBufCustomPayload.TYPE, ArchaeologyBufCustomPayload.CODEC);
+    }
 
-        Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
-
-        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
-            LootTableParser.registryManager = server.getRegistryManager();
-        });
-
-        LootTableEvents.ALL_LOADED.register((resourceManager, lootManager) -> {
-            ServerResourceData.loadDirectTables(resourceManager);
-            LootTableParser.parseLootTables(lootManager);
-        });
+    public static void parseTables(ResourceManager resourceManager, Registry<LootTable> lootManager, RegistryOps<JsonElement> ops) {
+        LootTableParser.registryOps = ops;
+        ServerResourceData.loadDirectTables(resourceManager, ops);
+        LootTableParser.parseLootTables(lootManager);
     }
 
     @IgnoreVisibility
@@ -109,7 +94,7 @@ public class EMILoot implements ModInitializer {
     public static class EmiLootConfig extends Config {
 
         EmiLootConfig() {
-            super(new Identifier(MOD_ID, "emi_loot_config"), "", "");
+            super(Identifier.of(MOD_ID, "emi_loot_config"), "", "");
         }
 
         @RequiresRestart

@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import com.google.common.collect.Multimap;
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.CombinedEntryAccessor;
@@ -55,10 +56,10 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
@@ -67,7 +68,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -88,8 +88,7 @@ public class LootTableParser {
     public static List<Identifier> parsedDirectDrops = new LinkedList<>();
     public static boolean hasParsedLootTables = false;
     public static Registry<LootTable> lootManager = null;
-    public static DynamicRegistryManager registryManager = null;
-    public static final Identifier CLEAR_LOOTS = new Identifier("e_l", "clear");
+    public static RegistryOps<JsonElement> registryOps = null;
 
 
     static {
@@ -144,7 +143,7 @@ public class LootTableParser {
             parseLootTable(entry.getKey().getValue(), table);
         });
         if (EMILoot.config.parseMobLoot) {
-            Identifier chk = new Identifier("pig");
+            Identifier chk = Identifier.ofVanilla("pig");
             Registries.ENTITY_TYPE.stream().toList().forEach((type) -> {
                 if (type == EntityType.SHEEP) {
                     for (Identifier sheepId : ServerResourceData.SHEEP_TABLES) {
@@ -246,7 +245,7 @@ public class LootTableParser {
             float conditionalMultiplier = 1f;
             for (LootCondition condition : pool.conditions) {
                 if (condition instanceof RandomChanceLootCondition randomChanceLootCondition) {
-                    conditionalMultiplier *= randomChanceLootCondition.chance();
+                    conditionalMultiplier *= NumberProcessors.getRollAvg(randomChanceLootCondition.chance());
                 }
             }
             float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;
@@ -532,7 +531,7 @@ public class LootTableParser {
         } else if (type == LootContextTypes.BLOCK) {
             results = parseBlockLootTable(table, id);
         } else if (type == LootContextTypes.ENTITY) {
-            results = parseMobLootTable(table, id, new Identifier("empty"));
+            results = parseMobLootTable(table, id, Identifier.of("empty"));
         } else if (type == LootContextTypes.FISHING) {
             results = parseGameplayLootTable(table, id);
         } else if (type == LootContextTypes.ARCHAEOLOGY) {

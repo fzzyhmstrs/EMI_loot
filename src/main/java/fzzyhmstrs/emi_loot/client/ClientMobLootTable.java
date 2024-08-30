@@ -21,7 +21,7 @@ import java.util.*;
 public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<ClientMobLootTable> {
 
     public static ClientMobLootTable INSTANCE = new ClientMobLootTable();
-    private static final Identifier EMPTY = new Identifier("entity/empty");
+    private static final Identifier EMPTY = Identifier.of("entity/empty");
     public final Identifier id;
     public final Identifier mobId;
     public String color = "";
@@ -29,7 +29,7 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
     public ClientMobLootTable() {
         super();
         this.id = EMPTY;
-        this.mobId = new Identifier("empty");
+        this.mobId = Identifier.of("empty");
     }
 
     public ClientMobLootTable(Identifier id, Identifier mobId, Map<List<TextKey>, ClientRawPool> map) {
@@ -38,7 +38,7 @@ public class ClientMobLootTable extends AbstractTextKeyParsingClientLootTable<Cl
         String ns = id.getNamespace();
         String pth = id.getPath();
         if (!Registries.ENTITY_TYPE.containsId(mobId)) {
-            this.mobId = new Identifier("empty");
+            this.mobId = Identifier.of("empty");
         } else {
             if (Objects.equals(mobId, Registries.ENTITY_TYPE.getId(EntityType.SHEEP))) {
                 int lastSlashIndex = pth.lastIndexOf('/');
