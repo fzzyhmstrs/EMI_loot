@@ -160,20 +160,8 @@ public class EntityEmiStack extends EmiStack {
         float l = entity.headYaw;
         entity.bodyYaw = 180.0F + (f * 20.0F * MathHelper.cos(ctx.transform.z) + (g * 20.0F * MathHelper.sin(ctx.transform.z)));
         float yaw = 180.0F + (f * 40.0F * MathHelper.cos(ctx.transform.z) + (g * 40.0F * MathHelper.sin(ctx.transform.z)));
-        if (Float.isNaN(yaw)) {
-            System.out.println("NaN yaw found!");
-            System.out.println(f);
-            System.out.println(g);
-            System.out.println(ctx.transform.z);
-        }
         entity.setYaw(yaw);
         float pitch = (-g * 20.0F * MathHelper.cos(ctx.transform.z)) + (- f * 20.0F * MathHelper.sin(ctx.transform.z));
-        if (Float.isNaN(pitch)) {
-            System.out.println("NaN pitch found!");
-            System.out.println(f);
-            System.out.println(g);
-            System.out.println(ctx.transform.z);
-        }
         entity.setPitch(pitch);
         entity.headYaw = entity.getYaw();
         entity.prevHeadYaw = entity.getYaw();
