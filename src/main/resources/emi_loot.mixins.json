@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AlternativeLootConditionAccessor",
+    "AndLootFunctionAccessor",
     "ApplyBonusLootFunctionAccessor",
     "BoundedIntUnaryOperatorAccessor",
     "CombinedEntryAccessor",

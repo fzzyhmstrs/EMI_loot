@@ -351,6 +351,10 @@ public record TextKey(int index, List<String> args) {
         return new TextKeyResult(text, finalStacks);
     }
 
+    public Text asText() {
+        return keyTextBuilderMap.getOrDefault(this.index, DEFAULT_FUNCTION).apply(this);
+    }
+
     public boolean skip() {
         return EMILoot.config.skippedKeys.contains(getKey(this.index));
     }
