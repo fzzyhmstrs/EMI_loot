@@ -60,6 +60,9 @@ public class GameplayLootRecipe implements EmiRecipe {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");
                 rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
             }
+            if (EMILoot.config.isLogI18n(EMILoot.Type.GAMEPLAY)) {
+                EMILoot.LOGGER.warn("Untranslated gameplay loot table \"" + loot.id + "\" (key: \"" + key + "\")");
+            }
         } else {
             rawTitle = text;
         }
