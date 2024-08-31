@@ -157,7 +157,6 @@ public class LootTableParser {
                 }
                 //perform shearing table checks. May have to improve for later updates.
                 Identifier shearingId = Identifier.of(entry.getKey().getValue().getNamespace(), "shearing/" + entry.getKey().getValue().getPath());
-                System.out.println();
                 LootTable shearingTable = manager.get(shearingId);
                 if (shearingTable != null && shearingTable != LootTable.EMPTY) {
                     parseEntityType(manager, type, shearingId, chk, List.of(MatchToolLootCondition.builder(ItemPredicate.Builder.create().items(Items.SHEARS)).build()));

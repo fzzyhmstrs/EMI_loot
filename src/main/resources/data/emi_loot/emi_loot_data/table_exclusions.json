@@ -3,6 +3,12 @@
     "minecraft:gameplay/fishing",
     "netherdepthsupgrade:gameplay/failed_fishing",
     "netherdepthsupgrade:gameplay/lava_fishing",
-    "netherdepthsupgrade:gameplay/nether_fishing"
+    "netherdepthsupgrade:gameplay/nether_fishing",
+    "minecraft:chests/trial_chambers/reward_unique",
+    "minecraft:chests/trial_chambers/reward_rare",
+    "minecraft:chests/trial_chambers/reward_common",
+    "minecraft:chests/trial_chambers/reward_ominous_unique",
+    "minecraft:chests/trial_chambers/reward_ominous_rare",
+    "minecraft:chests/trial_chambers/reward_ominous_common"
   ]
 }
