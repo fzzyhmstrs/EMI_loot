@@ -11,6 +11,7 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
+import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -78,6 +79,7 @@ public class EMILoot implements ModInitializer {
         Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
 
+    @Version(version = 1)
     @IgnoreVisibility
     @ConvertFrom(fileName = "EmiLootConfig_v1.json")
     public static class EmiLootConfig extends Config {
