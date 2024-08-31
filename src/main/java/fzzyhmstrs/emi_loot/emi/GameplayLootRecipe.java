@@ -22,6 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -30,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class GameplayLootRecipe implements EmiRecipe {
@@ -50,7 +50,7 @@ public class GameplayLootRecipe implements EmiRecipe {
         String key = "emi_loot.gameplay." + loot.id.toString();
         Text text = LText.translatable(key);
         Text rawTitle;
-        if (Objects.equals(text.getString(), key)) {
+        if (!I18n.hasTranslation(key)) {
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
             if (modNameOpt.isPresent()) {
                 ModContainer modContainer = modNameOpt.get();

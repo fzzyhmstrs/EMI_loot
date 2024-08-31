@@ -15,6 +15,7 @@ import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.MutableText;
@@ -27,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -62,7 +62,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		String key = "emi_loot.archaeology." + loot.id.toString();
 		MutableText text = LText.translatable(key);
 		MutableText rawTitle;
-		if(Objects.equals(text.getString(), key)) {
+		if(!I18n.hasTranslation(key)) {
 			Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
 			if(modNameOpt.isPresent()) {
 				ModContainer modContainer = modNameOpt.get();
