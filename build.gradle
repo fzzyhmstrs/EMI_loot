@@ -21,12 +21,16 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     }
 
-    flatDir {
-        dirs "E:\\Documents\\Mod Libraries\\fzzy_config\\build\\libs"
-    }
-
-    flatDir {
-        dirs "E:\\Documents\\Mod Libraries\\sns\\build\\libs"
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
     }
 }
 
@@ -41,10 +45,9 @@ dependencies {
 
     modImplementation "dev.emi:emi-fabric:${project.emi_version}"
 
-    modImplementation ":fzzy_config-${fzzy_config_version}"
+    modImplementation "maven.modrinth:fzzy-config:${fzzy_config_version}"
 
-    //modImplementation ":symbols_n_stuff-${sns_version}"
-    modCompileOnly ":symbols_n_stuff-${sns_version}"
+    modCompileOnly "maven.modrinth:symbols-n-stuff:${sns_version}"
 }
 
 processResources {

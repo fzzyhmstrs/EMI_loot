@@ -16,6 +16,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -29,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -65,7 +65,7 @@ public class ChestLootRecipe implements EmiRecipe {
         String key = "emi_loot.chest." + loot.id.toString();
         MutableText text = LText.translatable(key);
         MutableText rawTitle;
-        if (Objects.equals(text.getString(), key)) {
+        if (!I18n.hasTranslation(key)) {
             Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
             if (modNameOpt.isPresent()) {
                 ModContainer modContainer = modNameOpt.get();
@@ -74,6 +74,9 @@ public class ChestLootRecipe implements EmiRecipe {
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");
                 rawTitle = LText.translatable("emi_loot.chest.unknown_chest", unknown.getString());
+            }
+            if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
+                EMILoot.LOGGER.warn("Untranslated chest loot table \"" + loot.id + "\" (key: \"" + key + "\")");
             }
         } else {
             rawTitle = text;
