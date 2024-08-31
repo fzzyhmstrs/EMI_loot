@@ -394,6 +394,8 @@
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/junk": "Lava Fishing Junk Drops",
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/fish": "Lava Fishing Fish Drops",
   "emi_loot.gameplay.netherdepthsupgrade:gameplay/nether_fishing/treasure": "Lava Fishing Treasure Drops",
+  "emi_loot.archaeology.unknown_archaeology": "%s Archaeology Findings",
+  "emi_loot.archaeology.unknown": "Unknown",
   "emi_loot.archaeology.minecraft:archaeology/desert_pyramid": "Desert Pyramid",
   "emi_loot.archaeology.minecraft:archaeology/desert_well": "Desert Well",
   "emi_loot.archaeology.minecraft:archaeology/ocean_ruin_cold": "Cold Ocean Ruins",
