@@ -19,6 +19,7 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
+import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -105,6 +106,7 @@ public class EMILoot implements ModInitializer {
         LootTableParser.parseLootTables(lootManager);
     }
 
+    @Version(version = 1)
     @IgnoreVisibility
     @ConvertFrom(fileName = "EmiLootConfig_v1.json")
     public static class EmiLootConfig extends Config {
