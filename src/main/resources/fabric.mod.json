@@ -26,6 +26,11 @@
   "license": "MIT License",
   "accessWidener": "emi_loot.accesswidener",
   "depends": {
-    "minecraft": ">=1.20"
+    "minecraft": ">=1.20 <=1.20.1",
+    "emi": "*",
+    "fzzy_config": "*"
+  },
+  "suggests": {
+    "symbols_n_stuff": "0.1.1+1.20.1"
   }
 }
