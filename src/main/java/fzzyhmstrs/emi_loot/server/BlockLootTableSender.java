@@ -49,7 +49,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     public void send(ServerPlayerEntity player) {
         if (!ServerPlayNetworking.canSend(player, BlockBufCustomPayload.TYPE)) return;
         if (isEmpty) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
             return;
         }
         PacketByteBuf buf = PacketByteBufs.create();
@@ -57,7 +57,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
         buf.writeString(idToSend);
         //pre-build the builders to do empty checks
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
             ServerPlayNetworking.send(player, new BlockBufCustomPayload(buf));

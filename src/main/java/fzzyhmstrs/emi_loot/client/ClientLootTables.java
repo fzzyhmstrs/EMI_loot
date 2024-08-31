@@ -34,35 +34,35 @@ public class ClientLootTables {
             PacketByteBuf buf = payload.buf();
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf, context.player().clientWorld);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received chest " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.CHEST)) EMILoot.LOGGER.info("received chest " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(BlockBufCustomPayload.TYPE, (payload, context)-> {
             PacketByteBuf buf = payload.buf();
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf, context.player().clientWorld);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received block " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("received block " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(MobBufCustomPayload.TYPE, (payload, context)-> {
             PacketByteBuf buf = payload.buf();
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf, context.player().clientWorld);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("received mob " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(GameplayBufCustomPayload.TYPE, (payload, context)-> {
             PacketByteBuf buf = payload.buf();
             LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf, context.player().clientWorld);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(ArchaeologyBufCustomPayload.TYPE, (payload, context) -> {
             PacketByteBuf buf = payload.buf();
             LootReceiver table = ClientArchaeologyLootTable.INSTANCE.fromBuf(buf, context.player().clientWorld);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received archaeology loot: " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.ARCHAEOLOGY)) EMILoot.LOGGER.info("received archaeology loot: " + table.getId());
         });
     }
 

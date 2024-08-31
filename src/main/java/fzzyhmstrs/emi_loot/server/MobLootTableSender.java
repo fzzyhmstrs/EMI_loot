@@ -48,7 +48,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         if (!ServerPlayNetworking.canSend(player, MobBufCustomPayload.TYPE)) return;
         //pre-build the builders to do empty checks
         if (isEmpty) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
         PacketByteBuf buf = PacketByteBufs.create();
@@ -57,13 +57,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         buf.writeString(mobIdToSend);
 
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
             ServerPlayNetworking.send(player, new MobBufCustomPayload(buf));
             return;
         } else if (builderList.isEmpty()) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
 
