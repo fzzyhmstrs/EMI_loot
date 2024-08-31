@@ -121,10 +121,6 @@ public class EMILoot implements ModInitializer {
         private ValidatedAny<DebugMode> debugModes = new ValidatedAny<>(new DebugMode());
 
         @RequiresRestart
-        @SuppressWarnings("FieldMayBeFinal")
-        private ValidatedAny<LogUntranslatedTables> logUnstranslatedTables = new ValidatedAny<>(new LogUntranslatedTables());
-
-        @RequiresRestart
         public boolean parseChestLoot = true;
 
         @RequiresRestart
@@ -145,6 +141,10 @@ public class EMILoot implements ModInitializer {
         @NonSync
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedAny<CompactLoot> compactLoot = new ValidatedAny<>(new CompactLoot());
+
+        @NonSync
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedAny<LogUntranslatedTables> logUnstranslatedTables = new ValidatedAny<>(new LogUntranslatedTables());
 
         @NonSync
         public boolean chestLootAlwaysStackSame = false;
