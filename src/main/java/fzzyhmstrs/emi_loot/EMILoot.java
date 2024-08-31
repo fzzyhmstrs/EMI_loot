@@ -101,6 +101,14 @@ public class EMILoot implements ModInitializer {
         public boolean debugMode = false;
 
         @RequiresRestart
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedAny<DebugMode> debugModes = new ValidatedAny<>(new DebugMode());
+
+        @RequiresRestart
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedAny<LogUntranslatedTables> logUnstranslatedTables = new ValidatedAny<>(new LogUntranslatedTables());
+
+        @RequiresRestart
         public boolean parseChestLoot = true;
 
         @RequiresRestart
@@ -145,7 +153,15 @@ public class EMILoot implements ModInitializer {
         }
 
         public boolean isCompact(Type type) {
-            return type.supplier.getAsBoolean();
+            return type.compactLootSupplier.getAsBoolean();
+        }
+
+        public boolean isDebug(Type type) {
+            return type.debugModeSupplier.getAsBoolean();
+        }
+
+        public boolean isLogI18n(Type type) {
+            return type.logUntranslatedTablesSupplier.getAsBoolean();
         }
 	}
 
@@ -162,17 +178,43 @@ public class EMILoot implements ModInitializer {
         public boolean archaeology = true;
     }
 
+    @IgnoreVisibility
+    private static class DebugMode {
+        public boolean block = false;
+
+        public boolean chest = false;
+
+        public boolean mob = false;
+
+        public boolean gameplay = false;
+
+        public boolean archaeology = false;
+    }
+
+    @IgnoreVisibility
+    private static class LogUntranslatedTables {
+        public boolean chest = FabricLoader.getInstance().isDevelopmentEnvironment();
+
+        public boolean gameplay = FabricLoader.getInstance().isDevelopmentEnvironment();
+
+        public boolean archaeology = FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
     public enum Type {
-        BLOCK(() -> EMILoot.config.compactLoot.get().block),
-        CHEST(() -> EMILoot.config.compactLoot.get().chest),
-        MOB(() -> EMILoot.config.compactLoot.get().mob),
-        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay),
-        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology);
+        BLOCK(() -> EMILoot.config.compactLoot.get().block, () -> EMILoot.config.debugModes.get().block, () -> false),
+        CHEST(() -> EMILoot.config.compactLoot.get().chest, () -> EMILoot.config.debugModes.get().chest, () -> EMILoot.config.logUnstranslatedTables.get().chest),
+        MOB(() -> EMILoot.config.compactLoot.get().mob, () -> EMILoot.config.debugModes.get().mob, () -> false),
+        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay, () -> EMILoot.config.debugModes.get().gameplay, () -> EMILoot.config.logUnstranslatedTables.get().gameplay),
+        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology, () -> EMILoot.config.debugModes.get().archaeology, () -> EMILoot.config.logUnstranslatedTables.get().archaeology);
 
-        final BooleanSupplier supplier;
+        final BooleanSupplier compactLootSupplier;
+        final BooleanSupplier debugModeSupplier;
+        final BooleanSupplier logUntranslatedTablesSupplier;
 
-        Type(BooleanSupplier supplier) {
-            this.supplier = supplier;
+        Type(BooleanSupplier compactLootSupplier, BooleanSupplier debugModeSupplier, BooleanSupplier logUntranslatedTablesSupplier) {
+            this.compactLootSupplier = compactLootSupplier;
+            this.debugModeSupplier = debugModeSupplier;
+            this.logUntranslatedTablesSupplier = logUntranslatedTablesSupplier;
         }
     }
 }
