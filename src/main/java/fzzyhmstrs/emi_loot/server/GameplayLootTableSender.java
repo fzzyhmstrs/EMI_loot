@@ -46,7 +46,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
     public void send(ServerPlayerEntity player) {
         if (!ServerPlayNetworking.canSend(player, GameplayBufCustomPayload.TYPE)) return;
         if (isEmpty) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
             return;
         }
         PacketByteBuf buf = PacketByteBufs.create();
@@ -54,7 +54,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
         buf.writeString(idToSend);
 
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("sending simple block: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("sending simple gameplay table: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
             ServerPlayNetworking.send(player, new GameplayBufCustomPayload(buf));

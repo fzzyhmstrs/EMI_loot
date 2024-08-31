@@ -46,13 +46,13 @@ public class ClientResourceData {
             MOB_SCALES.clear();
             MOB_ROTATIONS.clear();
             manager.findResources("entity_fixers", path -> path.getPath().endsWith(".json")).forEach(this::load);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_OFFSETS.toString());
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_ROTATIONS.toString());
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info(MOB_SCALES.toString());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info(MOB_OFFSETS.toString());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info(MOB_ROTATIONS.toString());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info(MOB_SCALES.toString());
         }
 
         private void load(Identifier fileId, Resource resource) {
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading entity fixers from file: " + fileId.toString());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("Reading entity fixers from file: " + fileId.toString());
             try {
                 BufferedReader reader = resource.getReader();
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
