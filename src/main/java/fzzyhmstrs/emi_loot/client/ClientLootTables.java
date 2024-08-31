@@ -32,31 +32,31 @@ public class ClientLootTables {
         ClientPlayNetworking.registerGlobalReceiver(CHEST_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientChestLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received chest " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.CHEST)) EMILoot.LOGGER.info("received chest " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(BLOCK_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientBlockLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received block " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("received block " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(MOB_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientMobLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received mob " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("received mob " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(GAMEPLAY_SENDER, (minecraftClient, playNetworkHandler, buf, sender)-> {
             LootReceiver table = ClientGameplayLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("received gameplay loot: " + table.getId());
         });
 
         ClientPlayNetworking.registerGlobalReceiver(ARCHAEOLOGY_SENDER, (minecraftClient, playNetworkHandler, buf, sender) -> {
             LootReceiver table = ClientArchaeologyLootTable.INSTANCE.fromBuf(buf);
             loots.add(table);
-            if (EMILoot.DEBUG) EMILoot.LOGGER.info("received archaeology loot: " + table.getId());
+            if (EMILoot.config.isDebug(EMILoot.Type.ARCHAEOLOGY)) EMILoot.LOGGER.info("received archaeology loot: " + table.getId());
         });
     }
 
