@@ -29,6 +29,10 @@
     "fabricloader": "*",
     "minecraft": ">=1.20.5 <=1.20.6",
     "fabric-api": "*",
-    "emi": "*"
+    "emi": "*",
+    "fzzy_config": "*"
+  },
+  "suggests": {
+    "symbols_n_stuff": "0.1.1+1.20.4"
   }
 }
