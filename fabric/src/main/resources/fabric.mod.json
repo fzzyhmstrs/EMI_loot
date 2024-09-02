@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "emi_loot",
   "version": "${version}",
   "name": "EMI Loot",
   "description":"Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.",
-  "icon": "assets/emi_loot/icon.png",
+  "icon": "icon.png",
   "authors": [
     "fzzyhmstrs",
     "lxly9 (art)"
   ],
   "entrypoints": {
     "main": [
-        "fzzyhmstrs.emi_loot.EMILoot"
+      "fzzyhmstrs.emi_loot.EMILoot"
     ],
     "client": [
       "fzzyhmstrs.emi_loot.EMILootClient"

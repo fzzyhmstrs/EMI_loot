@@ -1,0 +1,20 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/fzzyhmstrs/EMI_loot/issues"
+
+[[mods]]
+modId = "emi_loot"
+version = "${version}"
+displayName = "EMI Loot"
+displayURL = "https://github.com/fzzyhmstrs/EMI_loot"
+authors = "fzzyhmstrs"
+description = '''Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.'''
+logoFile = "icon.png"
+
+[[dependencies.emi_loot]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20,)"
+ordering = "NONE"
+side = "BOTH"

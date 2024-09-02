@@ -1,75 +1,61 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
 }
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version as Object
-group = project.maven_group as Object
-
-loom {
-    accessWidenerPath = file("src/main/resources/emi_loot.accesswidener")
+architectury {
+    minecraft = rootProject.minecraft_version
 }
 
-repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+
+    architectury {
+        compileOnly()
     }
 
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
+    base {
+        archivesName = rootProject.archives_base_name
+    }
+
+    version = "${rootProject.mod_version}+${project.name}"
+    group = rootProject.maven_group
+
+    repositories {
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/"
+        }
+
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    url = "https://api.modrinth.com/maven"
+                }
+            }
+            filter {
+                includeGroup "maven.modrinth"
             }
         }
-        filter {
-            includeGroup "maven.modrinth"
-        }
     }
-}
 
-dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation"net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    modImplementation "dev.emi:emi-fabric:${project.emi_version}"
-
-    modImplementation "maven.modrinth:fzzy-config:${fzzy_config_version}"
-
-    modCompileOnly "maven.modrinth:symbols-n-stuff:${sns_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "id", archivesBaseName
-
-    filesMatching("fabric.mod.json") {
-        expand ("id": archivesBaseName, "version": project.version)
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = "UTF-8"
+        it.options.release = 17
     }
-}
 
-tasks.withType(JavaCompile) {
-    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-    options.release.set(17)
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+    java {
+        withSourcesJar()
     }
-}
-
-java{
-    withSourcesJar()
 }
