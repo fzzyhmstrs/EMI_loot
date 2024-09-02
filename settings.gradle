@@ -12,4 +12,4 @@ include("xplat")
 include("fabric")
 include("forge")
 
-rootProject.name = "EMI_Loot"
+rootProject.name = "emi_loot"

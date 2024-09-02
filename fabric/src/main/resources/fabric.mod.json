@@ -11,10 +11,10 @@
   ],
   "entrypoints": {
     "main": [
-      "fzzyhmstrs.emi_loot.EMILoot"
+      "fzzyhmstrs.emi_loot.fabric.EMILootFabric"
     ],
     "client": [
-      "fzzyhmstrs.emi_loot.EMILootClient"
+      "fzzyhmstrs.emi_loot.fabric.EMILootClientFabric"
     ],
     "emi": [
       "fzzyhmstrs.emi_loot.emi.EmiClientPlugin"

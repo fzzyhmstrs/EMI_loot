@@ -9,15 +9,20 @@ architectury {
 }
 
 loom {
+    accessWidenerPath = project(":xplat").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig "emi_loot.mixins.json"
+    }
+
     mods {
         main {
             sourceSet sourceSets.main
             sourceSet project(':xplat').sourceSets.main
         }
-    }
-
-    forge {
-        mixinConfig "deslabification.mixins.json"
     }
 }
 
@@ -32,8 +37,11 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
-    annotationProcessor(compileOnly("io.github.llamalad7:mixinextras-common:0.4.0"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:0.4.0"))
+    //annotationProcessor(compileOnly("io.github.llamalad7:mixinextras-common:0.4.0"))
+    //implementation(include("io.github.llamalad7:mixinextras-forge:0.4.0"))
+
+    modCompileOnly "dev.emi:emi-forge:${rootProject.emi_version}:api"
+    modImplementation "dev.emi:emi-forge:${rootProject.emi_version}"
 
     common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":xplat", configuration: "transformProductionForge")) { transitive = false }
@@ -49,6 +57,7 @@ processResources {
 
 shadowJar {
     exclude "fabric.mod.json"
+    exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = "dev-shadow"

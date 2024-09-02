@@ -8,9 +8,16 @@ modId = "emi_loot"
 version = "${version}"
 displayName = "EMI Loot"
 displayURL = "https://github.com/fzzyhmstrs/EMI_loot"
-authors = "fzzyhmstrs"
+authors = "fzzyhmstrs, lxly9 (art)"
 description = '''Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.'''
 logoFile = "icon.png"
+
+[[dependencies.emi_loot]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.emi_loot]]
 modId = "minecraft"
@@ -18,3 +25,10 @@ mandatory = true
 versionRange = "[1.20,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.emi_loot]]
+modId="emi"
+mandatory=true
+versionRange="[1.0.0,)"
+ordering="AFTER"
+side="BOTH"
