@@ -89,8 +89,7 @@ public class BlockRendererForge {
 		}
 		FluidState fluidState = blockState.getFluidState();
 		if (!fluidState.isEmpty()) {
-			// TODO: may not work well?
-			brm.renderFluid(blockPos, world, consumer, blockState, fluidState);
+			// TODO: render the fluid!
 		}
 		matrices.pop();
 		draw.draw();
