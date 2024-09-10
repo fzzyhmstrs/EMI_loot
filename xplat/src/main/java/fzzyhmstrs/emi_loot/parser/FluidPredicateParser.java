@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.predicate.FluidPredicate;

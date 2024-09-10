@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
 import fzzyhmstrs.emi_loot.networking.ArchaeologyLootPayload;
 import fzzyhmstrs.emi_loot.networking.BlockLootPayload;
@@ -8,6 +9,7 @@ import fzzyhmstrs.emi_loot.networking.ClearPayload;
 import fzzyhmstrs.emi_loot.networking.GameplayLootPayload;
 import fzzyhmstrs.emi_loot.networking.MobLootPayload;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
@@ -24,8 +26,12 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryOps;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -62,11 +68,17 @@ public class EMILoot {
 
     public static void onInitialize() {
         ConfigApi.INSTANCE.network().registerS2C(ClearPayload.TYPE, ClearPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf(), ctx.player().clientWorld));
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf(), ctx.player().clientWorld));
+        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf(), ctx.player().clientWorld));
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf(), ctx.player().clientWorld));
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf(), ctx.player().clientWorld));
+    }
+
+    public static void parseTables(ResourceManager resourceManager, Registry<LootTable> lootManager, RegistryOps<JsonElement> ops) {
+        LootTableParser.registryOps = ops;
+        ServerResourceData.loadDirectTables(resourceManager, ops);
+        LootTableParser.parseLootTables(lootManager);
     }
 
     @Version(version = 1)
