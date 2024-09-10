@@ -12,7 +12,7 @@ public abstract class EMILootAgnos {
         } catch (Throwable t) {
         }
         try {
-            Class.forName("fzzyhmstrs.emi_loot.forge.EMILootAgnosNeoForge");
+            Class.forName("fzzyhmstrs.emi_loot.neoforge.EMILootAgnosNeoForge");
         } catch (Throwable t) {
         }
     }

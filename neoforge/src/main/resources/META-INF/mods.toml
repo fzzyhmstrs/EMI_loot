@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "[2,)"
 license = "MIT"
 issueTrackerURL = "https://github.com/fzzyhmstrs/EMI_loot/issues"
 
@@ -13,10 +13,10 @@ description = '''Plugin for EMI that shows chest loot, block drops, mob drops, a
 logoFile = "icon.png"
 
 [[accessTransformers]]
-file="META-INF/accesstransformer.cfg"
+file = "META-INF/accesstransformer.cfg"
 
 [[mixins]]
-config="emi_loot.mixins.json"
+config = "emi_loot.mixins.json"
 
 [[dependencies.emi_loot]]
 modId = "neoforge"
@@ -33,15 +33,15 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.emi_loot]]
-modId="emi"
-mandatory=true
-versionRange="[1.0.0,)"
-ordering="AFTER"
-side="BOTH"
+modId = "emi"
+type = "REQUIRED"
+versionRange = "[1.0.0,)"
+ordering = "AFTER"
+side = "BOTH"
 
 [[dependencies.emi_loot]]
-modId="fzzy_config"
-mandatory=true
-versionRange="[0.4.1,)"
-ordering="AFTER"
-side="BOTH"
+modId = "fzzy_config"
+type = "REQUIRED"
+versionRange = "[0.4.1,)"
+ordering = "AFTER"
+side = "BOTH"

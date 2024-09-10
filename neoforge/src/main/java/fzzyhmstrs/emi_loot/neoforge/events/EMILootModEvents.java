@@ -1,8 +1,9 @@
 package fzzyhmstrs.emi_loot.neoforge.events;
 
-public class EMILootModEvents {
+//@Mod.EventBusSubscriber(modid = EMILoot.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+//public class EMILootModEvents {
 //    @SubscribeEvent
-//    public void onRegister(RegisterEvent event) {
+//    public static void onRegister(RegisterEvent event) {
 //        EMILoot.register();
 //    }
-}
+//}

@@ -1,9 +1,6 @@
 package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.neoforge.events.EMILootClientForgeEvents;
-import fzzyhmstrs.emi_loot.neoforge.events.EMILootClientModEvents;
-import fzzyhmstrs.emi_loot.neoforge.events.EMILootForgeEvents;
 import fzzyhmstrs.emi_loot.neoforge.util.BlockRendererImpl;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
@@ -56,13 +53,8 @@ public class EMILootNeoForge {
 
         ENCHANTMENTS.register(modBus);
 
-        NeoForge.EVENT_BUS.register(new EMILootForgeEvents());
-        //MOD_BUS.register(new EMILootModEvents());
-
         if (FMLLoader.getDist().isClient()) {
             NeoForge.EVENT_BUS.addListener(BlockRendererImpl::onClientTick);
-            NeoForge.EVENT_BUS.register(new EMILootClientForgeEvents());
-            modBus.register(new EMILootClientModEvents());
         }
 
         EMILoot.onInitialize();
