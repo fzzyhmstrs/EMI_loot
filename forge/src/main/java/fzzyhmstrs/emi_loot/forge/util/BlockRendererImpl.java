@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.forge;
+package fzzyhmstrs.emi_loot.forge.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-public class BlockRendererForge {
+public class BlockRendererImpl {
 
 	/**
 	 B2T: block to transformation

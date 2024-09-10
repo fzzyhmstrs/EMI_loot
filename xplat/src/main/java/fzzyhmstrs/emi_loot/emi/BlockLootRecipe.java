@@ -8,6 +8,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.util.BlockStateEmiStack;
@@ -161,7 +162,7 @@ public class BlockLootRecipe implements EmiRecipe {
         } else {
             for (WidgetRowBuilder builder : rowBuilderList) {
                 for (ClientBuiltPool pool : builder.getPoolList()) {
-                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }

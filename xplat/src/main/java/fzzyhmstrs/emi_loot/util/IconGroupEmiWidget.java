@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
+import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
@@ -17,7 +18,9 @@ import java.util.List;
 
 import static fzzyhmstrs.emi_loot.util.IconEmiWidget.FRAME_ID;
 
-public class IconGroupEmiWidget extends Widget {
+// Must be abstract and reimplemented per-platform to fix a weird remapping issue
+// https://github.com/architectury/architectury-loom/issues/106
+public abstract class IconGroupEmiWidget extends Widget {
 
     public IconGroupEmiWidget(int x, int y, ClientBuiltPool pool) {
         this.x = x;
@@ -27,7 +30,7 @@ public class IconGroupEmiWidget extends Widget {
             Pair<Integer, Text> pair = pool.conditions().get(i);
             int xOffset = i / 2 * 11;
             int yOffset = i % 2 * 11;
-            list.add(new IconEmiWidget(x + xOffset, y + yOffset, pair.getLeft(), pair.getRight()));
+            list.add(EMILootClientAgnos.createIconEmiWidget(x + xOffset, y + yOffset, pair.getLeft(), pair.getRight()));
         }
         this.icons = list;
         this.iconsWidth = 12 + (((icons.size() - 1)/2) * 11);
@@ -86,8 +89,7 @@ public class IconGroupEmiWidget extends Widget {
         return bounds;
     }
 
-    @Override
-    public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
+    public void renderInternal(DrawContext draw, int mouseX, int mouseY, float delta) {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         int widthRemaining = itemsWidth;
         int xNew = x + iconsWidth;
@@ -107,14 +109,8 @@ public class IconGroupEmiWidget extends Widget {
     }
 
     // Required to fix a weird remapping issue
-    // https://github.com/architectury/architectury-loom/issues/106
-    public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
-        render(draw, mouseX, mouseY, delta);
-    }
-    public void method_25394(DrawContext draw, int mouseX, int mouseY, float delta) {
-        render(draw, mouseX, mouseY, delta);
-    }
     // Taken from SlotWidget
+    // https://github.com/architectury/architectury-loom/issues/106
     public void renderSlot(SlotWidget slot, DrawContext draw, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         draw.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

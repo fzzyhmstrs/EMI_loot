@@ -12,7 +12,9 @@ import net.minecraft.util.Identifier;
 import java.util.Collections;
 import java.util.List;
 
-public class IconEmiWidget extends Widget {
+// Must be abstract and reimplemented per-platform to fix a weird remapping issue
+// https://github.com/architectury/architectury-loom/issues/106
+public abstract class IconEmiWidget extends Widget {
 
     public IconEmiWidget(int x, int y, int keyIndex, Text text) {
         this.tex = TextKey.getSpriteId(keyIndex);
@@ -42,20 +44,10 @@ public class IconEmiWidget extends Widget {
         return bounds;
     }
 
-    @Override
-    public void render(DrawContext matrices, int mouseX, int mouseY, float delta) {
+    public void renderInternal(DrawContext matrices, int mouseX, int mouseY, float delta) {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         matrices.drawTexture(FRAME_ID, x, y, 12, 12, 0, 0, 12, 12, 64, 16);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         matrices.drawTexture(tex, x + 2, y + 2, 8, 8, 0, 0, 8, 8, 8, 8);
-    }
-
-    // Required to fix a weird remapping issue
-    // https://github.com/architectury/architectury-loom/issues/106
-    public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
-        render(draw, mouseX, mouseY, delta);
-    }
-    public void method_25394(DrawContext draw, int mouseX, int mouseY, float delta) {
-        render(draw, mouseX, mouseY, delta);
     }
 }

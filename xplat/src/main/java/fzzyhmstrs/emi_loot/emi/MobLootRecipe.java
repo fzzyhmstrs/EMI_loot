@@ -8,6 +8,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
@@ -250,7 +251,7 @@ public class MobLootRecipe implements EmiRecipe {
                 y = 11;
                 WidgetRowBuilder builder = rowBuilderList.get(0);
                 for (ClientBuiltPool pool: builder.getPoolList()) {
-                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }
@@ -263,7 +264,7 @@ public class MobLootRecipe implements EmiRecipe {
                 y += 28;
                 for (WidgetRowBuilder builder: rowBuilderList) {
                     for (ClientBuiltPool pool: builder.getPoolList()) {
-                        IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                        IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
                         widgets.add(widget);
                         x += widget.getWidth() + 6;
                     }

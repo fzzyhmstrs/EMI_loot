@@ -8,6 +8,7 @@ import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
@@ -183,7 +184,7 @@ public class GameplayLootRecipe implements EmiRecipe {
             y += 11;
             for (WidgetRowBuilder builder : rowBuilderList) {
                 for (ClientBuiltPool pool : builder.getPoolList()) {
-                    IconGroupEmiWidget widget = new IconGroupEmiWidget(x, y, pool);
+                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }
