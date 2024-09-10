@@ -1,9 +1,6 @@
 package fzzyhmstrs.emi_loot.forge;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.forge.events.EMILootClientForgeEvents;
-import fzzyhmstrs.emi_loot.forge.events.EMILootClientModEvents;
-import fzzyhmstrs.emi_loot.forge.events.EMILootForgeEvents;
 import fzzyhmstrs.emi_loot.forge.util.BlockRendererImpl;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
@@ -40,13 +37,8 @@ public class EMILootForge {
         LOOT_CONDITION_TYPES.register(MOD_BUS);
         LOOT_FUNCTION_TYPES.register(MOD_BUS);
 
-        MinecraftForge.EVENT_BUS.register(new EMILootForgeEvents());
-        //MOD_BUS.register(new EMILootModEvents());
-
         if (FMLLoader.getDist().isClient()) {
             MinecraftForge.EVENT_BUS.addListener(BlockRendererImpl::onClientTick);
-            MinecraftForge.EVENT_BUS.register(new EMILootClientForgeEvents());
-            MOD_BUS.register(new EMILootClientModEvents());
         }
 
         EMILoot.onInitialize();
