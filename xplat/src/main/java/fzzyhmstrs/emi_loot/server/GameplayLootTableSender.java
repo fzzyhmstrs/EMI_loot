@@ -1,9 +1,9 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
@@ -44,12 +44,12 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, GAMEPLAY_SENDER)) return;
+        if (!ConfigApi.INSTANCE.network().canSend(GAMEPLAY_SENDER, player)) return;
         if (isEmpty) {
             if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
             return;
         }
-        PacketByteBuf buf = PacketByteBufs.create();
+        PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
         //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
         buf.writeString(idToSend);
 
@@ -57,7 +57,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
             if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("sending simple gameplay table: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
+            ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, GAMEPLAY_SENDER), player);
             return;
         } else if (builderList.isEmpty()) {
             return;
@@ -99,7 +99,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
             });
 
         });
-        ServerPlayNetworking.send(player, GAMEPLAY_SENDER, buf);
+        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, GAMEPLAY_SENDER), player);
     }
 
     @Override

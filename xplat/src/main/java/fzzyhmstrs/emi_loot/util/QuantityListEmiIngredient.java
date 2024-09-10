@@ -1,10 +1,9 @@
 package fzzyhmstrs.emi_loot.util;
 
-import dev.emi.emi.EmiPort;
 import dev.emi.emi.api.render.EmiRender;
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.screen.tooltip.IngredientTooltipComponent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import org.apache.commons.compress.utils.Lists;
@@ -84,8 +83,8 @@ public class QuantityListEmiIngredient implements EmiIngredient {
 	@Override
 	public List<TooltipComponent> getTooltip() {
 		List<TooltipComponent> tooltip = Lists.newArrayList();
-		tooltip.add(TooltipComponent.of(EmiPort.ordered(EmiPort.translatable("tooltip.emi.accepts"))));
-		tooltip.add(new IngredientTooltipComponent(ingredients));
+		tooltip.add(TooltipComponent.of(LText.translatable("tooltip.emi.accepts").asOrderedText()));
+		tooltip.add(EmiTooltipComponents.getIngredientTooltipComponent(ingredients));
 		int item = (int) (System.currentTimeMillis() / 1000 % ingredients.size());
 		tooltip.addAll(ingredients.get(item).getTooltip());
 		return tooltip;

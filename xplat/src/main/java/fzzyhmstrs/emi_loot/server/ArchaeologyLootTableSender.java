@@ -1,7 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,15 +29,15 @@ public class ArchaeologyLootTableSender implements LootSender<ArchaeologyLootPoo
 
 	@Override
 	public void send(ServerPlayerEntity player) {
-		if (!ServerPlayNetworking.canSend(player, ARCHAEOLOGY_SENDER)) return;
-		PacketByteBuf buf = PacketByteBufs.create();
+		if (!ConfigApi.INSTANCE.network().canSend(ARCHAEOLOGY_SENDER, player)) return;
+		PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
 		buf.writeString(idToSend);
 		buf.writeShort(floatMap.size());
 		floatMap.forEach((item, floatWeight) -> {
 			buf.writeItemStack(item);
 			buf.writeFloat(floatWeight);
 		});
-		ServerPlayNetworking.send(player, ARCHAEOLOGY_SENDER, buf);
+		ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, ARCHAEOLOGY_SENDER), player);
 	}
 
 	@Override

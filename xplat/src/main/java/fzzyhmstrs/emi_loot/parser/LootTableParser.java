@@ -29,12 +29,11 @@ import fzzyhmstrs.emi_loot.server.MobLootTableSender;
 import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.LootTablePools;
+import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -62,6 +61,7 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -108,27 +108,25 @@ public class LootTableParser {
         return true;
     }
 
-    public void registerServer() {
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
-            if (!hasPostProcessed()) {
-                EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
-                for (PostProcessor process: PostProcessor.values()) {
-                    postProcess(process);
-                }
-                EMILoot.LOGGER.warn("Post-processing complete!");
+    public void registerServer(ServerPlayerEntity player) {
+        if (!hasPostProcessed()) {
+            EMILoot.LOGGER.warn("Post-processing not completed for some reason, completing now...");
+            for (PostProcessor process: PostProcessor.values()) {
+                postProcess(process);
             }
-            ServerPlayNetworking.send(player, CLEAR_LOOTS, PacketByteBufs.empty());
-            if (EMILoot.config.parseChestLoot)
-                chestSenders.forEach((id, chestSender) -> chestSender.send(player));
-            if (EMILoot.config.parseBlockLoot)
-                blockSenders.forEach((id, blockSender) -> blockSender.send(player));
-            if (EMILoot.config.parseMobLoot)
-                mobSenders.forEach((id, mobSender) -> mobSender.send(player));
-            if (EMILoot.config.parseGameplayLoot)
-                gameplaySenders.forEach((id, gameplaySender) -> gameplaySender.send(player));
-            if (EMILoot.config.parseArchaeologyLoot)
-                archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(player));
-        });
+            EMILoot.LOGGER.warn("Post-processing complete!");
+        }
+        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(ConfigApi.INSTANCE.network().buf(), CLEAR_LOOTS), player);
+        if (EMILoot.config.parseChestLoot)
+            chestSenders.forEach((id, chestSender) -> chestSender.send(player));
+        if (EMILoot.config.parseBlockLoot)
+            blockSenders.forEach((id, blockSender) -> blockSender.send(player));
+        if (EMILoot.config.parseMobLoot)
+            mobSenders.forEach((id, mobSender) -> mobSender.send(player));
+        if (EMILoot.config.parseGameplayLoot)
+            gameplaySenders.forEach((id, gameplaySender) -> gameplaySender.send(player));
+        if (EMILoot.config.parseArchaeologyLoot)
+            archaeologySenders.forEach((id, archaeologySender) -> archaeologySender.send(player));
     }
 
     public static void parseLootTables(LootManager manager, Map<LootDataKey<?>, ?> tables) {

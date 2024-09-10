@@ -1,9 +1,9 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
@@ -45,13 +45,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ServerPlayNetworking.canSend(player, MOB_SENDER)) return;
+        if (!ConfigApi.INSTANCE.network().canSend(MOB_SENDER, player)) return;
         //pre-build the builders to do empty checks
         if (isEmpty) {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
-        PacketByteBuf buf = PacketByteBufs.create();
+        PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
         //start with the loot pool ID and the number of builders to write
         buf.writeString(idToSend);
         buf.writeString(mobIdToSend);
@@ -60,7 +60,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ServerPlayNetworking.send(player, MOB_SENDER, buf);
+            ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, MOB_SENDER), player);
             return;
         } else if (builderList.isEmpty()) {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
@@ -104,7 +104,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             });
 
         });
-        ServerPlayNetworking.send(player, MOB_SENDER, buf);
+        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, MOB_SENDER), player);
     }
 
     @Override

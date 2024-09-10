@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.fabric;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientLootTables;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -16,7 +17,7 @@ public class EMILootClientFabric implements ClientModInitializer {
         EMILootClient.onInitializeClient();
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new EntityOffsetsReloadListenerFabric());
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> EMILootClient.tables.getLoots().clear());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientLootTables.INSTANCE.clearLoots());
     }
 
     private static class EntityOffsetsReloadListenerFabric extends ClientResourceData.EntityOffsetsReloadListener implements IdentifiableResourceReloadListener {

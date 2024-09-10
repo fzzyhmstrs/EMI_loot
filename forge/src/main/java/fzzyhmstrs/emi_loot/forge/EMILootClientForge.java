@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.forge;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
+import fzzyhmstrs.emi_loot.client.ClientLootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +18,6 @@ public class EMILootClientForge {
 
     @SubscribeEvent
     public void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        EMILootClient.tables.getLoots().clear();
+        ClientLootTables.INSTANCE.clearLoots();
     }
 }

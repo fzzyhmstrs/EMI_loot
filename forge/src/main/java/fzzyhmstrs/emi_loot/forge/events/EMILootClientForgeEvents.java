@@ -7,8 +7,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class EMILootClientForgeEvents {
-    private final ClientLootTables tables = new ClientLootTables();
-
     @SubscribeEvent
     public void onClientSetup(FMLClientSetupEvent event) {
         EMILootClient.onInitializeClient();
@@ -16,6 +14,6 @@ public class EMILootClientForgeEvents {
 
     @SubscribeEvent
     public void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        tables.getLoots().clear();
+        ClientLootTables.INSTANCE.clearLoots();
     }
 }

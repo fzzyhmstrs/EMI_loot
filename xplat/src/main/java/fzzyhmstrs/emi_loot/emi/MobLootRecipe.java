@@ -8,7 +8,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
@@ -131,7 +130,7 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public @Nullable Identifier getId() {
-        return new Identifier(EMILootClient.MOD_ID, "/" + getCategory().id.getPath() + "/" + lootId.getNamespace() + "/" + lootId.getPath());
+        return new Identifier(EMILoot.MOD_ID, "/" + getCategory().id.getPath() + "/" + lootId.getNamespace() + "/" + lootId.getPath());
     }
 
     @Override

@@ -6,11 +6,11 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientArchaeologyLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
+import fzzyhmstrs.emi_loot.client.ClientLootTables;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
@@ -38,7 +38,7 @@ public class EmiClientPlugin implements EmiPlugin {
         registry.addCategory(GAMEPLAY_CATEGORY);
         registry.addCategory(ARCHAEOLOGY_CATEGORY);
 
-        EMILootClient.tables.getLoots().forEach(lootReceiver -> {
+        ClientLootTables.INSTANCE.getLoots().forEach(lootReceiver -> {
             if (!lootReceiver.isEmpty()) {
                 if (lootReceiver instanceof ClientChestLootTable) {
                     registry.addRecipe(new ChestLootRecipe((ClientChestLootTable) lootReceiver));
