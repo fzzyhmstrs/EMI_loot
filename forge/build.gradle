@@ -37,11 +37,11 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
-    //annotationProcessor(compileOnly("io.github.llamalad7:mixinextras-common:0.4.0"))
-    //implementation(include("io.github.llamalad7:mixinextras-forge:0.4.0"))
+    modRuntimeOnly "dev.emi:emi-forge:${rootProject.emi_version}"
+    modRuntimeOnly "maven.modrinth:fzzy-config:${rootProject.fzzy_config_version}+forge"
+    //modRuntimeOnly "maven.modrinth:symbols-n-stuff:${rootProject.sns_version}"
 
-    modCompileOnly "dev.emi:emi-forge:${rootProject.emi_version}:api"
-    modImplementation "dev.emi:emi-forge:${rootProject.emi_version}"
+    modRuntimeOnly "maven.modrinth:kotlin-for-forge:${rootProject.kff_version}"
 
     common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":xplat", configuration: "transformProductionForge")) { transitive = false }

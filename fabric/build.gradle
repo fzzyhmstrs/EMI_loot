@@ -31,6 +31,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
+    modRuntimeOnly "dev.emi:emi-fabric:${rootProject.emi_version}"
+    modRuntimeOnly "maven.modrinth:fzzy-config:${rootProject.fzzy_config_version}"
+    modRuntimeOnly "maven.modrinth:symbols-n-stuff:${rootProject.sns_version}"
+
+    modRuntimeOnly "maven.modrinth:fabric-language-kotlin:${rootProject.flk_version}"
+
     common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":xplat", configuration: "transformProductionFabric")) { transitive false }
 }
