@@ -49,4 +49,10 @@ public class IconEmiWidget extends Widget {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         matrices.drawTexture(tex, x + 2, y + 2, 8, 8, 0, 0, 8, 8, 8, 8);
     }
+
+    // Required to fix a weird remapping issue
+    // https://github.com/architectury/architectury-loom/issues/106
+    public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
+        render(draw, mouseX, mouseY, delta);
+    }
 }

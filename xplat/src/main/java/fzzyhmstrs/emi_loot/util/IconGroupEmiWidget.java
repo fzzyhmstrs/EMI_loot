@@ -7,6 +7,7 @@ import dev.emi.emi.api.widget.Widget;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
@@ -101,7 +102,22 @@ public class IconGroupEmiWidget extends Widget {
             icon.render(draw, mouseX, mouseY, delta);
         }
         for (SlotWidget slot: items) {
-            slot.render(draw, mouseX, mouseY, delta);
+            renderSlot(slot, draw, mouseX, mouseY, delta);
         }
+    }
+
+    // Required to fix a weird remapping issue
+    // https://github.com/architectury/architectury-loom/issues/106
+    public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
+        render(draw, mouseX, mouseY, delta);
+    }
+    // Taken from SlotWidget
+    public void renderSlot(SlotWidget slot, DrawContext draw, int mouseX, int mouseY, float delta) {
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        draw.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        slot.drawBackground(draw, mouseX, mouseY, delta);
+        slot.drawStack(draw, mouseX, mouseY, delta);
+        RenderSystem.disableDepthTest();
+        slot.drawOverlay(draw, mouseX, mouseY, delta);
     }
 }
