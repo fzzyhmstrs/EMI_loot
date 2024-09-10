@@ -16,12 +16,8 @@ public class EMILootForgeEvents {
 
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) {
-            event.getPlayerList().getPlayerList().forEach(player -> {
-                EMILoot.parser.registerServer(player);
-            });
-        } else {
-            EMILoot.parser.registerServer(event.getPlayer());
-        }
+        event.getRelevantPlayers().forEach(player -> {
+            EMILoot.parser.registerServer(player);
+        });
     }
 }
