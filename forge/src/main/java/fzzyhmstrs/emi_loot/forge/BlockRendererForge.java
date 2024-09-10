@@ -1,10 +1,5 @@
 package fzzyhmstrs.emi_loot.forge;
 
-import fzzyhmstrs.emi_loot.EMILoot;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -19,37 +14,31 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.Transformation;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.event.TickEvent;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 public class BlockRendererForge {
 
 	/**
 	 B2T: block to transformation
 	 */
-	public static final BlockApiLookup<Transformation, @Nullable Void> B2T = BlockApiLookup.get(EMILoot.identity("transformation"), Transformation.class, Void.class);
+	public static final Function<BlockState, Transformation> B2T;
 	/**
 	 T_CUBE: Transformation cube
 	 */
@@ -63,10 +52,11 @@ public class BlockRendererForge {
 	 */
 	public static final Set<BlockEntity> TICKED_BE = new HashSet<>();
 	static {
-		B2T.registerFallback((world, pos, state, blockEntity, context) -> {
+		// cheating a little...
+		B2T = (state) -> {
 			Block block = state.getBlock();
 			return block instanceof FlowerBlock || block instanceof SaplingBlock || block instanceof CobwebBlock || block instanceof FernBlock || block instanceof SeagrassBlock || block instanceof TallPlantBlock ? T_CROSS : null;
-		});
+		};
 	}
 
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -85,7 +75,7 @@ public class BlockRendererForge {
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		BlockPos blockPos = player != null ? player.getBlockPos() : BlockPos.ORIGIN;
 
-		Transformation t = B2T.find(world, blockPos, blockState, null, null);
+		Transformation t = B2T.apply(blockState);
 		Objects.requireNonNullElse(t, T_CUBE).apply(false, matrices);
 		BlockRenderManager brm = MinecraftClient.getInstance().getBlockRenderManager();
 		//DiffuseLighting.disableGuiDepthLighting();
@@ -99,41 +89,10 @@ public class BlockRendererForge {
 		}
 		FluidState fluidState = blockState.getFluidState();
 		if (!fluidState.isEmpty()) {
-			render(fluidState, world, blockPos, matrices, consumer);
+			// TODO: may not work well?
+			brm.renderFluid(blockPos, world, consumer, blockState, fluidState);
 		}
 		matrices.pop();
 		draw.draw();
-	}
-	private static void render(FluidState fluidState, @Nullable World world, @Nullable BlockPos pos, MatrixStack matrices, VertexConsumer consumer) {
-		IClientFluidTypeExtensions renderHandler = IClientFluidTypeExtensions.of(fluidState);
-		int color = renderHandler.getTintColor(fluidState, world, pos);
-		Sprite[] sprites = ForgeHooksClient.getFluidSprites(world, pos, fluidState);
-		Sprite still = sprites[0];
-		Sprite flowing = sprites[1];
-		float red = (color >> 16 & 0xFF) / 255f;
-		float green = (color >> 8 & 0xFF) / 255f;
-		float blue = (color & 0xFF) / 255f;
-		@SuppressWarnings("DataFlowIssue")
-		var meshBuilder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
-		BakedQuad quad;
-		QuadEmitter emitter = meshBuilder.getEmitter();
-		quad = emitter.square(Direction.UP, 0, 0, 1, 1, 2 / 16f)
-				.spriteBake(still, MutableQuadView.BAKE_LOCK_UV)
-				.color(color, color, color, color)
-				.toBakedQuad(still);
-		MatrixStack.Entry peek = matrices.peek();
-		consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-		quad = emitter.square(Direction.DOWN, 0, 0, 1, 1, 0)
-				.spriteBake(still, MutableQuadView.BAKE_LOCK_UV)
-				.color(color, color, color, color)
-				.toBakedQuad(still);
-		consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-		for (Direction direction : Direction.Type.HORIZONTAL) {
-			quad = emitter.square(direction, 0, 0, 1, 14 / 16f, 0)
-					.spriteBake(flowing, MutableQuadView.BAKE_LOCK_UV)
-					.color(color, color, color, color)
-					.toBakedQuad(flowing);
-			consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-		}
 	}
 }
