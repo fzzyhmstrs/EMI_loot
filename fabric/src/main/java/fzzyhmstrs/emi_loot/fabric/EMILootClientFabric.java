@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 public class EMILootClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        EMILootClient.init();
+        EMILootClient.onInitializeClient();
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new EntityOffsetsReloadListenerFabric());
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> EMILootClient.tables.getLoots().clear());

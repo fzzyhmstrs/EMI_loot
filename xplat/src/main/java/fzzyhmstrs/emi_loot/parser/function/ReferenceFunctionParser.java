@@ -1,22 +1,16 @@
 package fzzyhmstrs.emi_loot.parser.function;
 
-import fzzyhmstrs.emi_loot.mixins.ReferenceLootConditionAccessor;
 import fzzyhmstrs.emi_loot.mixins.ReferenceLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
-import fzzyhmstrs.emi_loot.parser.condition.ConditionParser;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootDataKey;
 import net.minecraft.loot.LootDataType;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.condition.LootConditionTypes;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionTypes;
-import net.minecraft.loot.function.ReferenceLootFunction;
 import net.minecraft.util.Identifier;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ReferenceFunctionParser implements FunctionParser {

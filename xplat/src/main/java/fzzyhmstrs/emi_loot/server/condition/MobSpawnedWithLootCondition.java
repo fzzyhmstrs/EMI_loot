@@ -12,7 +12,7 @@ import net.minecraft.util.JsonSerializer;
 public class MobSpawnedWithLootCondition implements LootCondition {
     @Override
     public LootConditionType getType() {
-        return EMILoot.SPAWNS_WITH;
+        return EMILoot.SPAWNS_WITH.get();
     }
 
     @Override

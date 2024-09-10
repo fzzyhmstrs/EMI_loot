@@ -24,6 +24,6 @@ public class EMILootFabric implements ModInitializer {
             EMILoot.parser.registerServer(player);
         });
 
-        EMILoot.init();
+        EMILoot.onInitialize();
     }
 }

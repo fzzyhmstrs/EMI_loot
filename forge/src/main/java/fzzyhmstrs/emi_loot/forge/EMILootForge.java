@@ -47,6 +47,6 @@ public class EMILootForge {
             MOD_BUS.register(new EMILootClientModEvents());
         }
 
-        EMILoot.init();
+        EMILoot.onInitialize();
     }
 }

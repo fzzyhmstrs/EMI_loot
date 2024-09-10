@@ -8,7 +8,6 @@ import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class InvertedConditionParser implements ConditionParser {

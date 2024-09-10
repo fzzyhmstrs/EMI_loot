@@ -12,7 +12,7 @@ import net.minecraft.util.JsonSerializer;
 public class KilledByWitherLootCondition implements LootCondition {
     @Override
     public LootConditionType getType() {
-        return EMILoot.WITHER_KILL;
+        return EMILoot.WITHER_KILL.get();
     }
 
     @Override

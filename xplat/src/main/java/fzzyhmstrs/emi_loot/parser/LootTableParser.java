@@ -6,6 +6,7 @@ import fzzyhmstrs.emi_loot.mixins.CombinedEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.ConditionalLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.mixins.ItemEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.LeafEntryAccessor;
+import fzzyhmstrs.emi_loot.mixins.LootPoolAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootPoolEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.LootTableEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.RandomChanceLootConditionAccessor;
@@ -27,6 +28,7 @@ import fzzyhmstrs.emi_loot.server.MobLootPoolBuilder;
 import fzzyhmstrs.emi_loot.server.MobLootTableSender;
 import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.LootTablePools;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -246,17 +248,17 @@ public class LootTableParser {
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id) {
         ChestLootTableSender sender = new ChestLootTableSender(id);
-        for (LootPool pool : lootTable.pools) {
-            LootNumberProvider rollProvider = pool.rolls;
+        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float conditionalMultiplier = 1f;
-            for (LootCondition condition : pool.conditions) {
+            for (LootCondition condition : ((LootPoolAccessor) pool).getConditions()) {
                 if (condition instanceof RandomChanceLootCondition) {
                     conditionalMultiplier *= ((RandomChanceLootConditionAccessor)condition).getChance();
                 }
             }
             float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;
             ChestLootPoolBuilder builder = new ChestLootPoolBuilder(rollAvg);
-            LootPoolEntry[] entries = pool.entries;
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                     parseLootPoolEntry(builder, entry);
             }
@@ -285,24 +287,24 @@ public class LootTableParser {
     }
 
     private static void parseBlockLootTableInternal(LootTable lootTable, BlockLootTableSender sender, boolean isDirect) {
-        for (LootPool pool : lootTable.pools) {
-            LootCondition[] conditions = pool.conditions;
-            List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
+        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+            LootCondition[] conditions = ((LootPoolAccessor) pool).getConditions();
+            List<LootConditionResult> parsedConditions = parseLootConditions(conditions,ItemStack.EMPTY,false);
             if (isDirect) {
                 if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding direct drop condition to " + currentTable);
                 parsedConditions.add(new LootConditionResult(TextKey.of("emi_loot.condition.direct_drop")));
             }
-            LootFunction[] functions = pool.functions;
+            LootFunction[] functions = ((LootPoolAccessor) pool).getFunctions();
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
                 LootFunctionResult r = parseLootFunction(function);
                 if (!r.skip())
                     parsedFunctions.add(r);
             }
-            LootNumberProvider rollProvider = pool.rolls;
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             BlockLootPoolBuilder builder = new BlockLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = pool.entries;
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder, entry);
             }
@@ -330,24 +332,24 @@ public class LootTableParser {
     }
 
     private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect) {
-        for (LootPool pool : lootTable.pools) {
-            LootCondition[] conditions = pool.conditions;
+        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+            LootCondition[] conditions = ((LootPoolAccessor) pool).getConditions();
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
             if (isDirect) {
                 if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding direct drop condition to " + currentTable);
                 parsedConditions.add(new LootConditionResult(TextKey.of("emi_loot.condition.direct_drop")));
             }
-            LootFunction[] functions = pool.functions;
+            LootFunction[] functions = ((LootPoolAccessor) pool).getFunctions();
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
                 LootFunctionResult r = parseLootFunction(function);
                 if (!r.skip())
                     parsedFunctions.add(r);
             }
-            LootNumberProvider rollProvider = pool.rolls;
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             MobLootPoolBuilder builder = new MobLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = pool.entries;
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder, entry);
             }
@@ -357,20 +359,20 @@ public class LootTableParser {
 
     private static GameplayLootTableSender parseGameplayLootTable(LootTable lootTable, Identifier id) {
         GameplayLootTableSender sender = new GameplayLootTableSender(id);
-        for (LootPool pool : lootTable.pools) {
-            LootCondition[] conditions = pool.conditions;
+        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+            LootCondition[] conditions = ((LootPoolAccessor) pool).getConditions();
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
-            LootFunction[] functions = pool.functions;
+            LootFunction[] functions = ((LootPoolAccessor) pool).getFunctions();
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
                 LootFunctionResult r = parseLootFunction(function);
                 if (!r.skip())
                     parsedFunctions.add(r);
             }
-            LootNumberProvider rollProvider = pool.rolls;
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             GameplayLootPoolBuilder builder = new GameplayLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = pool.entries;
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder, entry);
             }
@@ -382,11 +384,11 @@ public class LootTableParser {
 
     private static ArchaeologyLootTableSender parseArchaeologyTable(LootTable lootTable, Identifier id) {
         ArchaeologyLootTableSender sender = new ArchaeologyLootTableSender(id);
-        for (LootPool pool : lootTable.pools) {
-            LootNumberProvider rollProvider = pool.rolls;
+        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+            LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             ArchaeologyLootPoolBuilder builder = new ArchaeologyLootPoolBuilder(rollAvg);
-            LootPoolEntry[] entries = pool.entries;
+            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder, entry);
             }

@@ -12,7 +12,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class EMILootClientForge {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        EMILootClient.init();
+        EMILootClient.onInitializeClient();
     }
 
     @SubscribeEvent

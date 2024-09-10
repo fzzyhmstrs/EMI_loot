@@ -14,7 +14,7 @@ public class SetAnyDamageLootFunction implements LootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return EMILoot.SET_ANY_DAMAGE;
+        return EMILoot.SET_ANY_DAMAGE.get();
     }
 
     @Override

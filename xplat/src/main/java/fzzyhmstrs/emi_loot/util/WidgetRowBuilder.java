@@ -1,7 +1,6 @@
 package fzzyhmstrs.emi_loot.util;
 
 import com.google.common.base.Suppliers;
-import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;

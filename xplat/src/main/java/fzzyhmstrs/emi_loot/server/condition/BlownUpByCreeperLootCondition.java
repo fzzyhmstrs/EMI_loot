@@ -12,7 +12,7 @@ import net.minecraft.util.JsonSerializer;
 public class BlownUpByCreeperLootCondition implements LootCondition {
     @Override
     public LootConditionType getType() {
-        return EMILoot.CREEPER;
+        return EMILoot.CREEPER.get();
     }
 
     @Override

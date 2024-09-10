@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.emi;
 
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -15,6 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
+@EmiEntrypoint
 public class EmiClientPlugin implements EmiPlugin {
     private static final Identifier LOOT_ID = new Identifier(EMILoot.MOD_ID, "chest_loot");
     private static final Identifier BLOCK_ID = new Identifier(EMILoot.MOD_ID, "block_drops");

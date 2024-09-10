@@ -19,7 +19,7 @@ public class ReferenceConditionParser implements ConditionParser {
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         Identifier id = ((ReferenceLootConditionAccessor)condition).getId();
         if (LootTableParser.lootManager != null) {
-            LootCondition referenceCondition = (LootCondition) LootTableParser.lootManager.getElement(new LootDataKey(LootDataType.PREDICATES, id));
+            LootCondition referenceCondition = LootTableParser.lootManager.getElement(new LootDataKey<>(LootDataType.PREDICATES, id));
             if (referenceCondition != null && referenceCondition.getType() != LootConditionTypes.REFERENCE) {
                 return LootTableParser.parseLootCondition(referenceCondition, stack, parentIsAlternative);
             }

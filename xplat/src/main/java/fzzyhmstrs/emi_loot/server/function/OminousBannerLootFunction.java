@@ -14,7 +14,7 @@ public class OminousBannerLootFunction implements LootFunction {
 
     @Override
     public LootFunctionType getType() {
-        return EMILoot.OMINOUS_BANNER;
+        return EMILoot.OMINOUS_BANNER.get();
     }
 
     @Override

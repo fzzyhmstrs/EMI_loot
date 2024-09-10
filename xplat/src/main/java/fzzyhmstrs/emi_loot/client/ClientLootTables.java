@@ -23,8 +23,6 @@ public class ClientLootTables {
 
     public void registerClient() {
 
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> loots.clear());
-
         ClientPlayNetworking.registerGlobalReceiver(LootTableParser.CLEAR_LOOTS, (minecraftClient, playNetworkHandler, buf, sender) ->
                 loots.clear());
 

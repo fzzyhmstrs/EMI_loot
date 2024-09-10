@@ -1,6 +1,5 @@
 package fzzyhmstrs.emi_loot.client;
 
-import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
