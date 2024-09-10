@@ -1,7 +1,5 @@
 package fzzyhmstrs.emi_loot.neoforge;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.Identifier;
@@ -46,7 +44,7 @@ public class EMILootAgnosNeoForge extends EMILootAgnos {
     }
 
     @Override
-    protected LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json) {
-        return EventHooks.loadLootTable(id, gson.fromJson(json, LootTable.class));
+    protected LootTable loadLootTableAgnos(Identifier id, LootTable lootTable) {
+        return EventHooks.loadLootTable(id, lootTable);
     }
 }

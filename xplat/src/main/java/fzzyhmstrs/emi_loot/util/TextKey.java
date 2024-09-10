@@ -4,6 +4,7 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.text.MutableText;
@@ -45,9 +46,9 @@ public record TextKey(int index, List<String> args) {
             List<ItemStack> finalStacks = new LinkedList<>();
             //finalStacks.add(stack);
             if (world != null) {
-                Optional<SmeltingRecipe> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
+                Optional<RecipeEntry<SmeltingRecipe>> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
                 if (opt.isPresent()) {
-                    ItemStack tempStack = opt.get().getOutput(world.getRegistryManager());
+                    ItemStack tempStack = opt.get().value().getResult(world.getRegistryManager());
                     if (!tempStack.isEmpty()) {
                         //System.out.println(tempStack);
                         finalStacks.add(tempStack.copy());
@@ -89,7 +90,8 @@ public record TextKey(int index, List<String> args) {
         mapBuilder(23, "emi_loot.function.set_stew", (key)-> getOneArgText(23, key), new Identifier(EMILoot.MOD_ID, "textures/gui/stew.png"));
         mapBuilder(24, "emi_loot.function.set_nbt", (key)-> getBasicText(24), new Identifier(EMILoot.MOD_ID, "textures/gui/nbt.png"));
         mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chest.png"));
-        mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
+        mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(26, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
+        mapBuilder(27, "emi_loot.function.sequence", (key)-> getOneArgText(27, key), new Identifier(EMILoot.MOD_ID, "textures/gui/sequence.png"));
 
         mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
         mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
@@ -353,6 +355,10 @@ public record TextKey(int index, List<String> args) {
         List<ItemStack> finalStacks = processor.apply(stack, world);
         Text text = keyTextBuilderMap.getOrDefault(this.index, DEFAULT_FUNCTION).apply(this);
         return new TextKeyResult(text, finalStacks);
+    }
+
+    public Text asText() {
+        return keyTextBuilderMap.getOrDefault(this.index, DEFAULT_FUNCTION).apply(this);
     }
 
     public boolean skip() {

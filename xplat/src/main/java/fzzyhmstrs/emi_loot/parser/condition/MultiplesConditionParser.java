@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.text.Text;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,8 +20,8 @@ public class MultiplesConditionParser implements ConditionParser {
 
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
-        LootCondition[] terms = ((AlternativeLootConditionAccessor)condition).getConditions();
-        List<String> args =Arrays.stream(terms).map((term)-> {
+        List<LootCondition> terms = ((AlternativeLootConditionAccessor)condition).getConditions();
+        List<String> args =terms.stream().map((term)-> {
             List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(term, stack);
             Text termText = LootTableParser.compileConditionTexts(stack, termResults);
             return termText.getString();

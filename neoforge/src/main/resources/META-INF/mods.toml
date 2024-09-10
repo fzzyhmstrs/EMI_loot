@@ -12,6 +12,9 @@ authors = "fzzyhmstrs, lxly9 (art), unilock (ports)"
 description = '''Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.'''
 logoFile = "icon.png"
 
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
 [[mixins]]
 config="emi_loot.mixins.json"
 

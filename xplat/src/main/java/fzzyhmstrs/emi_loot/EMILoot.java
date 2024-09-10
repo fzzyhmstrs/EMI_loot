@@ -56,29 +56,18 @@ public class EMILoot {
     public static Supplier<LootFunctionType> SET_ANY_DAMAGE;
     public static Supplier<LootFunctionType> OMINOUS_BANNER;
 
-    public static Enchantment RANDOM = new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
-        @Override
-        public boolean isAvailableForEnchantedBookOffer() {
-            return false;
-        }
-
-        public boolean isAvailableForRandomSelection() {
-            return false;
-        }
-    };
+    public static Supplier<Enchantment> RANDOM;
 
     public static Identifier identity(String path) {
         return Identifier.of(MOD_ID, path);
     }
 
     public static void onInitialize() {
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootTableSender.CHEST_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, ChestLootTableSender.CHEST_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveChestSender(simpleFzzyPayload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootTableSender.BLOCK_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, BlockLootTableSender.BLOCK_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveBlockSender(simpleFzzyPayload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootTableSender.MOB_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, MobLootTableSender.MOB_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveMobSender(simpleFzzyPayload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveGameplaySender(simpleFzzyPayload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveArchaeologySender(simpleFzzyPayload.buf()));
-
-        //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootTableSender.CHEST_SENDER, buf -> new SimpleFzzyPayload(buf, ChestLootTableSender.CHEST_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveChestSender(simpleFzzyPayload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootTableSender.BLOCK_SENDER, buf -> new SimpleFzzyPayload(buf, BlockLootTableSender.BLOCK_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveBlockSender(simpleFzzyPayload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(MobLootTableSender.MOB_SENDER, buf -> new SimpleFzzyPayload(buf, MobLootTableSender.MOB_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveMobSender(simpleFzzyPayload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, buf -> new SimpleFzzyPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveGameplaySender(simpleFzzyPayload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, buf -> new SimpleFzzyPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveArchaeologySender(simpleFzzyPayload.buf()));
     }
 
     @Version(version = 1)

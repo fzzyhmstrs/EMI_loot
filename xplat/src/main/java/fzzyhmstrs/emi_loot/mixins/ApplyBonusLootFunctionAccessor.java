@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.mixins;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.loot.function.ApplyBonusLootFunction;
+import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -9,5 +10,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ApplyBonusLootFunctionAccessor {
 
     @Accessor(value = "enchantment")
-    Enchantment getEnchantment();
+    RegistryEntry<Enchantment> getEnchantment();
 }

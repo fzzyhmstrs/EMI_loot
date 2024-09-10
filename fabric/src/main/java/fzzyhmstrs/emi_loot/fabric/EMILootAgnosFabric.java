@@ -1,7 +1,5 @@
 package fzzyhmstrs.emi_loot.fabric;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -44,7 +42,7 @@ public class EMILootAgnosFabric extends EMILootAgnos {
     }
 
     @Override
-    protected LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json) {
-        return gson.fromJson(json, LootTable.class);
+    protected LootTable loadLootTableAgnos(Identifier id, LootTable lootTable) {
+        return lootTable;
     }
 }

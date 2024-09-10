@@ -1,27 +1,25 @@
 accessWidener   v1  named
 
-# accessible class net/minecraft/village/TradeOffers$BuyForOneEmeraldFactory
-# state predicate stuff
+# StatePredicate stuff
 accessible class net/minecraft/predicate/StatePredicate$Condition
-accessible class net/minecraft/predicate/StatePredicate$ExactValueCondition
-accessible class net/minecraft/predicate/StatePredicate$RangedValueCondition
+accessible class net/minecraft/predicate/StatePredicate$ExactValueMatcher
+accessible class net/minecraft/predicate/StatePredicate$RangedValueMatcher
 
-accessible field net/minecraft/predicate/StatePredicate$Condition key Ljava/lang/String;
-accessible field net/minecraft/predicate/StatePredicate$ExactValueCondition value Ljava/lang/String;
-accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition min Ljava/lang/String;
-accessible field net/minecraft/predicate/StatePredicate$RangedValueCondition max Ljava/lang/String;
+# LocationPredicate stuff
+accessible class net/minecraft/predicate/entity/LocationPredicate$PositionRange
 
-# player predicate stuff
+# PlayerPredicate stuff
 accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementPredicate
-accessible class net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate
 accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate
-
-accessible field net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate done Z
-accessible field net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate criteria Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
+accessible class net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$StatMatcher
 
 # SetAttributeLootFunction stuff
 accessible field net/minecraft/loot/function/SetAttributesLootFunction attributes Ljava/util/List;
 accessible class net/minecraft/loot/function/SetAttributesLootFunction$Attribute
+accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute amount Lnet/minecraft/loot/provider/number/LootNumberProvider;
 accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute name Ljava/lang/String;
 accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute operation Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;
-accessible field net/minecraft/loot/function/SetAttributesLootFunction$Attribute amount Lnet/minecraft/loot/provider/number/LootNumberProvider;
+
+# SetStewEffectLootFunction stuff
+accessible class net/minecraft/loot/function/SetStewEffectLootFunction$StewEffect

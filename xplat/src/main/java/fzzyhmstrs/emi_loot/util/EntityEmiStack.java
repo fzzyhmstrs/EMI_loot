@@ -107,7 +107,7 @@ public class EntityEmiStack extends EmiStack {
         if (entity != null) {
             list.addAll(getTooltipText().stream().map(Text::asOrderedText).map(TooltipComponent::of).toList());
             String mod = EMILootAgnos.getModName(Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
-            list.add(TooltipComponent.of(Text.literal(mod).formatted(Formatting.BLUE).formatted(Formatting.ITALIC).asOrderedText()));
+            list.add(TooltipComponent.of(LText.literal(mod).formatted(Formatting.BLUE).formatted(Formatting.ITALIC).asOrderedText()));
             if (!getRemainder().isEmpty()) {
                 list.add(EmiTooltipComponents.getRemainderTooltipComponent(this));
             }
@@ -117,7 +117,7 @@ public class EntityEmiStack extends EmiStack {
 
     @Override
     public Text getName() {
-        return entity != null ? entity.getName() : Text.literal("yet another missingno");
+        return entity != null ? entity.getName() : LText.literal("yet another missingno");
     }
 
     static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, LivingEntity entity) {

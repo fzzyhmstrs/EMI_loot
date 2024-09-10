@@ -3,13 +3,12 @@ package fzzyhmstrs.emi_loot.server;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
-import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.resource.Resource;
@@ -28,7 +27,6 @@ public class ServerResourceData {
     public static final Multimap<Identifier, LootTable> DIRECT_DROPS = Multimaps.newMultimap(Maps.newLinkedHashMap(), ArrayList::new);
     public static final List<Identifier> SHEEP_TABLES;
     public static final List<Identifier> TABLE_EXCLUSIONS = new LinkedList<>();
-    private static final Gson GSON = LootGsons.getTableGsonBuilder().create();
     private static final int DIRECT_DROPS_PATH_LENGTH = "direct_drops/".length();
     private static final int FILE_SUFFIX_LENGTH = ".json".length();
 
@@ -51,12 +49,13 @@ public class ServerResourceData {
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            LootTable lootTable = EMILootAgnos.loadLootTable(GSON, id2, json);
+            LootTable lootTable = EMILootAgnos.loadLootTable(id, LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, EMILoot.LOGGER::error));
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
                 EMILoot.LOGGER.error("Loot table in file [" + id + "] is empty!");
             }
+
         } catch(Exception e) {
             EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
         }
