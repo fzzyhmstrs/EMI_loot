@@ -37,7 +37,12 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class MobLootRecipe implements EmiRecipe {
 
