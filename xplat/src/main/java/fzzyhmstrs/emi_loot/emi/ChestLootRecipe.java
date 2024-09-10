@@ -8,11 +8,10 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
@@ -59,10 +57,8 @@ public class ChestLootRecipe implements EmiRecipe {
         MutableText text = LText.translatable(key);
         MutableText rawTitle;
         if (!I18n.hasTranslation(key)) {
-            Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
-            if (modNameOpt.isPresent()) {
-                ModContainer modContainer = modNameOpt.get();
-                String modName = modContainer.getMetadata().getName();
+            if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+                String modName = EMILootAgnos.getModName(loot.id.getNamespace());
                 rawTitle = LText.translatable("emi_loot.chest.unknown_chest", modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");

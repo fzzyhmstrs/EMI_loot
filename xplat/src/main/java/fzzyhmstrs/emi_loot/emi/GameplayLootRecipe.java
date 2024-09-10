@@ -7,6 +7,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
@@ -17,8 +18,6 @@ import fzzyhmstrs.emi_loot.util.SymbolText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
@@ -50,10 +49,8 @@ public class GameplayLootRecipe implements EmiRecipe {
         Text text = LText.translatable(key);
         Text rawTitle;
         if (!I18n.hasTranslation(key)) {
-            Optional<ModContainer> modNameOpt = FabricLoader.getInstance().getModContainer(loot.id.getNamespace());
-            if (modNameOpt.isPresent()) {
-                ModContainer modContainer = modNameOpt.get();
-                String modName = modContainer.getMetadata().getName();
+            if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+                String modName = EMILootAgnos.getModName(loot.id.getNamespace());
                 rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");

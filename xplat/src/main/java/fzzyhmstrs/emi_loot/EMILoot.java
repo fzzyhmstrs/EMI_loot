@@ -23,7 +23,6 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -79,7 +78,6 @@ public class EMILoot {
         ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveGameplaySender(simpleFzzyPayload.buf()));
         ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, SimpleFzzyPayload.class, buf -> new SimpleFzzyPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), (simpleFzzyPayload, clientPlayNetworkContext) -> ClientLootTables.INSTANCE.receiveArchaeologySender(simpleFzzyPayload.buf()));
 
-        parser.registerServer();
         //Registry.register(Registries.ENCHANTMENT, new Identifier(MOD_ID, "random"), RANDOM);
     }
 
@@ -133,7 +131,7 @@ public class EMILoot {
 
 		@NonSync
         @SuppressWarnings("FieldMayBeFinal")
-        private ValidatedChoice<String> conditionStyle = FabricLoader.getInstance().isModLoaded("symbols_n_stuff")
+        private ValidatedChoice<String> conditionStyle = EMILootAgnos.isModLoaded("symbols_n_stuff")
                 ?
             new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
 				:
@@ -144,7 +142,7 @@ public class EMILoot {
         }
 
         public boolean isNotPlain() {
-            return !((Objects.equals(conditionStyle.get(), "tooltip") && !FabricLoader.getInstance().isModLoaded("symbols_n_stuff")) || Objects.equals(conditionStyle.get(), "plain"));
+            return !((Objects.equals(conditionStyle.get(), "tooltip") && !EMILootAgnos.isModLoaded("symbols_n_stuff")) || Objects.equals(conditionStyle.get(), "plain"));
         }
 
         public boolean isCompact(Type type) {
@@ -188,11 +186,11 @@ public class EMILoot {
 
     @IgnoreVisibility
     private static class LogUntranslatedTables {
-        public boolean chest = FabricLoader.getInstance().isDevelopmentEnvironment();
+        public boolean chest = EMILootAgnos.isDevelopmentEnvironment();
 
-        public boolean gameplay = FabricLoader.getInstance().isDevelopmentEnvironment();
+        public boolean gameplay = EMILootAgnos.isDevelopmentEnvironment();
 
-        public boolean archaeology = FabricLoader.getInstance().isDevelopmentEnvironment();
+        public boolean archaeology = EMILootAgnos.isDevelopmentEnvironment();
     }
 
     public enum Type {

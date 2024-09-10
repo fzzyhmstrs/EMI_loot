@@ -1,9 +1,9 @@
 package fzzyhmstrs.emi_loot.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.emi.emi.EmiUtil;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -106,7 +106,7 @@ public class EntityEmiStack extends EmiStack {
         List<TooltipComponent> list = new ArrayList<>();
         if (entity != null) {
             list.addAll(getTooltipText().stream().map(Text::asOrderedText).map(TooltipComponent::of).toList());
-            String mod = EmiUtil.getModName(Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
+            String mod = EMILootAgnos.getModName(Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
             list.add(TooltipComponent.of(Text.literal(mod).formatted(Formatting.BLUE).formatted(Formatting.ITALIC).asOrderedText()));
             if (!getRemainder().isEmpty()) {
                 list.add(EmiTooltipComponents.getRemainderTooltipComponent(this));
