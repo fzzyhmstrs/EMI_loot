@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.fabric;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -8,24 +8,12 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CobwebBlock;
-import net.minecraft.block.FernBlock;
-import net.minecraft.block.FlowerBlock;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.SeagrassBlock;
-import net.minecraft.block.TallPlantBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.Transformation;
@@ -44,7 +32,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class BlockRenderer {
+public class BlockRendererFabric {
 
 	/**
 	 B2T: block to transformation
@@ -131,6 +119,4 @@ public class BlockRenderer {
 			consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 		}
 	}
-
-	private BlockRenderer() {}
 }

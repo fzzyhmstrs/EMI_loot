@@ -43,6 +43,7 @@ public class EMILootForge {
         //MOD_BUS.register(new EMILootModEvents());
 
         if (FMLLoader.getDist().isClient()) {
+            MinecraftForge.EVENT_BUS.addListener(BlockRendererForge::onClientTick);
             MinecraftForge.EVENT_BUS.register(new EMILootClientForgeEvents());
             MOD_BUS.register(new EMILootClientModEvents());
         }

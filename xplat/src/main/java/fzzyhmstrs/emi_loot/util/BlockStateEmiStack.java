@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.util;
 
 import dev.emi.emi.api.stack.EmiStack;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.nbt.NbtCompound;
@@ -27,7 +28,7 @@ public class BlockStateEmiStack extends EmiStack {
 
 	@Override
 	public void render(DrawContext draw, int x, int y, float delta, int flags) {
-		BlockRenderer.render(state, draw, x, y, delta);
+		EMILootAgnos.renderBlock(state, draw, x, y, delta);
 	}
 
 	@Override
