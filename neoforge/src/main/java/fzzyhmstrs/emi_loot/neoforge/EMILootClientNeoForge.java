@@ -1,16 +1,16 @@
-package fzzyhmstrs.emi_loot.forge;
+package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
 @Mod.EventBusSubscriber(modid = EMILoot.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class EMILootClientForge {
+public class EMILootClientNeoForge {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         EMILootClient.onInitializeClient();

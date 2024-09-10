@@ -1,8 +1,8 @@
-package fzzyhmstrs.emi_loot.forge.events;
+package fzzyhmstrs.emi_loot.neoforge.events;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 
 public class EMILootForgeEvents {
 //    @SubscribeEvent

@@ -1,10 +1,10 @@
-package fzzyhmstrs.emi_loot.forge.events;
+package fzzyhmstrs.emi_loot.neoforge.events;
 
 import fzzyhmstrs.emi_loot.EMILootClient;
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
 public class EMILootClientForgeEvents {
     @SubscribeEvent

@@ -12,17 +12,20 @@ authors = "fzzyhmstrs, lxly9 (art), unilock (ports)"
 description = '''Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.'''
 logoFile = "icon.png"
 
+[[mixins]]
+config="emi_loot.mixins.json"
+
 [[dependencies.emi_loot]]
-modId = "forge"
-mandatory = true
-versionRange = "[47,)"
+modId = "neoforge"
+type = "REQUIRED"
+versionRange = "[20.3,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.emi_loot]]
 modId = "minecraft"
-mandatory = true
-versionRange = "[1.20,)"
+type = "REQUIRED"
+versionRange = "[1.20.3,)"
 ordering = "NONE"
 side = "BOTH"
 

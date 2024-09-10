@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.forge.util;
+package fzzyhmstrs.emi_loot.neoforge.util;
 
 import fzzyhmstrs.emi_loot.util.IconEmiWidget;
 import net.minecraft.client.gui.DrawContext;

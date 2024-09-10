@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.forge.events;
+package fzzyhmstrs.emi_loot.neoforge.events;
 
 public class EMILootModEvents {
 //    @SubscribeEvent

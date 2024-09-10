@@ -16,7 +16,7 @@ public abstract class EMILootClientAgnos {
         } catch (Throwable t) {
         }
         try {
-            Class.forName("fzzyhmstrs.emi_loot.forge.EMILootClientAgnosForge");
+            Class.forName("fzzyhmstrs.emi_loot.forge.EMILootClientAgnosNeoForge");
         } catch (Throwable t) {
         }
     }

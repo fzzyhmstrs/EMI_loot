@@ -1,19 +1,19 @@
-package fzzyhmstrs.emi_loot.forge;
+package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
-import fzzyhmstrs.emi_loot.forge.util.BlockRendererImpl;
-import fzzyhmstrs.emi_loot.forge.util.IconEmiWidgetImpl;
-import fzzyhmstrs.emi_loot.forge.util.IconGroupEmiWidgetImpl;
+import fzzyhmstrs.emi_loot.neoforge.util.BlockRendererImpl;
+import fzzyhmstrs.emi_loot.neoforge.util.IconEmiWidgetImpl;
+import fzzyhmstrs.emi_loot.neoforge.util.IconGroupEmiWidgetImpl;
 import fzzyhmstrs.emi_loot.util.IconEmiWidget;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
-public class EMILootClientAgnosForge extends EMILootClientAgnos {
+public class EMILootClientAgnosNeoForge extends EMILootClientAgnos {
     static {
-        EMILootClientAgnos.delegate = new EMILootClientAgnosForge();
+        EMILootClientAgnos.delegate = new EMILootClientAgnosNeoForge();
     }
 
     @Override

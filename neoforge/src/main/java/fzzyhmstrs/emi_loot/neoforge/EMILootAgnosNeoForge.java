@@ -1,21 +1,21 @@
-package fzzyhmstrs.emi_loot.forge;
+package fzzyhmstrs.emi_loot.neoforge;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.event.EventHooks;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Optional;
 
-public class EMILootAgnosForge extends EMILootAgnos {
+public class EMILootAgnosNeoForge extends EMILootAgnos {
     static {
-        EMILootAgnos.delegate = new EMILootAgnosForge();
+        EMILootAgnos.delegate = new EMILootAgnosNeoForge();
     }
 
     @Override
@@ -47,6 +47,6 @@ public class EMILootAgnosForge extends EMILootAgnos {
 
     @Override
     protected LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json) {
-        return ForgeHooks.loadLootTable(gson, id, json, true);
+        return EventHooks.loadLootTable(id, gson.fromJson(json, LootTable.class));
     }
 }

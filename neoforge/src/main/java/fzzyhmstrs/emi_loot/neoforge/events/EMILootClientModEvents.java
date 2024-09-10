@@ -1,8 +1,8 @@
-package fzzyhmstrs.emi_loot.forge.events;
+package fzzyhmstrs.emi_loot.neoforge.events;
 
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 
 public class EMILootClientModEvents {
     @SubscribeEvent

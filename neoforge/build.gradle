@@ -5,18 +5,11 @@ evaluationDependsOn ':xplat'
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 loom {
     accessWidenerPath = project(":xplat").loom.accessWidenerPath
-
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
-        mixinConfig "emi_loot.mixins.json"
-    }
 
     mods {
         main {
@@ -31,22 +24,32 @@ configurations {
     shadowCommon
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
+}
+
+repositories {
+    maven {
+        url "https://maven.neoforged.net/releases/"
+        content {
+            includeGroupAndSubgroups "net.neoforged"
+            includeGroupAndSubgroups "cpw.mods"
+        }
+    }
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-    modCompileOnly "dev.emi:emi-forge:${rootProject.emi_version}:api"
+    modCompileOnly "dev.emi:emi-neoforge:${rootProject.emi_version}:api"
 
-    modRuntimeOnly "dev.emi:emi-forge:${rootProject.emi_version}"
-    modRuntimeOnly "maven.modrinth:fzzy-config:${rootProject.fzzy_config_version}+forge"
+    modRuntimeOnly "dev.emi:emi-neoforge:${rootProject.emi_version}"
+    modRuntimeOnly "maven.modrinth:fzzy-config:${rootProject.fzzy_config_version}+neoforge"
     //modRuntimeOnly "maven.modrinth:symbols-n-stuff:${rootProject.sns_version}"
 
     modRuntimeOnly "maven.modrinth:kotlin-for-forge:${rootProject.kff_version}"
 
     common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":xplat", configuration: "transformProductionForge")) { transitive = false }
+    shadowCommon(project(path: ":xplat", configuration: "transformProductionNeoForge")) { transitive = false }
 }
 
 processResources {

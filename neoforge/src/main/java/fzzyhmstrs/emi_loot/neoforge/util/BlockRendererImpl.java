@@ -1,10 +1,9 @@
-package fzzyhmstrs.emi_loot.forge.util;
+package fzzyhmstrs.emi_loot.neoforge.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CobwebBlock;
-import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.SeagrassBlock;
@@ -24,7 +23,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -55,7 +54,7 @@ public class BlockRendererImpl {
 		// cheating a little...
 		B2T = (state) -> {
 			Block block = state.getBlock();
-			return block instanceof FlowerBlock || block instanceof SaplingBlock || block instanceof CobwebBlock || block instanceof FernBlock || block instanceof SeagrassBlock || block instanceof TallPlantBlock ? T_CROSS : null;
+			return block instanceof FlowerBlock || block instanceof SaplingBlock || block instanceof CobwebBlock || block instanceof SeagrassBlock || block instanceof TallPlantBlock ? T_CROSS : null;
 		};
 	}
 

@@ -10,6 +10,6 @@ pluginManagement {
 
 include("xplat")
 include("fabric")
-include("forge")
+include("neoforge")
 
 rootProject.name = "emi_loot"

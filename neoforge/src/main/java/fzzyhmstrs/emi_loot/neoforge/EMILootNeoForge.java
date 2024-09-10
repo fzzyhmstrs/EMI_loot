@@ -1,10 +1,10 @@
-package fzzyhmstrs.emi_loot.forge;
+package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.forge.events.EMILootClientForgeEvents;
-import fzzyhmstrs.emi_loot.forge.events.EMILootClientModEvents;
-import fzzyhmstrs.emi_loot.forge.events.EMILootForgeEvents;
-import fzzyhmstrs.emi_loot.forge.util.BlockRendererImpl;
+import fzzyhmstrs.emi_loot.neoforge.events.EMILootClientForgeEvents;
+import fzzyhmstrs.emi_loot.neoforge.events.EMILootClientModEvents;
+import fzzyhmstrs.emi_loot.neoforge.events.EMILootForgeEvents;
+import fzzyhmstrs.emi_loot.neoforge.util.BlockRendererImpl;
 import fzzyhmstrs.emi_loot.server.condition.BlownUpByCreeperLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.KilledByWitherLootCondition;
 import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
@@ -13,15 +13,14 @@ import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.registries.DeferredRegister;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(EMILoot.MOD_ID)
-public class EMILootForge {
+public class EMILootNeoForge {
     public static final DeferredRegister<LootConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(RegistryKeys.LOOT_CONDITION_TYPE, "lootify");
     public static final DeferredRegister<LootFunctionType> LOOT_FUNCTION_TYPES = DeferredRegister.create(RegistryKeys.LOOT_FUNCTION_TYPE, "lootify");
 
@@ -33,20 +32,19 @@ public class EMILootForge {
         EMILoot.OMINOUS_BANNER = LOOT_FUNCTION_TYPES.register("ominous_banner", () -> new LootFunctionType(new OminousBannerLootFunction.Serializer()));
     }
 
-    public EMILootForge() {
-        IEventBus MOD_BUS = FMLJavaModLoadingContext.get().getModEventBus();
-        //EventBuses.registerModEventBus(EMILoot.MOD_ID, MOD_BUS);
+    public EMILootNeoForge(IEventBus modBus) {
+        //EventBuses.registerModEventBus(EMILoot.MOD_ID, modBus);
 
-        LOOT_CONDITION_TYPES.register(MOD_BUS);
-        LOOT_FUNCTION_TYPES.register(MOD_BUS);
+        LOOT_CONDITION_TYPES.register(modBus);
+        LOOT_FUNCTION_TYPES.register(modBus);
 
-        MinecraftForge.EVENT_BUS.register(new EMILootForgeEvents());
+        NeoForge.EVENT_BUS.register(new EMILootForgeEvents());
         //MOD_BUS.register(new EMILootModEvents());
 
         if (FMLLoader.getDist().isClient()) {
-            MinecraftForge.EVENT_BUS.addListener(BlockRendererImpl::onClientTick);
-            MinecraftForge.EVENT_BUS.register(new EMILootClientForgeEvents());
-            MOD_BUS.register(new EMILootClientModEvents());
+            NeoForge.EVENT_BUS.addListener(BlockRendererImpl::onClientTick);
+            NeoForge.EVENT_BUS.register(new EMILootClientForgeEvents());
+            modBus.register(new EMILootClientModEvents());
         }
 
         EMILoot.onInitialize();
