@@ -7,7 +7,8 @@
   "icon": "icon.png",
   "authors": [
     "fzzyhmstrs",
-    "lxly9 (art)"
+    "lxly9 (art)",
+    "unilock (ports)"
   ],
   "entrypoints": {
     "main": [

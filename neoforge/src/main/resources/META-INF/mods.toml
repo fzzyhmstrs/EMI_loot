@@ -8,7 +8,7 @@ modId = "emi_loot"
 version = "${version}"
 displayName = "EMI Loot"
 displayURL = "https://github.com/fzzyhmstrs/EMI_loot"
-authors = "fzzyhmstrs, lxly9 (art)"
+authors = "fzzyhmstrs, lxly9 (art), unilock (ports)"
 description = '''Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.'''
 logoFile = "icon.png"
 
