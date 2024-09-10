@@ -28,7 +28,7 @@ import fzzyhmstrs.emi_loot.server.MobLootPoolBuilder;
 import fzzyhmstrs.emi_loot.server.MobLootTableSender;
 import fzzyhmstrs.emi_loot.server.ServerResourceData;
 import fzzyhmstrs.emi_loot.util.LText;
-import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
+import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -114,7 +114,7 @@ public class LootTableParser {
             }
             EMILoot.LOGGER.warn("Post-processing complete!");
         }
-        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(ConfigApi.INSTANCE.network().buf(), CLEAR_LOOTS), player);
+        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(ConfigApi.INSTANCE.network().buf(), CLEAR_LOOTS), player);
         if (EMILoot.config.parseChestLoot)
             chestSenders.forEach((id, chestSender) -> chestSender.send(player));
         if (EMILoot.config.parseBlockLoot)

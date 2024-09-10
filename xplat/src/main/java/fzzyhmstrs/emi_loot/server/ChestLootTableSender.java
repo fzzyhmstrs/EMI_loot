@@ -1,6 +1,6 @@
 package fzzyhmstrs.emi_loot.server;
 
-import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
+import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -53,7 +53,7 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
             buf.writeItemStack(item);
             buf.writeFloat(floatWeight);
         });
-        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, CHEST_SENDER), player);
+        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, CHEST_SENDER), player);
 
     }
 

@@ -1,7 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
+import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
             if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("sending simple block: " + idToSend);
             buf.writeShort(-1);
             buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, BLOCK_SENDER), player);
+            ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, BLOCK_SENDER), player);
             return;
         } else if (builderList.isEmpty()) {
             return;
@@ -100,7 +100,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
             });
 
         });
-        ConfigApi.INSTANCE.network().send(new SimpleFzzyPayload(buf, BLOCK_SENDER), player);
+        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, BLOCK_SENDER), player);
     }
 
     @Override
