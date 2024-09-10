@@ -23,7 +23,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -58,10 +58,8 @@ public class BlockRendererImpl {
 		};
 	}
 
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			TICKED_BE.clear();
-		}
+	public static void onClientTick(ClientTickEvent.Pre event) {
+		TICKED_BE.clear();
 	}
 
 	public static void render(BlockState blockState, DrawContext draw, int x, int y, float delta) {

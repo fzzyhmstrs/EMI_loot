@@ -1,5 +1,8 @@
 accessWidener   v1  named
 
+# EntitySubPredicateTypes stuff
+accessible class net/minecraft/predicate/entity/EntitySubPredicateTypes$VariantType$VariantPredicate
+
 # StatePredicate stuff
 accessible class net/minecraft/predicate/StatePredicate$Condition
 accessible class net/minecraft/predicate/StatePredicate$ExactValueMatcher

@@ -164,7 +164,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
     abstract T filledTableToReturn(Pair<Identifier, Identifier> ids, Map<List<TextKey>, ClientRawPool> itemMap);
 
     @Override
-    public LootReceiver fromBuf(PacketByteBuf buf) {
+    public LootReceiver fromBuf(PacketByteBuf buf, World world) {
         boolean isEmpty = true;
 
         Pair<Identifier, Identifier> ids = getBufId(buf);
@@ -223,7 +223,7 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
                 int pileItemSize = buf.readShort();
                 for (int j = 0; j < pileItemSize; j++) {
-                    ItemStack stack = buf.readItemStack();
+                    ItemStack stack = readItemStack(buf, world);
                     float weight = buf.readFloat();
                     pileItemMap.put(stack, weight);
                     isEmpty = false;
@@ -237,5 +237,4 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
 
         return filledTableToReturn(ids, itemMap);
     }
-
 }

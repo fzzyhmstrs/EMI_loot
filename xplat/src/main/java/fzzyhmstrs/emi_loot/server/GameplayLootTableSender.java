@@ -1,12 +1,12 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
+import fzzyhmstrs.emi_loot.networking.GameplayLootPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import io.netty.buffer.Unpooled;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -24,7 +24,6 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     private final String idToSend;
     final List<GameplayLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier GAMEPLAY_SENDER = new Identifier("e_l", "g_s");
     boolean isEmpty = true;
 
     @Override
@@ -44,20 +43,20 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ConfigApi.INSTANCE.network().canSend(GAMEPLAY_SENDER, player)) return;
+        if (!ConfigApi.INSTANCE.network().canSend(GameplayLootPayload.TYPE.id(), player)) return;
         if (isEmpty) {
             if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("avoiding empty gameplay table: " + idToSend);
             return;
         }
-        PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         //start with the loot pool ID and the number of builders to write check a few special conditions to send compressed shortcut packets
         buf.writeString(idToSend);
 
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.config.isDebug(EMILoot.Type.GAMEPLAY)) EMILoot.LOGGER.info("sending simple gameplay table: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, GAMEPLAY_SENDER), player);
+            buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
+            ConfigApi.INSTANCE.network().send(new GameplayLootPayload(buf), player);
             return;
         } else if (builderList.isEmpty()) {
             return;
@@ -93,13 +92,13 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack, weight)-> {
-                    buf.writeItemStack(stack);
+                    writeItemStack(buf, stack, player.getServerWorld());
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, GAMEPLAY_SENDER), player);
+        ConfigApi.INSTANCE.network().send(new GameplayLootPayload(buf), player);
     }
 
     @Override

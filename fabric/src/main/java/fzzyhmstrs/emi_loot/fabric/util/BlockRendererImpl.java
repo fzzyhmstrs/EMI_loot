@@ -100,10 +100,12 @@ public class BlockRendererImpl {
 	}
 	private static void render(FluidState fluidState, @Nullable World world, @Nullable BlockPos pos, MatrixStack matrices, VertexConsumer consumer) {
 		FluidRenderHandler renderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getFluid());
+		if (renderHandler == null) return;
 		int color = renderHandler.getFluidColor(world, pos, fluidState);
 		Sprite[] sprites = renderHandler.getFluidSprites(world, pos, fluidState);
 		Sprite still = sprites[0];
 		Sprite flowing = sprites[1];
+		float alpha = (color >> 24 & 0xFF) / 255f;
 		float red = (color >> 16 & 0xFF) / 255f;
 		float green = (color >> 8 & 0xFF) / 255f;
 		float blue = (color & 0xFF) / 255f;
@@ -116,18 +118,18 @@ public class BlockRendererImpl {
 				.color(color, color, color, color)
 				.toBakedQuad(still);
 		MatrixStack.Entry peek = matrices.peek();
-		consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+		consumer.quad(peek, quad, red, green, blue, alpha, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 		quad = emitter.square(Direction.DOWN, 0, 0, 1, 1, 0)
 				.spriteBake(still, MutableQuadView.BAKE_LOCK_UV)
 				.color(color, color, color, color)
 				.toBakedQuad(still);
-		consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+		consumer.quad(peek, quad, red, green, blue, alpha, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 		for (Direction direction : Direction.Type.HORIZONTAL) {
 			quad = emitter.square(direction, 0, 0, 1, 14 / 16f, 0)
 					.spriteBake(flowing, MutableQuadView.BAKE_LOCK_UV)
 					.color(color, color, color, color)
 					.toBakedQuad(flowing);
-			consumer.quad(peek, quad, red, green, blue, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+			consumer.quad(peek, quad, red, green, blue, alpha, LightmapTextureManager.MAX_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 		}
 	}
 }

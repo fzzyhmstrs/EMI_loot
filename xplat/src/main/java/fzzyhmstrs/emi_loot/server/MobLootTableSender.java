@@ -1,12 +1,12 @@
 package fzzyhmstrs.emi_loot.server;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
+import fzzyhmstrs.emi_loot.networking.MobLootPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import io.netty.buffer.Unpooled;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -25,7 +25,6 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     private final String idToSend;
     private final String mobIdToSend;
     final List<MobLootPoolBuilder> builderList = new LinkedList<>();
-    public static Identifier MOB_SENDER = new Identifier("e_l", "m_s");
     boolean isEmpty = true;
 
     @Override
@@ -45,13 +44,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ConfigApi.INSTANCE.network().canSend(MOB_SENDER, player)) return;
+        if (!ConfigApi.INSTANCE.network().canSend(MobLootPayload.TYPE.id(), player)) return;
         //pre-build the builders to do empty checks
         if (isEmpty) {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
             return;
         }
-        PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         //start with the loot pool ID and the number of builders to write
         buf.writeString(idToSend);
         buf.writeString(mobIdToSend);
@@ -59,8 +58,8 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("sending simple mob: " + idToSend);
             buf.writeShort(-1);
-            buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
-            ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, MOB_SENDER), player);
+            buf.writeRegistryKey(builderList.get(0).simpleStack.getItem().getRegistryEntry().registryKey());
+            ConfigApi.INSTANCE.network().send(new MobLootPayload(buf), player);
             return;
         } else if (builderList.isEmpty()) {
             if (EMILoot.config.isDebug(EMILoot.Type.MOB)) EMILoot.LOGGER.info("avoiding empty mob: " + idToSend);
@@ -98,13 +97,13 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
                 //for each itemstack, write the stack and weight
                 keyPoolMap.forEach((stack, weight)-> {
-                    buf.writeItemStack(stack);
+                    writeItemStack(buf, stack, player.getServerWorld());
                     buf.writeFloat(weight);
                 });
             });
 
         });
-        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, MOB_SENDER), player);
+        ConfigApi.INSTANCE.network().send(new MobLootPayload(buf), player);
     }
 
     @Override

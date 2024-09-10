@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "fzzyhmstrs.emi_loot.mixins",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AlternativeLootConditionAccessor",
     "AndLootFunctionAccessor",
@@ -11,7 +11,9 @@
     "ConditionalLootFunctionAccessor",
     "CopyNameLootFunctionAccessor",
     "DataPackContentsMixin",
+    "EnchantmentsPredicateAccessor",
     "ExplorationMapLootFunctionAccessor",
+    "FilteredLootFunctionAccessor",
     "ItemEntryAccessor",
     "LeafEntryAccessor",
     "LimitCountLootFunctionAccessor",
@@ -20,18 +22,26 @@
     "LootPoolEntryAccessor",
     "LootTableAccessor",
     "LootTableEntryAccessor",
+    "ModifyContentsLootFunctionAccessor",
     "ProfiledResourceReloadMixin",
     "ReferenceLootFunctionAccessor",
+    "ReloadableRegistriesMixin",
+    "SetBookCoverLootFunctionAccessor",
     "SetCountLootFunctionAccessor",
     "SetDamageLootFunctionAccessor",
     "SetEnchantmentsLootFunctionAccessor",
+    "SetFireworkExplosionLootFunctionAccessor",
+    "SetFireworksLootFunctionAccessor",
     "SetInstrumentLootFunctionAccessor",
+    "SetItemLootFunctionAccessor",
     "SetLootTableLootFunctionAccessor",
     "SetNameLootFunctionAccessor",
+    "SetOminousBottleAmplifierLootFunctionAccessor",
     "SetPotionLootFunctionAccessor",
     "SetStewEffectLootFunctionAccessor",
     "SimpleResourceReloadMixin",
-    "TagEntryAccessor"
+    "TagEntryAccessor",
+    "VariantPredicateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

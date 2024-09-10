@@ -8,9 +8,9 @@ import net.minecraft.predicate.entity.EntityEffectPredicate;
 import net.minecraft.predicate.entity.EntityEquipmentPredicate;
 import net.minecraft.predicate.entity.EntityFlagsPredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.EntitySubPredicate;
 import net.minecraft.predicate.entity.EntityTypePredicate;
 import net.minecraft.predicate.entity.LocationPredicate;
-import net.minecraft.predicate.entity.TypeSpecificPredicate;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
@@ -76,7 +76,7 @@ public class EntityPredicateParser {
         }
 
         //Type Specific checks
-        Optional<TypeSpecificPredicate> typeSpecificPredicate = predicate.typeSpecific();
+        Optional<EntitySubPredicate> typeSpecificPredicate = predicate.typeSpecific();
         if (typeSpecificPredicate.isPresent()) {
             return TypeSpecificPredicateParser.parseTypeSpecificPredicate(typeSpecificPredicate.get());
         }

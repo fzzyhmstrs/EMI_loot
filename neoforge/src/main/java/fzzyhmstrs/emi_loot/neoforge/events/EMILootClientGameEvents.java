@@ -4,11 +4,11 @@ import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
-@Mod.EventBusSubscriber(modid = EMILoot.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class EMILootClientForgeEvents {
+@EventBusSubscriber(modid = EMILoot.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+public class EMILootClientGameEvents {
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientLootTables.INSTANCE.clearLoots();

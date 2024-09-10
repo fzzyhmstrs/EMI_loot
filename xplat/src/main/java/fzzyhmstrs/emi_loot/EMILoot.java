@@ -1,13 +1,13 @@
 package fzzyhmstrs.emi_loot;
 
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
+import fzzyhmstrs.emi_loot.networking.ArchaeologyLootPayload;
+import fzzyhmstrs.emi_loot.networking.BlockLootPayload;
+import fzzyhmstrs.emi_loot.networking.ChestLootPayload;
+import fzzyhmstrs.emi_loot.networking.ClearPayload;
+import fzzyhmstrs.emi_loot.networking.GameplayLootPayload;
+import fzzyhmstrs.emi_loot.networking.MobLootPayload;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
-import fzzyhmstrs.emi_loot.server.ArchaeologyLootTableSender;
-import fzzyhmstrs.emi_loot.server.BlockLootTableSender;
-import fzzyhmstrs.emi_loot.server.ChestLootTableSender;
-import fzzyhmstrs.emi_loot.server.GameplayLootTableSender;
-import fzzyhmstrs.emi_loot.server.MobLootTableSender;
-import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
@@ -51,8 +51,8 @@ public class EMILoot {
     public static Supplier<LootConditionType> WITHER_KILL;
     public static Supplier<LootConditionType> SPAWNS_WITH;
     public static Supplier<LootConditionType> CREEPER;
-    public static Supplier<LootFunctionType> SET_ANY_DAMAGE;
-    public static Supplier<LootFunctionType> OMINOUS_BANNER;
+    public static Supplier<LootFunctionType<?>> SET_ANY_DAMAGE;
+    public static Supplier<LootFunctionType<?>> OMINOUS_BANNER;
 
     public static Supplier<Enchantment> RANDOM;
 
@@ -61,12 +61,12 @@ public class EMILoot {
     }
 
     public static void onInitialize() {
-        ConfigApi.INSTANCE.network().registerS2C(LootTableParser.CLEAR_LOOTS, buf -> new SimpleCustomPayload(buf, LootTableParser.CLEAR_LOOTS), (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootTableSender.CHEST_SENDER, buf -> new SimpleCustomPayload(buf, ChestLootTableSender.CHEST_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootTableSender.BLOCK_SENDER, buf -> new SimpleCustomPayload(buf, BlockLootTableSender.BLOCK_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootTableSender.MOB_SENDER, buf -> new SimpleCustomPayload(buf, MobLootTableSender.MOB_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, buf -> new SimpleCustomPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, buf -> new SimpleCustomPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(ClearPayload.TYPE, ClearPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf()));
     }
 
     @Version(version = 1)

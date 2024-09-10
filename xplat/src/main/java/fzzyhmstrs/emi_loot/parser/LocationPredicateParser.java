@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.predicate.FluidPredicate;
@@ -8,11 +9,14 @@ import net.minecraft.predicate.LightPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.Structure;
 
+import java.util.List;
 import java.util.Optional;
 
 public class LocationPredicateParser {
@@ -38,17 +42,23 @@ public class LocationPredicateParser {
 
         Optional<RegistryKey<World>> dim = predicate.dimension();
         if (dim.isPresent()) {
-            return LText.translatable("emi_loot.location_predicate.dim",dim.get().getValue().toString());
+            return LText.translatable("emi_loot.location_predicate.dim", dim.get().getValue().toString());
         }
 
-        Optional<RegistryKey<Biome>> biome = predicate.biome();
-        if (biome.isPresent()) {
-            return LText.translatable("emi_loot.location_predicate.biome",biome.get().getValue().toString());
+        Optional<RegistryEntryList<Biome>> biome = predicate.biomes();
+        if (biome.isPresent() && biome.get().getTagKey().isPresent()) {
+            return LText.translatable("emi_loot.location_predicate.biome.tag", biome.get().getTagKey().get().id().toString());
+        } else if (biome.isPresent() && biome.get().size() > 0) {
+            List<MutableText> list = biome.get().stream().map(b -> LText.literal(b.getIdAsString())).toList();
+            return LText.translatable("emi_loot.location_predicate.biome.list", ListProcessors.buildOrList(list));
         }
 
-        Optional<RegistryKey<Structure>> structure = predicate.structure();
-        if (structure.isPresent()) {
-            return LText.translatable("emi_loot.location_predicate.structure",structure.get().getValue().toString());
+        Optional<RegistryEntryList<Structure>> structure = predicate.structures();
+        if (structure.isPresent() && structure.get().getTagKey().isPresent()) {
+            return LText.translatable("emi_loot.location_predicate.structure.tag", structure.get().getTagKey().get().id().toString());
+        } else if (structure.isPresent() && structure.get().size() > 0) {
+            List<MutableText> list = structure.get().stream().map(b -> LText.literal(b.getIdAsString())).toList();
+            return LText.translatable("emi_loot.location_predicate.structure.list", ListProcessors.buildOrList(list));
         }
 
         Optional<Boolean> smokey = predicate.smokey();

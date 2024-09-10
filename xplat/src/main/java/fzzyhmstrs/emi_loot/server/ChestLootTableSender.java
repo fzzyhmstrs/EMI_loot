@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.server;
 
-import fzzyhmstrs.emi_loot.util.SimpleCustomPayload;
+import fzzyhmstrs.emi_loot.networking.ChestLootPayload;
+import io.netty.buffer.Unpooled;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -21,7 +22,6 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     private final String idToSend;
     final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
     HashMap<ItemStack, Float> floatMap = new HashMap<>();
-    public static Identifier CHEST_SENDER = new Identifier("e_l", "c_s");
 
     @Override
     public void build() {
@@ -45,15 +45,15 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
 
     @Override
     public void send(ServerPlayerEntity player) {
-        if (!ConfigApi.INSTANCE.network().canSend(CHEST_SENDER, player)) return;
-        PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
+        if (!ConfigApi.INSTANCE.network().canSend(ChestLootPayload.TYPE.id(), player)) return;
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(idToSend);
         buf.writeShort(floatMap.size());
         floatMap.forEach((item, floatWeight) -> {
-            buf.writeItemStack(item);
+            writeItemStack(buf, item, player.getServerWorld());
             buf.writeFloat(floatWeight);
         });
-        ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, CHEST_SENDER), player);
+        ConfigApi.INSTANCE.network().send(new ChestLootPayload(buf), player);
 
     }
 

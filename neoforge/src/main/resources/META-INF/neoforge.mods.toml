@@ -21,14 +21,14 @@ config = "emi_loot.mixins.json"
 [[dependencies.emi_loot]]
 modId = "neoforge"
 type = "REQUIRED"
-versionRange = "[20.3,)"
+versionRange = "[20.5,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.emi_loot]]
 modId = "minecraft"
 type = "REQUIRED"
-versionRange = "[1.20.3,)"
+versionRange = "[1.20.5,1.20.6]"
 ordering = "NONE"
 side = "BOTH"
 

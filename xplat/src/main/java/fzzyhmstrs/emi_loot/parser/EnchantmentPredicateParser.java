@@ -19,9 +19,7 @@ public class EnchantmentPredicateParser {
         List<MutableText> list2 = new LinkedList<>();
         for (EnchantmentPredicate predicate : list) {
             Optional<RegistryEntry<Enchantment>> enchant = predicate.enchantment();
-            if (enchant.isPresent()) {
-                list2.add((MutableText) enchant.get().value().getName(1));
-            }
+			enchant.ifPresent(enchantmentRegistryEntry -> list2.add((MutableText) enchantmentRegistryEntry.value().getName(1)));
         }
         if (!list2.isEmpty()) {
             return LText.translatable("emi_loot.item_predicate.enchant", ListProcessors.buildAndList(list2));

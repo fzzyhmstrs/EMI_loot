@@ -20,12 +20,12 @@ public class AlternativesConditionParser implements ConditionParser {
         int size = terms.size();
         if (size == 1) {
             List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(terms.get(0), stack);
-            Text termText = LootTableParser.compileConditionTexts(stack,termResults);
+            Text termText = LootTableParser.compileConditionTexts(stack, termResults);
             return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.alternates",termText.getString())));
         } else if (size == 2) {
             List<LootTableParser.LootConditionResult> termResults1 = LootTableParser.parseLootCondition(terms.get(0), stack);
             List<LootTableParser.LootConditionResult> termResults2 = LootTableParser.parseLootCondition(terms.get(1), stack);
-            Text termText1 = LootTableParser.compileConditionTexts(stack,termResults1);
+            Text termText1 = LootTableParser.compileConditionTexts(stack, termResults1);
             Text termText2;
             if (termResults2.size() == 1) {
                 TextKey key = termResults2.get(0).getText();

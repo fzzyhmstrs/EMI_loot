@@ -2,11 +2,11 @@ package fzzyhmstrs.emi_loot.neoforge.events;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 
-@Mod.EventBusSubscriber(modid = EMILoot.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class EMILootForgeEvents {
+@EventBusSubscriber(modid = EMILoot.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+public class EMILootGameEvents {
 //    @SubscribeEvent
 //    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 //        if (event.getEntity() instanceof ServerPlayerEntity player) {

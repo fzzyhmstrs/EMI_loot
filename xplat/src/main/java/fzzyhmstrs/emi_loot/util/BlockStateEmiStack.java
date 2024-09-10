@@ -4,7 +4,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -37,7 +37,7 @@ public class BlockStateEmiStack extends EmiStack {
 	}
 
 	@Override
-	public NbtCompound getNbt() {
+	public ComponentChanges getComponentChanges() {
 		return null;
 	}
 

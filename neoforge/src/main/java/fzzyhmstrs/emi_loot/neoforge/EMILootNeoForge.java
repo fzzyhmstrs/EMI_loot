@@ -8,11 +8,11 @@ import fzzyhmstrs.emi_loot.server.condition.MobSpawnedWithLootCondition;
 import fzzyhmstrs.emi_loot.server.function.OminousBannerLootFunction;
 import fzzyhmstrs.emi_loot.server.function.SetAnyDamageLootFunction;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.ItemTags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
@@ -22,17 +22,17 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @Mod(EMILoot.MOD_ID)
 public class EMILootNeoForge {
     public static final DeferredRegister<LootConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(RegistryKeys.LOOT_CONDITION_TYPE, "lootify");
-    public static final DeferredRegister<LootFunctionType> LOOT_FUNCTION_TYPES = DeferredRegister.create(RegistryKeys.LOOT_FUNCTION_TYPE, "lootify");
+    public static final DeferredRegister<LootFunctionType<?>> LOOT_FUNCTION_TYPES = DeferredRegister.create(RegistryKeys.LOOT_FUNCTION_TYPE, "lootify");
     public static final DeferredRegister<Enchantment> ENCHANTMENTS = DeferredRegister.create(RegistryKeys.ENCHANTMENT, EMILoot.MOD_ID);
 
     static {
         EMILoot.WITHER_KILL = LOOT_CONDITION_TYPES.register("wither_kill", () -> new LootConditionType(KilledByWitherLootCondition.CODEC));
         EMILoot.SPAWNS_WITH = LOOT_CONDITION_TYPES.register("spawns_with", () -> new LootConditionType(MobSpawnedWithLootCondition.CODEC));
         EMILoot.CREEPER = LOOT_CONDITION_TYPES.register("creeper", () -> new LootConditionType(BlownUpByCreeperLootCondition.CODEC));
-        EMILoot.SET_ANY_DAMAGE = LOOT_FUNCTION_TYPES.register("set_any_damage", () -> new LootFunctionType(SetAnyDamageLootFunction.CODEC));
-        EMILoot.OMINOUS_BANNER = LOOT_FUNCTION_TYPES.register("ominous_banner", () -> new LootFunctionType(OminousBannerLootFunction.CODEC));
+        EMILoot.SET_ANY_DAMAGE = LOOT_FUNCTION_TYPES.register("set_any_damage", () -> new LootFunctionType<>(SetAnyDamageLootFunction.CODEC));
+        EMILoot.OMINOUS_BANNER = LOOT_FUNCTION_TYPES.register("ominous_banner", () -> new LootFunctionType<>(OminousBannerLootFunction.CODEC));
 
-        EMILoot.RANDOM = ENCHANTMENTS.register("random", () -> new Enchantment(Enchantment.Rarity.VERY_RARE, EnchantmentTarget.TRIDENT, EquipmentSlot.values()) {
+        EMILoot.RANDOM = ENCHANTMENTS.register("random", () -> new Enchantment(Enchantment.properties(ItemTags.ANVIL, ItemTags.ANVIL, 1, 1, new Enchantment.Cost(10, 0), new Enchantment.Cost(30, 0), 30, EquipmentSlot.MAINHAND)) {
             @Override
             public boolean isAvailableForEnchantedBookOffer() {
                 return false;

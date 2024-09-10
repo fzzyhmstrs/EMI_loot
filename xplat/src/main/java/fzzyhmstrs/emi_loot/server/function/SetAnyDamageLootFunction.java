@@ -1,6 +1,6 @@
 package fzzyhmstrs.emi_loot.server.function;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import fzzyhmstrs.emi_loot.EMILoot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
@@ -10,7 +10,7 @@ import net.minecraft.loot.function.LootFunctionType;
 public class SetAnyDamageLootFunction implements LootFunction {
 
     public static final SetAnyDamageLootFunction INSTANCE = new SetAnyDamageLootFunction();
-    public static final Codec<SetAnyDamageLootFunction> CODEC = Codec.unit(INSTANCE);
+    public static final MapCodec<SetAnyDamageLootFunction> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public LootFunctionType getType() {
