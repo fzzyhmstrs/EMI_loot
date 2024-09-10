@@ -1,6 +1,11 @@
 package fzzyhmstrs.emi_loot.forge;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import net.minecraft.loot.LootTable;
+import net.minecraft.util.Identifier;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -38,5 +43,10 @@ public class EMILootAgnosForge extends EMILootAgnos {
     @Override
     protected boolean isModLoadedAgnos(String id) {
         return ModList.get().isLoaded(id);
+    }
+
+    @Override
+    protected LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json) {
+        return ForgeHooks.loadLootTable(gson, id, json, true);
     }
 }

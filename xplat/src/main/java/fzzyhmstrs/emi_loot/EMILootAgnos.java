@@ -1,5 +1,10 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.minecraft.loot.LootTable;
+import net.minecraft.util.Identifier;
+
 public abstract class EMILootAgnos {
     public static EMILootAgnos delegate;
 
@@ -31,4 +36,10 @@ public abstract class EMILootAgnos {
     }
 
     protected abstract boolean isModLoadedAgnos(String id);
+
+    public static LootTable loadLootTable(Gson gson, Identifier id, JsonObject json) {
+        return delegate.loadLootTableAgnos(gson, id, json);
+    }
+
+    protected abstract LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json);
 }

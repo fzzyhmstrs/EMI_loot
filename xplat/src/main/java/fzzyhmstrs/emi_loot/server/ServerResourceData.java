@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
@@ -50,7 +51,7 @@ public class ServerResourceData {
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            LootTable lootTable = GSON.fromJson(json, LootTable.class);
+            LootTable lootTable = EMILootAgnos.loadLootTable(GSON, id2, json);
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
