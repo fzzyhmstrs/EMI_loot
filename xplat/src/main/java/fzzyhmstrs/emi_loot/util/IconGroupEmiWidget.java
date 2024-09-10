@@ -111,6 +111,9 @@ public class IconGroupEmiWidget extends Widget {
     public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
         render(draw, mouseX, mouseY, delta);
     }
+    public void method_25394(DrawContext draw, int mouseX, int mouseY, float delta) {
+        render(draw, mouseX, mouseY, delta);
+    }
     // Taken from SlotWidget
     public void renderSlot(SlotWidget slot, DrawContext draw, int mouseX, int mouseY, float delta) {
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);

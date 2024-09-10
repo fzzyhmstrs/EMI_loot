@@ -55,4 +55,7 @@ public class IconEmiWidget extends Widget {
     public void m_88315_(DrawContext draw, int mouseX, int mouseY, float delta) {
         render(draw, mouseX, mouseY, delta);
     }
+    public void method_25394(DrawContext draw, int mouseX, int mouseY, float delta) {
+        render(draw, mouseX, mouseY, delta);
+    }
 }
