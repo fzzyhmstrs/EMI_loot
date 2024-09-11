@@ -1,0 +1,15 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/emi_loot.accesswidener")
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+    modCompileOnly "dev.emi:emi-xplat-intermediary:${project.emi_version}:api"
+    modCompileOnly "maven.modrinth:fzzy-config:${fzzy_config_version}"
+    modCompileOnly "maven.modrinth:symbols-n-stuff:${sns_version}"
+}

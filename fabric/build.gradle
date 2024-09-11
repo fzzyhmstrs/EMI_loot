@@ -1,0 +1,77 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+evaluationDependsOn ':xplat'
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+loom {
+    accessWidenerPath = project(":xplat").loom.accessWidenerPath
+
+    mods {
+        main {
+            sourceSet sourceSets.main
+            sourceSet project(':xplat').sourceSets.main
+        }
+    }
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    modCompileOnly "dev.emi:emi-fabric:${rootProject.emi_version}:api"
+
+    modRuntimeOnly "dev.emi:emi-fabric:${rootProject.emi_version}"
+    modRuntimeOnly "maven.modrinth:fzzy-config:${rootProject.fzzy_config_version}"
+    modRuntimeOnly "maven.modrinth:symbols-n-stuff:${rootProject.sns_version}"
+
+    modRuntimeOnly "maven.modrinth:fabric-language-kotlin:${rootProject.flk_version}"
+
+    common(project(path: ":xplat", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":xplat", configuration: "transformProductionFabric")) { transitive false }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    injectAccessWidener = true
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+sourcesJar {
+    def commonSources = project(":xplat").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}

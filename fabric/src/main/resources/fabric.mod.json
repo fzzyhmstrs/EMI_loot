@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "emi_loot",
+  "version": "${version}",
+  "name": "EMI Loot",
+  "description":"Plugin for EMI that shows chest loot, block drops, mob drops, and gameplay loot like fishing.",
+  "icon": "icon.png",
+  "authors": [
+    "fzzyhmstrs",
+    "lxly9 (art)",
+    "unilock (ports)"
+  ],
+  "entrypoints": {
+    "main": [
+      "fzzyhmstrs.emi_loot.fabric.EMILootFabric"
+    ],
+    "client": [
+      "fzzyhmstrs.emi_loot.fabric.EMILootClientFabric"
+    ],
+    "emi": [
+      "fzzyhmstrs.emi_loot.emi.EmiClientPlugin"
+    ]
+  },
+  "mixins": [
+    "emi_loot.mixins.json"
+  ],
+  "license": "MIT License",
+  "accessWidener": "emi_loot.accesswidener",
+  "depends": {
+    "minecraft": ">=1.20 <=1.20.1",
+    "emi": "*",
+    "fzzy_config": "*"
+  },
+  "suggests": {
+    "symbols_n_stuff": "0.1.1+1.20.1"
+  }
+}
