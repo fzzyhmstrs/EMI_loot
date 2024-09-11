@@ -11,11 +11,11 @@ public record MobLootPayload(PacketByteBuf buf) implements CustomPayload {
     public static final PacketCodec<PacketByteBuf, MobLootPayload> CODEC = PacketCodec.of(MobLootPayload::write, MobLootPayload::new);
 
     public MobLootPayload(PacketByteBuf buf) {
-        this.buf = (PacketByteBuf) buf.readBytes(buf.readableBytes());
+        this.buf = new PacketByteBuf(buf.readBytes(buf.readableBytes()));
     }
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeBytes(buf);
+        packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
     }
 
     @Override

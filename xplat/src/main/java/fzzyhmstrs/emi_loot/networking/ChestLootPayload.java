@@ -11,11 +11,11 @@ public record ChestLootPayload(PacketByteBuf buf) implements CustomPayload {
     public static final PacketCodec<PacketByteBuf, ChestLootPayload> CODEC = PacketCodec.of(ChestLootPayload::write, ChestLootPayload::new);
 
     public ChestLootPayload(PacketByteBuf buf) {
-        this.buf = (PacketByteBuf) buf.readBytes(buf.readableBytes());
+        this.buf = new PacketByteBuf(buf.readBytes(buf.readableBytes()));
     }
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeBytes(buf);
+        packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
     }
 
     @Override
