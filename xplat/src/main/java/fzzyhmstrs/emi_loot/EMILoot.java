@@ -9,9 +9,11 @@ import fzzyhmstrs.emi_loot.server.GameplayLootTableSender;
 import fzzyhmstrs.emi_loot.server.MobLootTableSender;
 import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
 import fzzyhmstrs.emi_loot.util.TextKey;
+import me.fzzyhmstrs.fzzy_config.annotations.Action;
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
+import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
@@ -91,29 +93,29 @@ public class EMILoot {
             super(new Identifier(MOD_ID, "emi_loot_config"), "", "");
         }
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean debugMode = false;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedAny<DebugMode> debugModes = new ValidatedAny<>(new DebugMode());
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean parseChestLoot = true;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean parseBlockLoot = true;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean parseMobLoot = true;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean parseGameplayLoot = true;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public boolean parseArchaeologyLoot = true;
 
-        @RequiresRestart
+        @RequiresAction(action = Action.RELOAD_DATA)
         public Set<String> skippedKeys = new ValidatedSet<>(TextKey.defaultSkips, ValidatedString.fromList(TextKey.keys().stream().toList()));
 
         @NonSync
@@ -134,9 +136,9 @@ public class EMILoot {
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedChoice<String> conditionStyle = EMILootAgnos.isModLoaded("symbols_n_stuff")
                 ?
-            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
+            new ValidatedChoice<>(List.of("tooltip", "plain", "default"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t), (t, u) -> FcText.INSTANCE.translate(u + "." + t), ValidatedChoice.WidgetType.CYCLING)
 				:
-            new ValidatedChoice<>(List.of("tooltip", "plain", "default"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
+            new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
 
         public boolean isTooltipStyle() {
             return Objects.equals(conditionStyle.get(), "tooltip") || Objects.equals(conditionStyle.get(), "plain");
