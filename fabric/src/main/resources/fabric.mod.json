@@ -31,7 +31,7 @@
     "minecraft": ">=1.20.3 <=1.20.4",
     "fabric-api": "*",
     "emi": "*",
-    "fzzy_config": "*"
+    "fzzy_config": ">=0.4.1"
   },
   "suggests": {
     "symbols_n_stuff": "0.1.1+1.20.4"
