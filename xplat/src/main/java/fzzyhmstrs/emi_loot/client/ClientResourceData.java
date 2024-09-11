@@ -45,7 +45,7 @@ public class ClientResourceData {
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 json.entrySet().forEach((entry)-> {
                     JsonElement element = entry.getValue();
-                    Identifier mobId = new Identifier(entry.getKey());
+                    Identifier mobId = Identifier.of(entry.getKey());
                     if (Registries.ENTITY_TYPE.containsId(mobId)) {
                         if (element.isJsonObject()) {
                             JsonObject object = element.getAsJsonObject();

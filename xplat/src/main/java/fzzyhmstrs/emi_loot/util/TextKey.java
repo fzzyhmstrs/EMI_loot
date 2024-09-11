@@ -1,12 +1,13 @@
 package fzzyhmstrs.emi_loot.util;
 
 import fzzyhmstrs.emi_loot.EMILoot;
-import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -37,7 +38,7 @@ public record TextKey(int index, List<String> args) {
     static final Map<Integer, Identifier> keySpriteIdMap = new HashMap<>();
     static final Function<TextKey, Text> DEFAULT_FUNCTION = (key)-> LText.translatable("emi_loot.missing_key");
     static final BiFunction<ItemStack, World, List<ItemStack>> DEFAULT_PROCESSOR = (stack, world) -> List.of(stack);
-    static final Identifier EMPTY = new Identifier(EMILoot.MOD_ID, "textures/gui/empty.png");
+    static final Identifier EMPTY = Identifier.of(EMILoot.MOD_ID, "textures/gui/empty.png");
     static int curDynamicIndex = 1000;
 
     public static final Set<String> defaultSkips = Set.of("emi_loot.function.set_count_add", "emi_loot.function.set_count_set", "emi_loot.function.fill_player_head", "emi_loot.function.limit_count", "emi_loot.no_conditions");
@@ -47,7 +48,7 @@ public record TextKey(int index, List<String> args) {
             List<ItemStack> finalStacks = new LinkedList<>();
             //finalStacks.add(stack);
             if (world != null) {
-                Optional<RecipeEntry<SmeltingRecipe>> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SimpleInventory(stack), world);
+                Optional<RecipeEntry<SmeltingRecipe>> opt = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SingleStackRecipeInput(stack), world);
                 if (opt.isPresent()) {
                     ItemStack tempStack = opt.get().value().getResult(world.getRegistryManager());
                     if (!tempStack.isEmpty()) {
@@ -65,102 +66,107 @@ public record TextKey(int index, List<String> args) {
 
         BiFunction<ItemStack, World, List<ItemStack>> ominousProcessor = (stack, world) -> List.of(Raid.getOminousBanner(world.getRegistryManager().getWrapperOrThrow(RegistryKeys.BANNER_PATTERN)));
 
-        mapBuilder(0, "emi_loot.function.empty", (key)->LText.empty(), EMPTY);
-        mapBuilder(1, "emi_loot.function.bonus", (key)-> getOneArgText(1, key), new Identifier(EMILoot.MOD_ID, "textures/gui/bonus.png"));
-        mapBuilder(2, "emi_loot.function.potion", (key) -> getOneArgText(2, key), new Identifier(EMILoot.MOD_ID, "textures/gui/potion.png"));
-        mapBuilder(3, "emi_loot.function.set_count_add", (key)-> getBasicText(3), new Identifier(EMILoot.MOD_ID, "textures/gui/set_count_add.png"));
-        mapBuilder(4, "emi_loot.function.set_count_set", (key)-> getBasicText(4), new Identifier(EMILoot.MOD_ID, "textures/gui/set_count_add.png"));
-        mapBuilder(5, "emi_loot.function.randomly_enchanted_book", (key)-> getBasicText(5), new Identifier(EMILoot.MOD_ID, "textures/gui/random_book.png"));
-        mapBuilder(6, "emi_loot.function.randomly_enchanted_item", (key)-> getBasicText(6), new Identifier(EMILoot.MOD_ID, "textures/gui/random_item.png"));
-        mapBuilder(7, "emi_loot.function.set_enchant_book", (key)-> getBasicText(7), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
-        mapBuilder(8, "emi_loot.function.set_enchant_item", (key)-> getBasicText(8), new Identifier(EMILoot.MOD_ID, "textures/gui/set_item.png"));
-        mapBuilder(9, "emi_loot.function.smelt", (key)-> getBasicText(9), new Identifier(EMILoot.MOD_ID, "textures/gui/smelt.png"), smeltProcessor);
-        mapBuilder(10, "emi_loot.function.looting", (key)-> getBasicText(10), new Identifier(EMILoot.MOD_ID, "textures/gui/looting.png"));
-        mapBuilder(11, "emi_loot.function.map", (key) -> getOneArgText(11, key), new Identifier(EMILoot.MOD_ID, "textures/gui/map.png"));
-        mapBuilder(12, "emi_loot.function.set_contents", (key)-> getBasicText(12), new Identifier(EMILoot.MOD_ID, "textures/gui/set_contents.png"));
-        mapBuilder(13, "emi_loot.function.damage", (key)-> getOneArgText(13, key), new Identifier(EMILoot.MOD_ID, "textures/gui/damage.png"));
-        mapBuilder(14, "emi_loot.function.copy_state", (key)-> getBasicText(14), new Identifier(EMILoot.MOD_ID, "textures/gui/copy.png"));
-        mapBuilder(15, "emi_loot.function.copy_name", (key)-> getOneArgText(15, key), new Identifier(EMILoot.MOD_ID, "textures/gui/copy.png"));
-        mapBuilder(16, "emi_loot.function.copy_nbt", (key)-> getBasicText(16), new Identifier(EMILoot.MOD_ID, "textures/gui/nbt.png"));
-        mapBuilder(17, "emi_loot.function.decay", (key)-> getBasicText(17), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
-        mapBuilder(18, "emi_loot.function.fill_player_head", (key)-> getBasicText(18), new Identifier(EMILoot.MOD_ID, "textures/gui/fzzy.png"));
-        mapBuilder(19, "emi_loot.function.limit_count", (key)-> getOneArgText(19, key), new Identifier(EMILoot.MOD_ID, "textures/gui/limit_count.png"));
-        mapBuilder(20, "emi_loot.function.set_attributes", (key)-> getOneArgText(20, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_attributes.png"));
-        mapBuilder(21, "emi_loot.function.banner", (key)-> getBasicText(21), new Identifier(EMILoot.MOD_ID, "textures/gui/banner.png"));
-        mapBuilder(22, "emi_loot.function.lore", (key)-> getBasicText(22), new Identifier(EMILoot.MOD_ID, "textures/gui/lore.png"));
-        mapBuilder(23, "emi_loot.function.set_stew", (key)-> getOneArgText(23, key), new Identifier(EMILoot.MOD_ID, "textures/gui/stew.png"));
-        mapBuilder(24, "emi_loot.function.set_nbt", (key)-> getBasicText(24), new Identifier(EMILoot.MOD_ID, "textures/gui/nbt.png"));
-        mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chest.png"));
-        mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(26, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
-        mapBuilder(27, "emi_loot.function.sequence", (key)-> getOneArgText(27, key), new Identifier(EMILoot.MOD_ID, "textures/gui/sequence.png"));
-        mapBuilder(28, "emi_loot.function.set_item", (key)-> getOneArgText(28, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_item.png"));
-        mapBuilder(29, "emi_loot.function.modify_contents", (key)-> getOneArgText(29, key), new Identifier(EMILoot.MOD_ID, "textures/gui/modify_contents.png"));
-        mapBuilder(30, "emi_loot.function.filtered", (key)-> getTwoArgText(30, key), new Identifier(EMILoot.MOD_ID, "textures/gui/filtered.png"));
-        mapBuilder(31, "emi_loot.function.fireworks", (key)-> getBasicText(31), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png"));
-        mapBuilder(32, "emi_loot.function.firework_explosion", (key)-> getOneArgText(32, key), new Identifier(EMILoot.MOD_ID, "textures/gui/firework.png"));
-        mapBuilder(33, "emi_loot.function.set_book_cover", (key)-> getOneArgText(33, key), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
+        BiFunction<ItemStack, World, List<ItemStack>> glintProcessor = (stack, world) -> {
+            stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+            return List.of(stack);
+        };
 
-        mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
-        mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
-        mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
-        mapBuilder(37, "emi_loot.condition.invert", (key)-> getInvertedText(37, key), new Identifier(EMILoot.MOD_ID, "textures/gui/invert.png"));
-        //mapBuilder(38, "emi_loot.condition.alternates", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(39, "emi_loot.condition.any_of", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), new Identifier(EMILoot.MOD_ID, "textures/gui/steve.png"));
-        mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
-        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getTwoArgText(43, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
-        mapBuilder(44, "emi_loot.condition.damage_source", (key)-> getOneArgText(44, key), new Identifier(EMILoot.MOD_ID, "textures/gui/tiny_cactus.png"));
-        mapBuilder(45, "emi_loot.condition.location", (key)-> getOneArgText(45, key), new Identifier(EMILoot.MOD_ID, "textures/gui/location.png"));
-        mapBuilder(46, "emi_loot.condition.entity_props", (key)-> getOneArgText(46, key), new Identifier(EMILoot.MOD_ID, "textures/gui/entity_props.png"));
-        mapBuilder(47, "emi_loot.condition.match_tool", (key)-> getOneArgText(47, key), new Identifier(EMILoot.MOD_ID, "textures/gui/match_tool.png"));
-        mapBuilder(48, "emi_loot.condition.entity_scores", (key)-> getBasicText(48), new Identifier(EMILoot.MOD_ID, "textures/gui/score.png"));
-        mapBuilder(49, "emi_loot.condition.reference", (key)-> getOneArgText(49, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
-        mapBuilder(50, "emi_loot.condition.time_check", (key)-> getOneArgText(50, key), new Identifier(EMILoot.MOD_ID, "textures/gui/time.png"));
-        mapBuilder(51, "emi_loot.condition.value_check", (key)-> getTwoArgText(51, key), new Identifier(EMILoot.MOD_ID, "textures/gui/value.png"));
-        mapBuilder(52, "emi_loot.condition.raining_true", (key)-> getBasicText(52), new Identifier(EMILoot.MOD_ID, "textures/gui/raining.png"));
-        mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID, "textures/gui/sunny.png"));
-        mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID, "textures/gui/thundering.png"));
-        mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
+        mapBuilder(0, "emi_loot.function.empty", (key)->LText.empty(), EMPTY);
+        mapBuilder(1, "emi_loot.function.bonus", (key)-> getOneArgText(1, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/bonus.png"));
+        mapBuilder(2, "emi_loot.function.potion", (key) -> getOneArgText(2, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/potion.png"));
+        mapBuilder(3, "emi_loot.function.set_count_add", (key)-> getBasicText(3), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_count_add.png"));
+        mapBuilder(4, "emi_loot.function.set_count_set", (key)-> getBasicText(4), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_count_add.png"));
+        mapBuilder(5, "emi_loot.function.randomly_enchanted_book", (key)-> getBasicText(5), Identifier.of(EMILoot.MOD_ID, "textures/gui/random_book.png"), glintProcessor);
+        mapBuilder(6, "emi_loot.function.randomly_enchanted_item", (key)-> getBasicText(6), Identifier.of(EMILoot.MOD_ID, "textures/gui/random_item.png"), glintProcessor);
+        mapBuilder(7, "emi_loot.function.set_enchant_book", (key)-> getBasicText(7), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_book.png"));
+        mapBuilder(8, "emi_loot.function.set_enchant_item", (key)-> getBasicText(8), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_item.png"));
+        mapBuilder(9, "emi_loot.function.smelt", (key)-> getBasicText(9), Identifier.of(EMILoot.MOD_ID, "textures/gui/smelt.png"), smeltProcessor);
+        mapBuilder(10, "emi_loot.function.looting", (key)-> getBasicText(10), Identifier.of(EMILoot.MOD_ID, "textures/gui/looting.png"));
+        mapBuilder(11, "emi_loot.function.map", (key) -> getOneArgText(11, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/map.png"));
+        mapBuilder(12, "emi_loot.function.set_contents", (key)-> getBasicText(12), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_contents.png"));
+        mapBuilder(13, "emi_loot.function.damage", (key)-> getOneArgText(13, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/damage.png"));
+        mapBuilder(14, "emi_loot.function.copy_state", (key)-> getBasicText(14), Identifier.of(EMILoot.MOD_ID, "textures/gui/copy.png"));
+        mapBuilder(15, "emi_loot.function.copy_name", (key)-> getOneArgText(15, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/copy.png"));
+        mapBuilder(16, "emi_loot.function.copy_nbt", (key)-> getBasicText(16), Identifier.of(EMILoot.MOD_ID, "textures/gui/nbt.png"));
+        mapBuilder(17, "emi_loot.function.decay", (key)-> getBasicText(17), Identifier.of(EMILoot.MOD_ID, "textures/gui/tnt.png"));
+        mapBuilder(18, "emi_loot.function.fill_player_head", (key)-> getBasicText(18), Identifier.of(EMILoot.MOD_ID, "textures/gui/fzzy.png"));
+        mapBuilder(19, "emi_loot.function.limit_count", (key)-> getOneArgText(19, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/limit_count.png"));
+        mapBuilder(20, "emi_loot.function.set_attributes", (key)-> getOneArgText(20, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_attributes.png"));
+        mapBuilder(21, "emi_loot.function.banner", (key)-> getBasicText(21), Identifier.of(EMILoot.MOD_ID, "textures/gui/banner.png"));
+        mapBuilder(22, "emi_loot.function.lore", (key)-> getBasicText(22), Identifier.of(EMILoot.MOD_ID, "textures/gui/lore.png"));
+        mapBuilder(23, "emi_loot.function.set_stew", (key)-> getOneArgText(23, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/stew.png"));
+        mapBuilder(24, "emi_loot.function.set_nbt", (key)-> getBasicText(24), Identifier.of(EMILoot.MOD_ID, "textures/gui/nbt.png"));
+        mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/chest.png"));
+        mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(26, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/reference.png"));
+        mapBuilder(27, "emi_loot.function.sequence", (key)-> getOneArgText(27, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/sequence.png"));
+        mapBuilder(28, "emi_loot.function.set_item", (key)-> getOneArgText(28, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_item.png"));
+        mapBuilder(29, "emi_loot.function.modify_contents", (key)-> getOneArgText(29, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/modify_contents.png"));
+        mapBuilder(30, "emi_loot.function.filtered", (key)-> getTwoArgText(30, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/filtered.png"));
+        mapBuilder(31, "emi_loot.function.fireworks", (key)-> getBasicText(31), Identifier.of(EMILoot.MOD_ID, "textures/gui/firework.png"));
+        mapBuilder(32, "emi_loot.function.firework_explosion", (key)-> getOneArgText(32, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/firework.png"));
+        mapBuilder(33, "emi_loot.function.set_book_cover", (key)-> getOneArgText(33, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_book.png"));
+
+        mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), Identifier.of(EMILoot.MOD_ID, "textures/gui/tnt.png"));
+        mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
+        mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/percent.png"));
+        mapBuilder(37, "emi_loot.condition.invert", (key)-> getInvertedText(37, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/invert.png"));
+        //mapBuilder(38, "emi_loot.condition.alternates", TextKey::getAnyOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(39, "emi_loot.condition.any_of", TextKey::getAnyOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), Identifier.of(EMILoot.MOD_ID, "textures/gui/steve.png"));
+        mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/percent.png"));
+        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getThreeArgText(43, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
+        mapBuilder(44, "emi_loot.condition.damage_source", (key)-> getOneArgText(44, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/tiny_cactus.png"));
+        mapBuilder(45, "emi_loot.condition.location", (key)-> getOneArgText(45, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/location.png"));
+        mapBuilder(46, "emi_loot.condition.entity_props", (key)-> getOneArgText(46, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/entity_props.png"));
+        mapBuilder(47, "emi_loot.condition.match_tool", (key)-> getOneArgText(47, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/match_tool.png"));
+        mapBuilder(48, "emi_loot.condition.entity_scores", (key)-> getBasicText(48), Identifier.of(EMILoot.MOD_ID, "textures/gui/score.png"));
+        mapBuilder(49, "emi_loot.condition.reference", (key)-> getOneArgText(49, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/reference.png"));
+        mapBuilder(50, "emi_loot.condition.time_check", (key)-> getOneArgText(50, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/time.png"));
+        mapBuilder(51, "emi_loot.condition.value_check", (key)-> getTwoArgText(51, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/value.png"));
+        mapBuilder(52, "emi_loot.condition.raining_true", (key)-> getBasicText(52), Identifier.of(EMILoot.MOD_ID, "textures/gui/raining.png"));
+        mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), Identifier.of(EMILoot.MOD_ID, "textures/gui/sunny.png"));
+        mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), Identifier.of(EMILoot.MOD_ID, "textures/gui/thundering.png"));
+        mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), Identifier.of(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
 
 
         //tool tag textkeys
         //pickaxe
-        mapBuilder(62, "emi_loot.pickaxe.wood", (key)-> getBasicText(62), new Identifier(EMILoot.MOD_ID, "textures/gui/pickaxe_wood.png"));
-        mapBuilder(63, "emi_loot.pickaxe.stone", (key)-> getBasicText(63), new Identifier(EMILoot.MOD_ID, "textures/gui/pickaxe_stone.png"));
-        mapBuilder(64, "emi_loot.pickaxe.iron", (key)-> getBasicText(64), new Identifier(EMILoot.MOD_ID, "textures/gui/pickaxe_iron.png"));
-        mapBuilder(65, "emi_loot.pickaxe.diamond", (key)-> getBasicText(65), new Identifier(EMILoot.MOD_ID, "textures/gui/pickaxe_diamond.png"));
-        mapBuilder(66, "emi_loot.pickaxe.netherite", (key)-> getBasicText(66), new Identifier(EMILoot.MOD_ID, "textures/gui/pickaxe_netherite.png"));
+        mapBuilder(62, "emi_loot.pickaxe.wood", (key)-> getBasicText(62), Identifier.of(EMILoot.MOD_ID, "textures/gui/pickaxe_wood.png"));
+        mapBuilder(63, "emi_loot.pickaxe.stone", (key)-> getBasicText(63), Identifier.of(EMILoot.MOD_ID, "textures/gui/pickaxe_stone.png"));
+        mapBuilder(64, "emi_loot.pickaxe.iron", (key)-> getBasicText(64), Identifier.of(EMILoot.MOD_ID, "textures/gui/pickaxe_iron.png"));
+        mapBuilder(65, "emi_loot.pickaxe.diamond", (key)-> getBasicText(65), Identifier.of(EMILoot.MOD_ID, "textures/gui/pickaxe_diamond.png"));
+        mapBuilder(66, "emi_loot.pickaxe.netherite", (key)-> getBasicText(66), Identifier.of(EMILoot.MOD_ID, "textures/gui/pickaxe_netherite.png"));
         //axe
-        mapBuilder(77, "emi_loot.axe.wood", (key)-> getBasicText(77), new Identifier(EMILoot.MOD_ID, "textures/gui/axe_wood.png"));
-        mapBuilder(78, "emi_loot.axe.stone", (key)-> getBasicText(78), new Identifier(EMILoot.MOD_ID, "textures/gui/axe_stone.png"));
-        mapBuilder(79, "emi_loot.axe.iron", (key)-> getBasicText(79), new Identifier(EMILoot.MOD_ID, "textures/gui/axe_iron.png"));
-        mapBuilder(80, "emi_loot.axe.diamond", (key)-> getBasicText(80), new Identifier(EMILoot.MOD_ID, "textures/gui/axe_diamond.png"));
-        mapBuilder(81, "emi_loot.axe.netherite", (key)-> getBasicText(81), new Identifier(EMILoot.MOD_ID, "textures/gui/axe_netherite.png"));
+        mapBuilder(77, "emi_loot.axe.wood", (key)-> getBasicText(77), Identifier.of(EMILoot.MOD_ID, "textures/gui/axe_wood.png"));
+        mapBuilder(78, "emi_loot.axe.stone", (key)-> getBasicText(78), Identifier.of(EMILoot.MOD_ID, "textures/gui/axe_stone.png"));
+        mapBuilder(79, "emi_loot.axe.iron", (key)-> getBasicText(79), Identifier.of(EMILoot.MOD_ID, "textures/gui/axe_iron.png"));
+        mapBuilder(80, "emi_loot.axe.diamond", (key)-> getBasicText(80), Identifier.of(EMILoot.MOD_ID, "textures/gui/axe_diamond.png"));
+        mapBuilder(81, "emi_loot.axe.netherite", (key)-> getBasicText(81), Identifier.of(EMILoot.MOD_ID, "textures/gui/axe_netherite.png"));
         //shovel
-        mapBuilder(92, "emi_loot.shovel.wood", (key)-> getBasicText(92), new Identifier(EMILoot.MOD_ID, "textures/gui/shovel_wood.png"));
-        mapBuilder(93, "emi_loot.shovel.stone", (key)-> getBasicText(93), new Identifier(EMILoot.MOD_ID, "textures/gui/shovel_stone.png"));
-        mapBuilder(94, "emi_loot.shovel.iron", (key)-> getBasicText(94), new Identifier(EMILoot.MOD_ID, "textures/gui/shovel_iron.png"));
-        mapBuilder(95, "emi_loot.shovel.diamond", (key)-> getBasicText(95), new Identifier(EMILoot.MOD_ID, "textures/gui/shovel_diamond.png"));
-        mapBuilder(96, "emi_loot.shovel.netherite", (key)-> getBasicText(96), new Identifier(EMILoot.MOD_ID, "textures/gui/shovel_netherite.png"));
+        mapBuilder(92, "emi_loot.shovel.wood", (key)-> getBasicText(92), Identifier.of(EMILoot.MOD_ID, "textures/gui/shovel_wood.png"));
+        mapBuilder(93, "emi_loot.shovel.stone", (key)-> getBasicText(93), Identifier.of(EMILoot.MOD_ID, "textures/gui/shovel_stone.png"));
+        mapBuilder(94, "emi_loot.shovel.iron", (key)-> getBasicText(94), Identifier.of(EMILoot.MOD_ID, "textures/gui/shovel_iron.png"));
+        mapBuilder(95, "emi_loot.shovel.diamond", (key)-> getBasicText(95), Identifier.of(EMILoot.MOD_ID, "textures/gui/shovel_diamond.png"));
+        mapBuilder(96, "emi_loot.shovel.netherite", (key)-> getBasicText(96), Identifier.of(EMILoot.MOD_ID, "textures/gui/shovel_netherite.png"));
         //hoe
-        mapBuilder(107, "emi_loot.hoe.wood", (key)-> getBasicText(107), new Identifier(EMILoot.MOD_ID, "textures/gui/hoe_wood.png"));
-        mapBuilder(108, "emi_loot.hoe.stone", (key)-> getBasicText(108), new Identifier(EMILoot.MOD_ID, "textures/gui/hoe_stone.png"));
-        mapBuilder(109, "emi_loot.hoe.iron", (key)-> getBasicText(109), new Identifier(EMILoot.MOD_ID, "textures/gui/hoe_iron.png"));
-        mapBuilder(110, "emi_loot.hoe.diamond", (key)-> getBasicText(110), new Identifier(EMILoot.MOD_ID, "textures/gui/hoe_diamond.png"));
-        mapBuilder(111, "emi_loot.hoe.netherite", (key)-> getBasicText(111), new Identifier(EMILoot.MOD_ID, "textures/gui/hoe_netherite.png"));
+        mapBuilder(107, "emi_loot.hoe.wood", (key)-> getBasicText(107), Identifier.of(EMILoot.MOD_ID, "textures/gui/hoe_wood.png"));
+        mapBuilder(108, "emi_loot.hoe.stone", (key)-> getBasicText(108), Identifier.of(EMILoot.MOD_ID, "textures/gui/hoe_stone.png"));
+        mapBuilder(109, "emi_loot.hoe.iron", (key)-> getBasicText(109), Identifier.of(EMILoot.MOD_ID, "textures/gui/hoe_iron.png"));
+        mapBuilder(110, "emi_loot.hoe.diamond", (key)-> getBasicText(110), Identifier.of(EMILoot.MOD_ID, "textures/gui/hoe_diamond.png"));
+        mapBuilder(111, "emi_loot.hoe.netherite", (key)-> getBasicText(111), Identifier.of(EMILoot.MOD_ID, "textures/gui/hoe_netherite.png"));
         //Direct drops and builtin/lootify conditions
-        mapBuilder(124, "emi_loot.condition.sequence", (key)-> getBasicText(124), new Identifier(EMILoot.MOD_ID, "textures/gui/sequence.png"));
-        mapBuilder(125, "emi_loot.condition.direct_drop", (key)-> getBasicText(125), new Identifier(EMILoot.MOD_ID, "textures/gui/direct_drops.png"));
-        mapBuilder(126, "emi_loot.condition.spawns_with", (key)-> getBasicText(126), new Identifier(EMILoot.MOD_ID, "textures/gui/spawns_with.png"));
-        mapBuilder(127, "emi_loot.condition.creeper", (key)-> getBasicText(127), new Identifier(EMILoot.MOD_ID, "textures/gui/creeper.png"));
-        mapBuilder(128, "emi_loot.condition.wither_kill", (key)-> getBasicText(128), new Identifier(EMILoot.MOD_ID, "textures/gui/wither.png"));
-        mapBuilder(129, "emi_loot.function.set_any_damage", (key)-> getBasicText(129), new Identifier(EMILoot.MOD_ID, "textures/gui/damage.png"));
-        mapBuilder(130, "emi_loot.function.ominous_banner", (key)-> getBasicText(130), new Identifier(EMILoot.MOD_ID, "textures/gui/ominous.png"), ominousProcessor);
-        mapBuilder(131, "emi_loot.function.set_pages", (key)-> getBasicText(131), new Identifier(EMILoot.MOD_ID, "textures/gui/set_book.png"));
-        mapBuilder(132, "emi_loot.function.ominous_bottle", (key)-> getOneArgText(132, key), new Identifier(EMILoot.MOD_ID, "textures/gui/potion.png"));
-        mapBuilder(133, "emi_loot.function.custom_model_data", (key)-> getBasicText(133), new Identifier(EMILoot.MOD_ID, "textures/gui/random_item.png"));
-        mapBuilder(134, "emi_loot.function.toggle_tooltip", (key)-> getBasicText(134), new Identifier(EMILoot.MOD_ID, "textures/gui/tooltip.png"));
+        mapBuilder(124, "emi_loot.condition.sequence", (key)-> getBasicText(124), Identifier.of(EMILoot.MOD_ID, "textures/gui/sequence.png"));
+        mapBuilder(125, "emi_loot.condition.direct_drop", (key)-> getBasicText(125), Identifier.of(EMILoot.MOD_ID, "textures/gui/direct_drops.png"));
+        mapBuilder(126, "emi_loot.condition.spawns_with", (key)-> getBasicText(126), Identifier.of(EMILoot.MOD_ID, "textures/gui/spawns_with.png"));
+        mapBuilder(127, "emi_loot.condition.creeper", (key)-> getBasicText(127), Identifier.of(EMILoot.MOD_ID, "textures/gui/creeper.png"));
+        mapBuilder(128, "emi_loot.condition.wither_kill", (key)-> getBasicText(128), Identifier.of(EMILoot.MOD_ID, "textures/gui/wither.png"));
+        mapBuilder(129, "emi_loot.function.set_any_damage", (key)-> getBasicText(129), Identifier.of(EMILoot.MOD_ID, "textures/gui/damage.png"));
+        mapBuilder(130, "emi_loot.function.ominous_banner", (key)-> getBasicText(130), Identifier.of(EMILoot.MOD_ID, "textures/gui/ominous.png"), ominousProcessor);
+        mapBuilder(131, "emi_loot.function.set_pages", (key)-> getBasicText(131), Identifier.of(EMILoot.MOD_ID, "textures/gui/set_book.png"));
+        mapBuilder(132, "emi_loot.function.ominous_bottle", (key)-> getOneArgText(132, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/potion.png"));
+        mapBuilder(133, "emi_loot.function.custom_model_data", (key)-> getBasicText(133), Identifier.of(EMILoot.MOD_ID, "textures/gui/random_item.png"));
+        mapBuilder(134, "emi_loot.function.toggle_tooltip", (key)-> getBasicText(134), Identifier.of(EMILoot.MOD_ID, "textures/gui/tooltip.png"));
 
         //No conditions
         mapBuilder(150, "emi_loot.no_conditions", (key)-> getBasicText(150), EMPTY);
@@ -247,6 +253,38 @@ public record TextKey(int index, List<String> args) {
             arg2 = "Missing";
         }
         return LText.translatable(translationKey, arg1, arg2);
+    }
+
+    private static Text getThreeArgText(int index, TextKey key) {
+        String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
+        String arg1;
+        String arg2;
+        String arg3;
+        try {
+            arg1 = key.args.get(0);
+        } catch(Exception e) {
+            EMILoot.LOGGER.error("Couldn't get first arg of two-arg text");
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+            arg1 = "Missing";
+        }
+        try {
+            arg2 = key.args.get(1);
+        } catch(Exception e) {
+            EMILoot.LOGGER.error("Couldn't get second arg of three-arg text");
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+            arg2 = "Missing";
+        }
+        try {
+            arg3 = key.args.get(2);
+        } catch(Exception e) {
+            EMILoot.LOGGER.error("Couldn't get third arg of three-arg text");
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+            arg3 = "Missing";
+        }
+        return LText.translatable(translationKey, arg1, arg2, arg3);
     }
 
     private static Text getAnyOfText(TextKey key) {

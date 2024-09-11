@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class SetEnchantmentsFunctionParser implements FunctionParser {
 
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
-        Map<Enchantment, LootNumberProvider> enchantments = ((SetEnchantmentsLootFunctionAccessor)function).getEnchantments();
+        Map<RegistryEntry<Enchantment>, LootNumberProvider> enchantments = ((SetEnchantmentsLootFunctionAccessor)function).getEnchantments();
         boolean add = ((SetEnchantmentsLootFunctionAccessor)function).getAdd();
         if (stack.isOf(Items.BOOK)) {
             stack = new ItemStack(Items.ENCHANTED_BOOK);

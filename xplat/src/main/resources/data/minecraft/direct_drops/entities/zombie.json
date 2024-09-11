@@ -23,9 +23,10 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "entries": [
@@ -48,9 +49,10 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "entries": [
@@ -76,9 +78,10 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "entries": [
@@ -101,9 +104,10 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "entries": [
@@ -129,15 +133,16 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        }
       ],
       "entries": [
         {
@@ -175,18 +180,19 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        },
+        {
+          "function": "minecraft:enchant_randomly"
+        }
       ],
       "entries": [
         {
@@ -224,22 +230,23 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        }
       ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:leather_helmet",
           "weight": 1
-          
+
         },
         {
           "type": "minecraft:item",
@@ -271,18 +278,19 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        },
+        {
+          "function": "minecraft:enchant_randomly"
+        }
       ],
       "entries": [
         {
@@ -320,15 +328,16 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        }
       ],
       "entries": [
         {
@@ -366,18 +375,19 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        },
+        {
+          "function": "minecraft:enchant_randomly"
+        }
       ],
       "entries": [
         {
@@ -415,15 +425,16 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        }
       ],
       "entries": [
         {
@@ -461,18 +472,19 @@
           "condition": "lootify:spawns_with"
         },
         {
-          "chance": 0.085,
-          "condition": "minecraft:random_chance_with_looting",
-          "looting_multiplier": 0.01
+          "unenchanted_chance": 0.085,
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": 0.01,
+          "enchantment": "minecraft:looting"
         }
       ],
       "functions": [
-            {
-              "function": "lootify:set_any_damage"
-            },
-            {
-              "function": "minecraft:enchant_randomly"
-            }
+        {
+          "function": "lootify:set_any_damage"
+        },
+        {
+          "function": "minecraft:enchant_randomly"
+        }
       ],
       "entries": [
         {

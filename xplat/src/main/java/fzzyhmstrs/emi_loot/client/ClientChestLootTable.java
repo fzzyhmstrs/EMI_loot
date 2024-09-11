@@ -15,7 +15,7 @@ public class ClientChestLootTable implements LootReceiver {
     public final Object2FloatMap<ItemStack> items;
 
     public ClientChestLootTable() {
-        this.id = new Identifier("empty");
+        this.id = Identifier.of("empty");
         this.items = new Object2FloatOpenHashMap<>();
     }
 

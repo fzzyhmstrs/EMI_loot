@@ -28,14 +28,14 @@ import java.util.Objects;
 public class ClientGameplayLootTable extends AbstractTextKeyParsingClientLootTable<ClientGameplayLootTable> {
 
     public static ClientGameplayLootTable INSTANCE = new ClientGameplayLootTable();
-    private static final Identifier EMPTY = new Identifier("blocks/empty");
+    private static final Identifier EMPTY = Identifier.of("blocks/empty");
     public final Identifier id;
     public final Identifier blockId;
 
     public ClientGameplayLootTable() {
         super();
         this.id = EMPTY;
-        this.blockId = new Identifier("air");
+        this.blockId = Identifier.of("air");
     }
 
     public ClientGameplayLootTable(Identifier id, Map<List<TextKey>, ClientRawPool> map) {
@@ -45,9 +45,9 @@ public class ClientGameplayLootTable extends AbstractTextKeyParsingClientLootTab
         String pth = id.getPath();
         int lastSlashIndex = pth.lastIndexOf('/');
         if (lastSlashIndex == -1) {
-            blockId = new Identifier(ns, pth);
+            blockId = Identifier.of(ns, pth);
         } else {
-            blockId = new Identifier(ns, pth.substring(Math.min(lastSlashIndex + 1, pth.length())));
+            blockId = Identifier.of(ns, pth.substring(Math.min(lastSlashIndex + 1, pth.length())));
         }
     }
 

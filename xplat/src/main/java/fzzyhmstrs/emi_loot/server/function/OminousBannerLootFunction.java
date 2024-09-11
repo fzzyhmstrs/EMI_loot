@@ -13,7 +13,7 @@ public class OminousBannerLootFunction implements LootFunction {
     public static final MapCodec<OminousBannerLootFunction> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
-    public LootFunctionType getType() {
+    public LootFunctionType<?> getType() {
         return EMILoot.OMINOUS_BANNER.get();
     }
 

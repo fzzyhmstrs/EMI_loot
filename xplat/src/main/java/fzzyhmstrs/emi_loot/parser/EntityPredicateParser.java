@@ -10,7 +10,6 @@ import net.minecraft.predicate.entity.EntityFlagsPredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.EntitySubPredicate;
 import net.minecraft.predicate.entity.EntityTypePredicate;
-import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
@@ -40,15 +39,17 @@ public class EntityPredicateParser {
         }
 
         //location check
-        Optional<LocationPredicate> locationPredicate = predicate.location();
-        if (locationPredicate.isPresent()) {
-            return LocationPredicateParser.parseLocationPredicate(locationPredicate.get());
+        EntityPredicate.PositionalPredicates positionPredicate = predicate.location();
+        if (positionPredicate.located().isPresent()) {
+            return LocationPredicateParser.parseLocationPredicate(positionPredicate.located().get());
+        }
+        //stepping on check
+        if (positionPredicate.steppingOn().isPresent()) {
+            return LocationPredicateParser.parseLocationPredicate(positionPredicate.steppingOn().get());
         }
 
-        //stepping on check
-        Optional<LocationPredicate> steppingOnPredicate = predicate.steppingOn();
-        if (steppingOnPredicate.isPresent()) {
-            return LocationPredicateParser.parseLocationPredicate(locationPredicate.get());
+        if (positionPredicate.affectsMovement().isPresent()) {
+            return LocationPredicateParser.parseLocationPredicate(positionPredicate.affectsMovement().get());
         }
 
         //effects check

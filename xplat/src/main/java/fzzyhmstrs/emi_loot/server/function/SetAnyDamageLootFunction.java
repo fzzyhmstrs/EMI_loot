@@ -13,7 +13,7 @@ public class SetAnyDamageLootFunction implements LootFunction {
     public static final MapCodec<SetAnyDamageLootFunction> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
-    public LootFunctionType getType() {
+    public LootFunctionType<?> getType() {
         return EMILoot.SET_ANY_DAMAGE.get();
     }
 

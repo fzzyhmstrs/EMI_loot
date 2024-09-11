@@ -14,7 +14,7 @@ public class ClientArchaeologyLootTable implements LootReceiver {
 	public final Object2FloatMap<ItemStack> items;
 
 	public ClientArchaeologyLootTable() {
-		this.id = new Identifier("empty");
+		this.id = Identifier.of("empty");
 		this.items = new Object2FloatOpenHashMap<>();
 	}
 	public ClientArchaeologyLootTable(Identifier id, Object2FloatMap<ItemStack> map) {

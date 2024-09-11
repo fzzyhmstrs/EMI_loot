@@ -73,7 +73,7 @@ public class ServerResourceData {
             if (list != null && list.isJsonArray()) {
                 list.getAsJsonArray().forEach(element -> {
                     if (element.isJsonPrimitive()) {
-                        Identifier identifier = new Identifier(element.getAsString());
+                        Identifier identifier = Identifier.of(element.getAsString());
                         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: " + identifier);
                         TABLE_EXCLUSIONS.add(identifier);
                     } else {

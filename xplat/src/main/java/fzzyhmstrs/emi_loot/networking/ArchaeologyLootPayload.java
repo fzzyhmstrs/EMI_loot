@@ -11,11 +11,11 @@ public record ArchaeologyLootPayload(PacketByteBuf buf) implements CustomPayload
     public static final PacketCodec<PacketByteBuf, ArchaeologyLootPayload> CODEC = PacketCodec.of(ArchaeologyLootPayload::write, ArchaeologyLootPayload::new);
 
     public ArchaeologyLootPayload(PacketByteBuf buf) {
-        this.buf = (PacketByteBuf) buf.readBytes(buf.readableBytes());
+        this.buf = new PacketByteBuf(buf.readBytes(buf.readableBytes()));
     }
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeBytes(buf);
+        packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
     }
 
     @Override

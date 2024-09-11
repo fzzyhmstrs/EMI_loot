@@ -33,6 +33,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.GameModeList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -194,11 +195,11 @@ public class TypeSpecificPredicateParser {
             );
         }
 
-        Optional<GameMode> gameMode = predicate.gameMode();
-        if (gameMode.isPresent()) {
+        GameModeList gameMode = predicate.gameMode();
+        if (gameMode != GameModeList.ALL) {
             return LText.translatable(
                     "emi_loot.entity_predicate.type_specific.player",
-                    LText.translatable("emi_loot.entity_predicate.type_specific.player.gamemode",gameMode.get().getName()));
+                    LText.translatable("emi_loot.entity_predicate.type_specific.player.gamemode", ListProcessors.buildOrList(gameMode.gameModes().stream().map(GameMode::getSimpleTranslatableName).map(Text::copyContentOnly).toList())));
         }
 
         List<PlayerPredicate.StatMatcher<?>> stats = predicate.stats();

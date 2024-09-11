@@ -9,7 +9,7 @@ public class LootSimplifiedRenderer implements EmiRenderable {
 
     private final int u;
     private final int v;
-    private final Identifier SPRITE_SHEET = new Identifier(EMILoot.MOD_ID, "textures/gui/emi_recipe_textures.png");
+    private final Identifier SPRITE_SHEET = Identifier.of(EMILoot.MOD_ID, "textures/gui/emi_recipe_textures.png");
 
     public LootSimplifiedRenderer(int u, int v) {
         this.u = u;

@@ -38,10 +38,12 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
+import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
@@ -56,6 +58,7 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -91,6 +94,7 @@ public class LootTableParser {
     public static Registry<LootTable> lootManager = null;
     public static RegistryOps<JsonElement> registryOps = null;
 
+    private static final List<LootCondition> emptyConditions = List.of();
 
     static {
         Object2BooleanOpenHashMap<PostProcessor> map = new Object2BooleanOpenHashMap<>();
@@ -115,7 +119,7 @@ public class LootTableParser {
             }
             EMILoot.LOGGER.warn("Post-processing complete!");
         }
-        ConfigApi.INSTANCE.network().send(new ClearPayload(), player);
+        ConfigApi.INSTANCE.network().send(ClearPayload.INSTANCE, player);
         if (EMILoot.config.parseChestLoot)
             chestSenders.forEach((id, chestSender) -> chestSender.send(player));
         if (EMILoot.config.parseBlockLoot)
@@ -142,14 +146,21 @@ public class LootTableParser {
             parseLootTable(entry.getKey().getValue(), table);
         });
         if (EMILoot.config.parseMobLoot) {
-            Identifier chk = new Identifier("pig");
-            Registries.ENTITY_TYPE.stream().toList().forEach((type) -> {
+            Identifier chk = Identifier.ofVanilla("pig");
+            Registries.ENTITY_TYPE.getEntrySet().forEach((entry) -> {
+                EntityType<?> type = entry.getValue();
                 if (type == EntityType.SHEEP) {
                     for (Identifier sheepId : ServerResourceData.SHEEP_TABLES) {
-                        parseEntityType(manager, type, sheepId, chk);
+                        parseEntityType(manager, type, sheepId, chk, emptyConditions);
                     }
                 }
-                parseEntityType(manager, type, type.getLootTableId().getValue(), chk);
+                //perform shearing table checks. May have to improve for later updates.
+                Identifier shearingId = Identifier.of(entry.getKey().getValue().getNamespace(), "shearing/" + entry.getKey().getValue().getPath());
+                LootTable shearingTable = manager.get(shearingId);
+                if (shearingTable != null && shearingTable != LootTable.EMPTY) {
+                    parseEntityType(manager, type, shearingId, chk, List.of(MatchToolLootCondition.builder(ItemPredicate.Builder.create().items(Items.SHEARS)).build()));
+                }
+                parseEntityType(manager, type, type.getLootTableId().getValue(), chk, emptyConditions);
             });
         }
         Multimap<Identifier, LootTable> missedDrops = ServerResourceData.getMissedDirectDrops(parsedDirectDrops);
@@ -226,12 +237,12 @@ public class LootTableParser {
         postProcessors.put(process, true);
     }
 
-    private static void parseEntityType(Registry<LootTable> manager, EntityType<?> type, Identifier mobTableId, Identifier fallback) {
+    private static void parseEntityType(Registry<LootTable> manager, EntityType<?> type, Identifier mobTableId, Identifier fallback, List<LootCondition> addedConditions) {
         Identifier mobId = Registries.ENTITY_TYPE.getId(type);
         LootTable mobTable = manager.get(mobTableId);
         if ((type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) && mobTable != null) {
             currentTable = mobTableId.toString();
-            mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId));
+            mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId, addedConditions));
         } else {
             if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Found empty mob table at id: " + mobTableId);
         }
@@ -244,7 +255,7 @@ public class LootTableParser {
             float conditionalMultiplier = 1f;
             for (LootCondition condition : ((LootPoolAccessor) pool).getConditions()) {
                 if (condition instanceof RandomChanceLootCondition randomChanceLootCondition) {
-                    conditionalMultiplier *= randomChanceLootCondition.chance();
+                    conditionalMultiplier *= NumberProcessors.getRollAvg(randomChanceLootCondition.chance());
                 }
             }
             float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;
@@ -304,8 +315,12 @@ public class LootTableParser {
     }
 
     private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId) {
+        return parseMobLootTable(lootTable, id, mobId, emptyConditions);
+    }
+
+    private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId, List<LootCondition> addedConditions) {
         MobLootTableSender sender = new MobLootTableSender(id, mobId);
-        parseMobLootTableInternal(lootTable, sender, false);
+        parseMobLootTableInternal(lootTable, sender, false, addedConditions);
         if (ServerResourceData.DIRECT_DROPS.containsKey(id) && EMILoot.config.mobLootIncludeDirectDrops) {
             parsedDirectDrops.add(id);
             Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
@@ -317,12 +332,12 @@ public class LootTableParser {
     private static void parseMobDirectLootTable(Collection<LootTable> tables, MobLootTableSender sender) {
         for (LootTable directTable : tables) {
             if (directTable != null) {
-                parseMobLootTableInternal(directTable, sender, true);
+                parseMobLootTableInternal(directTable, sender, true, emptyConditions);
             }
         }
     }
 
-    private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect) {
+    private static void parseMobLootTableInternal(LootTable lootTable, MobLootTableSender sender, boolean isDirect, List<LootCondition> addedConditions) {
         for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
             List<LootCondition> conditions = ((LootPoolAccessor) pool).getConditions();
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
@@ -530,7 +545,7 @@ public class LootTableParser {
         } else if (type == LootContextTypes.BLOCK) {
             results = parseBlockLootTable(table, id);
         } else if (type == LootContextTypes.ENTITY) {
-            results = parseMobLootTable(table, id, new Identifier("empty"));
+            results = parseMobLootTable(table, id, Identifier.of("empty"));
         } else if (type == LootContextTypes.FISHING) {
             results = parseGameplayLootTable(table, id);
         } else if (type == LootContextTypes.ARCHAEOLOGY) {

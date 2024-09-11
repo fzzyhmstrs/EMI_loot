@@ -63,7 +63,7 @@ import java.util.Map;
 public class LootParserRegistry {
 
     private static final Map<LootConditionType, ConditionParser> CONDITION_PARSERS = new HashMap<>();
-    private static final Map<LootFunctionType, FunctionParser> FUNCTION_PARSERS = new HashMap<>();
+    private static final Map<LootFunctionType<?>, FunctionParser> FUNCTION_PARSERS = new HashMap<>();
 
     public static void registerCondition(LootConditionType type, ConditionParser parser, String registrationContext) {
         if (!CONDITION_PARSERS.containsKey(type)) {
@@ -74,7 +74,7 @@ public class LootParserRegistry {
         }
     }
 
-    public static void registerFunction(LootFunctionType type, FunctionParser parser, String registrationContext) {
+    public static void registerFunction(LootFunctionType<?> type, FunctionParser parser, String registrationContext) {
         if (!FUNCTION_PARSERS.containsKey(type)) {
             if (EMILoot.DEBUG) EMILoot.LOGGER.info("Registering function for type: " + type + " from: " + registrationContext);
             FUNCTION_PARSERS.put(type, parser);
@@ -88,7 +88,7 @@ public class LootParserRegistry {
         return parser.parseCondition(condition, stack, parentIsAlternative);
     }
 
-    public static LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, LootFunctionType type, boolean parentIsAlternative, List<TextKey> conditionTexts) {
+    public static LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, LootFunctionType<?> type, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         FunctionParser parser = FUNCTION_PARSERS.getOrDefault(type, FunctionParser.EMPTY);
         return parser.parseFunction(function, stack, parentIsAlternative, conditionTexts);
     }
@@ -105,7 +105,7 @@ public class LootParserRegistry {
         registerFunction(LootFunctionTypes.SET_CUSTOM_DATA, new SimpleFunctionParser("emi_loot.function.set_nbt"), "Registering vanilla set nbt function parser");
         registerFunction(LootFunctionTypes.SET_COMPONENTS, new SimpleFunctionParser("emi_loot.function.set_nbt"), "Registering vanilla set components function parser");
         registerFunction(LootFunctionTypes.FURNACE_SMELT, new SimpleFunctionParser("emi_loot.function.smelt"), "Registering vanilla furnace smelt function parser");
-        registerFunction(LootFunctionTypes.LOOTING_ENCHANT, new SimpleFunctionParser("emi_loot.function.looting"), "Registering vanilla looting function parser");
+        registerFunction(LootFunctionTypes.ENCHANTED_COUNT_INCREASE, new SimpleFunctionParser("emi_loot.function.looting"), "Registering vanilla looting function parser");
         registerFunction(LootFunctionTypes.EXPLORATION_MAP, new ExplorationMapFunctionParser(), "Registering vanilla exploration map function parser");
         registerFunction(LootFunctionTypes.SET_NAME, new SetNameFunctionParser(), "Registering vanilla set name function parser");
         registerFunction(LootFunctionTypes.SET_CONTENTS, new SimpleFunctionParser("emi_loot.function.set_contents"), "Registering vanilla set contents function parser");
@@ -146,7 +146,7 @@ public class LootParserRegistry {
         registerCondition(LootConditionTypes.INVERTED, new InvertedConditionParser(), "Registering vanilla inverted condition parser");
         registerCondition(LootConditionTypes.KILLED_BY_PLAYER, new SimpleConditionParser("emi_loot.condition.killed_player"), "Registering vanilla killed-by-player condition parser");
         registerCondition(LootConditionTypes.RANDOM_CHANCE, new RandomChanceConditionParser(), "Registering vanilla random chance condition parser");
-        registerCondition(LootConditionTypes.RANDOM_CHANCE_WITH_LOOTING, new RandomChanceWithLootingConditionParser(), "Registering vanilla random chance with looting condition parser");
+        registerCondition(LootConditionTypes.RANDOM_CHANCE_WITH_ENCHANTED_BONUS, new RandomChanceWithLootingConditionParser(), "Registering vanilla random chance with looting condition parser");
         registerCondition(LootConditionTypes.DAMAGE_SOURCE_PROPERTIES, new DamageSourceConditionParser(), "Registering vanilla damage source properties condition parser");
         registerCondition(LootConditionTypes.LOCATION_CHECK, new LocationCheckConditionParser(), "Registering vanilla location check condition parser");
         registerCondition(LootConditionTypes.ENTITY_PROPERTIES, new EntityPropertiesConditionParser(), "Registering vanilla entity properties condition parser");

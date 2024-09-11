@@ -23,7 +23,7 @@ public class EMILootClientFabric implements ClientModInitializer {
     private static class EntityOffsetsReloadListenerFabric extends ClientResourceData.EntityOffsetsReloadListener implements IdentifiableResourceReloadListener {
         @Override
         public Identifier getFabricId() {
-            return new Identifier(EMILoot.MOD_ID,"client_loot_resources");
+            return Identifier.of(EMILoot.MOD_ID,"client_loot_resources");
         }
     }
 }

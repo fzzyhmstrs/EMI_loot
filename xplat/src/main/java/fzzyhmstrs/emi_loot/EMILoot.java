@@ -25,7 +25,6 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
@@ -60,8 +59,6 @@ public class EMILoot {
     public static Supplier<LootFunctionType<?>> SET_ANY_DAMAGE;
     public static Supplier<LootFunctionType<?>> OMINOUS_BANNER;
 
-    public static Supplier<Enchantment> RANDOM;
-
     public static Identifier identity(String path) {
         return Identifier.of(MOD_ID, path);
     }
@@ -87,7 +84,7 @@ public class EMILoot {
     public static class EmiLootConfig extends Config {
 
         EmiLootConfig() {
-            super(new Identifier(MOD_ID, "emi_loot_config"), "", "");
+            super(Identifier.of(MOD_ID, "emi_loot_config"), "", "");
         }
 
         @RequiresRestart
