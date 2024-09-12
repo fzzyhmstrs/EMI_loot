@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot;
 
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
+import fzzyhmstrs.emi_loot.client.ClientLootTablesReceiver;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.server.ArchaeologyLootTableSender;
 import fzzyhmstrs.emi_loot.server.BlockLootTableSender;
@@ -14,7 +15,6 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
-import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
@@ -64,11 +64,11 @@ public class EMILoot {
 
     public static void onInitialize() {
         ConfigApi.INSTANCE.network().registerS2C(LootTableParser.CLEAR_LOOTS, buf -> new SimpleCustomPayload(buf, LootTableParser.CLEAR_LOOTS), (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootTableSender.CHEST_SENDER, buf -> new SimpleCustomPayload(buf, ChestLootTableSender.CHEST_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootTableSender.BLOCK_SENDER, buf -> new SimpleCustomPayload(buf, BlockLootTableSender.BLOCK_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootTableSender.MOB_SENDER, buf -> new SimpleCustomPayload(buf, MobLootTableSender.MOB_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, buf -> new SimpleCustomPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf()));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, buf -> new SimpleCustomPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf()));
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootTableSender.CHEST_SENDER, buf -> new SimpleCustomPayload(buf, ChestLootTableSender.CHEST_SENDER), ClientLootTablesReceiver::receiveChestSender);
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootTableSender.BLOCK_SENDER, buf -> new SimpleCustomPayload(buf, BlockLootTableSender.BLOCK_SENDER), ClientLootTablesReceiver::receiveBlockSender);
+        ConfigApi.INSTANCE.network().registerS2C(MobLootTableSender.MOB_SENDER, buf -> new SimpleCustomPayload(buf, MobLootTableSender.MOB_SENDER), ClientLootTablesReceiver::receiveMobSender);
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootTableSender.GAMEPLAY_SENDER, buf -> new SimpleCustomPayload(buf, GameplayLootTableSender.GAMEPLAY_SENDER), ClientLootTablesReceiver::receiveGameplaySender);
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER, buf -> new SimpleCustomPayload(buf, ArchaeologyLootTableSender.ARCHAEOLOGY_SENDER), ClientLootTablesReceiver::receiveArchaeologySender);
     }
 
     @Version(version = 1)
