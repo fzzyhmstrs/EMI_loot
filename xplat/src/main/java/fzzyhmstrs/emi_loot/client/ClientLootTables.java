@@ -1,6 +1,13 @@
 package fzzyhmstrs.emi_loot.client;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.networking.ArchaeologyLootPayload;
+import fzzyhmstrs.emi_loot.networking.BlockLootPayload;
+import fzzyhmstrs.emi_loot.networking.ChestLootPayload;
+import fzzyhmstrs.emi_loot.networking.ClearPayload;
+import fzzyhmstrs.emi_loot.networking.GameplayLootPayload;
+import fzzyhmstrs.emi_loot.networking.MobLootPayload;
+import me.fzzyhmstrs.fzzy_config.networking.api.ClientPlayNetworkContext;
 import net.minecraft.network.PacketByteBuf;
 
 import java.util.LinkedList;
