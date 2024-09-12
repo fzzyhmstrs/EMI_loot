@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot;
 
 import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
+import fzzyhmstrs.emi_loot.client.ClientLootTablesReceiver;
 import fzzyhmstrs.emi_loot.networking.ArchaeologyLootPayload;
 import fzzyhmstrs.emi_loot.networking.BlockLootPayload;
 import fzzyhmstrs.emi_loot.networking.ChestLootPayload;
@@ -16,7 +17,6 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
-import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
@@ -67,11 +67,11 @@ public class EMILoot {
 
     public static void onInitialize() {
         ConfigApi.INSTANCE.network().registerS2C(ClearPayload.TYPE, ClearPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload, ctx));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload, ctx));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload, ctx));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload, ctx));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload, ctx));
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, ClientLootTablesReceiver::receiveChestSender);
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, ClientLootTablesReceiver::receiveBlockSender);
+        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, ClientLootTablesReceiver::receiveMobSender);
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, ClientLootTablesReceiver::receiveGameplaySender);
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, ClientLootTablesReceiver::receiveArchaeologySender);
     }
 
     public static void parseTables(ResourceManager resourceManager, Registry<LootTable> lootManager, RegistryOps<JsonElement> ops) {
