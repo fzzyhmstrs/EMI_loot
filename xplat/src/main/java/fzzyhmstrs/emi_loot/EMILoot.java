@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot;
 
 import fzzyhmstrs.emi_loot.client.ClientLootTables;
+import fzzyhmstrs.emi_loot.client.ClientLootTablesReceiver;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.server.ArchaeologyLootTableSender;
 import fzzyhmstrs.emi_loot.server.BlockLootTableSender;
@@ -14,7 +15,6 @@ import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom;
 import me.fzzyhmstrs.fzzy_config.annotations.IgnoreVisibility;
 import me.fzzyhmstrs.fzzy_config.annotations.NonSync;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
-import me.fzzyhmstrs.fzzy_config.annotations.RequiresRestart;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
