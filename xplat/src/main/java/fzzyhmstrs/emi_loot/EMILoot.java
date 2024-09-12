@@ -67,11 +67,11 @@ public class EMILoot {
 
     public static void onInitialize() {
         ConfigApi.INSTANCE.network().registerS2C(ClearPayload.TYPE, ClearPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.clearLoots());
-        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload.buf(), ctx.player().clientWorld));
-        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload.buf(), ctx.player().clientWorld));
-        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload.buf(), ctx.player().clientWorld));
-        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf(), ctx.player().clientWorld));
-        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf(), ctx.player().clientWorld));
+        ConfigApi.INSTANCE.network().registerS2C(ChestLootPayload.TYPE, ChestLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveChestSender(payload, ctx));
+        ConfigApi.INSTANCE.network().registerS2C(BlockLootPayload.TYPE, BlockLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveBlockSender(payload, ctx));
+        ConfigApi.INSTANCE.network().registerS2C(MobLootPayload.TYPE, MobLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveMobSender(payload, ctx));
+        ConfigApi.INSTANCE.network().registerS2C(GameplayLootPayload.TYPE, GameplayLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveGameplaySender(payload, ctx));
+        ConfigApi.INSTANCE.network().registerS2C(ArchaeologyLootPayload.TYPE, ArchaeologyLootPayload.CODEC, (payload, ctx) -> ClientLootTables.INSTANCE.receiveArchaeologySender(payload, ctx));
     }
 
     public static void parseTables(ResourceManager resourceManager, Registry<LootTable> lootManager, RegistryOps<JsonElement> ops) {
