@@ -11,7 +11,11 @@ public class FloatTrimmer {
         int fDot = f.indexOf(".");
         String fTrim;
         if (fDot > 0) {
-            fTrim = f.substring(0, Math.min(f.length(), fDot + 1 + places));
+            if (places > 0) {
+                fTrim = f.substring(0, Math.min(f.length(), fDot + 1 + places));
+            } else {
+                fTrim = f.substring(0, fDot);
+            }
         } else {
             if (weight < 10f) {
                 fTrim = f + ".0";

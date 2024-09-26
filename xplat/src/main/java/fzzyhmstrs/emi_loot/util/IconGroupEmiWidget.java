@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
+import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import net.minecraft.client.gui.DrawContext;
@@ -40,7 +41,7 @@ public abstract class IconGroupEmiWidget extends Widget {
         List<SlotWidget> list2 = new LinkedList<>();
         int itemXOffset = iconsWidth + 2;
         for(ConditionalStack entry: pool.stacks()) {
-            String rounded = FloatTrimmer.trimFloatString(entry.weight());
+            String rounded = FloatTrimmer.trimFloatString(entry.weight(), EMILoot.config.chanceDecimalPlaces.get());
             SlotWidget widget = new SlotWidget(entry.getIngredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.percent_chance", rounded));
             itemXOffset +=20;
             list2.add(widget);
