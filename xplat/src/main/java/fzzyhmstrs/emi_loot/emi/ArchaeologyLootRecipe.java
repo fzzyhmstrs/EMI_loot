@@ -59,12 +59,21 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		MutableText text = LText.translatable(key);
 		MutableText rawTitle;
 		if(!I18n.hasTranslation(key)) {
+			StringBuilder archName = new StringBuilder();
+			String[] chestPathTokens = loot.id.getPath().split("[/_]");
+			for (String str : chestPathTokens) {
+				if (str.length() <= 1) {
+					archName.append(" ").append(str);
+				} else {
+					archName.append(" ").append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+				}
+			}
 			if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
 				String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", modName);
+				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + modName);
 			} else {
 				Text unknown = LText.translatable("emi_loot.archaeology.unknown");
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", unknown.getString());
+				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + unknown.getString());
 			}
 			if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
 				EMILoot.LOGGER.warn("Untranslated archaeology loot table \"" + loot.id + "\" (key: \"" + key + "\")");

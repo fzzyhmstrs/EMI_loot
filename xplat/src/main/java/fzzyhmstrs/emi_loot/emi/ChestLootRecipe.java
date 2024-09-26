@@ -57,12 +57,21 @@ public class ChestLootRecipe implements EmiRecipe {
         MutableText text = LText.translatable(key);
         MutableText rawTitle;
         if (!I18n.hasTranslation(key)) {
+            StringBuilder chestName = new StringBuilder();
+            String[] chestPathTokens = loot.id.getPath().split("[/_]");
+            for (String str : chestPathTokens) {
+                if (str.length() <= 1) {
+                    chestName.append(" ").append(str);
+                } else {
+                    chestName.append(" ").append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+                }
+            }
             if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
                 String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", modName);
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", unknown.getString());
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + unknown.getString());
             }
             if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
                 EMILoot.LOGGER.warn("Untranslated chest loot table \"" + loot.id + "\" (key: \"" + key + "\")");
