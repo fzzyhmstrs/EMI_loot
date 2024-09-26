@@ -117,7 +117,7 @@
   "emi_loot.function.fill_player_head": "Заполняет голову этого игрока идентифицирующей информацией",
   "emi_loot.function.limit_count": "Количество стеков ограничено до %s",
   "emi_loot.function.set_attributes": "Выполняет следующие операции с атрибутами существа: %s",
-  "emi_loot.function.set_attributes.add": "[добавляет % 1$s к атрибуту %2$s]",
+  "emi_loot.function.set_attributes.add": "[добавляет %1$s к атрибуту %2$s]",
   "emi_loot.function.set_attributes.multiply_base": "[умножает базовое значение %2$s на %1$s и добавляет его к текущей сумме]",
   "emi_loot.function.set_attributes.multiply": "[умножает значение %2$s на %1$s]",
   "emi_loot.function.banner": "Применяет уникальный шаблон баннера",
