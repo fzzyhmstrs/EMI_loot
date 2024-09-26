@@ -50,12 +50,21 @@ public class GameplayLootRecipe implements EmiRecipe {
         Text text = LText.translatable(key);
         Text rawTitle;
         if (!I18n.hasTranslation(key)) {
+            StringBuilder gameplayName = new StringBuilder();
+            String[] chestPathTokens = loot.id.getPath().split("[/_]");
+            for (String str : chestPathTokens) {
+                if (str.length() <= 1) {
+                    gameplayName.append(" ").append(str);
+                } else {
+                    gameplayName.append(" ").append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+                }
+            }
             if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
                 String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", modName);
+                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString() + modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");
-                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", unknown.getString());
+                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString() + unknown.getString());
             }
             if (EMILoot.config.isLogI18n(EMILoot.Type.GAMEPLAY)) {
                 EMILoot.LOGGER.warn("Untranslated gameplay loot table \"" + loot.id + "\" (key: \"" + key + "\")");
