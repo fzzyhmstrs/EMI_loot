@@ -146,7 +146,7 @@ public class BlockLootRecipe implements EmiRecipe {
             int j = 0;
             for (ConditionalStack stack: stacks) {
                 SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 18 * j);
-                String rounded = FloatTrimmer.trimFloatString(stack.weight());
+                String rounded = FloatTrimmer.trimFloatString(stack.weight(), EMILoot.config.chanceDecimalPlaces.get());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.percent_chance", rounded));
                 if (EMILoot.config.isNotPlain()) {
                     for (Pair<Integer, Text> pair : stack.conditions()) {

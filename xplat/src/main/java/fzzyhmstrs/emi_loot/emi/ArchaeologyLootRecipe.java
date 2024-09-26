@@ -156,7 +156,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 					int row = (int) Math.ceil(index.get() / columns) - 1;
 					int column= (index.get() - 1) % (int) columns;
 					index.getAndDecrement();
-					String fTrim = trimFloatString(weight);
+					String fTrim = trimFloatString(weight, EMILoot.config.chanceDecimalPlaces.get());
 					SlotWidget slotWidget = new SlotWidget(stack, column * 18, titleSpace + row * finalRowHeight).recipeContext(this);
 					widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.percentage", fTrim)));
 				}
@@ -165,7 +165,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 				int column = (int)((index.get() - 1) % columns);
 				index.getAndDecrement();
 				EmiIngredient ingredient = EmiIngredient.of(items.stream().toList());
-				String fTrim = trimFloatString(Math.max(weight / 100f, 0.01f), 2);
+				String fTrim = trimFloatString(Math.max(weight / 100f, 0.01f), Math.max(EMILoot.config.chanceDecimalPlaces.get() + 1, 2));
 				SlotWidget slotWidget = new SlotWidget(ingredient, column * 18, titleSpace + row * finalRowHeight).recipeContext(this);
 				widgets.add(slotWidget.appendTooltip(LText.translatable("emi_loot.rolls", fTrim).formatted(Formatting.ITALIC, Formatting.GOLD)));
 			}

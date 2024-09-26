@@ -25,6 +25,8 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
@@ -119,7 +121,10 @@ public class EMILoot {
         @NonSync
         public boolean mobLootIncludeDirectDrops = true;
 
-		@NonSync
+        @NonSync
+        public ValidatedInt chanceDecimalPlaces = new ValidatedInt(1, 10, 0, ValidatedNumber.WidgetType.SLIDER);
+
+        @NonSync
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedChoice<String> conditionStyle = EMILootAgnos.isModLoaded("symbols_n_stuff")
                 ?
@@ -146,6 +151,7 @@ public class EMILoot {
         public boolean isLogI18n(Type type) {
             return type.logUntranslatedTablesSupplier.getAsBoolean();
         }
+
 	}
 
     @IgnoreVisibility
