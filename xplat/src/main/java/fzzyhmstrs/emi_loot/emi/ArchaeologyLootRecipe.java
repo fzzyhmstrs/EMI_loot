@@ -62,18 +62,21 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			StringBuilder archName = new StringBuilder();
 			String[] chestPathTokens = loot.id.getPath().split("[/_]");
 			for (String str : chestPathTokens) {
+				if (!archName.isEmpty()) {
+					archName.append(" ");
+				}
 				if (str.length() <= 1) {
-					archName.append(" ").append(str);
+					archName.append(str);
 				} else {
-					archName.append(" ").append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+					archName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
 				}
 			}
 			if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
 				String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + modName);
+				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + " " + modName);
 			} else {
 				Text unknown = LText.translatable("emi_loot.archaeology.unknown");
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + unknown.getString());
+				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString() + " " + unknown.getString());
 			}
 			if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
 				EMILoot.LOGGER.warn("Untranslated archaeology loot table \"" + loot.id + "\" (key: \"" + key + "\")");
