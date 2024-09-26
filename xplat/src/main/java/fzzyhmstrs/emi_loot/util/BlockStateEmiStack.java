@@ -1,14 +1,17 @@
 package fzzyhmstrs.emi_loot.util;
 
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockStateEmiStack extends EmiStack {
@@ -53,7 +56,15 @@ public class BlockStateEmiStack extends EmiStack {
 
 	@Override
 	public List<Text> getTooltipText() {
-		return List.of(Registries.BLOCK.get(id).getName());
+		return List.of(state.getBlock().getName());
+	}
+
+	@Override
+	public List<TooltipComponent> getTooltip() {
+		ArrayList<TooltipComponent> list = new ArrayList<>();
+		list.add(EmiTooltipComponents.of(state.getBlock().getName()));
+		EmiTooltipComponents.appendModName(list, id.getNamespace());
+		return list;
 	}
 
 	@Override
