@@ -70,14 +70,13 @@ public class ChestLootRecipe implements EmiRecipe {
                 }
             }
             if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-                String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + " " + modName);
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString());
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");
                 rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + " " + unknown.getString());
             }
             if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
-                EMILoot.LOGGER.warn("Untranslated chest loot table \"" + loot.id + "\" (key: \"" + key + "\")");
+				EMILoot.LOGGER.warn("Untranslated chest loot table \"{}\" (key: \"{}\")", loot.id, key);
             }
         } else {
             rawTitle = LText.translatable(key);
@@ -145,7 +144,9 @@ public class ChestLootRecipe implements EmiRecipe {
             finalRowHeight =  18;
         }
         widgets.addText(title.title(), 1, 0, 0x404040, false);
-        if (title.trimmed()) {
+        if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+            widgets.addTooltip(LText.components(title.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
+        } else {
             widgets.addTooltipText(List.of(title.rawTitle()), 0, 0, 144, 10);
         }
         AtomicInteger index = new AtomicInteger(lootStacksSortedSize);

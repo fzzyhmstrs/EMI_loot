@@ -1,7 +1,9 @@
 package fzzyhmstrs.emi_loot.util;
 
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
@@ -15,6 +17,7 @@ import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Language;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +43,13 @@ public class LText {
             "block",
             "archaeology"
     ));
+
+    public static List<TooltipComponent> components(Text title, String namespace) {
+        ArrayList<TooltipComponent> components = new ArrayList<>();
+        components.add(EmiTooltipComponents.of(title));
+        EmiTooltipComponents.appendModName(components, namespace);
+        return components;
+    }
 
     public static MutableText translatable(String key) {
         return Text.translatable(key);

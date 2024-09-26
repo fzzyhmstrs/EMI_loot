@@ -200,6 +200,7 @@ public class MobLootRecipe implements EmiRecipe {
             int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type, 0);
             widgets.addTexture(EmiTexture.LARGE_SLOT, x, y);
             widgets.addDrawable(x, y, 16, 16, (matrices, mx, my, delta) -> inputStack.render(matrices, 5, 6 + offset, delta));
+            widgets.addTooltip(inputStack.getTooltip(), x, y, 24, 24);
         }
 
         //draw the name, moved over if the spawn egg is available
