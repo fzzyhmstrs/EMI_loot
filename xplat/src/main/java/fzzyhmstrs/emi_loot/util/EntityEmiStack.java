@@ -106,8 +106,7 @@ public class EntityEmiStack extends EmiStack {
         List<TooltipComponent> list = new ArrayList<>();
         if (entity != null) {
             list.addAll(getTooltipText().stream().map(Text::asOrderedText).map(TooltipComponent::of).toList());
-            String mod = EMILootAgnos.getModName(Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
-            list.add(TooltipComponent.of(LText.literal(mod).formatted(Formatting.BLUE).formatted(Formatting.ITALIC).asOrderedText()));
+            EmiTooltipComponents.appendModName(list, Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace());
             if (!getRemainder().isEmpty()) {
                 list.add(EmiTooltipComponents.getRemainderTooltipComponent(this));
             }

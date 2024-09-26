@@ -63,8 +63,7 @@ public class GameplayLootRecipe implements EmiRecipe {
                 }
             }
             if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-                String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString() + " " + modName);
+                rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString());
             } else {
                 Text unknown = LText.translatable("emi_loot.gameplay.unknown");
                 rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString() + " " + unknown.getString());
@@ -166,8 +165,10 @@ public class GameplayLootRecipe implements EmiRecipe {
 
         //draw the gameplay name
         widgets.addText(name.title(), 0, 0, 0x404040, false);
-        if (name.trimmed()) {
-            widgets.addTooltipText(List.of(name.rawTitle()), 0, 0, EMILoot.config.isTooltipStyle() ? 144 : 154, 10);
+        if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+            widgets.addTooltip(LText.components(name.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
+        } else {
+            widgets.addTooltipText(List.of(name.rawTitle()), 0, 0, 144, 10);
         }
         if (EMILoot.config.isTooltipStyle()) {
             List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.GAMEPLAY))
