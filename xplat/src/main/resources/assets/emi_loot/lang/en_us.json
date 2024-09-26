@@ -42,6 +42,8 @@
   "emi_loot.emi_loot_config.chestLootAlwaysStackSame.desc": "If true, chest and archaeology pages will always condense stacks that are equivalent in drop chance. If false, stacks will be spread out if there are fewer than 48 of them.",
   "emi_loot.emi_loot_config.mobLootIncludeDirectDrops": "Include Direct Drops",
   "emi_loot.emi_loot_config.mobLootIncludeDirectDrops.desc": "Whether mob loot tables include manually added 'direct drops', such as equipment drops",
+  "emi_loot.emi_loot_config.chanceDecimalPlaces": "Chance Decimal Places",
+  "emi_loot.emi_loot_config.chanceDecimalPlaces.desc": "How many decimal places show on chances or weights (5.123%, 5.1%, 5%, etc.)",
   "emi_loot.emi_loot_config.conditionStyle": "Condition Style",
   "emi_loot.emi_loot_config.conditionStyle.desc": "How loot conditions are visually presented in the recipe viewer",
   "emi_loot.emi_loot_config.conditionStyle.default": "Default",
