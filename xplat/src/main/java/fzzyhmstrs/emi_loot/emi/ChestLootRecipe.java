@@ -59,18 +59,22 @@ public class ChestLootRecipe implements EmiRecipe {
             StringBuilder chestName = new StringBuilder();
             String[] chestPathTokens = loot.id.getPath().split("[/_]");
             for (String str : chestPathTokens) {
+                if (LText.tablePrefixes.contains(str)) continue;
+                if (!chestName.isEmpty()) {
+                    chestName.append(" ");
+                }
                 if (str.length() <= 1) {
-                    chestName.append(" ").append(str);
+                    chestName.append(str);
                 } else {
-                    chestName.append(" ").append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+                    chestName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
                 }
             }
             if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
                 String modName = EMILootAgnos.getModName(loot.id.getNamespace());
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + modName);
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + " " + modName);
             } else {
                 Text unknown = LText.translatable("emi_loot.chest.unknown");
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + unknown.getString());
+                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString() + " " + unknown.getString());
             }
             if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
                 EMILoot.LOGGER.warn("Untranslated chest loot table \"" + loot.id + "\" (key: \"" + key + "\")");

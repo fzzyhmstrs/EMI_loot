@@ -15,8 +15,31 @@ import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Language;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 public class LText {
+
+    public static HashSet<String> tablePrefixes = new HashSet<>(List.of(
+            "spawners",
+            "spawner",
+            "shearing",
+            "pots",
+            "pot",
+            "gameplay",
+            "equipment",
+            "entities",
+            "entity",
+            "dispensers",
+            "dispenser",
+            "chests",
+            "chest",
+            "blocks",
+            "block",
+            "archaeology"
+    ));
 
     public static MutableText translatable(String key) {
         return Text.translatable(key);
