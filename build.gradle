@@ -40,6 +40,11 @@ allprojects {
             url = "https://maven.terraformersmc.com/"
         }
 
+        maven {
+            name = "FzzyMaven"
+            url = "https://maven.fzzyhmstrs.me/"
+        }
+
         exclusiveContent {
             forRepository {
                 maven {
