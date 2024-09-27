@@ -94,7 +94,12 @@ public class MobLootRecipe implements EmiRecipe {
                 builtPool.stacks().forEach(cs -> {
                     list.addAll(cs.ingredient());
                 });
-                addWidgetBuilders(builtPool, false);
+                try {
+                    addWidgetBuilders(builtPool, false);
+                } catch (Throwable e) {
+                    EmiLoot.LOGGER.error("Error encountered while preparing layout for mob recipe {}, display may be incomplete.", loot.id);
+                    e.printStackTrace();
+                }
             }
         );
         outputStacks = list;
@@ -107,26 +112,21 @@ public class MobLootRecipe implements EmiRecipe {
     private final EntityType<?> type;
     @Nullable
     private final EmiStack egg;
-    private final List<WidgetRowBuilder> rowBuilderList = new LinkedList<>();
+    private final List<WidgetRowBuilder> rowBuilderList = new ArrayList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
         if (recursive || rowBuilderList.isEmpty()) {
             rowBuilderList.add(new WidgetRowBuilder(154));
         }
-        boolean added = false;
         for (WidgetRowBuilder builder : rowBuilderList) {
             if (builder.canAddPool(newPool)) {
                 builder.addAndTrim(newPool);
-                added = true;
-                break;
+                return;
             }
         }
-        if (!added) {
-            Optional<ClientBuiltPool> opt = rowBuilderList.get(rowBuilderList.size() - 1).addAndTrim(newPool);
-            opt.ifPresent(clientMobBuiltPool -> addWidgetBuilders(clientMobBuiltPool, true));
-        }
-
-
+        Optional<ClientBuiltPool> opt = rowBuilderList.get(rowBuilderList.size() - 1).addAndTrim(newPool);
+        if (opt.isEmpty()) return;
+        addWidgetBuilders(opt.get(), true);
     }
 
     @Override
