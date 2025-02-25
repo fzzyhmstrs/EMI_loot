@@ -65,7 +65,7 @@ public class ClientBlockLootTable extends AbstractTextKeyParsingClientLootTable<
         } else {
             blockId = Identifier.of(ns, pth.substring(Math.min(lastSlashIndex + 1, pth.length())));
         }
-        this.isSimple = true;
+        this.isSimple = isSimple;
     }
 
     @Override

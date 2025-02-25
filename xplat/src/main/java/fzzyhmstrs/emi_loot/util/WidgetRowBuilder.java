@@ -1,15 +1,14 @@
 package fzzyhmstrs.emi_loot.util;
 
 import com.google.common.base.Suppliers;
-import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,15 +21,15 @@ public class WidgetRowBuilder {
     }
 
     private final int maxWidth;
-    private final List<ClientBuiltPool> poolList = new LinkedList<>();
+    private final List<ClientBuiltPool> poolList = new ArrayList<>();
     private final Supplier<List<ConditionalStack>> stacks = Suppliers.memoize(() -> {
         List<ConditionalStack> list = new ArrayList<>();
         for (ClientBuiltPool pool: poolList) {
             list.addAll(
                     pool.stacks().stream().map(stack ->
-                            stack.ingredient()
+                            stack.getRawStacks()
                                     .stream()
-                                    .sorted(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItemStack().getItem())))
+                                    .sorted(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItem())))
                                     .map(s -> new ConditionalStack(stack.conditions(), stack.weight(), List.of(s))).toList()
                     ).collect(
                             ArrayList::new, ArrayList::addAll, ArrayList::addAll
@@ -79,6 +78,11 @@ public class WidgetRowBuilder {
         return true;
     }
 
+    public void addSimple(ClientBuiltPool newPool) {
+        this.width = getNewWidth(newPool);
+        poolList.add(newPool);
+    }
+
     public Optional<ClientBuiltPool> addAndTrim(ClientBuiltPool newPool) {
         if (add(newPool)) return Optional.empty();
         if (width == 0) {
@@ -87,7 +91,7 @@ public class WidgetRowBuilder {
             AtomicInteger newWidth = new AtomicInteger(14 + (11 * (((newPool.conditions().size() - 1) / 2) - 1)));
             newPool.stacks().forEach(s -> {
                 float weight = s.weight();
-                List<EmiStack> stacks = s.ingredient().stream().sorted(Comparator.comparingInt(s1 -> Registries.ITEM.getRawId(s1.getItemStack().getItem()))).toList();
+                List<ItemStack> stacks = s.getRawStacks().stream().sorted(Comparator.comparingInt(s1 -> Registries.ITEM.getRawId(s1.getItem()))).toList();
                 if (newWidth.addAndGet(20) <= maxWidth) {
                     madeItIn.add(new ConditionalStack(s.conditions(), weight, stacks));
                 } else {
