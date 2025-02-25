@@ -10,9 +10,11 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientArchaeologyLootTable;
+import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
@@ -22,6 +24,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -33,24 +36,17 @@ import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class ArchaeologyLootRecipe implements EmiRecipe {
 
-	public ArchaeologyLootRecipe(ClientArchaeologyLootTable loot) {
-		this.loot = loot;
-		if(loot.items.size() == 1) {
-			if (loot.items.values().toFloatArray()[0] == 1f) {
-				isGuaranteedNonChance = true;
-			}
-		}
+	public ArchaeologyLootRecipe(ArchaeologyLootRecipeData data) {
+		this.loot = data.loot;
+
 
 		ArrayListMultimap<Float, EmiStack> map2 = ArrayListMultimap.create();
-		List<EmiStack> outputsList = new LinkedList<>();
-		loot.items.forEach((item, weight) -> {
+		List<EmiStack> outputsList = new ArrayList<>();
+		data.map.forEach((weight, item) -> {
 			EmiStack stack = EmiStack.of(item);
 			map2.put(weight, stack);
 			outputsList.add(stack);
 		});
-		for (float key : map2.keySet()) {
-			map2.get(key).sort(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItemStack().getItem())));
-		}
 
 		lootStacksSorted = map2;
 
@@ -61,36 +57,8 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		}
 
 		outputs = outputsList;
-		String key = "emi_loot.archaeology." + loot.id.toString();
-		MutableText text = LText.translatable(key);
-		MutableText rawTitle;
-		if(!I18n.hasTranslation(key)) {
-			StringBuilder archName = new StringBuilder();
-			String[] chestPathTokens = loot.id.getPath().split("[/_]");
-			for (String str : chestPathTokens) {
-				if (!archName.isEmpty()) {
-					archName.append(" ");
-				}
-				if (str.length() <= 1) {
-					archName.append(str);
-				} else {
-					archName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
-				}
-			}
-			if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString());
-			} else {
-				Text unknown = LText.translatable("emi_loot.archaeology.unknown");
-				rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName + " " + unknown.getString());
-			}
-			if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
-				EMILoot.LOGGER.warn("Untranslated archaeology loot table \"{}\" (key: \"{}\")", loot.id, key);
-			}
-		} else {
-			rawTitle = text;
-		}
 
-		this.title = TrimmedTitle.of(rawTitle, 138);
+		this.title = data.name;
 	}
 
 	private final ClientArchaeologyLootTable loot;
@@ -181,5 +149,56 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 	@Override
 	public boolean supportsRecipeTree() {
 		return EmiRecipe.super.supportsRecipeTree() && isGuaranteedNonChance;
+	}
+
+	public record ArchaeologyLootRecipeData(ClientArchaeologyLootTable loot, ArrayListMultimap<Float, ItemStack> map, boolean guaranteed, TrimmedTitle name) {
+
+		public static ArchaeologyLootRecipeData of(ClientArchaeologyLootTable loot) {
+			boolean isGuaranteedNonChance = false;
+			if (loot.items.size() == 1) {
+				if (loot.items.values().toFloatArray()[0] == 1f) {
+					isGuaranteedNonChance = true;
+				}
+			}
+
+			ArrayListMultimap<Float, ItemStack> map2 = ArrayListMultimap.create();
+			loot.items.forEach((item, weight)-> {
+				map2.put(weight, item);
+			});
+			for (float key : map2.keySet()) {
+				map2.get(key).sort(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItem())));
+			}
+
+			String key = "emi_loot.archaeology." + loot.id.toString();
+			MutableText rawTitle;
+			if(!I18n.hasTranslation(key)) {
+				StringBuilder archName = new StringBuilder();
+				String[] chestPathTokens = loot.id.getPath().split("[/_]");
+				for (String str : chestPathTokens) {
+					if (!archName.isEmpty()) {
+						archName.append(" ");
+					}
+					if (str.length() <= 1) {
+						archName.append(str);
+					} else {
+						archName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+					}
+				}
+				if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString());
+				} else {
+					Text unknown = LText.translatable("emi_loot.archaeology.unknown");
+					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName + " " + unknown.getString());
+				}
+				if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
+					EMILoot.LOGGER.warn("Untranslated archaeology loot table \"{}\" (key: \"{}\")", loot.id, key);
+				}
+			} else {
+				rawTitle = LText.translatable(key);
+			}
+			TrimmedTitle name = TrimmedTitle.of(rawTitle, 138);
+			return new ArchaeologyLootRecipeData(loot, map2, isGuaranteedNonChance, name);
+		}
+
 	}
 }

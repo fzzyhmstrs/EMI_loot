@@ -1,5 +1,7 @@
 package fzzyhmstrs.emi_loot.emi;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayListMultimap;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -13,6 +15,7 @@ import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -20,80 +23,44 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
 
 public class ChestLootRecipe implements EmiRecipe {
 
-    public ChestLootRecipe(ClientChestLootTable loot) {
-        this.loot = loot;
-        if (loot.items.size() == 1) {
-            if (loot.items.values().toFloatArray()[0] == 1f) {
-                isGuaranteedNonChance = true;
-            }
-        }
+    public ChestLootRecipe(ChestLootRecipeData data) {
+        this.loot = data.loot;
+        this.isGuaranteedNonChance = data.guaranteed;
 
-        ArrayListMultimap<Float, EmiStack> map2 = ArrayListMultimap.create();
-        List<EmiStack> outputsList = new LinkedList<>();
-        loot.items.forEach((item, weight)-> {
-            EmiStack stack = EmiStack.of(item);
-            map2.put(weight, stack);
-            outputsList.add(stack);
+        this.lootStacksSorted = Suppliers.memoize(() -> {
+            ArrayListMultimap<Float, EmiStack> map2 = ArrayListMultimap.create();
+            for (Iterator<Map.Entry<Float, ItemStack>> it = data.itr; it.hasNext(); ) {
+                Map.Entry<Float, ItemStack> entry = it.next();
+                EmiStack stack = EmiStack.of(entry.getValue());
+                map2.put(entry.getKey(), stack);
+            }
+            return map2;
         });
-        for (float key : map2.keySet()) {
-            map2.get(key).sort(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItemStack().getItem())));
+        this.lootStacksSortedSize = data.lootStacksSortedSize;
+        List<EmiStack> list = new ArrayList<>();
+        for (ItemStack stack: data.totalItemList) {
+            list.add(EmiStack.of(stack));
         }
+        this.outputs = list;
+        this.title = data.name;
 
-        lootStacksSorted = map2;
-
-        if (loot.items.size() > 48 || EMILoot.config.chestLootAlwaysStackSame) {
-            this.lootStacksSortedSize = lootStacksSorted.keySet().size();
-        } else {
-            this.lootStacksSortedSize = loot.items.size();
-        }
-
-
-        outputs = outputsList;
-        String key = "emi_loot.chest." + loot.id.toString();
-        MutableText text = LText.translatable(key);
-        MutableText rawTitle;
-        if (!I18n.hasTranslation(key)) {
-            StringBuilder chestName = new StringBuilder();
-            String[] chestPathTokens = loot.id.getPath().split("[/_]");
-            for (String str : chestPathTokens) {
-                if (LText.tablePrefixes.contains(str)) continue;
-                if (!chestName.isEmpty()) {
-                    chestName.append(" ");
-                }
-                if (str.length() <= 1) {
-                    chestName.append(str);
-                } else {
-                    chestName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
-                }
-            }
-            if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString());
-            } else {
-                Text unknown = LText.translatable("emi_loot.chest.unknown");
-                rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName + " " + unknown.getString());
-            }
-            if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
-				EMILoot.LOGGER.warn("Untranslated chest loot table \"{}\" (key: \"{}\")", loot.id, key);
-            }
-        } else {
-            rawTitle = text;
-        }
-        this.title = TrimmedTitle.of(rawTitle, 138);
     }
 
     private final ClientChestLootTable loot;
     //private final Map<EmiStack, Float> lootStacks;
-    private final ArrayListMultimap<Float, EmiStack> lootStacksSorted;
+    private final Supplier<ArrayListMultimap<Float, EmiStack>> lootStacksSorted;
     private final int lootStacksSortedSize;
     private final List<EmiStack> outputs;
     private boolean isGuaranteedNonChance = false;
@@ -104,7 +71,7 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public EmiRecipeCategory getCategory() {
-        return EmiClientPlugin.LOOT_CATEGORY;
+        return EmiClientPlugin.CHEST_CATEGORY;
     }
 
     @Override
@@ -114,7 +81,7 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new LinkedList<>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -157,7 +124,7 @@ public class ChestLootRecipe implements EmiRecipe {
             widgets.addTooltipText(List.of(title.rawTitle()), 0, 0, 144, 10);
         }
         AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
-        for (var entry : lootStacksSorted.asMap().entrySet()) {
+        for (var entry : lootStacksSorted.get().asMap().entrySet()) {
             float weight = entry.getKey();
             Collection<EmiStack> items = entry.getValue();
             if ((loot.items.size() <= 48) && !EMILoot.config.chestLootAlwaysStackSame) {
@@ -189,5 +156,70 @@ public class ChestLootRecipe implements EmiRecipe {
     @Override
     public boolean hideCraftable() {
         return EmiRecipe.super.hideCraftable();
+    }
+
+    public record ChestLootRecipeData(ClientChestLootTable loot, Iterator<Map.Entry<Float, ItemStack>> itr, List<ItemStack> totalItemList, boolean guaranteed, TrimmedTitle name, int lootStacksSortedSize) {
+
+        public static ChestLootRecipeData of(ClientChestLootTable loot) {
+            boolean isGuaranteedNonChance = false;
+            if (loot.items.size() == 1) {
+                if (loot.items.values().toFloatArray()[0] == 1f) {
+                    isGuaranteedNonChance = true;
+                }
+            }
+
+            List<ItemStack> totalItemList = new ArrayList<>();
+            ArrayListMultimap<Float, ItemStack> map2 = ArrayListMultimap.create();
+            loot.items.forEach((item, weight) -> {
+                map2.put(weight, item);
+                totalItemList.add(item);
+            });
+            for (float key : map2.keySet()) {
+                map2.get(key).sort(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItem())));
+            }
+
+            Iterator<Map.Entry<Float, ItemStack>> itr = map2.entries().iterator();
+
+            String key = "emi_loot.chest." + loot.id.toString();
+            MutableText rawTitle;
+            if (!I18n.hasTranslation(key)) {
+                StringBuilder chestName = new StringBuilder();
+                String[] chestPathTokens = loot.id.getPath().split("[/_]");
+                for (String str : chestPathTokens) {
+                    if (LText.tablePrefixes.contains(str)) continue;
+                    if (!chestName.isEmpty()) {
+                        chestName.append(" ");
+                    }
+                    if (str.length() <= 1) {
+                        chestName.append(str);
+                    } else {
+                        chestName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
+                    }
+                }
+                if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
+                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString());
+                } else {
+                    Text unknown = LText.translatable("emi_loot.chest.unknown");
+                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName + " " + unknown.getString());
+                }
+                if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
+                    EMILoot.LOGGER.warn("Untranslated chest loot table \"{}\" (key: \"{}\")", loot.id, key);
+                }
+            } else {
+                rawTitle = LText.translatable(key);;
+            }
+            TrimmedTitle name = TrimmedTitle.of(rawTitle, 138);
+
+            int lootStacksSortedSize;
+
+            if (loot.items.size() > 48 || EMILoot.config.chestLootAlwaysStackSame) {
+                lootStacksSortedSize = map2.keySet().size();
+            } else {
+                lootStacksSortedSize = loot.items.size();
+            }
+
+            return new ChestLootRecipeData(loot, itr, totalItemList, isGuaranteedNonChance, name, lootStacksSortedSize);
+        }
+
     }
 }

@@ -151,16 +151,12 @@ abstract public class AbstractTextKeyParsingClientLootTable<T extends LootReceiv
                 }
                 consolidatedMap.put((float)weight, consolidatedList);
             });
-            Float2ObjectMap<List<EmiStack>> emiConsolidatedMap = new Float2ObjectArrayMap<>();
+            Float2ObjectMap<List<ItemStack>> emiConsolidatedMap = new Float2ObjectArrayMap<>();
             consolidatedMap.forEach((consolidatedWeight, consolidatedList)-> {
-                List<EmiStack> emiStacks = new ArrayList<>();
-                for (ItemStack i : consolidatedList) {
-                    emiStacks.add(EmiStack.of(i));
-                }
-                emiConsolidatedMap.put((float) consolidatedWeight, emiStacks);
+                emiConsolidatedMap.put((float) consolidatedWeight, consolidatedList);
             });
             finalList.add(new ClientBuiltPool(builtList, emiConsolidatedMap.float2ObjectEntrySet().stream().map(entry -> {
-                List<EmiStack> sortedList = entry.getValue().stream().sorted(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItemStack().getItem()))).toList();
+                List<ItemStack> sortedList = entry.getValue().stream().sorted(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItem()))).toList();
                 return new ConditionalStack(builtList, entry.getFloatKey(), sortedList);
             }).toList()));
         });

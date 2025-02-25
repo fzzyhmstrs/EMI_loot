@@ -12,8 +12,8 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,13 +24,13 @@ public class ItemPredicateParser {
         if (tag != null) {
             return LText.translatable("emi_loot.item_predicate.tag", tag.id());
         }
-        
+
         Set<Item> items = ((ItemPredicateAccessor)predicate).getItems();
         if (items != null && !items.isEmpty()) {
             List<MutableText> list = items.stream().map((item) -> (MutableText)item.getName()).toList();
             return LText.translatable("emi_loot.item_predicate.items", ListProcessors.buildOrList(list));
         }
-        
+
         NumberRange.IntRange count = ((ItemPredicateAccessor)predicate).getCount();
         if (count != NumberRange.IntRange.ANY) {
             Integer max = count.getMax();
@@ -39,7 +39,7 @@ public class ItemPredicateParser {
             int finalMin = min != null ? min : 0;
             return LText.translatable("emi_loot.item_predicate.count", Integer.toString(finalMin), Integer.toString(finalMax));
         }
-        
+
         NumberRange.IntRange durability = ((ItemPredicateAccessor)predicate).getDurability();
         if (durability != NumberRange.IntRange.ANY) {
             Integer max = durability.getMax();
@@ -48,11 +48,11 @@ public class ItemPredicateParser {
             int finalMin = min != null ? min : 0;
             return LText.translatable("emi_loot.item_predicate.durability", Integer.toString(finalMin), Integer.toString(finalMax));
         }
-        
+
         EnchantmentPredicate[] enchants = ((ItemPredicateAccessor)predicate).getEnchantments();
         EnchantmentPredicate[] storedEnchants = ((ItemPredicateAccessor)predicate).getStoredEnchantments();
         if (enchants.length + storedEnchants.length > 0) {
-            List<EnchantmentPredicate> list = new LinkedList<>();
+            List<EnchantmentPredicate> list = new ArrayList<>();
             list.addAll(Arrays.stream(enchants).toList());
             list.addAll(Arrays.stream(storedEnchants).toList());
             return EnchantmentPredicateParser.parseEnchantmentPredicates(list);
