@@ -45,66 +45,39 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@SuppressWarnings("SequencedCollectionMethodCanBeUsed")
 public class MobLootRecipe implements EmiRecipe {
 
     //private final static Map<EntityType<?>, Integer> needsElevating;
     private static final Identifier ARROW_ID = new Identifier(EMILoot.MOD_ID, "textures/gui/downturn_arrow.png");
 
-    public MobLootRecipe(ClientMobLootTable loot) {
-        this.lootId = loot.id;
-        loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
-        Identifier mobId = loot.mobId;
-        EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
-        this.type = type;
-        SpawnEggItem eggItem = SpawnEggItem.forEntity(type);
-        this.egg = eggItem != null ? EmiStack.of(eggItem) : null;
-        MinecraftClient client = MinecraftClient.getInstance();
-        Entity entity = type.create(client.world);
-        Text rawTitle;
-        if (entity != null) {
-            Box box = entity.getBoundingBox();
-            double len = box.getAverageSideLength();
-            if (len > 1.05) {
-                len = (len + Math.sqrt(len))/2.0;
-            }
-            if (entity instanceof SlimeEntity) {
-                ((SlimeEntity)entity).setSize(5, false);
-            }
-            if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")) {
-                DyeColor color = DyeColor.byName(loot.color, DyeColor.WHITE);
-                MutableText colorName = LText.translatable("color.minecraft." + color.getName());
-                rawTitle = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
-                ((SheepEntity)entity).setColor(color);
+    public MobLootRecipe(MobLootRecipeData data) {
+        this.lootId = data.loot.id;
 
-            } else {
-                rawTitle = entity.getName();
-            }
-            double scale = 1.05 / len * 8.0;
-            if (ClientResourceData.MOB_SCALES.containsKey(type)) {
-                scale *= ClientResourceData.MOB_SCALES.getOrDefault(type, 1.0f);
-            }
-            inputStack = EntityEmiStack.ofScaled(entity, scale);
+        if (data.entity != null) {
+            inputStack = EntityEmiStack.ofScaled(data.entity, data.scale);
         } else {
             inputStack = EmiStack.EMPTY;
-            rawTitle = LText.translatable("emi_loot.missing_entity");
         }
-        this.name = TrimmedTitle.of(rawTitle, (EMILoot.config.isTooltipStyle() ? 138 : 158) - ((egg != null) ? 49 : 30));
-        List<EmiStack> list = new LinkedList<>();
+
+        List<EmiStack> list = new ArrayList<>();
         //System.out.println(getId());
-        loot.builtItems.forEach((builtPool)-> {
+        data.loot.builtItems.forEach((builtPool)-> {
                 builtPool.stacks().forEach(cs -> {
-                    list.addAll(cs.ingredient());
+                    list.addAll(cs.getStacks());
                 });
                 try {
                     addWidgetBuilders(builtPool, false);
                 } catch (Throwable e) {
-                    EMILoot.LOGGER.error("Error encountered while preparing layout for mob recipe {}, display may be incomplete.", loot.id);
-                    e.printStackTrace();
+                    EMILoot.LOGGER.error("Error encountered while preparing layout for mob recipe {}, display may be incomplete.", data.loot.id);
+                    EMILoot.LOGGER.error("Thrown error:", e);
                 }
             }
         );
         outputStacks = list;
+
+        this.egg = data.spawnEggItem != null ? EmiStack.of(data.spawnEggItem) : null;
+        this.name = data.name;
+        this.type = data.entity != null ? data.entity.getType() : null;
     }
 
     private final Identifier lootId;
@@ -293,5 +266,47 @@ public class MobLootRecipe implements EmiRecipe {
     @Override
     public boolean hideCraftable() {
         return EmiRecipe.super.hideCraftable();
+    }
+
+    public record MobLootRecipeData(ClientMobLootTable loot, SpawnEggItem spawnEggItem, Entity entity, double scale, TrimmedTitle name) {
+
+        public static MobLootRecipeData of(ClientMobLootTable loot) {
+            loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
+            Identifier mobId = loot.mobId;
+            EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
+            SpawnEggItem eggItem = SpawnEggItem.forEntity(type);
+            MinecraftClient client = MinecraftClient.getInstance();
+            Entity entity = type.create(client.world);
+            Text rawTitle;
+            double scale = 0.125;
+            if (entity != null) {
+                Box box = entity.getBoundingBox();
+                double len = box.getAverageSideLength();
+                if (len > 1.05) {
+                    len = (len + Math.sqrt(len))/2.0;
+                }
+                if (entity instanceof SlimeEntity) {
+                    ((SlimeEntity)entity).setSize(5, false);
+                }
+                if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")) {
+                    DyeColor color = DyeColor.byName(loot.color, DyeColor.WHITE);
+                    MutableText colorName = LText.translatable("color.minecraft." + color.getName());
+                    rawTitle = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
+                    ((SheepEntity)entity).setColor(color);
+
+                } else {
+                    rawTitle = entity.getName();
+                }
+                scale = 1.05 / len * 8.0;
+                if (ClientResourceData.MOB_SCALES.containsKey(type)) {
+                    scale *= ClientResourceData.MOB_SCALES.getOrDefault(type, 1.0f);
+                }
+            } else {
+                rawTitle = LText.translatable("emi_loot.missing_entity");
+            }
+            TrimmedTitle name = TrimmedTitle.of(rawTitle, (EMILoot.config.isTooltipStyle() ? 138 : 158) - ((eggItem != null) ? 49 : 30));
+            return new MobLootRecipeData(loot, eggItem, entity, scale, name);
+        }
+
     }
 }

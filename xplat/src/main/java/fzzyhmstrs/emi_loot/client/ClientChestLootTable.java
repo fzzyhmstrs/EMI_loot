@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 
 public class ClientChestLootTable implements LootReceiver {
 

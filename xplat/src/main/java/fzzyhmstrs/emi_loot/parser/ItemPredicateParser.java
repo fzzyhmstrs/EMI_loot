@@ -13,9 +13,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class ItemPredicateParser {
 
@@ -31,7 +33,7 @@ public class ItemPredicateParser {
             subTexts.add(LText.translatable("emi_loot.item_predicate.items", ListProcessors.buildOrList(list)));
         }
 
-        NumberRange.IntRange count = predicate.count();
+        NumberRange.IntRange count = ((ItemPredicateAccessor)predicate).getCount();
         if (count != NumberRange.IntRange.ANY) {
             int finalMax = count.max().orElse(0);
             int finalMin = count.min().orElse(0);
