@@ -7,25 +7,25 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MobLootPoolBuilder extends AbstractLootPoolBuilder {
+public class ComplexLootPoolBuilder extends AbstractLootPoolBuilder {
 
-    public MobLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions) {
+    public ComplexLootPoolBuilder(float rollWeight, List<LootTableParser.LootConditionResult> conditions, List<LootTableParser.LootFunctionResult> functions) {
         super(rollWeight);
         this.conditions = conditions;
         this.functions = functions;
     }
 
-    final HashMap<List<TextKey>, ChestLootPoolBuilder> map = new HashMap<>();
+    final HashMap<List<TextKey>, SimpleLootPoolBuilder> map = new HashMap<>();
     final List<LootTableParser.LootConditionResult> conditions;
     final List<LootTableParser.LootFunctionResult> functions;
-    HashMap<List<TextKey>, ChestLootPoolBuilder> builtMap = new HashMap<>();
+    HashMap<List<TextKey>, SimpleLootPoolBuilder> builtMap = new HashMap<>();
 
     @Override
     public void addItem(LootTableParser.ItemEntryResult result) {
         List<TextKey> testKey = new LinkedList<>();
         testKey.addAll(result.functions());
         testKey.addAll(result.conditions());
-        ChestLootPoolBuilder builder = map.getOrDefault(testKey, new ChestLootPoolBuilder(rollWeight));
+        SimpleLootPoolBuilder builder = map.getOrDefault(testKey, new SimpleLootPoolBuilder(rollWeight));
         builder.addItem(result);
         map.put(testKey, builder);
     }
@@ -39,18 +39,24 @@ public class MobLootPoolBuilder extends AbstractLootPoolBuilder {
         }
 
         for (List<TextKey> key: map.keySet()) {
-            ChestLootPoolBuilder builder = map.getOrDefault(key, new ChestLootPoolBuilder(rollWeight));
+            SimpleLootPoolBuilder builder = map.getOrDefault(key, new SimpleLootPoolBuilder(rollWeight));
             builder.build();
             if (map.size() == 1 && builder.isEmpty) {
                 isEmpty = true;
                 return;
             }
-            if (map.size() == 1 && builder.isSimple && conditions.isEmpty() && functions.isEmpty() && key.isEmpty()) {
+            if (map.size() == 1 && conditions.isEmpty() && functions.isEmpty() && builder.isSimple && checkKey(key)) {
                 simpleStack = builder.simpleStack;
                 isSimple = true;
             }
             builtMap.put(key, builder);
         }
+    }
+
+    private boolean checkKey(List<TextKey> keys) {
+        if (keys.isEmpty()) return true;
+        if (keys.size() != 1) return false;
+        return keys.get(0).index() == 0 || keys.get(0).index() == 150;
     }
 
     @Override

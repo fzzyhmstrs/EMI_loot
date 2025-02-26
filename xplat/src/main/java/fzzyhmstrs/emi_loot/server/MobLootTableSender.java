@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
+public class MobLootTableSender implements LootSender<ComplexLootPoolBuilder> {
 
     public MobLootTableSender(Identifier id, Identifier mobId) {
         this.idToSend = LootSender.getIdToSend(id);
@@ -24,7 +24,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
 
     private final String idToSend;
     private final String mobIdToSend;
-    final List<MobLootPoolBuilder> builderList = new LinkedList<>();
+    final List<ComplexLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier MOB_SENDER = new Identifier("e_l", "m_s");
     boolean isEmpty = true;
 
@@ -84,7 +84,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
-            Map<List<TextKey>, ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
+            Map<List<TextKey>, SimpleLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
             buf.writeShort(lootPoolBuilderMap.size());
             lootPoolBuilderMap.forEach((key, chestBuilder)-> {
 
@@ -93,7 +93,7 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
-                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new ChestLootPoolBuilder(1f)).builtMap;
+                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new SimpleLootPoolBuilder(1f)).builtMap;
                 buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
@@ -108,12 +108,12 @@ public class MobLootTableSender implements LootSender<MobLootPoolBuilder> {
     }
 
     @Override
-    public void addBuilder(MobLootPoolBuilder builder) {
+    public void addBuilder(ComplexLootPoolBuilder builder) {
         builderList.add(builder);
     }
 
     @Override
-    public List<MobLootPoolBuilder> getBuilders() {
+    public List<ComplexLootPoolBuilder> getBuilders() {
         return builderList;
     }
 }
