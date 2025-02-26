@@ -39,12 +39,12 @@ public class ServerResourceData {
     }
 
     private static void loadDirectTable(Identifier id, Resource resource, RegistryOps<JsonElement> ops) {
-        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading direct drop table from file: " + id.toString());
+		if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading direct drop table from file: {}", id.toString());
         String path = id.getPath();
         Identifier id2 = Identifier.of(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
         String path2 = id2.getPath();
         if (!(path2.startsWith("blocks/") || path2.startsWith("entities/"))) {
-            EMILoot.LOGGER.error("File path for [" + id + "] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.");
+			EMILoot.LOGGER.error("File path for [{}] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.", id);
             EMILoot.LOGGER.error("Example: [./data/mod_id/direct_drops/blocks/cobblestone.json] is a valid block direct drop table path for a block added by [mod_id].");
             return;
         }
@@ -55,17 +55,16 @@ public class ServerResourceData {
             if (lootTable != null) {
                 DIRECT_DROPS.put(id2, lootTable);
             } else {
-                EMILoot.LOGGER.error("Loot table in file [" + id + "] is empty!");
+				EMILoot.LOGGER.error("Loot table in file [{}] is empty!", id);
             }
 
         } catch(Exception e) {
-            EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: " + id);
-            e.printStackTrace();
+			EMILoot.LOGGER.error("Failed to open or read direct drops loot table file: {}", id);
         }
     }
 
     private static void loadTableExclusion(Identifier id, Resource resource) {
-        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading exclusion table from file: " + id.toString());
+        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Reading exclusion table from file: {}", id.toString());
         try {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -74,17 +73,17 @@ public class ServerResourceData {
                 list.getAsJsonArray().forEach(element -> {
                     if (element.isJsonPrimitive()) {
                         Identifier identifier = new Identifier(element.getAsString());
-                        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: " + identifier);
+                        if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: {}", identifier);
                         TABLE_EXCLUSIONS.add(identifier);
                     } else {
-                        EMILoot.LOGGER.error("Exclusion element not properly formatted: " + element);
+						EMILoot.LOGGER.error("Exclusion element not properly formatted: {}", element);
                     }
                 });
             } else {
-                EMILoot.LOGGER.error("Exclusions in file: " + id + " not readable.");
+				EMILoot.LOGGER.error("Exclusions in file: {} not readable.", id);
             }
         } catch(Exception e) {
-            EMILoot.LOGGER.error("Failed to open or read table exclusions file: " + id);
+			EMILoot.LOGGER.error("Failed to open or read table exclusions file: {}", id);
         }
     }
 

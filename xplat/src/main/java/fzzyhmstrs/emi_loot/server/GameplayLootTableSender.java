@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuilder> {
+public class GameplayLootTableSender implements LootSender<ComplexLootPoolBuilder> {
 
     public GameplayLootTableSender(Identifier id) {
         this.idToSend = LootSender.getIdToSend(id);
     }
 
     private final String idToSend;
-    final List<GameplayLootPoolBuilder> builderList = new LinkedList<>();
+    final List<ComplexLootPoolBuilder> builderList = new LinkedList<>();
     boolean isEmpty = true;
 
     @Override
@@ -78,7 +78,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
-            Map<List<TextKey>, ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
+            Map<List<TextKey>, SimpleLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
             buf.writeShort(lootPoolBuilderMap.size());
             lootPoolBuilderMap.forEach((key, chestBuilder)-> {
 
@@ -87,7 +87,7 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
-                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new ChestLootPoolBuilder(1f)).builtMap;
+                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new SimpleLootPoolBuilder(1f)).builtMap;
                 buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
@@ -102,12 +102,12 @@ public class GameplayLootTableSender implements LootSender<GameplayLootPoolBuild
     }
 
     @Override
-    public void addBuilder(GameplayLootPoolBuilder builder) {
+    public void addBuilder(ComplexLootPoolBuilder builder) {
         builderList.add(builder);
     }
 
     @Override
-    public List<GameplayLootPoolBuilder> getBuilders() {
+    public List<ComplexLootPoolBuilder> getBuilders() {
         return builderList;
     }
 

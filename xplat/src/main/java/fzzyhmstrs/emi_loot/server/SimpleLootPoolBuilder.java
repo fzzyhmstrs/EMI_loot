@@ -11,11 +11,9 @@ import net.minecraft.item.Items;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChestLootPoolBuilder extends AbstractLootPoolBuilder {
+public class SimpleLootPoolBuilder extends AbstractLootPoolBuilder {
 
-    public ChestLootPoolBuilder(float rollWeight) {
-        super(rollWeight);
-    }
+    public SimpleLootPoolBuilder(float rollWeight) {super(rollWeight);}
 
     final Object2IntMap<ItemStack> map = new Object2IntOpenHashMap<>();
     Integer totalWeight = 0;

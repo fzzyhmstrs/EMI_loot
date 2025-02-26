@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArchaeologyLootTableSender implements LootSender<ArchaeologyLootPoolBuilder> {
+public class ArchaeologyLootTableSender implements LootSender<SimpleLootPoolBuilder> {
 
 	private final String idToSend;
-	final List<ArchaeologyLootPoolBuilder> builderList = new LinkedList<>();
+	final List<SimpleLootPoolBuilder> builderList = new LinkedList<>();
 	HashMap<ItemStack, Float> floatMap = new HashMap<>();
 
 	public ArchaeologyLootTableSender(Identifier id) {
@@ -41,12 +41,12 @@ public class ArchaeologyLootTableSender implements LootSender<ArchaeologyLootPoo
 	}
 
 	@Override
-	public void addBuilder(ArchaeologyLootPoolBuilder builder) {
+	public void addBuilder(SimpleLootPoolBuilder builder) {
 		builderList.add(builder);
 	}
 
 	@Override
-	public List<ArchaeologyLootPoolBuilder> getBuilders() {
+	public List<SimpleLootPoolBuilder> getBuilders() {
 		return builderList;
 	}
 
