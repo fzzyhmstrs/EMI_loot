@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class EmptyLootTableSender implements LootSender<ChestLootPoolBuilder> {
+public class EmptyLootTableSender implements LootSender<SimpleLootPoolBuilder> {
 
     @Override
     public String getId() {
@@ -18,12 +18,12 @@ public class EmptyLootTableSender implements LootSender<ChestLootPoolBuilder> {
     }
 
     @Override
-    public void addBuilder(ChestLootPoolBuilder builder) {
+    public void addBuilder(SimpleLootPoolBuilder builder) {
 
     }
 
     @Override
-    public List<ChestLootPoolBuilder> getBuilders() {
+    public List<SimpleLootPoolBuilder> getBuilders() {
         return new LinkedList<>();
     }
 

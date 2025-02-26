@@ -13,14 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
+public class ChestLootTableSender implements LootSender<SimpleLootPoolBuilder> {
 
     public ChestLootTableSender(Identifier id) {
         this.idToSend = LootSender.getIdToSend(id);
     }
 
     private final String idToSend;
-    final List<ChestLootPoolBuilder> builderList = new LinkedList<>();
+    final List<SimpleLootPoolBuilder> builderList = new LinkedList<>();
     HashMap<ItemStack, Float> floatMap = new HashMap<>();
 
     @Override
@@ -58,12 +58,12 @@ public class ChestLootTableSender implements LootSender<ChestLootPoolBuilder> {
     }
 
     @Override
-    public void addBuilder(ChestLootPoolBuilder builder) {
+    public void addBuilder(SimpleLootPoolBuilder builder) {
         builderList.add(builder);
     }
 
     @Override
-    public List<ChestLootPoolBuilder> getBuilders() {
+    public List<SimpleLootPoolBuilder> getBuilders() {
         return builderList;
     }
 }
