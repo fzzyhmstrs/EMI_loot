@@ -15,14 +15,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
+public class BlockLootTableSender implements LootSender<ComplexLootPoolBuilder> {
 
     public BlockLootTableSender(Identifier id) {
         this.idToSend = LootSender.getIdToSend(id);
     }
 
     private final String idToSend;
-    final List<BlockLootPoolBuilder> builderList = new LinkedList<>();
+    final List<ComplexLootPoolBuilder> builderList = new LinkedList<>();
     public static Identifier BLOCK_SENDER = new Identifier("e_l", "b_s");
     boolean isEmpty = true;
 
@@ -46,7 +46,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     public void send(ServerPlayerEntity player) {
         if (!ConfigApi.INSTANCE.network().canSend(BLOCK_SENDER, player)) return;
         if (isEmpty) {
-            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("avoiding empty block: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("avoiding empty block: {}", idToSend);
             return;
         }
         PacketByteBuf buf = ConfigApi.INSTANCE.network().buf();
@@ -54,7 +54,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
         buf.writeString(idToSend);
         //pre-build the builders to do empty checks
         if (builderList.size() == 1 && builderList.get(0).isSimple) {
-            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("sending simple block: " + idToSend);
+            if (EMILoot.config.isDebug(EMILoot.Type.BLOCK)) EMILoot.LOGGER.info("sending simple block: {}", idToSend);
             buf.writeShort(-1);
             buf.writeRegistryValue(Registries.ITEM, builderList.get(0).simpleStack.getItem());
             ConfigApi.INSTANCE.network().send(new SimpleCustomPayload(buf, BLOCK_SENDER), player);
@@ -80,7 +80,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
             //write the textkey of the functions
             builder.functions.forEach((lootFunctionResult)-> lootFunctionResult.text().toBuf(buf));
             //write the size of the builtMap of individual chest pools
-            Map<List<TextKey>, ChestLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
+            Map<List<TextKey>, SimpleLootPoolBuilder> lootPoolBuilderMap = builder.builtMap;
             buf.writeShort(lootPoolBuilderMap.size());
             lootPoolBuilderMap.forEach((key, chestBuilder)-> {
 
@@ -89,7 +89,7 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
                 key.forEach((textKey)->textKey.toBuf(buf));
 
                 //for each functional condition, write the size of the actual itemstacks
-                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new ChestLootPoolBuilder(1f)).builtMap;
+                Map<ItemStack, Float> keyPoolMap = lootPoolBuilderMap.getOrDefault(key, new SimpleLootPoolBuilder(1f)).builtMap;
                 buf.writeShort(keyPoolMap.size());
 
                 //for each itemstack, write the stack and weight
@@ -104,12 +104,12 @@ public class BlockLootTableSender implements LootSender<BlockLootPoolBuilder> {
     }
 
     @Override
-    public void addBuilder(BlockLootPoolBuilder builder) {
+    public void addBuilder(ComplexLootPoolBuilder builder) {
         builderList.add(builder);
     }
 
     @Override
-    public List<BlockLootPoolBuilder> getBuilders() {
+    public List<ComplexLootPoolBuilder> getBuilders() {
         return builderList;
     }
 }
