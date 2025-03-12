@@ -24,6 +24,7 @@ public class TableBonusConditionParser implements ConditionParser {
         } else {
             nTrim = name;
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", nTrim)));
+        // TODO: Shouldn't use LText.literal here
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", LText.literal(nTrim))));
     }
 }

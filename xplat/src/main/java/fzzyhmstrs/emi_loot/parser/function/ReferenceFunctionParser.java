@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.parser.function;
 import fzzyhmstrs.emi_loot.mixins.ReferenceLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.LootFunction;
@@ -25,6 +26,6 @@ public class ReferenceFunctionParser implements FunctionParser {
                 return LootParserRegistry.parseFunction(referenceFunction.get().get().value(), stack, referenceFunction.get().get().value().getType(), parentIsAlternative, conditionTexts);
             }
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.reference", id.toString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.reference", LText.literal(id.toString())), ItemStack.EMPTY, conditionTexts);
     }
 }

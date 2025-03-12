@@ -29,11 +29,11 @@ public class EntityEffectPredicateParser {
                 Optional<Integer> min = amplifier.min();
                 Optional<Integer> max = amplifier.max();
                 if (Objects.equals(min, max) && min.isPresent()) {
-                    list.add(LText.translatable("emi_loot.entity_predicate.effect.amplifier", name.getString(), min.get() + 1));
+                    list.add(LText.translatable("emi_loot.entity_predicate.effect.amplifier", name, min.get() + 1));
                 } else if (min.isPresent() && max.isPresent()) {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.amplifier_2", name.getString(), min.get() + 1, max.get() + 1));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.amplifier_2", name, min.get() + 1, max.get() + 1));
                 } else {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.amplifier_3", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.amplifier_3", name));
                 }
             }
 
@@ -42,32 +42,32 @@ public class EntityEffectPredicateParser {
                 Optional<Integer> min = duration.min();
                 Optional<Integer> max = duration.max();
                 if (Objects.equals(min, max) && min.isPresent()) {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration", name.getString(), min.get() + 1));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration", name, min.get() + 1));
                 } else if (min.isPresent() && max.isPresent()) {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration_2", name.getString(), min.get() + 1, max.get() + 1));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration_2", name, min.get() + 1, max.get() + 1));
                 } else {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration_3", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.duration_3", name));
                 }
             }
 
             Optional<Boolean> ambient = data.ambient();
             if (ambient.isPresent()) {
                 if (ambient.get()) {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.ambient_true", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.ambient_true", name));
                 } else {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.ambient_false", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.ambient_false", name));
                 }
             }
 
             Optional<Boolean> visible = data.visible();
             if (visible.isPresent()) {
                 if (visible.get()) {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.visible_true", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.visible_true", name));
                 } else {
-                    list.add( LText.translatable("emi_loot.entity_predicate.effect.visible_false", name.getString()));
+                    list.add( LText.translatable("emi_loot.entity_predicate.effect.visible_false", name));
                 }
             }
-            list.add(LText.translatable("emi_loot.entity_predicate.effect.fallback", name.getString()));
+            list.add(LText.translatable("emi_loot.entity_predicate.effect.fallback", name));
 
         }
         if (!list.isEmpty()) {

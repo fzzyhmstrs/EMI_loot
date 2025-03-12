@@ -21,6 +21,6 @@ public class MatchToolConditionParser implements ConditionParser {
 			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", "unknown")));
 		}
         Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText)));
     }
 }

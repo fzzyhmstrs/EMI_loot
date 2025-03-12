@@ -17,7 +17,7 @@ import java.util.Optional;
 public class BlockPredicateParser {
 
     public static Text parseBlockPredicate(BlockPredicate predicate) {
-        return LText.translatable("emi_loot.block_predicate.base", parseBlockPredicateInternal(predicate).getString());
+        return LText.translatable("emi_loot.block_predicate.base", parseBlockPredicateInternal(predicate));
     }
 
     private static Text parseBlockPredicateInternal(BlockPredicate predicate) {

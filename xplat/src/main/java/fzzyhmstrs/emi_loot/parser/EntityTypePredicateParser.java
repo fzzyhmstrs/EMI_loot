@@ -18,7 +18,7 @@ public class EntityTypePredicateParser {
         if (tag.isPresent()) {
             return LText.translatable("emi_loot.entity_predicate.type_tag", tag.get().id());
         } else if (registryEntryList.size() == 1) {
-            return LText.translatable("emi_loot.entity_predicate.type_single", registryEntryList.get(0).value().getName().getString());
+            return LText.translatable("emi_loot.entity_predicate.type_single", registryEntryList.get(0).value().getName());
         }
 
         if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Empty or unparsable entity type predicate in table: "  + LootTableParser.currentTable);

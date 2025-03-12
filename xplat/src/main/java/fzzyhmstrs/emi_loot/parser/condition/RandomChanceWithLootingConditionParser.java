@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.RandomChanceWithEnchantedBonusLootCondition;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class RandomChanceWithLootingConditionParser implements ConditionParser {
         float chance = ((RandomChanceWithEnchantedBonusLootCondition)condition).unenchantedChance();
         EnchantmentLevelBasedValue multiplier = ((RandomChanceWithEnchantedBonusLootCondition)condition).enchantedChance();
         RegistryEntry<Enchantment> enchant = ((RandomChanceWithEnchantedBonusLootCondition)condition).enchantment();
-        List<String> args = new ArrayList<>(Arrays.stream(new String[]{Float.toString((chance)), EnchantmentLevelBasedValueParser.parseValue(multiplier, "%", 100f).getString(), LText.enchant(enchant).getString()}).toList());
+        List<Text> args = new ArrayList<>(Arrays.stream(new Text[]{LText.literal(Float.toString((chance))), EnchantmentLevelBasedValueParser.parseValue(multiplier, "%", 100f), LText.enchant(enchant)}).toList());
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.chance_looting", args)));
     }
 }

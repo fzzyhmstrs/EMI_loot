@@ -17,6 +17,6 @@ public class CopyNameFunctionParser implements FunctionParser {
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         CopyNameLootFunction.Source source = ((CopyNameLootFunctionAccessor)function).getSource();
         Text sourceText = LText.translatable("emi_loot.function.copy_name." + source.name());
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.copy_name", sourceText.getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.copy_name", sourceText), ItemStack.EMPTY, conditionTexts);
     }
 }

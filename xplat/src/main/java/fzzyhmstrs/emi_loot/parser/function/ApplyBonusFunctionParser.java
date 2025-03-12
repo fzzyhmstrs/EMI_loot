@@ -23,6 +23,7 @@ public class ApplyBonusFunctionParser implements FunctionParser {
         } else {
             nTrim = name;
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", nTrim), ItemStack.EMPTY, conditionTexts);
+        // TODO: Shouldn't use LText.literal here
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", LText.literal(nTrim)), ItemStack.EMPTY, conditionTexts);
     }
 }
