@@ -13,9 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
-
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -32,13 +29,13 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build Fabric
         run: ./gradlew :fabric:build
 
-      - name: Build NeoForge
+      - name: Build Forge
         run: ./gradlew :forge:build
 
       - name: Upload artifacts
@@ -48,4 +45,3 @@ jobs:
           path: |
             fabric/build/libs/
             forge/build/libs/
- 
