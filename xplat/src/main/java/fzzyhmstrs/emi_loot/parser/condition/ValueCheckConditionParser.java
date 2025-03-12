@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.operator.BoundedIntUnaryOperator;
 import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.text.MutableText;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,9 +18,9 @@ public class ValueCheckConditionParser implements ConditionParser {
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootNumberProvider value = ((ValueCheckLootConditionAccessor)condition).getValue();
-        String processedValue = NumberProcessors.processLootNumberProvider(value).getString();
+        MutableText processedValue = NumberProcessors.processLootNumberProvider(value);
         BoundedIntUnaryOperator range = ((ValueCheckLootConditionAccessor)condition).getRange();
-        String processedRange = NumberProcessors.processBoundedIntUnaryOperator(range).getString();
+        MutableText processedRange = NumberProcessors.processBoundedIntUnaryOperator(range);
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.value_check", processedValue, processedRange)));
     }
 }

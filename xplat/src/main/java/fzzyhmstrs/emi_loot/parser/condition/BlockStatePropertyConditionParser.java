@@ -21,11 +21,11 @@ public class BlockStatePropertyConditionParser implements ConditionParser {
         MutableText bsText;
         Block block = ((BlockStatePropertyLootConditionAccessor)condition).getBlock();
         if (block != null) {
-            bsText = LText.translatable("emi_loot.condition.blockstate.block", block.getName().getString());
+            bsText = LText.translatable("emi_loot.condition.blockstate.block", block.getName());
         } else {
             StatePredicate predicate = ((BlockStatePropertyLootConditionAccessor)condition).getProperties();
             bsText = (MutableText) StatePredicateParser.parseStatePredicate(predicate);
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.blockstate", bsText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.blockstate", bsText)));
     }
 }

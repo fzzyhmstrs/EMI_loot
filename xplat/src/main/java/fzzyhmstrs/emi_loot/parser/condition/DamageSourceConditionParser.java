@@ -18,6 +18,6 @@ public class DamageSourceConditionParser implements ConditionParser {
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         DamageSourcePredicate damageSourcePredicate = ((DamageSourcePropertiesLootConditionAccessor)condition).getPredicate();
         Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", damageText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", damageText)));
     }
 }

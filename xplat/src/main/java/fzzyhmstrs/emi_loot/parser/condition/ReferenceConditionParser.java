@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.parser.condition;
 
 import fzzyhmstrs.emi_loot.mixins.ReferenceLootConditionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootDataKey;
@@ -24,6 +25,6 @@ public class ReferenceConditionParser implements ConditionParser {
                 return LootTableParser.parseLootCondition(referenceCondition, stack, parentIsAlternative);
             }
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.reference", id.toString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.reference", LText.literal(id.toString()))));
     }
 }
