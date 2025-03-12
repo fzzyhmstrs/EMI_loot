@@ -25,6 +25,6 @@ public class SetPotionFunctionParser implements FunctionParser {
             stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(potion));
         }
         Text potionName = LText.translatable(Potion.finishTranslationKey(Optional.of(((SetPotionLootFunctionAccessor)function).getPotion()) ,Items.POTION.getTranslationKey() + ".effect."));
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.potion", potionName.getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.potion", potionName), ItemStack.EMPTY, conditionTexts);
     }
 }

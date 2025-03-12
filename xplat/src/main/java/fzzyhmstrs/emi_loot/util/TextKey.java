@@ -32,8 +32,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record TextKey(int index, List<String> args) {
+public record TextKey(int index, List<Text> args) {
 
+    static final Text missing = LText.literal("Missing");
     static final Map<String, Integer> keyMap = new HashMap<>();
     static final Map<Integer, String> keyReverseMap = new HashMap<>();
     static final Map<Integer, Function<TextKey, Text>> keyTextBuilderMap = new HashMap<>();
@@ -224,29 +225,29 @@ public record TextKey(int index, List<String> args) {
 
     private static Text getOneArgText(int index, TextKey key) {
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        String arg;
+        Text arg;
         try {
             arg = key.args.get(0);
         } catch(Exception e) {
             EMILoot.LOGGER.error("Couldn't get one-arg text");
 			//noinspection CallToPrintStackTrace
 			e.printStackTrace();
-            arg = "Missing";
+            arg = missing.copy();
         }
         return LText.translatable(translationKey, arg);
     }
 
     private static Text getTwoArgText(int index, TextKey key) {
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        String arg1;
-        String arg2;
+        Text arg1;
+        Text arg2;
         try {
             arg1 = key.args.get(0);
         } catch(Exception e) {
             EMILoot.LOGGER.error("Couldn't get first arg of two-arg text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg1 = "Missing";
+            arg1 = missing.copy();
         }
         try {
             arg2 = key.args.get(1);
@@ -254,13 +255,13 @@ public record TextKey(int index, List<String> args) {
             EMILoot.LOGGER.error("Couldn't get second arg of two-arg text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg2 = "Missing";
+            arg2 = missing.copy();
         }
         return LText.translatable(translationKey, arg1, arg2);
     }
 
     private static Text getAnyOfText(TextKey key) {
-        List<String> args = key.args;
+        List<Text> args = key.args;
         int size = args.size();
         if (size == 1) {
             return LText.translatable("emi_loot.condition.any_of", args.get(0));
@@ -269,7 +270,7 @@ public record TextKey(int index, List<String> args) {
         } else {
             MutableText finalText = LText.empty();
             for (int i = 0; i < size; i++) {
-                String arg = args.get(i);
+                Text arg = args.get(i);
                 if (i == (size - 2)) {
                     finalText.append(LText.translatable("emi_loot.condition.any_of_3a", arg));
                 } else if (i == (size - 1)) {
@@ -283,7 +284,7 @@ public record TextKey(int index, List<String> args) {
     }
 
     private static Text getAllOfText(TextKey key) {
-        List<String> args = key.args;
+        List<Text> args = key.args;
         int size = args.size();
         if (size == 1) {
             return LText.translatable("emi_loot.condition.all_of", args.get(0));
@@ -292,7 +293,7 @@ public record TextKey(int index, List<String> args) {
         } else {
             MutableText finalText = LText.empty();
             for (int i = 0; i < size; i++) {
-                String arg = args.get(i);
+                Text arg = args.get(i);
                 if (i == (size - 2)) {
                     finalText.append(LText.translatable("emi_loot.condition.all_of_3a", arg));
                 } else if (i == (size - 1)) {
@@ -307,14 +308,14 @@ public record TextKey(int index, List<String> args) {
 
     private static Text getInvertedText(int index, TextKey key) {
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        String arg;
+        Text arg;
         try {
             arg = key.args.get(0);
         } catch(Exception e) {
             EMILoot.LOGGER.error("Couldn't get inverted text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg = "Missing";
+            arg = missing.copy();
         }
         return LText.translatable(translationKey, arg).formatted(Formatting.RED);
     }
@@ -343,7 +344,7 @@ public record TextKey(int index, List<String> args) {
         return new TextKey(0, new LinkedList<>());
     }
 
-    public static TextKey of(String key, String ... args) {
+    public static TextKey of(String key, Text ... args) {
         if (keyMap.containsKey(key)) {
             return new TextKey(keyMap.get(key), Arrays.stream(args).toList());
         } else {
@@ -351,7 +352,7 @@ public record TextKey(int index, List<String> args) {
         }
     }
 
-    public static TextKey of(String key, List<String> args) {
+    public static TextKey of(String key, List<Text> args) {
         if (keyMap.containsKey(key)) {
            return new TextKey(keyMap.get(key), args);
         } else {
@@ -364,7 +365,7 @@ public record TextKey(int index, List<String> args) {
         return TextKey.of(key, new LinkedList<>());
     }
 
-    public static TextKey of (String key, String arg) {
+    public static TextKey of (String key, Text arg) {
         return TextKey.of(key, Collections.singletonList(arg));
     }
 
@@ -401,10 +402,10 @@ public record TextKey(int index, List<String> args) {
     public static TextKey fromBuf(PacketByteBuf buf) {
         int key = buf.readVarInt();
         int size = buf.readByte();
-        List<String> args = new LinkedList<>();
+        List<Text> args = new LinkedList<>();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
-                args.add(buf.readString());
+                args.add(buf.readText());
             }
         }
         return new TextKey(key, args);
@@ -418,8 +419,8 @@ public record TextKey(int index, List<String> args) {
             int argSize = Math.min(127, args.size());
             buf.writeByte(args.size());
             for (int i = 0; i< argSize; i++) {
-                String string = args.get(i);
-                buf.writeString(string);
+                Text text = args.get(i);
+                buf.writeText(text);
             }
         }
     }

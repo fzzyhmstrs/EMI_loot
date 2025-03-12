@@ -16,7 +16,7 @@ import java.util.Optional;
 public class FluidPredicateParser {
 
     public static Text parseFluidPredicate(FluidPredicate predicate) {
-        return LText.translatable("emi_loot.fluid_predicate.base", parseFluidPredicateInternal(predicate).getString());
+        return LText.translatable("emi_loot.fluid_predicate.base", parseFluidPredicateInternal(predicate));
     }
 
     private static Text parseFluidPredicateInternal(FluidPredicate predicate) {

@@ -11,7 +11,7 @@ public class EntityFlagsPredicateParser {
 
 
     public static Text parseEntityFlagsPredicate(EntityFlagsPredicate predicate) {
-        return LText.translatable("emi_loot.entity_predicate.flag", parseEntityFlagsPredicateInternal(predicate).getString());
+        return LText.translatable("emi_loot.entity_predicate.flag", parseEntityFlagsPredicateInternal(predicate));
     }
 
     private static Text parseEntityFlagsPredicateInternal(EntityFlagsPredicate predicate) {

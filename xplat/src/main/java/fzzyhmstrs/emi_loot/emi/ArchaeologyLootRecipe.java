@@ -188,7 +188,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString());
 				} else {
 					Text unknown = LText.translatable("emi_loot.archaeology.unknown");
-					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName + " " + unknown.getString());
+					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", LText.literal(archName.toString()).append(" ").append(unknown));
 				}
 				if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
 					EMILoot.LOGGER.warn("Untranslated archaeology loot table \"{}\" (key: \"{}\")", loot.id, key);

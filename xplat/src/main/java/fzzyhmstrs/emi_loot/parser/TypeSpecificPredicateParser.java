@@ -164,7 +164,7 @@ public class TypeSpecificPredicateParser {
                     "emi_loot.entity_predicate.type_specific.lightning",
                     LText.translatable(
                         "emi_loot.entity_predicate.type_specific.lightning.struck",
-                        EntityPredicateParser.parseEntityPredicate(entityStruck.get()).getString()
+                        EntityPredicateParser.parseEntityPredicate(entityStruck.get())
                     )
             );
         }

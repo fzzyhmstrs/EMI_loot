@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.parser.function;
 
 import fzzyhmstrs.emi_loot.mixins.ApplyBonusLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,7 @@ public class ApplyBonusFunctionParser implements FunctionParser {
         } else {
             nTrim = name;
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", nTrim), ItemStack.EMPTY, conditionTexts);
+        // TODO: Shouldn't use LText.literal here
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", LText.literal(nTrim)), ItemStack.EMPTY, conditionTexts);
     }
 }

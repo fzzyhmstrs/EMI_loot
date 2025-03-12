@@ -23,8 +23,8 @@ public class SetStewFunctionParser implements FunctionParser {
             list.add(effect.effect().value().getName().copy());
         }
         if (list.isEmpty()) {
-            return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_stew", LText.translatable("emi_loot.function.set_stew_unknown").getString()), ItemStack.EMPTY, conditionTexts);
+            return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_stew", LText.translatable("emi_loot.function.set_stew_unknown")), ItemStack.EMPTY, conditionTexts);
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_stew", ListProcessors.buildOrList(list).getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_stew", ListProcessors.buildOrList(list)), ItemStack.EMPTY, conditionTexts);
     }
 }

@@ -200,7 +200,7 @@ public class ChestLootRecipe implements EmiRecipe {
                     rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString());
                 } else {
                     Text unknown = LText.translatable("emi_loot.chest.unknown");
-                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName + " " + unknown.getString());
+                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", LText.literal(chestName.toString()).append(" ").append(unknown));
                 }
                 if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
                     EMILoot.LOGGER.warn("Untranslated chest loot table \"{}\" (key: \"{}\")", loot.id, key);
