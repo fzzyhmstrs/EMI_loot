@@ -19,6 +19,6 @@ public class LocationCheckConditionParser implements ConditionParser {
         LocationPredicate predicate = ((LocationCheckLootCondition)condition).predicate().orElse(null); // TODO?
 
         Text locText = LocationPredicateParser.parseLocationPredicate(predicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.location", locText)));
     }
 }

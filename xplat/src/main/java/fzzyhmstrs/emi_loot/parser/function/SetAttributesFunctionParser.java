@@ -34,6 +34,6 @@ public class SetAttributesFunctionParser implements FunctionParser {
                 list.add(LText.translatable("emi_loot.function.set_attributes.multiply", NumberProcessors.getRollAvg(amount) + 1, name));
             }
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_attributes", ListProcessors.buildAndList(list).getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_attributes", ListProcessors.buildAndList(list)), ItemStack.EMPTY, conditionTexts);
     }
 }

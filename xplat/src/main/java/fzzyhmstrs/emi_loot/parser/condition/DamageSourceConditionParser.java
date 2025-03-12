@@ -21,6 +21,6 @@ public class DamageSourceConditionParser implements ConditionParser {
 			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", "Unknown")));
 		}
 		Text damageText = DamageSourcePredicateParser.parseDamageSourcePredicate(damageSourcePredicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", damageText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.damage_source", damageText)));
     }
 }

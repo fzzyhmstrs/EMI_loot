@@ -3,6 +3,7 @@ package fzzyhmstrs.emi_loot.parser.function;
 import fzzyhmstrs.emi_loot.mixins.SetDamageLootFunctionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.LootFunction;
@@ -27,6 +28,6 @@ public class SetDamageFunctionParser implements FunctionParser {
             damage = MathHelper.clamp(rollAvg * md, 0, md);
         }
         stack.setDamage(MathHelper.floor(damage));
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.damage", Integer.toString((int)(rollAvg*100))), stack, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.damage", LText.literal(Integer.toString((int)(rollAvg*100)))), stack, conditionTexts);
     }
 }

@@ -215,7 +215,7 @@ public class GameplayLootRecipe implements EmiRecipe {
                     rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString());
                 } else {
                     Text unknown = LText.translatable("emi_loot.gameplay.unknown");
-                    rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName + " " + unknown.getString());
+                    rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", LText.literal(gameplayName.toString()).append(" ").append(unknown));
                 }
                 if (EMILoot.config.isLogI18n(EMILoot.Type.GAMEPLAY)) {
                     EMILoot.LOGGER.warn("Untranslated gameplay loot table \"{}\" (key: \"{}\")", loot.id, key);
