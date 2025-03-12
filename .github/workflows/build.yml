@@ -32,8 +32,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build Fabric
         run: ./gradlew :fabric:build
@@ -48,4 +48,3 @@ jobs:
           path: |
             fabric/build/libs/
             neoforge/build/libs/
- 
