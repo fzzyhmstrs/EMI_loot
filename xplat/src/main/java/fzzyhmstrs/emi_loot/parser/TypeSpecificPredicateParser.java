@@ -236,9 +236,9 @@ public class TypeSpecificPredicateParser {
                 list.add(
                         entry.getBooleanValue()
                         ?
-                        LText.translatable("emi_loot.entity_predicate.type_specific.player.recipe_true", entry.getKey())
+                        LText.translatable("emi_loot.entity_predicate.type_specific.player.recipe_true", entry.getKey().toString())
                         :
-                        LText.translatable("emi_loot.entity_predicate.type_specific.player.recipe_false", entry.getKey())
+                        LText.translatable("emi_loot.entity_predicate.type_specific.player.recipe_false", entry.getKey().toString())
                 );
             }
             if (!list.isEmpty()) {

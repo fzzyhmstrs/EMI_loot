@@ -26,7 +26,7 @@ public class ItemPredicateParser {
         List<MutableText> subTexts = new ArrayList<>();
         Optional<RegistryEntryList<Item>> items = predicate.items();
         if (items.isPresent() && items.get().getTagKey().isPresent()) {
-            subTexts.add(LText.translatable("emi_loot.item_predicate.tag", items.get().getTagKey().get().id()));
+            subTexts.add(LText.translatable("emi_loot.item_predicate.tag", items.get().getTagKey().get().id().toString()));
         }
 
         if (items.isPresent() && items.get().size() > 0) {
