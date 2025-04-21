@@ -444,7 +444,14 @@ public record TextKey(int index, List<Text> args) {
         List<Text> args = new LinkedList<>();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
-                args.add(TextCodecs.PACKET_CODEC.decode(buf));
+                try {
+                    Text arg = TextCodecs.PACKET_CODEC.decode(buf);
+                    args.add(arg);
+                } catch (Throwable e) {
+                    args.add(LText.empty());
+                    String err = "Problem while decoding TextKey with index " + key;
+                    EMILoot.LOGGER.error(err, e);
+                }
             }
         }
         return new TextKey(key, args);
@@ -458,8 +465,14 @@ public record TextKey(int index, List<Text> args) {
             int argSize = Math.min(127, args.size());
             buf.writeByte(args.size());
             for (int i = 0; i< argSize; i++) {
-                Text text = args.get(i);
-                TextCodecs.PACKET_CODEC.encode(buf, text);
+                try {
+                    Text text = args.get(i);
+                    TextCodecs.PACKET_CODEC.encode(buf, text);
+                } catch (Throwable e) {
+                    TextCodecs.PACKET_CODEC.encode(buf, LText.empty());
+                    String err = "Problem while encoding TextKey with index " + this.index;
+                    EMILoot.LOGGER.error(err, e);
+                }
             }
         }
     }
