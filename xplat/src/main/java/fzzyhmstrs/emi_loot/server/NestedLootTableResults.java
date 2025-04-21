@@ -1,19 +1,9 @@
 package fzzyhmstrs.emi_loot.server;
 
-import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.util.SimpleFzzyPayload;
-import fzzyhmstrs.emi_loot.util.TextKey;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApi;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class NestedLootTableResults implements LootSender<ComplexLootPoolBuilder> {
 
