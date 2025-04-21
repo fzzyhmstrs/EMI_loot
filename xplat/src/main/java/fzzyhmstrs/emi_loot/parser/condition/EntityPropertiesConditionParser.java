@@ -21,7 +21,7 @@ public class EntityPropertiesConditionParser implements ConditionParser {
         LootContext.EntityTarget entity = ((EntityPropertiesLootCondition)condition).entity();
         EntityPredicate predicate = ((EntityPropertiesLootCondition)condition).predicate().orElse(null); // TODO?
 		if (predicate == null) {
-			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", "unknown")));
+			return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.entity_props", LText.literal("Unknown"))));
 		}
         MutableText propText;
         if (entity == LootContext.EntityTarget.THIS) {

@@ -9,6 +9,7 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.predicate.item.ItemSubPredicate;
 import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
@@ -33,7 +34,7 @@ public class ItemPredicateParser {
             subTexts.add(LText.translatable("emi_loot.item_predicate.items", ListProcessors.buildOrList(list)));
         }
 
-        NumberRange.IntRange count = ((ItemPredicateAccessor)predicate).getCount();
+        NumberRange.IntRange count = predicate.count();
         if (count != NumberRange.IntRange.ANY) {
             int finalMax = count.max().orElse(0);
             int finalMin = count.min().orElse(0);
