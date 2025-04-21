@@ -125,7 +125,7 @@ public class EntityEmiStack extends EmiStack {
 
     @Override
     public Text getName() {
-        return entity != null ? entity.getName() : Text.literal("yet another missingno");
+        return entity != null ? entity.getName() : LText.literal("yet another missingno");
     }
 
     static void renderEntity(MatrixStack matrices, int x, int y, EntityRenderContext ctx, LivingEntity entity) {

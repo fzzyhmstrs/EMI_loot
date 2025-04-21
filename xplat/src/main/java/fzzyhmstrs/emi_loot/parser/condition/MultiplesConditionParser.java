@@ -22,10 +22,9 @@ public class MultiplesConditionParser implements ConditionParser {
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LootCondition[] terms = ((AlternativeLootConditionAccessor)condition).getConditions();
-        List<String> args =Arrays.stream(terms).map((term)-> {
+        List<Text> args =Arrays.stream(terms).map((term)-> {
             List<LootTableParser.LootConditionResult> termResults = LootTableParser.parseLootCondition(term, stack);
-            Text termText = LootTableParser.compileConditionTexts(stack, termResults);
-            return termText.getString();
+            return LootTableParser.compileConditionTexts(stack, termResults);
         }).toList();
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of(key, args)));
 

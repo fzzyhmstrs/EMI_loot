@@ -19,7 +19,7 @@ public class InvertedConditionParser implements ConditionParser {
         List<LootTableParser.LootConditionResult> finalResults = new ArrayList<>();
         termResults.forEach((result)-> {
             Text resultText = result.getText().process(stack, null).text();
-            finalResults.add(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.invert", resultText.getString())));
+            finalResults.add(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.invert", resultText)));
         });
         return finalResults;
     }

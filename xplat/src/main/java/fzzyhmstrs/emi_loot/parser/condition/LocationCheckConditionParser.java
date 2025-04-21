@@ -18,6 +18,6 @@ public class LocationCheckConditionParser implements ConditionParser {
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         LocationPredicate predicate = ((LocationCheckLootConditionAccessor)condition).getPredicate();
         Text locText = LocationPredicateParser.parseLocationPredicate(predicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.location", locText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.location", locText)));
     }
 }

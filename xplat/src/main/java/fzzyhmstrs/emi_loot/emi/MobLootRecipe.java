@@ -291,7 +291,7 @@ public class MobLootRecipe implements EmiRecipe {
                 if (entity instanceof SheepEntity && !Objects.equals(loot.color, "")) {
                     DyeColor color = DyeColor.byName(loot.color, DyeColor.WHITE);
                     MutableText colorName = LText.translatable("color.minecraft." + color.getName());
-                    rawTitle = LText.translatable("emi_loot.color_name", colorName.getString(), entity.getName().getString());
+                    rawTitle = LText.translatable("emi_loot.color_name", colorName, entity.getName());
                     ((SheepEntity)entity).setColor(color);
 
                 } else {

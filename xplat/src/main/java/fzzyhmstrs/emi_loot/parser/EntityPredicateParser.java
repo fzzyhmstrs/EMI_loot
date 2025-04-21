@@ -17,7 +17,7 @@ import net.minecraft.text.Text;
 public class EntityPredicateParser {
 
     public static Text parseEntityPredicate(EntityPredicate predicate) {
-        return LText.translatable("emi_loot.entity_predicate.base", parseEntityPredicateInternal(predicate).getString());
+        return LText.translatable("emi_loot.entity_predicate.base", parseEntityPredicateInternal(predicate));
     }
 
     private static Text parseEntityPredicateInternal(EntityPredicate predicate) {

@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.parser.condition;
 
 import fzzyhmstrs.emi_loot.mixins.TableBonusLootConditionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
+import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ public class TableBonusConditionParser implements ConditionParser {
         } else {
             nTrim = name;
         }
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", nTrim)));
+        // TODO: Shouldn't use LText.literal here
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", LText.literal(nTrim))));
     }
 }

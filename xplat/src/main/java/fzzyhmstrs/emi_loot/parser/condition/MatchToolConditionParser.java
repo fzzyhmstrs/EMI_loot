@@ -18,6 +18,6 @@ public class MatchToolConditionParser implements ConditionParser {
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         ItemPredicate predicate = ((MatchToolLootConditionAccessor)condition).getPredicate();
         Text predicateText = ItemPredicateParser.parseItemPredicate(predicate);
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText.getString())));
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.match_tool", predicateText)));
     }
 }

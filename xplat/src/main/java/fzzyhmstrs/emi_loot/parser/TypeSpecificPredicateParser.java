@@ -55,10 +55,10 @@ public class TypeSpecificPredicateParser {
             if (id != null) {
                 if (Registries.CAT_VARIANT.containsId(id)) {
                     MutableText catVar = LText.translatable("emi_loot.entity_predicate.type_specific.cat." + id);
-                    return LText.translatable("emi_loot.entity_predicate.type_specific.cat", catVar.getString());
+                    return LText.translatable("emi_loot.entity_predicate.type_specific.cat", catVar);
                 } else if (Registries.FROG_VARIANT.containsId(id)) {
                     MutableText frogVar = LText.translatable("emi_loot.entity_predicate.type_specific.frog." + id);
-                    return LText.translatable("emi_loot.entity_predicate.type_specific.frog", frogVar.getString());
+                    return LText.translatable("emi_loot.entity_predicate.type_specific.frog", frogVar);
                 }
             }
         }
@@ -90,7 +90,7 @@ public class TypeSpecificPredicateParser {
                     "emi_loot.entity_predicate.type_specific.lightning",
                     LText.translatable(
                         "emi_loot.entity_predicate.type_specific.lightning.struck",
-                        EntityPredicateParser.parseEntityPredicate(entityStruck).getString()
+                        EntityPredicateParser.parseEntityPredicate(entityStruck)
                     )
             );
         }

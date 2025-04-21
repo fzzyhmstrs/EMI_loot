@@ -30,6 +30,6 @@ public class ExplorationMapFunctionParser implements FunctionParser {
             MapState.addDecorationsNbt(mapStack, BlockPos.ORIGIN, "+", decoration);
             typeKey = "emi_loot.map."+ destination.id().getPath();
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.map", LText.translatable(typeKey).getString()), mapStack, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.map", LText.translatable(typeKey)), mapStack, conditionTexts);
     }
 }
