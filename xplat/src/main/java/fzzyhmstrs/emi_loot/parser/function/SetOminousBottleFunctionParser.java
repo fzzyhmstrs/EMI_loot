@@ -17,6 +17,6 @@ public class SetOminousBottleFunctionParser implements FunctionParser {
 	public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
 		LootNumberProvider amplifier = ((SetOminousBottleAmplifierLootFunctionAccessor)function).getAmplifier();
 		Text a = NumberProcessors.processLootNumberProvider(amplifier);
-		return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.ominous_bottle", a.getString()), ItemStack.EMPTY, conditionTexts);
+		return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.ominous_bottle", a), ItemStack.EMPTY, conditionTexts);
 	}
 }

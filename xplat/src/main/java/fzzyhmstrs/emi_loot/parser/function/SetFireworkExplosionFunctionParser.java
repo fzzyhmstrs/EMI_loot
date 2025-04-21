@@ -58,6 +58,6 @@ public class SetFireworkExplosionFunctionParser implements FunctionParser {
         if (!stack.isEmpty())
             stack.apply(DataComponentTypes.FIREWORK_EXPLOSION, SetFireworkExplosionLootFunction.DEFAULT_EXPLOSION, ((SetFireworkExplosionLootFunctionAccessor) function)::callApply);
 
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.firework_explosion", ListProcessors.buildAndList(texts).getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.firework_explosion", ListProcessors.buildAndList(texts)), ItemStack.EMPTY, conditionTexts);
     }
 }

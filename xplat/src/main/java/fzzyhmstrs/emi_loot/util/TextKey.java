@@ -12,6 +12,7 @@ import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -443,7 +444,7 @@ public record TextKey(int index, List<Text> args) {
         List<Text> args = new LinkedList<>();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
-                args.add(buf.readText());
+                args.add(TextCodecs.PACKET_CODEC.decode(buf));
             }
         }
         return new TextKey(key, args);
@@ -458,7 +459,7 @@ public record TextKey(int index, List<Text> args) {
             buf.writeByte(args.size());
             for (int i = 0; i< argSize; i++) {
                 Text text = args.get(i);
-                buf.writeText(text);
+                TextCodecs.PACKET_CODEC.encode(buf, text);
             }
         }
     }

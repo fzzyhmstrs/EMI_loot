@@ -14,6 +14,6 @@ public class ModifyContentsFunctionParser implements FunctionParser {
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         LootFunction f = ((ModifyContentsLootFunctionAccessor)function).getModifier();
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.modify_contents", LootParserRegistry.parseFunction(f, stack, f.getType(), parentIsAlternative, List.of()).text().asText().getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.modify_contents", LootParserRegistry.parseFunction(f, stack, f.getType(), parentIsAlternative, List.of()).text().asText()), ItemStack.EMPTY, conditionTexts);
     }
 }

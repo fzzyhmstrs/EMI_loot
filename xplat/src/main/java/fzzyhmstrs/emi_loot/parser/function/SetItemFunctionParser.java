@@ -16,6 +16,6 @@ public class SetItemFunctionParser implements FunctionParser {
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         RegistryEntry<Item> item = ((SetItemLootFunctionAccessor)function).getItem();
         stack = stack.copyComponentsToNewStack(item.value(), stack.getCount());
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_item", item.value().getName().getString()), stack, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_item", item.value().getName()), stack, conditionTexts);
     }
 }

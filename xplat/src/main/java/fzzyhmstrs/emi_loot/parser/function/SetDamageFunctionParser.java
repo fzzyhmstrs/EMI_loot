@@ -30,6 +30,6 @@ public class SetDamageFunctionParser implements FunctionParser {
             }
             stack.setDamage(MathHelper.floor(damage));
         }
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.damage", Integer.toString((int)(rollAvg*100))), stack, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.damage", LText.literal(Integer.toString((int)(rollAvg*100)))), stack, conditionTexts);
     }
 }
