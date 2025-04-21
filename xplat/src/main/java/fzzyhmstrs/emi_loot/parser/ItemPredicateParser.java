@@ -23,7 +23,7 @@ public class ItemPredicateParser {
     public static Text parseItemPredicate(ItemPredicate predicate) {
         Optional<TagKey<Item>> tag = predicate.tag();
         if (tag.isPresent()) {
-            return LText.translatable("emi_loot.item_predicate.tag", tag.get().id());
+            return LText.translatable("emi_loot.item_predicate.tag", tag.get().id().toString());
         }
 
         Optional<RegistryEntryList<Item>> items = predicate.items();
