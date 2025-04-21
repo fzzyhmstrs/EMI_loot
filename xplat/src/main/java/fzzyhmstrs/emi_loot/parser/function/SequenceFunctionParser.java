@@ -15,6 +15,6 @@ public class SequenceFunctionParser implements FunctionParser {
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         List<LootFunction> list = ((AndLootFunctionAccessor)function).getTerms();
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.sequence", ListProcessors.buildAndList(list.stream().map(lf -> LootParserRegistry.parseFunction(lf, stack, lf.getType(), parentIsAlternative, List.of()).text().asText().copyContentOnly()).toList()).getString()), stack, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.sequence", ListProcessors.buildAndList(list.stream().map(lf -> LootParserRegistry.parseFunction(lf, stack, lf.getType(), parentIsAlternative, List.of()).text().asText().copyContentOnly()).toList())), stack, conditionTexts);
     }
 }

@@ -308,7 +308,7 @@ public class LootTableParser {
     }
 
     private static void parseBlockLootTableInternal(LootTable lootTable, BlockLootTableSender sender, boolean isDirect) {
-        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
+        for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
 			List<LootCondition> conditions = ((LootPoolAccessor) pool).getConditions();
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
             if (isDirect) {
@@ -424,10 +424,10 @@ public class LootTableParser {
     }
 
     private static void parseGenericComplexLootTableInternal(LootTable lootTable, LootSender<ComplexLootPoolBuilder> sender) {
-        for (LootPool pool : ((LootTablePools) lootTable).getPools()) {
-            LootCondition[] conditions = ((LootPoolAccessor) pool).getConditions();
+        for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
+            List<LootCondition> conditions = ((LootPoolAccessor) pool).getConditions();
             List<LootConditionResult> parsedConditions = parseLootConditions(conditions, ItemStack.EMPTY, false);
-            LootFunction[] functions = ((LootPoolAccessor) pool).getFunctions();
+            List<LootFunction> functions = ((LootPoolAccessor) pool).getFunctions();
             List<LootFunctionResult> parsedFunctions = new LinkedList<>();
             for (LootFunction function: functions) {
                 LootFunctionResult r = parseLootFunction(function);
@@ -437,7 +437,7 @@ public class LootTableParser {
             LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float rollAvg = NumberProcessors.getRollAvg(rollProvider);
             ComplexLootPoolBuilder builder = new ComplexLootPoolBuilder(rollAvg, parsedConditions, parsedFunctions);
-            LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            List<LootPoolEntry> entries = ((LootPoolAccessor) pool).getEntries();
             for (LootPoolEntry entry : entries) {
                 parseLootPoolEntry(builder, entry);
             }
