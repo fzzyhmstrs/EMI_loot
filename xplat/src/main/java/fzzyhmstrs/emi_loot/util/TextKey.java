@@ -269,16 +269,16 @@ public record TextKey(int index, List<Text> args) {
 
     private static Text getThreeArgText(int index, TextKey key) {
         String translationKey = keyReverseMap.getOrDefault(index, "emi_loot.missing_key");
-        String arg1;
-        String arg2;
-        String arg3;
+        Text arg1;
+        Text arg2;
+        Text arg3;
         try {
             arg1 = key.args.get(0);
         } catch(Exception e) {
-            EMILoot.LOGGER.error("Couldn't get first arg of two-arg text");
+            EMILoot.LOGGER.error("Couldn't get first arg of three-arg text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg1 = "Missing";
+            arg1 = LText.literal("Missing");
         }
         try {
             arg2 = key.args.get(1);
@@ -286,7 +286,7 @@ public record TextKey(int index, List<Text> args) {
             EMILoot.LOGGER.error("Couldn't get second arg of three-arg text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg2 = "Missing";
+            arg2 = LText.literal("Missing");
         }
         try {
             arg3 = key.args.get(2);
@@ -294,7 +294,7 @@ public record TextKey(int index, List<Text> args) {
             EMILoot.LOGGER.error("Couldn't get third arg of three-arg text");
             //noinspection CallToPrintStackTrace
             e.printStackTrace();
-            arg3 = "Missing";
+            arg3 = LText.literal("Missing");
         }
         return LText.translatable(translationKey, arg1, arg2, arg3);
     }

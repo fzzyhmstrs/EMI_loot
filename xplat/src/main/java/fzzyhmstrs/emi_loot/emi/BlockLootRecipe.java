@@ -190,7 +190,7 @@ public class BlockLootRecipe implements EmiRecipe {
                     addWidgetBuilders(rowBuilderList, builtPool, false);
                 }
             }
-            Identifier id = new Identifier(EMILoot.MOD_ID, "/" + EmiClientPlugin.BLOCK_CATEGORY.id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());;
+            Identifier id = Identifier.of(EMILoot.MOD_ID, "/" + EmiClientPlugin.BLOCK_CATEGORY.id.getPath() + "/" + loot.id.getNamespace() + "/" + loot.id.getPath());;
 
             InitializedSupplier<List<EmiStack>> outputStacks = new InitializedSupplier<>(() -> {
                 List<EmiStack> list = new ArrayList<>();
