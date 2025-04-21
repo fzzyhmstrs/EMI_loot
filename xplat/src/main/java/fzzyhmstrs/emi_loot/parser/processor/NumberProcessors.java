@@ -15,6 +15,9 @@ import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.text.MutableText;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -37,13 +40,22 @@ public class NumberProcessors {
             Optional<? extends Number> min = range.min();
             Optional<? extends Number> max = range.max();
             if (Objects.equals(min, max) && min.isPresent()) {
-                return LText.translatable(exact, min.get(), args);
+                List<Object> realArgs = (args.length > 0) ? new ArrayList<>(Arrays.stream(args).toList()) : new ArrayList<>();
+                realArgs.add(0, min.get());
+                return LText.translatable(exact, realArgs.toArray());
             } else if (min.isPresent() && max.isPresent()) {
-                return LText.translatable(between, min.get(), max.get(), args);
+                List<Object> realArgs = (args.length > 0) ? new ArrayList<>(Arrays.stream(args).toList()) : new ArrayList<>();
+                realArgs.add(0, max.get());
+                realArgs.add(0, min.get());
+                return LText.translatable(between, realArgs.toArray());
             } else if (min.isPresent()) {
-                return LText.translatable(atLeast, min.get(), args);
+                List<Object> realArgs = (args.length > 0) ? new ArrayList<>(Arrays.stream(args).toList()) : new ArrayList<>();
+                realArgs.add(0, min.get());
+                return LText.translatable(atLeast, realArgs.toArray());
             } else if (max.isPresent()) {
-                return LText.translatable(atMost, max.get(), args);
+                List<Object> realArgs = (args.length > 0) ? new ArrayList<>(Arrays.stream(args).toList()) : new ArrayList<>();
+                realArgs.add(0, max.get());
+                return LText.translatable(atMost, realArgs.toArray());
             } else {
                 if (fallback.isEmpty()) return LText.empty();
                 return LText.translatable(fallback);
@@ -87,7 +99,7 @@ public class NumberProcessors {
             MutableText nValText = processLootNumberProvider(n);
             MutableText pValText = processLootNumberProvider(p);
             float avg = nVal * pVal;
-            return LText.translatable("emi_loot.number_provider.binomial",nValText,pValText,avg);
+            return LText.translatable("emi_loot.number_provider.binomial", nValText, pValText, avg);
         } else if(type == LootNumberProviderTypes.UNIFORM) {
             LootNumberProvider min = ((UniformLootNumberProvider)provider).min();
             LootNumberProvider max = ((UniformLootNumberProvider)provider).max();
@@ -96,12 +108,12 @@ public class NumberProcessors {
             MutableText minValText = processLootNumberProvider(min);
             MutableText maxValText = processLootNumberProvider(max);
             float avg = (minVal + maxVal) / 2f;
-            return LText.translatable("emi_loot.number_provider.uniform",minValText,maxValText,avg);
+            return LText.translatable("emi_loot.number_provider.uniform", minValText, maxValText, avg);
         } else if (type == LootNumberProviderTypes.SCORE) {
             //LootScoreProvider lootScoreProvider = ((ScoreLootNumberProvider)provider).target();
             String lootScore = ((ScoreLootNumberProvider)provider).score();
             float lootScale = ((ScoreLootNumberProvider)provider).scale();
-            return LText.translatable("emi_loot.number_provider.score",lootScore,lootScale);
+            return LText.translatable("emi_loot.number_provider.score", lootScore, lootScale);
         } else {
             if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Non-specific or undefined number provider in table: "  + LootTableParser.currentTable);
             return LText.translatable("emi_loot.number_provider.unknown");

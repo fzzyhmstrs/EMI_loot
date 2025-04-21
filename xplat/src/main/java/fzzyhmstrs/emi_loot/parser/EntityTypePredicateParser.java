@@ -16,7 +16,7 @@ public class EntityTypePredicateParser {
         RegistryEntryList<EntityType<?>> registryEntryList = predicate.types();
         Optional<TagKey<EntityType<?>>> tag = registryEntryList.getTagKey();
         if (tag.isPresent()) {
-            return LText.translatable("emi_loot.entity_predicate.type_tag", tag.get().id());
+            return LText.translatable("emi_loot.entity_predicate.type_tag", tag.get().id().toString());
         } else if (registryEntryList.size() == 1) {
             return LText.translatable("emi_loot.entity_predicate.type_single", registryEntryList.get(0).value().getName());
         }

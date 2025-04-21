@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.parser;
 
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.parser.processor.ListProcessors;
+import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.predicate.BlockPredicate;
@@ -28,17 +29,32 @@ public class LocationPredicateParser {
         if (position.isPresent()) {
             NumberRange.DoubleRange x = position.get().x();
             if (!x.equals(NumberRange.DoubleRange.ANY)) {
-                return LText.translatable("emi_loot.location_predicate.x", x.min().orElse(null), x.max().orElse(null));
+                return NumberProcessors.processNumberRange(x,
+                        "emi_loot.location_predicate.x.exact",
+                        "emi_loot.location_predicate.x",
+                        "emi_loot.location_predicate.x.at_least",
+                        "emi_loot.location_predicate.x.at_most",
+                        "Unknown X coordinate");
             }
 
             NumberRange.DoubleRange y = position.get().y();
             if (!y.equals(NumberRange.DoubleRange.ANY)) {
-                return LText.translatable("emi_loot.location_predicate.y", y.min().orElse(null), y.max().orElse(null));
+                return NumberProcessors.processNumberRange(y,
+                        "emi_loot.location_predicate.y.exact",
+                        "emi_loot.location_predicate.y",
+                        "emi_loot.location_predicate.y.at_least",
+                        "emi_loot.location_predicate.y.at_most",
+                        "Unknown Y coordinate");
             }
 
             NumberRange.DoubleRange z = position.get().z();
             if (!z.equals(NumberRange.DoubleRange.ANY)) {
-                return LText.translatable("emi_loot.location_predicate.z", z.min().orElse(null), z.max().orElse(null));
+                return NumberProcessors.processNumberRange(z,
+                        "emi_loot.location_predicate.z.exact",
+                        "emi_loot.location_predicate.z",
+                        "emi_loot.location_predicate.z.at_least",
+                        "emi_loot.location_predicate.z.at_most",
+                        "Unknown Z coordinate");
             }
         }
 
