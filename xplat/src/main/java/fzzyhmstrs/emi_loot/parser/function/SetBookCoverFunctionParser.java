@@ -30,6 +30,6 @@ public class SetBookCoverFunctionParser implements FunctionParser {
 		if (!stack.isEmpty()) {
 			stack.apply(DataComponentTypes.WRITTEN_BOOK_CONTENT, WrittenBookContentComponent.DEFAULT, ((SetBookCoverLootFunctionAccessor)function)::callApply);
 		}
-		return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_book_cover", ListProcessors.buildAndList(texts).getString()), ItemStack.EMPTY, conditionTexts);
+		return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.set_book_cover", ListProcessors.buildAndList(texts)), ItemStack.EMPTY, conditionTexts);
 	}
 }

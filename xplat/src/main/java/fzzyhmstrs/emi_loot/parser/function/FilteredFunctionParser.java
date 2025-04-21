@@ -17,6 +17,6 @@ public class FilteredFunctionParser implements FunctionParser {
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         ItemPredicate p = ((FilteredLootFunctionAccessor)function).getItemFilter();
         LootFunction f = ((FilteredLootFunctionAccessor)function).getModifier();
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.filtered", ItemPredicateParser.parseItemPredicate(p).getString(), LootParserRegistry.parseFunction(f, stack, f.getType(), parentIsAlternative, List.of()).text().asText().getString()), ItemStack.EMPTY, conditionTexts);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.filtered", ItemPredicateParser.parseItemPredicate(p), LootParserRegistry.parseFunction(f, stack, f.getType(), parentIsAlternative, List.of()).text().asText()), ItemStack.EMPTY, conditionTexts);
     }
 }

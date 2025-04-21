@@ -17,8 +17,8 @@ import fzzyhmstrs.emi_loot.networking.ClearPayload;
 import fzzyhmstrs.emi_loot.parser.processor.NumberProcessors;
 import fzzyhmstrs.emi_loot.parser.registry.LootParserRegistry;
 import fzzyhmstrs.emi_loot.server.ArchaeologyLootTableSender;
-import fzzyhmstrs.emi_loot.server.ComplexLootPoolBuilder;
 import fzzyhmstrs.emi_loot.server.BlockLootTableSender;
+import fzzyhmstrs.emi_loot.server.ComplexLootPoolBuilder;
 import fzzyhmstrs.emi_loot.server.NestedLootTableResults;
 import fzzyhmstrs.emi_loot.server.SimpleLootPoolBuilder;
 import fzzyhmstrs.emi_loot.server.ChestLootTableSender;
@@ -113,7 +113,7 @@ public class LootTableParser {
             EMILoot.LOGGER.warn("Post-processing complete!");
         }
         if (ConfigApi.INSTANCE.network().canSend(ClearPayload.TYPE.id(), player))
-            ConfigApi.INSTANCE.network().send(new ClearPayload(), player);
+            ConfigApi.INSTANCE.network().send(ClearPayload.INSTANCE, player);
         if (EMILoot.config.parseChestLoot)
             chestSenders.forEach((id, chestSender) -> chestSender.send(player));
         if (EMILoot.config.parseBlockLoot)
