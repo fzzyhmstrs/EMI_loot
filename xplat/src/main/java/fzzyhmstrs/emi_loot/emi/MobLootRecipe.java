@@ -116,7 +116,7 @@ public class MobLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return egg != null ? List.of(egg) : Collections.emptyList();
+        return egg != null ? List.of(egg, inputStack) : List.of(inputStack);
     }
 
     @Override

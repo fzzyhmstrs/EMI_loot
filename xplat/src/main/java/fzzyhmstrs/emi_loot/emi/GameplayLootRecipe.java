@@ -46,13 +46,14 @@ public class GameplayLootRecipe implements EmiRecipe {
                 addWidgetBuilders(builtPool, false);
             }
         );
-        this.outputStacks = list;
-        this.name = data.name;
+        outputStacks = list;
+
+        inputStack = new GameplayLootEmiStack(loot.id);
     }
 
     private final ClientGameplayLootTable loot;
     private final List<EmiStack> outputStacks;
-    private final TrimmedTitle name;
+    private final GameplayLootEmiStack inputStack;
     private final List<WidgetRowBuilder> rowBuilderList = new ArrayList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
@@ -88,7 +89,7 @@ public class GameplayLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new ArrayList<>();
+        return List.of(inputStack);
     }
 
     @Override
@@ -138,7 +139,7 @@ public class GameplayLootRecipe implements EmiRecipe {
         int y = 0;
 
         //draw the gameplay name
-        widgets.addText(name.title(), 0, 0, 0x404040, false);
+        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
         if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
             widgets.addTooltip(LText.components(name.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
         } else {

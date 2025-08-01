@@ -96,7 +96,7 @@ public class EntityEmiStack extends EmiStack {
 
     @Override
     public Object getKey() {
-        return entity;
+        return getId();
     }
 
     @Override
