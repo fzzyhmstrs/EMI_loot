@@ -50,6 +50,7 @@
     "ReferenceLootConditionAccessor",
     "ReferenceLootFunctionAccessor",
     "ScoreLootNumberProviderAccessor",
+    "SetAttributesLootFunctionAccessor",
     "SetCountLootFunctionAccessor",
     "SetDamageLootFunctionAccessor",
     "SetEnchantmentsLootFunctionAccessor",
