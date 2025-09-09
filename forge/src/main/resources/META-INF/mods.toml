@@ -31,7 +31,7 @@ modId="emi"
 mandatory=true
 versionRange="[1.0.0,)"
 ordering="AFTER"
-side="BOTH"
+side="CLIENT"
 
 [[dependencies.emi_loot]]
 modId="fzzy_config"
