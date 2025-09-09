@@ -12,14 +12,7 @@ import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
-import fzzyhmstrs.emi_loot.util.ConditionalStack;
-import fzzyhmstrs.emi_loot.util.EntityEmiStack;
-import fzzyhmstrs.emi_loot.util.FloatTrimmer;
-import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
-import fzzyhmstrs.emi_loot.util.LText;
-import fzzyhmstrs.emi_loot.util.SymbolText;
-import fzzyhmstrs.emi_loot.util.TrimmedTitle;
-import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
+import fzzyhmstrs.emi_loot.util.*;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -39,8 +32,6 @@ import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -169,14 +160,11 @@ public class MobLootRecipe implements EmiRecipe {
         int x = 0;
         int y = 0;
         //draw the mob
-        if (!ClientResourceData.MOB_OFFSETS.containsKey(type)) {
-            widgets.addSlot(inputStack, x, y).large(true);
-        } else {
+        if (inputStack instanceof EntityEmiStack entityEmiStack) {
             int offset = ClientResourceData.MOB_OFFSETS.getOrDefault(type, 0);
-            widgets.addTexture(EmiTexture.LARGE_SLOT, x, y);
-            widgets.addDrawable(x, y, 16, 16, (matrices, mx, my, delta) -> inputStack.render(matrices, 5, 6 + offset, delta));
-            widgets.addTooltip(inputStack.getTooltip(), x, y, 24, 24);
+            entityEmiStack.setOffsetY(offset);
         }
+        widgets.addSlot(inputStack, x, y).large(true);
 
         //draw the name, moved over if the spawn egg is available
         if (egg == null) {

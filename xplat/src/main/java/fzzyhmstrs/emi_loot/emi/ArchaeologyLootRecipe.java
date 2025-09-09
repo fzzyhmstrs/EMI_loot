@@ -8,10 +8,10 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientArchaeologyLootTable;
 import fzzyhmstrs.emi_loot.util.ArchaeologyLootEmiStack;
 import fzzyhmstrs.emi_loot.util.InteractableTextWidget;
-import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.resource.language.I18n;
@@ -25,12 +25,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
@@ -58,6 +53,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		}
 
 		outputs = outputsList;
+        this.title = data.name;
 		inputStack = new ArchaeologyLootEmiStack(this.loot.id);
 	}
 
@@ -67,6 +63,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 	private final List<EmiStack> outputs;
 	private boolean isGuaranteedNonChance = false;
 	private final ArchaeologyLootEmiStack inputStack;
+    private final TrimmedTitle title;
 	private final float columns = 8f;
 
 	@Override
@@ -115,9 +112,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			finalRowHeight = 18;
 		}
 
-		widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
-		var title = inputStack.getTrimmedTitle();
-		widgets.addText(title.title(), 1, 0, 0x404040, false);
+		widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false, title).recipeContext(this));
 		if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
 			widgets.addTooltip(LText.components(title.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
 		} else {

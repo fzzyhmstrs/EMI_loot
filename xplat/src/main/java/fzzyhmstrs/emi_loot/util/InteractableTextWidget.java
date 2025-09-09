@@ -3,12 +3,13 @@ package fzzyhmstrs.emi_loot.util;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.TextWidget;
+import net.minecraft.util.Formatting;
 
 public class InteractableTextWidget extends TextWidget {
     SlotWidget slotWidget;
 
-    public InteractableTextWidget(EmiStackWithTitle stack, int x, int y, int color, boolean shadow) {
-        super(stack.getTrimmedTitle().title(), x, y, color, shadow);
+    public InteractableTextWidget(EmiStackWithTitle stack, int x, int y, int color, boolean shadow, TrimmedTitle title) {
+        super(stack.getRawName().formatted(Formatting.BLUE, Formatting.UNDERLINE).asOrderedText(), x, y, color, shadow);
         slotWidget = new SlotWidget(stack, x, y);
     }
 

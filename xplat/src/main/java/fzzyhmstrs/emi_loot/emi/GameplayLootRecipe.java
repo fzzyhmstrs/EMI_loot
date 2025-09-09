@@ -11,13 +11,7 @@ import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
-import fzzyhmstrs.emi_loot.util.ConditionalStack;
-import fzzyhmstrs.emi_loot.util.FloatTrimmer;
-import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
-import fzzyhmstrs.emi_loot.util.LText;
-import fzzyhmstrs.emi_loot.util.SymbolText;
-import fzzyhmstrs.emi_loot.util.TrimmedTitle;
-import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
+import fzzyhmstrs.emi_loot.util.*;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +23,6 @@ import net.minecraft.util.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,12 +40,13 @@ public class GameplayLootRecipe implements EmiRecipe {
             }
         );
         outputStacks = list;
-
+        this.name = data.name;
         inputStack = new GameplayLootEmiStack(loot.id);
     }
 
     private final ClientGameplayLootTable loot;
     private final List<EmiStack> outputStacks;
+    private final TrimmedTitle name;
     private final GameplayLootEmiStack inputStack;
     private final List<WidgetRowBuilder> rowBuilderList = new ArrayList<>();
 
@@ -139,7 +133,7 @@ public class GameplayLootRecipe implements EmiRecipe {
         int y = 0;
 
         //draw the gameplay name
-        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
+        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false, name).recipeContext(this));
         if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
             widgets.addTooltip(LText.components(name.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
         } else {

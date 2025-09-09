@@ -6,6 +6,7 @@ import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -14,15 +15,17 @@ import java.util.List;
 public abstract class EmiStackWithTitle extends EmiStack {
     private final Identifier id;
     private final TrimmedTitle name;
+    private final MutableText rawName;
 
     public EmiStackWithTitle(Identifier id,String unknownNamespace, String unknownPath, EMILoot.Type type, int width) {
         this.id = id;
-        this.name = TrimmedTitle.of(getRawTitle(id, unknownNamespace, unknownPath, type), width);
+        this.rawName = getRawTitle(id, unknownNamespace, unknownPath, type);
+        this.name = TrimmedTitle.of(rawName, width);
     }
 
-    public Text getRawTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type) {
+    private MutableText getRawTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type) {
         String key = String.join(".", "emi_loot", unknownNamespace, id.toString());
-        Text rawTitle;
+        MutableText rawTitle;
         if (!I18n.hasTranslation(key)) {
             StringBuilder chestName = new StringBuilder();
             String[] chestPathTokens = id.getPath().split("[/_]");
@@ -56,11 +59,11 @@ public abstract class EmiStackWithTitle extends EmiStack {
         return rawTitle;
     }
 
-    public String getUnknownModdedKey(String namespace, String path) {
+    private String getUnknownModdedKey(String namespace, String path) {
         return String.join(".", "emi_loot", namespace, path);
     }
 
-    public String getUnknownKey(String namespace) {
+    private String getUnknownKey(String namespace) {
         return String.join(".", "emi_loot", namespace, "unknown");
     }
 
@@ -102,7 +105,7 @@ public abstract class EmiStackWithTitle extends EmiStack {
         return name.rawTitle();
     }
 
-    public TrimmedTitle getTrimmedTitle() {
-        return this.name;
+    public MutableText getRawName() {
+        return this.rawName;
     }
 }
