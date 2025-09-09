@@ -191,7 +191,7 @@
   "emi_loot.number_provider.score": "the %1$s score of an entity, scaled by %3$s times",
   "emi_loot.number_provider.unknown": "an unknown value",
   "emi_loot.enchantment_value.lookup": "a lookup value from %s",
-  "emi_loot.enchantment_value.linear": "%1$s and then %2$s per level",
+  "emi_loot.enchantment_value.linear": "%1$s and then %2$s per level above first",
   "emi_loot.enchantment_value.linear.simple": "%2$s per level",
   "emi_loot.enchantment_value.level_squared": "the square of level + %s",
   "emi_loot.enchantment_value.fraction": "%1$s divided by %2$s",
