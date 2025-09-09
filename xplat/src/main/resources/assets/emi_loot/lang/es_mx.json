@@ -146,7 +146,7 @@
   "emi_loot.condition.all_of_3a": "%s, y ",
   "emi_loot.condition.killed_player": "Suelta cuando es asesinado por un jugador",
   "emi_loot.condition.chance": "Suelta el %s%% del tiempo",
-  "emi_loot.condition.chance_looting": "%1$s%% + %2$s%% por nivel de botín",
+  "emi_loot.condition.chance_looting": "%1$s%% basado en %2$s%%",
   "emi_loot.condition.damage_source": "Asesinado por %s",
   "emi_loot.condition.location": "Suelta en ciertas ubicaciones/multibloques",
   "emi_loot.condition.entity_props": "Suelta cuando %s",
@@ -415,4 +415,5 @@
   "emi_loot.archaeology.minecraft:archaeology/ocean_ruin_warm": "Ruinas oceánicas cálidas",
   "emi_loot.archaeology.minecraft:archaeology/trail_ruins_common": "Ruinas de sendero comunes",
   "emi_loot.archaeology.minecraft:archaeology/trail_ruins_rare": "Ruinas de sendero raras"
+
 }
