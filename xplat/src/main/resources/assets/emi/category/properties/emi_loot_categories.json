@@ -1,0 +1,17 @@
+{
+  "emi_loot:chest_loot": {
+    "order": 100
+  },
+  "emi_loot:mob_drops": {
+    "order": 101
+  },
+  "emi_loot:block_drops": {
+    "order": 102
+  },
+  "emi_loot:gameplay_drops": {
+    "order": 103
+  },
+  "emi_loot:archaeology_drops": {
+    "order": 104
+  }
+}
