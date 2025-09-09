@@ -24,7 +24,7 @@ public class RandomChanceWithLootingConditionParser implements ConditionParser {
         float chance = ((RandomChanceWithEnchantedBonusLootCondition)condition).unenchantedChance();
         EnchantmentLevelBasedValue multiplier = ((RandomChanceWithEnchantedBonusLootCondition)condition).enchantedChance();
         RegistryEntry<Enchantment> enchant = ((RandomChanceWithEnchantedBonusLootCondition)condition).enchantment();
-        List<Text> args = new ArrayList<>(Arrays.stream(new Text[]{LText.literal(Float.toString((chance))), EnchantmentLevelBasedValueParser.parseValue(multiplier, "%", 100f), LText.enchant(enchant)}).toList());
+        List<Text> args = new ArrayList<>(Arrays.stream(new Text[]{EnchantmentLevelBasedValueParser.parseValue(multiplier, "%", 100f), LText.enchant(enchant)}).toList());
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.chance_looting", args)));
     }
 }
