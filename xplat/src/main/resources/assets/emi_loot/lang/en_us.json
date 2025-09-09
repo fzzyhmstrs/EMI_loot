@@ -164,7 +164,7 @@
   "emi_loot.condition.all_of_3a": "%s, and ",
   "emi_loot.condition.killed_player": "Drops when killed by a player",
   "emi_loot.condition.chance": "Drops %s%% of the time",
-  "emi_loot.condition.chance_looting": "%1$s%% + %2$s based on %3$s",
+  "emi_loot.condition.chance_looting": "%1$s based on %2$s",
   "emi_loot.condition.damage_source": "Killed by %s",
   "emi_loot.condition.location": "Drops in certain locations/multiblocks",
   "emi_loot.condition.entity_props": "Drops when %s",
