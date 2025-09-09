@@ -265,7 +265,12 @@ public class MobLootRecipe implements EmiRecipe {
             EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
             SpawnEggItem eggItem = SpawnEggItem.forEntity(type);
             MinecraftClient client = MinecraftClient.getInstance();
-            Entity entity = type.create(client.world);
+            Entity entity = null;
+            try {
+                 entity = type.create(client.world);
+            } catch (Exception e) {
+                EMILoot.LOGGER.error("Encountered critical exception trying to initialize entity of type: " + type.getName().getString(), e)
+            }
             Text rawTitle;
             double scale = 0.125;
             if (entity != null) {
