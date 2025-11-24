@@ -127,7 +127,7 @@ public record TextKey(int index, List<Text> args) {
         mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
         mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), Identifier.of(EMILoot.MOD_ID, "textures/gui/steve.png"));
         mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/percent.png"));
-        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getThreeArgText(43, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
+        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getTwoArgText(43, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
         mapBuilder(44, "emi_loot.condition.damage_source", (key)-> getOneArgText(44, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/tiny_cactus.png"));
         mapBuilder(45, "emi_loot.condition.location", (key)-> getOneArgText(45, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/location.png"));
         mapBuilder(46, "emi_loot.condition.entity_props", (key)-> getOneArgText(46, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/entity_props.png"));
