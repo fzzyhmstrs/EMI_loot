@@ -1,13 +1,17 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.util.stack;
 
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import fzzyhmstrs.emi_loot.util.LText;
+import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -17,10 +21,10 @@ public abstract class EmiStackWithTitle extends EmiStack {
     private final TrimmedTitle name;
     private final MutableText rawName;
 
-    public EmiStackWithTitle(Identifier id,String unknownNamespace, String unknownPath, EMILoot.Type type, int width) {
+    public EmiStackWithTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type, int width, Formatting ... formatting) {
         this.id = id;
         this.rawName = getRawTitle(id, unknownNamespace, unknownPath, type);
-        this.name = TrimmedTitle.of(rawName, width);
+        this.name = TrimmedTitle.of(rawName.copy().formatted(formatting), width);
     }
 
     private MutableText getRawTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type) {
@@ -102,10 +106,14 @@ public abstract class EmiStackWithTitle extends EmiStack {
 
     @Override
     public Text getName() {
-        return name.rawTitle();
+        return rawName.copy();
     }
 
-    public MutableText getRawName() {
-        return this.rawName;
+    public OrderedText getTrimmedName() {
+        return this.name.title();
+    }
+
+    public boolean isTrimmed() {
+        return name.trimmed();
     }
 }

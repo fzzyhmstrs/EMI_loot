@@ -1,4 +1,4 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.util.stack;
 
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;

@@ -1,10 +1,11 @@
-package fzzyhmstrs.emi_loot.util;
+package fzzyhmstrs.emi_loot.util.stack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
+import fzzyhmstrs.emi_loot.util.LText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.DrawContext;
