@@ -12,6 +12,7 @@ import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.InitializedSupplier;
+import fzzyhmstrs.emi_loot.util.stack.BlockLootEmiStack;
 import fzzyhmstrs.emi_loot.util.stack.BlockStateEmiStack;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.FloatTrimmer;
@@ -43,10 +44,12 @@ public class BlockLootRecipe implements EmiRecipe {
         this.outputStacks = data.outputStacks;
         this.rowBuilderList = data.rowBuilderList;
         this.isSimple = data.guaranteed;
+        this.lootStack = new BlockLootEmiStack(data.id);
     }
 
     private final Identifier id;
     private final InitializedSupplier<EmiStack> inputStack;
+    private final BlockLootEmiStack lootStack;
     private final InitializedSupplier<List<EmiStack>> outputStacks;
     private final List<WidgetRowBuilder> rowBuilderList;
     private final boolean isSimple;
@@ -55,7 +58,7 @@ public class BlockLootRecipe implements EmiRecipe {
     public void init() {
         inputStack.init();
         outputStacks.init();
-        inputStacks = inputStack.get().getItemStack().isEmpty() ? Collections.emptyList() : List.of(inputStack.get());
+        inputStacks = inputStack.get().getItemStack().isEmpty() ? List.of(lootStack) : List.of(inputStack.get(), lootStack);
     }
 
     @Override
