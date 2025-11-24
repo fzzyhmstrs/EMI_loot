@@ -29,6 +29,7 @@
     "SetInstrumentLootFunctionAccessor",
     "SetLootTableLootFunctionAccessor",
     "SetNameLootFunctionAccessor",
+    "SetNbtLootFunctionAccessor",
     "SetPotionLootFunctionAccessor",
     "SetStewEffectLootFunctionAccessor",
     "SimpleResourceReloadMixin",

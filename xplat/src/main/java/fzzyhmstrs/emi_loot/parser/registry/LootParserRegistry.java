@@ -37,6 +37,7 @@ import fzzyhmstrs.emi_loot.parser.function.SetEnchantmentsFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetInstrumentFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetLootTableFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetNameFunctionParser;
+import fzzyhmstrs.emi_loot.parser.function.SetNbtFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetPotionFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SetStewFunctionParser;
 import fzzyhmstrs.emi_loot.parser.function.SimpleFunctionParser;
@@ -111,7 +112,7 @@ public class LootParserRegistry {
         registerFunction(LootFunctionTypes.SET_BANNER_PATTERN, new SimpleFunctionParser("emi_loot.function.banner"), "Registering vanilla set banner function parser");
         registerFunction(LootFunctionTypes.SET_LORE, new SimpleFunctionParser("emi_loot.function.lore"), "Registering vanilla set lore function parser");
         registerFunction(LootFunctionTypes.SET_STEW_EFFECT, new SetStewFunctionParser(), "Registering vanilla set stew effect function parser");
-        registerFunction(LootFunctionTypes.SET_NBT, new SimpleFunctionParser("emi_loot.function.set_nbt"), "Registering vanilla set nbt function parser");
+        registerFunction(LootFunctionTypes.SET_NBT, new SetNbtFunctionParser(), "Registering vanilla set nbt function parser");
         registerFunction(LootFunctionTypes.SET_LOOT_TABLE, new SetLootTableFunctionParser(), "Registering vanilla set loot table function parser");
         registerFunction(LootFunctionTypes.REFERENCE, new ReferenceFunctionParser(), "Registering vanilla reference function parser");
         registerFunction(LootFunctionTypes.SEQUENCE, new SequenceFunctionParser(), "Registering vanilla sequence function parser");
