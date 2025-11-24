@@ -16,6 +16,11 @@ public record MobLootPayload(PacketByteBuf buf) implements CustomPayload {
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
         packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
+        buf.release();
+    }
+
+    public void release() {
+        buf.release();
     }
 
     @Override
