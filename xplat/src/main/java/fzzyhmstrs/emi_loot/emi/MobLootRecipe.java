@@ -269,7 +269,7 @@ public class MobLootRecipe implements EmiRecipe {
             try {
                  entity = type.create(client.world);
             } catch (Exception e) {
-                EMILoot.LOGGER.error("Encountered critical exception trying to initialize entity of type: " + type.getName().getString(), e)
+                EMILoot.LOGGER.error("Encountered critical exception trying to initialize entity of type: " + type.getName().getString(), e);
             }
             Text rawTitle;
             double scale = 0.125;
