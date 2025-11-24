@@ -12,12 +12,10 @@ public record ChestLootPayload(PacketByteBuf buf) implements CustomPayload {
 
     public ChestLootPayload(PacketByteBuf buf) {
         this.buf = new PacketByteBuf(buf.readBytes(buf.readableBytes()));
-        buf.release();
     }
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
         packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
-        buf.release();
     }
 
     @Override
