@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public abstract class EmiStackWithTitle extends EmiStack {
-    private final Identifier id;
+    protected final Identifier id;
     private final TrimmedTitle name;
     private final MutableText rawName;
 
@@ -69,11 +69,6 @@ public abstract class EmiStackWithTitle extends EmiStack {
 
     private String getUnknownKey(String namespace) {
         return String.join(".", "emi_loot", namespace, "unknown");
-    }
-
-    @Override
-    public EmiStack copy() {
-        return new ChestLootEmiStack(this.id);
     }
 
     @Override
