@@ -27,7 +27,7 @@ public abstract class EmiStackWithTitle extends EmiStack {
         this.name = TrimmedTitle.of(rawName.copy().formatted(formatting), width);
     }
 
-    private MutableText getRawTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type) {
+    protected MutableText getRawTitle(Identifier id, String unknownNamespace, String unknownPath, EMILoot.Type type) {
         String key = String.join(".", "emi_loot", unknownNamespace, id.toString());
         MutableText rawTitle;
         if (!I18n.hasTranslation(key)) {
