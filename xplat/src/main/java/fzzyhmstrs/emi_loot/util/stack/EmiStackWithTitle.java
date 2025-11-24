@@ -7,6 +7,7 @@ import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
@@ -85,8 +86,8 @@ public abstract class EmiStackWithTitle extends EmiStack {
     }
 
     @Override
-    public NbtCompound getNbt() {
-        return null;
+    public ComponentChanges getComponentChanges() {
+        return ComponentChanges.EMPTY;
     }
 
     @Override
