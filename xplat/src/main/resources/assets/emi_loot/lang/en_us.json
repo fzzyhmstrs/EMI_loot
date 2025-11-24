@@ -58,6 +58,8 @@
   "emi_loot.emi_loot_config.conditionStyle.desc.plain": "Stacks will be closely spaced like chest loot, but condition descriptions will not be visible in the recipe nor the tooltip",
   "emi_loot.emi_loot_config.conditionStyle.plain.sns": "Plain",
   "emi_loot.emi_loot_config.conditionStyle.desc.plain.sns": "Stacks will be closely spaced like chest loot, but condition descriptions will not be visible in the recipe nor the tooltip",
+  "emi_loot.emi_loot_config.linkFormatting": "Link Formatting",
+  "emi_loot.emi_loot_config.linkFormatting.desc": "Formatting used for loot tables that show a 'link' title",
 
   "emi.category.emi_loot.chest_loot": "Chest Loot",
   "emi.category.emi_loot.block_drops": "Block Drops",

@@ -12,13 +12,11 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
+import fzzyhmstrs.emi_loot.util.stack.ChestLootEmiStack;
+import fzzyhmstrs.emi_loot.util.InteractableTextWidget;
 import fzzyhmstrs.emi_loot.util.LText;
-import fzzyhmstrs.emi_loot.util.TrimmedTitle;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -54,17 +52,15 @@ public class ChestLootRecipe implements EmiRecipe {
             list.add(EmiStack.of(stack));
         }
         this.outputs = list;
-        this.title = data.name;
-
+        inputStack = new ChestLootEmiStack(loot.id);
     }
 
     private final ClientChestLootTable loot;
-    //private final Map<EmiStack, Float> lootStacks;
     private final Supplier<ArrayListMultimap<Float, EmiStack>> lootStacksSorted;
     private final int lootStacksSortedSize;
     private final List<EmiStack> outputs;
     private boolean isGuaranteedNonChance = false;
-    private final TrimmedTitle title;
+    private final ChestLootEmiStack inputStack;
     private final float columns = 8f;
 
 
@@ -117,11 +113,11 @@ public class ChestLootRecipe implements EmiRecipe {
             titleSpace = 11;
             finalRowHeight =  18;
         }
-        widgets.addText(title.title(), 1, 0, 0x404040, false);
+        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
         if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-            widgets.addTooltip(LText.components(title.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
+            widgets.addTooltip(LText.components(inputStack.getName(), loot.id.getNamespace()), 0, 0, 144, 10);
         } else {
-            widgets.addTooltipText(List.of(title.rawTitle()), 0, 0, 144, 10);
+            widgets.addTooltipText(List.of(inputStack.getName()), 0, 0, 144, 10);
         }
         AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
         for (var entry : lootStacksSorted.get().asMap().entrySet()) {
@@ -158,7 +154,7 @@ public class ChestLootRecipe implements EmiRecipe {
         return EmiRecipe.super.hideCraftable();
     }
 
-    public record ChestLootRecipeData(ClientChestLootTable loot, Iterator<Map.Entry<Float, ItemStack>> itr, List<ItemStack> totalItemList, boolean guaranteed, TrimmedTitle name, int lootStacksSortedSize) {
+    public record ChestLootRecipeData(ClientChestLootTable loot, Iterator<Map.Entry<Float, ItemStack>> itr, List<ItemStack> totalItemList, boolean guaranteed, int lootStacksSortedSize) {
 
         public static ChestLootRecipeData of(ClientChestLootTable loot) {
             boolean isGuaranteedNonChance = false;
@@ -180,36 +176,6 @@ public class ChestLootRecipe implements EmiRecipe {
 
             Iterator<Map.Entry<Float, ItemStack>> itr = map2.entries().iterator();
 
-            String key = "emi_loot.chest." + loot.id.toString();
-            MutableText rawTitle;
-            if (!I18n.hasTranslation(key)) {
-                StringBuilder chestName = new StringBuilder();
-                String[] chestPathTokens = loot.id.getPath().split("[/_]");
-                for (String str : chestPathTokens) {
-                    if (LText.tablePrefixes.contains(str)) continue;
-                    if (!chestName.isEmpty()) {
-                        chestName.append(" ");
-                    }
-                    if (str.length() <= 1) {
-                        chestName.append(str);
-                    } else {
-                        chestName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
-                    }
-                }
-                if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", chestName.toString());
-                } else {
-                    Text unknown = LText.translatable("emi_loot.chest.unknown");
-                    rawTitle = LText.translatable("emi_loot.chest.unknown_chest", LText.literal(chestName.toString()).append(" ").append(unknown));
-                }
-                if (EMILoot.config.isLogI18n(EMILoot.Type.CHEST)) {
-                    EMILoot.LOGGER.warn("Untranslated chest loot table \"{}\" (key: \"{}\")", loot.id, key);
-                }
-            } else {
-                rawTitle = LText.translatable(key);;
-            }
-            TrimmedTitle name = TrimmedTitle.of(rawTitle, 138);
-
             int lootStacksSortedSize;
 
             if (loot.items.size() > 48 || EMILoot.config.chestLootAlwaysStackSame) {
@@ -218,7 +184,7 @@ public class ChestLootRecipe implements EmiRecipe {
                 lootStacksSortedSize = loot.items.size();
             }
 
-            return new ChestLootRecipeData(loot, itr, totalItemList, isGuaranteedNonChance, name, lootStacksSortedSize);
+            return new ChestLootRecipeData(loot, itr, totalItemList, isGuaranteedNonChance, lootStacksSortedSize);
         }
 
     }
