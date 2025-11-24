@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
@@ -23,7 +24,7 @@ import static fzzyhmstrs.emi_loot.util.IconEmiWidget.FRAME_ID;
 // https://github.com/architectury/architectury-loom/issues/106
 public abstract class IconGroupEmiWidget extends Widget {
 
-    public IconGroupEmiWidget(int x, int y, ClientBuiltPool pool) {
+    public IconGroupEmiWidget(int x, int y, ClientBuiltPool pool, EmiRecipe recipe) {
         this.x = x;
         this.y = y;
         List<IconEmiWidget> list = new LinkedList<>();
@@ -42,7 +43,7 @@ public abstract class IconGroupEmiWidget extends Widget {
         int itemXOffset = iconsWidth + 2;
         for(ConditionalStack entry: pool.stacks()) {
             String rounded = FloatTrimmer.trimFloatString(Math.max(entry.weight() / 100f, 0.01f), EMILoot.config.chanceDecimalPlaces.get());
-            SlotWidget widget = new SlotWidget(entry.getIngredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.rolls", rounded));
+            SlotWidget widget = new SlotWidget(entry.getIngredient(), itemXOffset + x, y + 3).appendTooltip(LText.translatable("emi_loot.rolls", rounded)).recipeContext(recipe);
             itemXOffset +=20;
             list2.add(widget);
         }
