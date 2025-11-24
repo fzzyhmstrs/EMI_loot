@@ -12,7 +12,7 @@ import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBlockLootTable;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.InitializedSupplier;
-import fzzyhmstrs.emi_loot.util.BlockStateEmiStack;
+import fzzyhmstrs.emi_loot.util.stack.BlockStateEmiStack;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.FloatTrimmer;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
