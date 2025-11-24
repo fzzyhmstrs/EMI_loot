@@ -11,22 +11,27 @@ public class ClientLootTablesReceiver {
 
 	public static void receiveChestSender(ChestLootPayload payload, ClientPlayNetworkContext ctx) {
 		ClientLootTables.INSTANCE.receiveChestSender(payload.buf());
+		payload.release();
 	}
 
 	public static void receiveBlockSender(BlockLootPayload payload, ClientPlayNetworkContext ctx) {
 		ClientLootTables.INSTANCE.receiveBlockSender(payload.buf());
+		payload.release();
 	}
 
 	public static void receiveMobSender(MobLootPayload payload, ClientPlayNetworkContext ctx) {
 		ClientLootTables.INSTANCE.receiveMobSender(payload.buf());
+		payload.release();
 	}
 
 	public static void receiveGameplaySender(GameplayLootPayload payload, ClientPlayNetworkContext ctx) {
 		ClientLootTables.INSTANCE.receiveGameplaySender(payload.buf());
+		payload.release();
 	}
 
 	public static void receiveArchaeologySender(ArchaeologyLootPayload payload, ClientPlayNetworkContext ctx) {
 		ClientLootTables.INSTANCE.receiveArchaeologySender(payload.buf());
+		payload.release();
 	}
 
 }

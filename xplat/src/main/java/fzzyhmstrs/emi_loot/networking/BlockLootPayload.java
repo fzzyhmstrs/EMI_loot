@@ -6,6 +6,8 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 public record BlockLootPayload(PacketByteBuf buf) implements CustomPayload {
     public static final Id<BlockLootPayload> TYPE = new Id<>(EMILoot.identity("block"));
     public static final PacketCodec<PacketByteBuf, BlockLootPayload> CODEC = PacketCodec.of(BlockLootPayload::write, BlockLootPayload::new);
@@ -16,6 +18,11 @@ public record BlockLootPayload(PacketByteBuf buf) implements CustomPayload {
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
         packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
+        buf.release();
+    }
+
+    public void release() {
+        buf.release();
     }
 
     @Override
