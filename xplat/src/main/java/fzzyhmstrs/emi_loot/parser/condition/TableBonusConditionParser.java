@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.parser.condition;
 
+import fzzyhmstrs.emi_loot.mixins.TableBonusLootConditionAccessor;
 import fzzyhmstrs.emi_loot.parser.LootTableParser;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TextKey;
@@ -16,7 +17,7 @@ public class TableBonusConditionParser implements ConditionParser {
 
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
-        Enchantment enchant = ((TableBonusLootCondition)condition).enchantment();
+        Enchantment enchant = ((TableBonusLootConditionAccessor)condition).getEnchantment();
         Text name = LText.enchant(enchant);
 
         return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", name)));

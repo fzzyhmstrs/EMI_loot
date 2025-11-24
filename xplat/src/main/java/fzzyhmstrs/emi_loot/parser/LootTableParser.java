@@ -144,7 +144,7 @@ public class LootTableParser {
 		try {
         EMILoot.LOGGER.info("parsing loot tables");
         	tables.forEach((key, table) -> {
-        	    if (table instanceof LootTable lt && (!((LootTableAccessor)lt).getPools().isEmpty()))
+        	    if (table instanceof LootTable lt && lt.pools.length > 0)
         	        parseLootTable(key.id(), (LootTable) table);
         	});
         	if (EMILoot.config.parseMobLoot) {

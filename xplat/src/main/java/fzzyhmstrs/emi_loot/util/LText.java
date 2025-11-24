@@ -69,9 +69,9 @@ public class LText {
         return Language.getInstance().reorder(StringVisitable.concat(stringVisitable, ScreenTexts.ELLIPSIS));
     }
 
-    public static MutableText enchant(RegistryEntry<Enchantment> enchant) {
-        MutableText mutableText = Text.translatable(enchant.value().getTranslationKey());
-        if (enchant.value().isCursed()) {
+    public static MutableText enchant(Enchantment enchant) {
+        MutableText mutableText = Text.translatable(enchant.getTranslationKey());
+        if (enchant.isCursed()) {
             mutableText.formatted(Formatting.RED);
         } else {
             mutableText.formatted(Formatting.GRAY);
