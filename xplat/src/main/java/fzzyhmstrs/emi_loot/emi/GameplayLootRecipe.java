@@ -13,15 +13,15 @@ import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientGameplayLootTable;
 import fzzyhmstrs.emi_loot.util.ConditionalStack;
 import fzzyhmstrs.emi_loot.util.FloatTrimmer;
+import fzzyhmstrs.emi_loot.util.stack.GameplayLootEmiStack;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
+import fzzyhmstrs.emi_loot.util.InteractableTextWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.SymbolText;
-import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import fzzyhmstrs.emi_loot.util.WidgetRowBuilder;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -46,13 +46,13 @@ public class GameplayLootRecipe implements EmiRecipe {
                 addWidgetBuilders(builtPool, false);
             }
         );
-        this.outputStacks = list;
-        this.name = data.name;
+        outputStacks = list;
+        inputStack = new GameplayLootEmiStack(loot.id);
     }
 
     private final ClientGameplayLootTable loot;
     private final List<EmiStack> outputStacks;
-    private final TrimmedTitle name;
+    private final GameplayLootEmiStack inputStack;
     private final List<WidgetRowBuilder> rowBuilderList = new ArrayList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
@@ -138,11 +138,11 @@ public class GameplayLootRecipe implements EmiRecipe {
         int y = 0;
 
         //draw the gameplay name
-        widgets.addText(name.title(), 0, 0, 0x404040, false);
+        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
         if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-            widgets.addTooltip(LText.components(name.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
+            widgets.addTooltip(LText.components(inputStack.getName(), loot.id.getNamespace()), 0, 0, 144, 10);
         } else {
-            widgets.addTooltipText(List.of(name.rawTitle()), 0, 0, 144, 10);
+            widgets.addTooltipText(List.of(inputStack.getName()), 0, 0, 144, 10);
         }
         if (EMILoot.config.isTooltipStyle()) {
             List<ConditionalStack> stacks = (outputStacks.size() <= 4 || !EMILoot.config.isCompact(EMILoot.Type.GAMEPLAY))
@@ -192,39 +192,11 @@ public class GameplayLootRecipe implements EmiRecipe {
         return EmiRecipe.super.hideCraftable();
     }
 
-    public record GameplayLootRecipeData(ClientGameplayLootTable loot, TrimmedTitle name) {
+    public record GameplayLootRecipeData(ClientGameplayLootTable loot) {
 
         public static GameplayLootRecipeData of(ClientGameplayLootTable loot) {
             loot.build(MinecraftClient.getInstance().world, Blocks.AIR);
-            String key = "emi_loot.gameplay." + loot.id.toString();
-            Text rawTitle;
-            if (!I18n.hasTranslation(key)) {
-                StringBuilder gameplayName = new StringBuilder();
-                String[] chestPathTokens = loot.id.getPath().split("[/_]");
-                for (String str : chestPathTokens) {
-                    if (!gameplayName.isEmpty()) {
-                        gameplayName.append(" ");
-                    }
-                    if (str.length() <= 1) {
-                        gameplayName.append(str);
-                    } else {
-                        gameplayName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
-                    }
-                }
-                if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-                    rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", gameplayName.toString());
-                } else {
-                    Text unknown = LText.translatable("emi_loot.gameplay.unknown");
-                    rawTitle = LText.translatable("emi_loot.gameplay.unknown_gameplay", LText.literal(gameplayName.toString()).append(" ").append(unknown));
-                }
-                if (EMILoot.config.isLogI18n(EMILoot.Type.GAMEPLAY)) {
-                    EMILoot.LOGGER.warn("Untranslated gameplay loot table \"{}\" (key: \"{}\")", loot.id, key);
-                }
-            } else {
-                rawTitle = LText.translatable(key);
-            }
-            TrimmedTitle name = TrimmedTitle.of(rawTitle, EMILoot.config.isTooltipStyle() ? 138 : 148);
-            return new GameplayLootRecipeData(loot, name);
+            return new GameplayLootRecipeData(loot);
         }
 
     }

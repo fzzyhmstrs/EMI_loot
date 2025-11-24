@@ -23,15 +23,18 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedAny;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
+import net.minecraft.util.Formatting;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.ResourceManager;
@@ -141,6 +144,9 @@ public class EMILoot {
 				:
             new ValidatedChoice<>(List.of("default", "tooltip", "plain"), new ValidatedString(), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), (t, u) -> FcText.INSTANCE.translate(u + "." + t + ".sns"), ValidatedChoice.WidgetType.CYCLING);
 
+        @NonSync
+        private ValidatedList<Formatting> linkFormatting = (new ValidatedEnum<>(Formatting.UNDERLINE)).toList(Formatting.UNDERLINE);
+
         public boolean isTooltipStyle() {
             return Objects.equals(conditionStyle.get(), "tooltip") || Objects.equals(conditionStyle.get(), "plain");
         }
@@ -159,6 +165,10 @@ public class EMILoot {
 
         public boolean isLogI18n(Type type) {
             return type.logUntranslatedTablesSupplier.getAsBoolean();
+        }
+
+        public Formatting[] getLinkFormatting() {
+            return linkFormatting.toArray(new Formatting[linkFormatting.getSize()]);
         }
 
 	}

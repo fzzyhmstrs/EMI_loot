@@ -10,16 +10,13 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientArchaeologyLootTable;
-import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
+import fzzyhmstrs.emi_loot.util.stack.ArchaeologyLootEmiStack;
+import fzzyhmstrs.emi_loot.util.InteractableTextWidget;
 import fzzyhmstrs.emi_loot.util.LText;
-import fzzyhmstrs.emi_loot.util.TrimmedTitle;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -57,8 +53,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		}
 
 		outputs = outputsList;
-
-		this.title = data.name;
+		inputStack = new ArchaeologyLootEmiStack(this.loot.id);
 	}
 
 	private final ClientArchaeologyLootTable loot;
@@ -66,7 +61,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 	private final int lootStacksSortedSize;
 	private final List<EmiStack> outputs;
 	private boolean isGuaranteedNonChance = false;
-	private final TrimmedTitle title;
+	private final ArchaeologyLootEmiStack inputStack;
 	private final float columns = 8f;
 
 	@Override
@@ -115,11 +110,11 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			finalRowHeight = 18;
 		}
 
-		widgets.addText(title.title(), 1, 0, 0x404040, false);
+		widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false).recipeContext(this));
 		if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-			widgets.addTooltip(LText.components(title.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
+			widgets.addTooltip(LText.components(inputStack.getName(), loot.id.getNamespace()), 0, 0, 144, 10);
 		} else {
-			widgets.addTooltipText(List.of(title.rawTitle()), 0, 0, 144, 10);
+			widgets.addTooltipText(List.of(inputStack.getName()), 0, 0, 144, 10);
 		}
 		AtomicInteger index = new AtomicInteger(lootStacksSortedSize);
 		for (var entry : lootStacksSorted.asMap().entrySet()) {
@@ -151,7 +146,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 		return EmiRecipe.super.supportsRecipeTree() && isGuaranteedNonChance;
 	}
 
-	public record ArchaeologyLootRecipeData(ClientArchaeologyLootTable loot, ArrayListMultimap<Float, ItemStack> map, boolean guaranteed, TrimmedTitle name) {
+	public record ArchaeologyLootRecipeData(ClientArchaeologyLootTable loot, ArrayListMultimap<Float, ItemStack> map, boolean guaranteed) {
 
 		public static ArchaeologyLootRecipeData of(ClientArchaeologyLootTable loot) {
 			boolean isGuaranteedNonChance = false;
@@ -168,36 +163,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 			for (float key : map2.keySet()) {
 				map2.get(key).sort(Comparator.comparingInt(s -> Registries.ITEM.getRawId(s.getItem())));
 			}
-
-			String key = "emi_loot.archaeology." + loot.id.toString();
-			MutableText rawTitle;
-			if(!I18n.hasTranslation(key)) {
-				StringBuilder archName = new StringBuilder();
-				String[] chestPathTokens = loot.id.getPath().split("[/_]");
-				for (String str : chestPathTokens) {
-					if (!archName.isEmpty()) {
-						archName.append(" ");
-					}
-					if (str.length() <= 1) {
-						archName.append(str);
-					} else {
-						archName.append(str.substring(0, 1).toUpperCase()).append(str.substring(1));
-					}
-				}
-				if(EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
-					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", archName.toString());
-				} else {
-					Text unknown = LText.translatable("emi_loot.archaeology.unknown");
-					rawTitle = LText.translatable("emi_loot.archaeology.unknown_archaeology", LText.literal(archName.toString()).append(" ").append(unknown));
-				}
-				if (EMILoot.config.isLogI18n(EMILoot.Type.ARCHAEOLOGY)) {
-					EMILoot.LOGGER.warn("Untranslated archaeology loot table \"{}\" (key: \"{}\")", loot.id, key);
-				}
-			} else {
-				rawTitle = LText.translatable(key);
-			}
-			TrimmedTitle name = TrimmedTitle.of(rawTitle, 138);
-			return new ArchaeologyLootRecipeData(loot, map2, isGuaranteedNonChance, name);
+			return new ArchaeologyLootRecipeData(loot, map2, isGuaranteedNonChance);
 		}
 
 	}
