@@ -138,7 +138,9 @@ public class LootTableParser {
 			EMILoot.LOGGER.info("parsing loot tables");
 			manager.getEntrySet().forEach(entry -> {
 				LootTable table = entry.getValue();
-				parseLootTable(entry.getKey().getValue(), table);
+				if (!((LootTableAccessor) table).getPools().isEmpty()) {
+					parseLootTable(entry.getKey().getValue(), table);
+				}
 			});
 			if (EMILoot.config.parseMobLoot) {
 				Identifier chk = new Identifier("pig");
