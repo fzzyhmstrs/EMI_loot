@@ -14,6 +14,7 @@ import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import fzzyhmstrs.emi_loot.util.*;
 import fzzyhmstrs.emi_loot.util.stack.EntityEmiStack;
+import fzzyhmstrs.emi_loot.util.stack.MobLootEmiStack;
 import me.fzzyhmstrs.fzzy_config.util.FcText;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -68,6 +69,7 @@ public class MobLootRecipe implements EmiRecipe {
         outputStacks = list;
 
         this.egg = data.spawnEggItem != null ? EmiStack.of(data.spawnEggItem) : null;
+        this.lootStack = new MobLootEmiStack(lootId);
         this.name = data.name;
         this.type = data.entity != null ? data.entity.getType() : null;
     }
@@ -79,6 +81,7 @@ public class MobLootRecipe implements EmiRecipe {
     private final EntityType<?> type;
     @Nullable
     private final EmiStack egg;
+    private final MobLootEmiStack lootStack;
     private final List<WidgetRowBuilder> rowBuilderList = new ArrayList<>();
 
     private void addWidgetBuilders(ClientBuiltPool newPool, boolean recursive) {
