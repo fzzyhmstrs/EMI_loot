@@ -102,28 +102,28 @@ public record TextKey(int index, List<Text> args) {
         mapBuilder(25, "emi_loot.function.set_loot_table", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chest.png"));
         mapBuilder(26, "emi_loot.function.reference", (key)-> getOneArgText(25, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
 
-        mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), new Identifier(EMILoot.MOD_ID, "textures/gui/tnt.png"));
-        mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), new Identifier(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
-        mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
-        mapBuilder(37, "emi_loot.condition.invert", (key)-> getInvertedText(37, key), new Identifier(EMILoot.MOD_ID, "textures/gui/invert.png"));
-        //mapBuilder(38, "emi_loot.condition.alternates", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(39, "emi_loot.condition.any_of", TextKey::getAnyOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, new Identifier(EMILoot.MOD_ID, "textures/gui/or.png"));
-        mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), new Identifier(EMILoot.MOD_ID, "textures/gui/steve.png"));
-        mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), new Identifier(EMILoot.MOD_ID, "textures/gui/percent.png"));
-        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getTwoArgText(43, key), new Identifier(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
-        mapBuilder(44, "emi_loot.condition.damage_source", (key)-> getOneArgText(44, key), new Identifier(EMILoot.MOD_ID, "textures/gui/tiny_cactus.png"));
-        mapBuilder(45, "emi_loot.condition.location", (key)-> getOneArgText(45, key), new Identifier(EMILoot.MOD_ID, "textures/gui/location.png"));
-        mapBuilder(46, "emi_loot.condition.entity_props", (key)-> getOneArgText(46, key), new Identifier(EMILoot.MOD_ID, "textures/gui/entity_props.png"));
-        mapBuilder(47, "emi_loot.condition.match_tool", (key)-> getOneArgText(47, key), new Identifier(EMILoot.MOD_ID, "textures/gui/match_tool.png"));
-        mapBuilder(48, "emi_loot.condition.entity_scores", (key)-> getBasicText(48), new Identifier(EMILoot.MOD_ID, "textures/gui/score.png"));
-        mapBuilder(49, "emi_loot.condition.reference", (key)-> getOneArgText(49, key), new Identifier(EMILoot.MOD_ID, "textures/gui/reference.png"));
-        mapBuilder(50, "emi_loot.condition.time_check", (key)-> getOneArgText(50, key), new Identifier(EMILoot.MOD_ID, "textures/gui/time.png"));
-        mapBuilder(51, "emi_loot.condition.value_check", (key)-> getTwoArgText(51, key), new Identifier(EMILoot.MOD_ID, "textures/gui/value.png"));
-        mapBuilder(52, "emi_loot.condition.raining_true", (key)-> getBasicText(52), new Identifier(EMILoot.MOD_ID, "textures/gui/raining.png"));
-        mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), new Identifier(EMILoot.MOD_ID, "textures/gui/sunny.png"));
-        mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), new Identifier(EMILoot.MOD_ID, "textures/gui/thundering.png"));
-        mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), new Identifier(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
+        mapBuilder(34, "emi_loot.condition.survives_explosion", (key)-> getBasicText(34), Identifier.of(EMILoot.MOD_ID, "textures/gui/tnt.png"));
+        mapBuilder(35, "emi_loot.condition.blockstate", (key)-> getOneArgText(35, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/blockstate.png"));
+        mapBuilder(36, "emi_loot.condition.table_bonus", (key)-> getOneArgText(36, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/percent.png"));
+        mapBuilder(37, "emi_loot.condition.invert", (key)-> getInvertedText(37, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/invert.png"));
+        //mapBuilder(38, "emi_loot.condition.alternates", TextKey::getAnyOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(39, "emi_loot.condition.any_of", TextKey::getAnyOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(40, "emi_loot.condition.all_of", TextKey::getAllOfText, Identifier.of(EMILoot.MOD_ID, "textures/gui/or.png"));
+        mapBuilder(41, "emi_loot.condition.killed_player", (key)-> getBasicText(41), Identifier.of(EMILoot.MOD_ID, "textures/gui/steve.png"));
+        mapBuilder(42, "emi_loot.condition.chance", (key)-> getOneArgText(42, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/percent.png"));
+        mapBuilder(43, "emi_loot.condition.chance_looting", (key)-> getTwoArgText(43, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/chance_looting.png"));
+        mapBuilder(44, "emi_loot.condition.damage_source", (key)-> getOneArgText(44, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/tiny_cactus.png"));
+        mapBuilder(45, "emi_loot.condition.location", (key)-> getOneArgText(45, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/location.png"));
+        mapBuilder(46, "emi_loot.condition.entity_props", (key)-> getOneArgText(46, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/entity_props.png"));
+        mapBuilder(47, "emi_loot.condition.match_tool", (key)-> getOneArgText(47, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/match_tool.png"));
+        mapBuilder(48, "emi_loot.condition.entity_scores", (key)-> getBasicText(48), Identifier.of(EMILoot.MOD_ID, "textures/gui/score.png"));
+        mapBuilder(49, "emi_loot.condition.reference", (key)-> getOneArgText(49, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/reference.png"));
+        mapBuilder(50, "emi_loot.condition.time_check", (key)-> getOneArgText(50, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/time.png"));
+        mapBuilder(51, "emi_loot.condition.value_check", (key)-> getTwoArgText(51, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/value.png"));
+        mapBuilder(52, "emi_loot.condition.raining_true", (key)-> getBasicText(52), Identifier.of(EMILoot.MOD_ID, "textures/gui/raining.png"));
+        mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), Identifier.of(EMILoot.MOD_ID, "textures/gui/sunny.png"));
+        mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), Identifier.of(EMILoot.MOD_ID, "textures/gui/thundering.png"));
+        mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), Identifier.of(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
 
 
         //tool tag textkeys
