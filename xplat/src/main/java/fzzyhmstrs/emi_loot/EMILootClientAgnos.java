@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot;
 
+import dev.emi.emi.api.recipe.EmiRecipe;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.util.IconEmiWidget;
 import fzzyhmstrs.emi_loot.util.IconGroupEmiWidget;
@@ -27,11 +28,11 @@ public abstract class EMILootClientAgnos {
 
     protected abstract IconEmiWidget createIconEmiWidgetAgnos(int x, int y, int keyIndex, Text text);
 
-    public static IconGroupEmiWidget createIconGroupEmiWidget(int x, int y, ClientBuiltPool pool) {
-        return delegate.createIconGroupEmiWidgetAgnos(x, y, pool);
+    public static IconGroupEmiWidget createIconGroupEmiWidget(int x, int y, ClientBuiltPool pool, EmiRecipe recipe) {
+        return delegate.createIconGroupEmiWidgetAgnos(x, y, pool, recipe);
     }
 
-    protected abstract IconGroupEmiWidget createIconGroupEmiWidgetAgnos(int x, int y, ClientBuiltPool pool);
+    protected abstract IconGroupEmiWidget createIconGroupEmiWidgetAgnos(int x, int y, ClientBuiltPool pool, EmiRecipe recipe);
 
     public static void renderBlock(BlockState blockState, DrawContext draw, int x, int y, float delta) {
         delegate.renderBlockAgnos(blockState, draw, x, y, delta);

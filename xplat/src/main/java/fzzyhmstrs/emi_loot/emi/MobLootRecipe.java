@@ -221,7 +221,7 @@ public class MobLootRecipe implements EmiRecipe {
                 y = 11;
                 WidgetRowBuilder builder = rowBuilderList.get(0);
                 for (ClientBuiltPool pool: builder.getPoolList()) {
-                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
+                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool, this);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }
@@ -234,7 +234,7 @@ public class MobLootRecipe implements EmiRecipe {
                 y += 28;
                 for (WidgetRowBuilder builder: rowBuilderList) {
                     for (ClientBuiltPool pool: builder.getPoolList()) {
-                        IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
+                        IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool, this);
                         widgets.add(widget);
                         x += widget.getWidth() + 6;
                     }

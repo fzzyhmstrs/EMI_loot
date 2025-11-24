@@ -1,5 +1,6 @@
 package fzzyhmstrs.emi_loot.fabric;
 
+import dev.emi.emi.api.recipe.EmiRecipe;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.fabric.util.BlockRendererImpl;
@@ -22,8 +23,8 @@ public class EMILootClientAgnosFabric extends EMILootClientAgnos {
     }
 
     @Override
-    protected IconGroupEmiWidget createIconGroupEmiWidgetAgnos(int x, int y, ClientBuiltPool pool) {
-        return new IconGroupEmiWidgetImpl(x, y, pool);
+    protected IconGroupEmiWidget createIconGroupEmiWidgetAgnos(int x, int y, ClientBuiltPool pool, EmiRecipe recipe) {
+        return new IconGroupEmiWidgetImpl(x, y, pool, recipe);
     }
 
     @Override
