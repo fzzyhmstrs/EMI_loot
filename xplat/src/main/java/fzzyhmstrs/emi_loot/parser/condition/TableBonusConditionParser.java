@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.TableBonusLootCondition;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.text.Text;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,14 +18,8 @@ public class TableBonusConditionParser implements ConditionParser {
     @Override
     public List<LootTableParser.LootConditionResult> parseCondition(LootCondition condition, ItemStack stack, boolean parentIsAlternative) {
         RegistryEntry<Enchantment> enchant = ((TableBonusLootCondition)condition).enchantment();
-        String name = LText.enchant(enchant).getString();
-        String nTrim;
-        if (enchant.value().getMaxLevel() != 1) {
-            nTrim = name.substring(0, name.length() - 2);
-        } else {
-            nTrim = name;
-        }
-        // TODO: Shouldn't use LText.literal here
-        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", LText.literal(nTrim))));
+        Text name = LText.enchant(enchant);
+
+        return Collections.singletonList(new LootTableParser.LootConditionResult(TextKey.of("emi_loot.condition.table_bonus", name)));
     }
 }

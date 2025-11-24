@@ -8,6 +8,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -16,14 +17,7 @@ public class ApplyBonusFunctionParser implements FunctionParser {
     @Override
     public LootTableParser.LootFunctionResult parseFunction(LootFunction function, ItemStack stack, boolean parentIsAlternative, List<TextKey> conditionTexts) {
         RegistryEntry<Enchantment> enchant = ((ApplyBonusLootFunctionAccessor)function).getEnchantment();
-        String name = LText.enchant(enchant).getString();
-        String nTrim;
-        if (enchant.value().getMaxLevel() != 1) {
-            nTrim = name.substring(0, name.length() - 2);
-        } else {
-            nTrim = name;
-        }
-        // TODO: Shouldn't use LText.literal here
-        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", LText.literal(nTrim)), ItemStack.EMPTY, conditionTexts);
+        Text name = LText.enchant(enchant);
+        return new LootTableParser.LootFunctionResult(TextKey.of("emi_loot.function.bonus", name), ItemStack.EMPTY, conditionTexts);
     }
 }
