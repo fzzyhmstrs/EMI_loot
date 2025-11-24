@@ -130,7 +130,7 @@ public class BlockLootRecipe implements EmiRecipe {
             int i = 3;
             int j = 0;
             for (ConditionalStack stack: stacks) {
-                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 18 * j);
+                SlotWidget widget = widgets.addSlot(stack.getIngredient(), i * 18, 18 * j).recipeContext(this);
                 String rounded = FloatTrimmer.trimFloatString(Math.max(stack.weight() / 100f, 0.01f), EMILoot.config.chanceDecimalPlaces.get());
                 widget.appendTooltip(FcText.INSTANCE.translatable("emi_loot.rolls", rounded).formatted(Formatting.GRAY));
                 if (EMILoot.config.isNotPlain()) {
@@ -147,7 +147,7 @@ public class BlockLootRecipe implements EmiRecipe {
         } else {
             for (WidgetRowBuilder builder : rowBuilderList) {
                 for (ClientBuiltPool pool : builder.getPoolList()) {
-                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool);
+                    IconGroupEmiWidget widget = EMILootClientAgnos.createIconGroupEmiWidget(x, y, pool, this);
                     widgets.add(widget);
                     x += widget.getWidth() + 6;
                 }
