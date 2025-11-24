@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import fzzyhmstrs.emi_loot.EMILoot;
-import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientResourceData;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -20,7 +19,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -35,6 +33,7 @@ import java.util.List;
 public class EntityEmiStack extends EmiStack {
     private final @Nullable Entity entity;
     private final EntityRenderContext ctx;
+    private int offsetY = 0;
 
     protected EntityEmiStack(@Nullable Entity entity) {
         this(entity, 8.0);
@@ -72,9 +71,15 @@ public class EntityEmiStack extends EmiStack {
         return entity == null;
     }
 
+    public EntityEmiStack setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+        return this;
+    }
+
     @Override
     public void render(DrawContext matrices, int x, int y, float delta, int flags) {
         try {
+            y += offsetY;
             if (entity != null) {
                 if (entity instanceof LivingEntity living)
                     renderEntity(matrices.getMatrices(), x + 8, (int) (y + 8 + ctx.size), ctx, living);
@@ -96,7 +101,7 @@ public class EntityEmiStack extends EmiStack {
 
     @Override
     public Object getKey() {
-        return entity;
+        return getId();
     }
 
     @Override

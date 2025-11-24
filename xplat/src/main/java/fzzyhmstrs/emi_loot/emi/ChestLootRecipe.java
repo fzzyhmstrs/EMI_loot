@@ -12,6 +12,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.client.ClientChestLootTable;
+import fzzyhmstrs.emi_loot.util.ChestLootEmiStack;
+import fzzyhmstrs.emi_loot.util.InteractableTextWidget;
 import fzzyhmstrs.emi_loot.util.LText;
 import fzzyhmstrs.emi_loot.util.TrimmedTitle;
 import net.minecraft.client.resource.language.I18n;
@@ -23,12 +25,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fzzyhmstrs.emi_loot.util.FloatTrimmer.trimFloatString;
@@ -55,7 +52,7 @@ public class ChestLootRecipe implements EmiRecipe {
         }
         this.outputs = list;
         this.title = data.name;
-
+        inputStack = new ChestLootEmiStack(loot.id);
     }
 
     private final ClientChestLootTable loot;
@@ -64,6 +61,7 @@ public class ChestLootRecipe implements EmiRecipe {
     private final int lootStacksSortedSize;
     private final List<EmiStack> outputs;
     private boolean isGuaranteedNonChance = false;
+    private final ChestLootEmiStack inputStack;
     private final TrimmedTitle title;
     private final float columns = 8f;
 
@@ -81,7 +79,7 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return new ArrayList<>();
+        return List.of(inputStack);
     }
 
     @Override
@@ -117,7 +115,7 @@ public class ChestLootRecipe implements EmiRecipe {
             titleSpace = 11;
             finalRowHeight =  18;
         }
-        widgets.addText(title.title(), 1, 0, 0x404040, false);
+        widgets.add(new InteractableTextWidget(inputStack, 1, 0, 0x404040, false, title).recipeContext(this));
         if (EMILootAgnos.isModLoaded(loot.id.getNamespace())) {
             widgets.addTooltip(LText.components(title.rawTitle(), loot.id.getNamespace()), 0, 0, 144, 10);
         } else {
