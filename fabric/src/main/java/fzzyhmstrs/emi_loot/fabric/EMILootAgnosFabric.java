@@ -4,6 +4,7 @@ import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.loot.LootTable;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -44,5 +45,10 @@ public class EMILootAgnosFabric extends EMILootAgnos {
     @Override
     protected LootTable loadLootTableAgnos(Identifier id, LootTable lootTable) {
         return lootTable;
+    }
+
+    @Override
+    protected void releaseBufferAgnos(PacketByteBuf buf) {
+        buf.release();
     }
 }

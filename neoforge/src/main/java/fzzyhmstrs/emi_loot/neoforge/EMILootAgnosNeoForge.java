@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.loot.LootTable;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -46,5 +47,10 @@ public class EMILootAgnosNeoForge extends EMILootAgnos {
     @Override
     protected LootTable loadLootTableAgnos(Identifier id, LootTable lootTable) {
         return EventHooks.loadLootTable(id, lootTable);
+    }
+
+    @Override
+    protected void releaseBufferAgnos(PacketByteBuf buf) {
+        //do nothing in neo apparently, either it release automatically or something else is happening with ref counts here.
     }
 }
