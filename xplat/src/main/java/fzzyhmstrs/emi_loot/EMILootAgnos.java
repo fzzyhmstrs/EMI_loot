@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot;
 
 import net.minecraft.loot.LootTable;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 public abstract class EMILootAgnos {
@@ -40,4 +41,10 @@ public abstract class EMILootAgnos {
     }
 
     protected abstract LootTable loadLootTableAgnos(Identifier id, LootTable lootTable);
+
+    public static void releaseBuffer(PacketByteBuf buf) {
+        delegate.releaseBufferAgnos(buf);
+    }
+
+    protected abstract void releaseBufferAgnos(PacketByteBuf buf);
 }

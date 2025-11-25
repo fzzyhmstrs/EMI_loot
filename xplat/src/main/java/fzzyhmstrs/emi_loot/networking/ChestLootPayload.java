@@ -16,11 +16,13 @@ public record ChestLootPayload(PacketByteBuf buf) implements CustomPayload {
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
         packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
-        buf.release();
+        if (buf.refCnt() > 1)
+            buf.release();
     }
 
     public void release() {
-        buf.release();
+        if (buf.refCnt() > 1)
+            buf.release();
     }
 
     @Override

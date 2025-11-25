@@ -1,6 +1,7 @@
 package fzzyhmstrs.emi_loot.networking;
 
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -18,11 +19,11 @@ public record BlockLootPayload(PacketByteBuf buf) implements CustomPayload {
 
     private void write(@NotNull PacketByteBuf packetByteBuf) {
         packetByteBuf.writeBytes(buf, buf.readerIndex(), buf.readableBytes());
-        buf.release();
+        EMILootAgnos.releaseBuffer(buf);
     }
 
     public void release() {
-        buf.release();
+        EMILootAgnos.releaseBuffer(buf);
     }
 
     @Override
