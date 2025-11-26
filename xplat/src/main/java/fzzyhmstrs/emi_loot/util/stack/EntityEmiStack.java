@@ -93,7 +93,7 @@ public class EntityEmiStack extends EmiStack {
 
     @Override
     public ComponentChanges getComponentChanges() {
-        throw new UnsupportedOperationException("EntityEmiStack is not intended for NBT handling");
+        return ComponentChanges.EMPTY;
     }
 
     @Override
