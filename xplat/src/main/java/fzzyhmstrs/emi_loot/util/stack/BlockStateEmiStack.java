@@ -41,7 +41,7 @@ public class BlockStateEmiStack extends EmiStack {
 
 	@Override
 	public ComponentChanges getComponentChanges() {
-		return null;
+		return ComponentChanges.EMPTY;
 	}
 
 	@Override
