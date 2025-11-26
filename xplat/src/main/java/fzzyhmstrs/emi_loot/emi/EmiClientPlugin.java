@@ -22,6 +22,10 @@ import net.minecraft.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @EmiEntrypoint
@@ -43,8 +47,25 @@ public class EmiClientPlugin implements EmiPlugin {
     private static CompletableFuture<List<GameplayLootRecipe.GameplayLootRecipeData>> gameplayFuture;
     private static CompletableFuture<List<ArchaeologyLootRecipe.ArchaeologyLootRecipeData>> archaeologyFuture;
 
+    final ClassLoader classLoader = this.getClass().getClassLoader();
+    final AtomicInteger POOL_THREAD_COUNTER = new AtomicInteger();
+    ForkJoinPool pool = new ForkJoinPool(6, forkJoinPool -> {
+        final ForkJoinWorkerThread thread = new ForkJoinWorkerThread(forkJoinPool){};
+        thread.setContextClassLoader(classLoader);
+        thread.setName(String.format("FastSuite Recipe Lookup Thread: %s", POOL_THREAD_COUNTER.incrementAndGet()));
+        return thread;
+    }, EmiClientPlugin::onThreadException, true);
+
+    private static void onThreadException(Thread thread, Throwable cause) {
+        if (cause instanceof CompletionException) {
+            cause = cause.getCause();
+        }
+        EMILoot.LOGGER.error(String.format("Caught exception in thread %s", thread), cause);
+    }
+
     @Override
     public void initialize(EmiInitRegistry registry) {
+
         chestFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return ClientLootTables.INSTANCE.chestLoots.stream().flatMap(lr -> {
@@ -61,7 +82,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 EMILoot.LOGGER.error("Thrown Error: ", e);
                 return new ArrayList<>();
             }
-        });
+        }, pool);
         blockFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return ClientLootTables.INSTANCE.blockLoots.stream().flatMap(lr -> {
@@ -78,7 +99,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 EMILoot.LOGGER.error("Thrown Error: ", e);
                 return new ArrayList<>();
             }
-        });
+        }, pool);
         mobFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return ClientLootTables.INSTANCE.mobLoots.stream().flatMap(lr -> {
@@ -95,7 +116,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 EMILoot.LOGGER.error("Thrown Error: ", e);
                 return new ArrayList<>();
             }
-        });
+        }, pool);
         gameplayFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return ClientLootTables.INSTANCE.gameplayLoots.stream().flatMap(lr -> {
@@ -112,7 +133,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 EMILoot.LOGGER.error("Thrown Error: ", e);
                 return new ArrayList<>();
             }
-        });
+        }, pool);
         archaeologyFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return ClientLootTables.INSTANCE.archaeologyLoots.stream().flatMap(lr -> {
@@ -129,7 +150,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 EMILoot.LOGGER.error("Thrown Error: ", e);
                 return new ArrayList<>();
             }
-        });
+        }, pool);
     }
 
     @Override
@@ -146,11 +167,11 @@ public class EmiClientPlugin implements EmiPlugin {
             List<ChestLootRecipe> l2 = l.stream().map(ChestLootRecipe::new).toList();
             EMILoot.LOGGER.info("Built {} chest loot recipes in {}ms", l2.size(), (Util.getMeasuringTimeNano() - t)/1000000);
             return l2;
-        }).exceptionally(e -> {
+        }, pool).exceptionally(e -> {
             EMILoot.LOGGER.error("Critical error encountered while registering all Chest Recipes. Recipes completely skipped!");
             EMILoot.LOGGER.error("Thrown Error: ", e);
             return null;
-        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)));
+        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)), pool);
 
         CompletableFuture<Void> blockRecipeFuture = blockFuture == null ? null : blockFuture.thenAcceptAsync(l -> {
             long t = Util.getMeasuringTimeNano();
@@ -159,7 +180,7 @@ public class EmiClientPlugin implements EmiPlugin {
                 registerRecipe(registry, r);
             });
             EMILoot.LOGGER.info("Built {} block loot recipes in {}ms", l.size(), (Util.getMeasuringTimeNano() - t)/1000000);
-        }).exceptionally(e -> {
+        }, pool).exceptionally(e -> {
             EMILoot.LOGGER.error("Critical error encountered while registering all Block Recipes. Recipes completely skipped!");
             EMILoot.LOGGER.error("Thrown Error: ", e);
             return null;
@@ -170,33 +191,33 @@ public class EmiClientPlugin implements EmiPlugin {
             List<MobLootRecipe> l2 = l.stream().map(MobLootRecipe::new).toList();
             EMILoot.LOGGER.info("Built {} mob loot recipes in {}ms", l2.size(), (Util.getMeasuringTimeNano() - t)/1000000);
             return l2;
-        }).exceptionally(e -> {
+        }, pool).exceptionally(e -> {
             EMILoot.LOGGER.error("Critical error encountered while registering all Mob Recipes. Recipes completely skipped!");
             EMILoot.LOGGER.error("Thrown Error: ", e);
             return null;
-        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)));
+        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)), pool);
 
         CompletableFuture<Void> gameplayRecipeFuture = gameplayFuture == null ? null : gameplayFuture.thenApplyAsync(l -> {
             long t = Util.getMeasuringTimeNano();
             List<GameplayLootRecipe> l2 = l.stream().map(GameplayLootRecipe::new).toList();
             EMILoot.LOGGER.info("Built {} gameplay loot recipes in {}ms", l2.size(), (Util.getMeasuringTimeNano() - t)/1000000);
             return l2;
-        }).exceptionally(e -> {
+        }, pool).exceptionally(e -> {
             EMILoot.LOGGER.error("Critical error encountered while registering all Gameplay Recipes. Recipes completely skipped!");
             EMILoot.LOGGER.error("Thrown Error: ", e);
             return null;
-        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)));
+        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)), pool);
 
         CompletableFuture<Void> archaeologyRecipeFuture = archaeologyFuture == null ? null : archaeologyFuture.thenApplyAsync(l -> {
             long t = Util.getMeasuringTimeNano();
             List<ArchaeologyLootRecipe> l2 = l.stream().map(ArchaeologyLootRecipe::new).toList();
             EMILoot.LOGGER.info("Built {} archaeology loot recipes in {}ms", l2.size(), (Util.getMeasuringTimeNano() - t)/1000000);
             return l2;
-        }).exceptionally(e -> {
+        }, pool).exceptionally(e -> {
             EMILoot.LOGGER.error("Critical error encountered while registering all Archaeology Recipes. Recipes completely skipped!");
             EMILoot.LOGGER.error("Thrown Error: ", e);
             return null;
-        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)));
+        }).thenAcceptAsync(l -> l.forEach(r -> registerRecipe(registry, r)), pool);
 
 
 
