@@ -152,7 +152,7 @@
   "emi_loot.condition.chance": "Drops %s%% of the time",
   "emi_loot.condition.chance_looting": "%1$s%% + %2$s%% per lvl of looting",
   "emi_loot.condition.damage_source": "Killed by %s",
-  "emi_loot.condition.location": "Drops in certain locations/multiblocks",
+  "emi_loot.condition.location": "Drops in certain locations/multiblocks %s",
   "emi_loot.condition.entity_props": "Drops when %s",
   "emi_loot.condition.match_tool": "Needs item %s",
   "emi_loot.condition.entity_scores": "drops if an entity has a certain scoreboard score",
