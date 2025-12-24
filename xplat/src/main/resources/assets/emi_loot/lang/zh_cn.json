@@ -166,7 +166,7 @@
   "emi_loot.condition.chance": "掉落几率%s%%的时候",
   "emi_loot.condition.chance_looting": "%1$s%% + %2$s%%每级掠夺",
   "emi_loot.condition.damage_source": "被%s击杀",
-  "emi_loot.condition.location": "在特定位置/多方块结构掉落",
+  "emi_loot.condition.location": "在特定位置/多方块结构掉落%s",
   "emi_loot.condition.entity_props": "当%s时掉落",
   "emi_loot.condition.match_tool": "需要物品%s",
   "emi_loot.condition.entity_scores": "在实体拥有指定计分板分数时掉落：",
