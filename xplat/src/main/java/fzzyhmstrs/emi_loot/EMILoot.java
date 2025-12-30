@@ -138,7 +138,19 @@ public class EMILoot {
         public boolean chestLootAlwaysStackSame = false;
 
         @NonSync
+        public boolean chestLootIncludeDirectDrops = true;
+
+        @NonSync
+        public boolean blockLootIncludeDirectDrops = true;
+
+        @NonSync
         public boolean mobLootIncludeDirectDrops = true;
+
+        @NonSync
+        public boolean gameplayLootIncludeDirectDrops = true;
+
+        @NonSync
+        public boolean archaeologyLootIncludeDirectDrops = true;
 
         @NonSync
         public ValidatedInt chanceDecimalPlaces = new ValidatedInt(1, 10, 0, ValidatedNumber.WidgetType.SLIDER);
