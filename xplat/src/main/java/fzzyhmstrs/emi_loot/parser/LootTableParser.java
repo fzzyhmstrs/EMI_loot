@@ -271,7 +271,27 @@ public class LootTableParser {
 
     private static ChestLootTableSender parseChestLootTable(LootTable lootTable, Identifier id) {
         ChestLootTableSender sender = new ChestLootTableSender(id);
-        for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
+
+
+        List<LootPool> pools = ((LootTableAccessor) lootTable).getPools();
+        if (ServerResourceData.DIRECT_DROPS.containsKey(id) && EMILoot.config.mobLootIncludeDirectDrops) {
+            parsedDirectDrops.add(id);
+            Collection<LootTable> directTables = ServerResourceData.DIRECT_DROPS.get(id);
+            var directPools = new ArrayList<LootPool>();
+            for (LootTable directTable : directTables) {
+                if (directTable != null) {
+                    directPools.addAll(((LootTableAccessor) directTable).getPools());
+                }
+            }
+
+            List<LootPool> combinedPools = new ArrayList<>();
+            combinedPools.addAll(pools);
+			combinedPools.addAll(directPools);
+            pools = combinedPools;
+        }
+
+
+        for (LootPool pool : pools) {
             LootNumberProvider rollProvider = ((LootPoolAccessor) pool).getRolls();
             float conditionalMultiplier = 1f;
             for (LootCondition condition : ((LootPoolAccessor) pool).getConditions()) {

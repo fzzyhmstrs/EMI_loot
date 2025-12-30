@@ -43,8 +43,8 @@ public class ServerResourceData {
         String path = id.getPath();
         Identifier id2 = Identifier.of(id.getNamespace(), path.substring(DIRECT_DROPS_PATH_LENGTH, path.length() - FILE_SUFFIX_LENGTH));
         String path2 = id2.getPath();
-        if (!(path2.startsWith("blocks/") || path2.startsWith("entities/"))) {
-			EMILoot.LOGGER.error("File path for [{}] not correct; needs a 'blocks' or 'entities' subfolder. Skipping.", id);
+        if (!(path2.startsWith("blocks/") || path2.startsWith("entities/") || path2.startsWith("chests/"))) {
+			EMILoot.LOGGER.error("File path for [{}] not correct; needs a 'blocks', 'entities' or 'chests' subfolder. Skipping.", id);
             EMILoot.LOGGER.error("Example: [./data/mod_id/direct_drops/blocks/cobblestone.json] is a valid block direct drop table path for a block added by [mod_id].");
             return;
         }
