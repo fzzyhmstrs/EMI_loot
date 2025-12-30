@@ -150,7 +150,7 @@
   "emi_loot.condition.chance": "Выпадает в %s%% случаях",
   "emi_loot.condition.chance_looting": "%1$s%% + %2$s%% за каждый уровень чар «Добычи»",
   "emi_loot.condition.damage_source": "Убит %s",
-  "emi_loot.condition.location": "Выпадает в определенных местах/мультиблоках",
+  "emi_loot.condition.location": "Выпадает в определенных местах/мультиблоках %s",
   "emi_loot.condition.entity_props": "Выпадает, когда %s",
   "emi_loot.condition.match_tool": "Нужен предмет %s",
   "emi_loot.condition.entity_scores": "выпадает, если существо имеет определенный балл на счётчике",
