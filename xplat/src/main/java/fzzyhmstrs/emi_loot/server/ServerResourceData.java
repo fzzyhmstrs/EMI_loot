@@ -62,6 +62,18 @@ public class ServerResourceData {
         }
     }
 
+    /**
+     * match_tables: {
+     *     "regex": "minecraft:",
+     *     "ids": [
+     *          "minecraft:id1",
+     *          "minecraft:id2",
+     *     ],
+     *     "type": "minecraft:chest"
+     * }
+     *
+     */
+
     private static TableChecker loadTableChecker(Identifier id, JsonObject jsonObject) {
         if (!jsonObject.has("match_tables")) return new TableChecker(id, Optional.empty(), Optional.empty(), Optional.empty());
         JsonElement matchesElement = jsonObject.get("match_tables");
@@ -149,7 +161,7 @@ public class ServerResourceData {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             JsonElement list = json.get("exclusions");
             if (list != null && list.isJsonArray()) {
-                list.getAsJsonArray().forEach(element -> {
+                for (JsonElement element : list.getAsJsonArray()) {
                     if (element.isJsonPrimitive()) {
                         Identifier identifier = Identifier.of(element.getAsString());
                         if (EMILoot.DEBUG) EMILoot.LOGGER.info("Adding exclusion: {}", identifier);
@@ -157,7 +169,7 @@ public class ServerResourceData {
                     } else {
 						EMILoot.LOGGER.error("Exclusion element not properly formatted: {}", element);
                     }
-                });
+                }
             } else {
 				EMILoot.LOGGER.error("Exclusions in file: {} not readable.", id);
             }
@@ -220,8 +232,7 @@ public class ServerResourceData {
             if(idCheck.equals(id)) return true;
             if(regexCheck.map(regex -> regex.matcher(id.toString()).find()).orElse(false)) return true;
             if(idsCheck.map(ids -> ids.contains(id)).orElse(false)) return true;
-            if(typeCheck.map(type -> type.equals(table.getType())).orElse(false)) return true;
-            return false;
-        }
+			return typeCheck.map(type -> type.equals(table.getType())).orElse(false);
+		}
     }
 }
