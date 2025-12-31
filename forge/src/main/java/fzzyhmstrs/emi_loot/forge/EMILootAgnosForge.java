@@ -3,9 +3,12 @@ package fzzyhmstrs.emi_loot.forge;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -48,5 +51,10 @@ public class EMILootAgnosForge extends EMILootAgnos {
     @Override
     protected LootTable loadLootTableAgnos(Gson gson, Identifier id, JsonObject json) {
         return ForgeHooks.loadLootTable(gson, id, json, true);
+    }
+
+    @Override
+    protected SpawnEggItem getAllSpawnEggsAgnos(EntityType<?> type) {
+        return ForgeSpawnEggItem.fromEntityType(type);
     }
 }
