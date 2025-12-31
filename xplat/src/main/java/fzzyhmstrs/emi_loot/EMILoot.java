@@ -125,19 +125,8 @@ public class EMILoot {
         public boolean chestLootAlwaysStackSame = false;
 
         @NonSync
-        public boolean chestLootIncludeDirectDrops = true;
-
-        @NonSync
-        public boolean blockLootIncludeDirectDrops = true;
-
-        @NonSync
-        public boolean mobLootIncludeDirectDrops = true;
-
-        @NonSync
-        public boolean gameplayLootIncludeDirectDrops = true;
-
-        @NonSync
-        public boolean archaeologyLootIncludeDirectDrops = true;
+        @SuppressWarnings("FieldMayBeFinal")
+        private ValidatedAny<DirectDrops> directDrops = new ValidatedAny<>(new DirectDrops());
 
         @NonSync
         public ValidatedInt chanceDecimalPlaces = new ValidatedInt(1, 10, 0, ValidatedNumber.WidgetType.SLIDER);
@@ -171,6 +160,10 @@ public class EMILoot {
 
         public boolean isLogI18n(Type type) {
             return type.logUntranslatedTablesSupplier.getAsBoolean();
+        }
+
+        public boolean doDirectDrops(Type type) {
+            return type.doDirectDrops.getAsBoolean();
         }
 
         public Formatting[] getLinkFormatting() {
@@ -214,21 +207,41 @@ public class EMILoot {
         public boolean archaeology = EMILootAgnos.isDevelopmentEnvironment();
     }
 
+    @IgnoreVisibility
+    private static class DirectDrops {
+        @NonSync
+        public boolean chestLoot = true;
+
+        @NonSync
+        public boolean blockLoot = true;
+
+        @NonSync
+        public boolean mobLoot = true;
+
+        @NonSync
+        public boolean gameplayLoot = true;
+
+        @NonSync
+        public boolean archaeologyLoot = true;
+    }
+
     public enum Type {
-        BLOCK(() -> EMILoot.config.compactLoot.get().block, () -> EMILoot.config.debugModes.get().block, () -> false),
-        CHEST(() -> EMILoot.config.compactLoot.get().chest, () -> EMILoot.config.debugModes.get().chest, () -> EMILoot.config.logUnstranslatedTables.get().chest),
-        MOB(() -> EMILoot.config.compactLoot.get().mob, () -> EMILoot.config.debugModes.get().mob, () -> false),
-        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay, () -> EMILoot.config.debugModes.get().gameplay, () -> EMILoot.config.logUnstranslatedTables.get().gameplay),
-        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology, () -> EMILoot.config.debugModes.get().archaeology, () -> EMILoot.config.logUnstranslatedTables.get().archaeology);
+        BLOCK(() -> EMILoot.config.compactLoot.get().block, () -> EMILoot.config.debugModes.get().block, () -> false, () -> EMILoot.config.directDrops.get().blockLoot),
+        CHEST(() -> EMILoot.config.compactLoot.get().chest, () -> EMILoot.config.debugModes.get().chest, () -> EMILoot.config.logUnstranslatedTables.get().chest, () -> EMILoot.config.directDrops.get().chestLoot),
+        MOB(() -> EMILoot.config.compactLoot.get().mob, () -> EMILoot.config.debugModes.get().mob, () -> false, () -> EMILoot.config.directDrops.get().mobLoot),
+        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay, () -> EMILoot.config.debugModes.get().gameplay, () -> EMILoot.config.logUnstranslatedTables.get().gameplay, () -> EMILoot.config.directDrops.get().gameplayLoot),
+        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology, () -> EMILoot.config.debugModes.get().archaeology, () -> EMILoot.config.logUnstranslatedTables.get().archaeology, () -> EMILoot.config.directDrops.get().archaeologyLoot);
 
         final BooleanSupplier compactLootSupplier;
         final BooleanSupplier debugModeSupplier;
         final BooleanSupplier logUntranslatedTablesSupplier;
+        final BooleanSupplier doDirectDrops;
 
-        Type(BooleanSupplier compactLootSupplier, BooleanSupplier debugModeSupplier, BooleanSupplier logUntranslatedTablesSupplier) {
+        Type(BooleanSupplier compactLootSupplier, BooleanSupplier debugModeSupplier, BooleanSupplier logUntranslatedTablesSupplier, BooleanSupplier doDirectDrops) {
             this.compactLootSupplier = compactLootSupplier;
             this.debugModeSupplier = debugModeSupplier;
             this.logUntranslatedTablesSupplier = logUntranslatedTablesSupplier;
+            this.doDirectDrops = doDirectDrops;
         }
     }
 }
