@@ -1,6 +1,8 @@
 package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.loot.LootTable;
 import net.minecraft.util.Identifier;
 import net.neoforged.fml.ModContainer;
@@ -46,5 +48,10 @@ public class EMILootAgnosNeoForge extends EMILootAgnos {
     @Override
     protected LootTable loadLootTableAgnos(Identifier id, LootTable lootTable) {
         return EventHooks.loadLootTable(id, lootTable);
+    }
+
+    @Override
+    protected SpawnEggItem getAllSpawnEggsAgnos(EntityType<?> type) {
+        return SpawnEggItem.forEntity(type);
     }
 }
