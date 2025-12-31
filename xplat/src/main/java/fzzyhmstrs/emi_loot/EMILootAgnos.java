@@ -1,8 +1,15 @@
 package fzzyhmstrs.emi_loot;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.loot.LootTable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public abstract class EMILootAgnos {
     public static EMILootAgnos delegate;
@@ -42,9 +49,16 @@ public abstract class EMILootAgnos {
 
     protected abstract LootTable loadLootTableAgnos(Identifier id, LootTable lootTable);
 
-    public static void releaseBuffer(PacketByteBuf buf) {
-        delegate.releaseBufferAgnos(buf);
+	public static void releaseBuffer(PacketByteBuf buf) {
+		delegate.releaseBufferAgnos(buf);
+	}
+
+	protected abstract void releaseBufferAgnos(PacketByteBuf buf);
+
+    public static SpawnEggItem getSpawnEgg(EntityType<?> type) {
+        return delegate.getAllSpawnEggsAgnos(type);
     }
 
-    protected abstract void releaseBufferAgnos(PacketByteBuf buf);
+    @Nullable
+    protected abstract SpawnEggItem getAllSpawnEggsAgnos(EntityType<?> type);
 }

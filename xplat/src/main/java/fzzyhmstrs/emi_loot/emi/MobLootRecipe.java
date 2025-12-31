@@ -8,6 +8,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import fzzyhmstrs.emi_loot.EMILoot;
+import fzzyhmstrs.emi_loot.EMILootAgnos;
 import fzzyhmstrs.emi_loot.EMILootClientAgnos;
 import fzzyhmstrs.emi_loot.client.ClientBuiltPool;
 import fzzyhmstrs.emi_loot.client.ClientMobLootTable;
@@ -272,6 +273,9 @@ public class MobLootRecipe implements EmiRecipe {
             Identifier mobId = loot.mobId;
             EntityType<?> type = Registries.ENTITY_TYPE.get(mobId);
             SpawnEggItem eggItem = SpawnEggItem.forEntity(type);
+            if (eggItem == null) {
+                eggItem = EMILootAgnos.getSpawnEgg(type);
+            }
             MinecraftClient client = MinecraftClient.getInstance();
             Entity entity = null;
             try {
