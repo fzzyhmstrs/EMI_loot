@@ -139,7 +139,8 @@ public class LootTableParser {
         gameplaySenders.clear();
         archaeologySenders.clear();
         try {
-            EMILoot.LOGGER.info("parsing loot tables");
+			long start = System.currentTimeMillis();
+			EMILoot.LOGGER.info("parsing loot tables");
             manager.getEntrySet().forEach(entry -> {
                 LootTable table = entry.getValue();
                 if (!((LootTableAccessor) table).getPools().isEmpty()) {
@@ -169,7 +170,7 @@ public class LootTableParser {
                 if (EMILoot.DEBUG) EMILoot.LOGGER.info("parsing missed direct drop table: {}", entry.getKey());
                 parseLootTable(entry.getKey(), entry.getValue());
             }
-            EMILoot.LOGGER.info("finished parsing loot tables");
+			EMILoot.LOGGER.info("finished parsing loot tables in {}", System.currentTimeMillis() - start);
             hasParsedLootTables = true;
         } catch (Throwable e) {
             EMILoot.LOGGER.error("Critical unhandled error encountered while parsing loot tables. Results may be incomplete.");
@@ -178,7 +179,7 @@ public class LootTableParser {
     }
 
     private static void parseLootTable(Identifier id, LootTable lootTable) {
-        if (ServerResourceData.skipTable(id)) return;
+        if (ServerResourceData.skipTable(lootTable, id)) return;
         currentTable = id.toString();
         try {
             LootContextType type = lootTable.getType();
@@ -256,7 +257,8 @@ public class LootTableParser {
         try {
             Identifier mobId = Registries.ENTITY_TYPE.getId(type);
             LootTable mobTable = manager.get(mobTableId);
-            if ((type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) && mobTable != null) {
+			if (ServerResourceData.skipTable(mobTable, mobTableId)) return;
+			if ((type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) && mobTable != null) {
                 if (ServerResourceData.skipTable(mobTableId)) return;
                 currentTable = mobTableId.toString();
                 mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId, addedConditions));
@@ -273,7 +275,7 @@ public class LootTableParser {
         ChestLootTableSender sender = new ChestLootTableSender(id);
 
         List<LootPool> pools = ((LootTableAccessor) lootTable).getPools();
-		List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.chestLootIncludeDirectDrops);
+		List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.doDirectDrops(EMILoot.Type.CHEST));
 		if (!directTables.isEmpty()) {
             parsedDirectDrops.add(id);
             List<LootPool> allPools = new ArrayList<>(pools.size() + directTables.size());
@@ -310,7 +312,7 @@ public class LootTableParser {
     private static BlockLootTableSender parseBlockLootTable(LootTable lootTable, Identifier id) {
         BlockLootTableSender sender = new BlockLootTableSender(id);
         parseBlockLootTableInternal(lootTable, sender, false);
-        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.blockLootIncludeDirectDrops);
+        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.doDirectDrops(EMILoot.Type.BLOCK));
         if (!directTables.isEmpty()) {
             parsedDirectDrops.add(id);
             parseBlockDirectLootTable(directTables, sender);
@@ -359,7 +361,7 @@ public class LootTableParser {
     private static MobLootTableSender parseMobLootTable(LootTable lootTable, Identifier id, Identifier mobId, List<LootCondition> addedConditions) {
         MobLootTableSender sender = new MobLootTableSender(id, mobId);
         parseMobLootTableInternal(lootTable, sender, false, addedConditions);
-        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.mobLootIncludeDirectDrops);
+		List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.doDirectDrops(EMILoot.Type.MOB));
         if (!directTables.isEmpty()) {
             parsedDirectDrops.add(id);
             parseMobDirectLootTable(directTables, sender);
@@ -405,7 +407,7 @@ public class LootTableParser {
     private static GameplayLootTableSender parseGameplayLootTable(LootTable lootTable, Identifier id) {
         GameplayLootTableSender sender = new GameplayLootTableSender(id);
         parseGameplayLootTableInternal(lootTable, sender, false);
-        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.gameplayLootIncludeDirectDrops);
+        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.doDirectDrops(EMILoot.Type.GAMEPLAY));
         if (!directTables.isEmpty()) {
             parsedDirectDrops.add(id);
             parseGameplayDirectLootTable(directTables, sender);
@@ -452,7 +454,7 @@ public class LootTableParser {
         ArchaeologyLootTableSender sender = new ArchaeologyLootTableSender(id);
 
         List<LootPool> pools = ((LootTableAccessor) lootTable).getPools();
-        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.archaeologyLootIncludeDirectDrops);
+        List<LootTable> directTables = ServerResourceData.getDirectTables(lootTable, id, EMILoot.config.doDirectDrops(EMILoot.Type.ARCHAEOLOGY));
 
         if (!directTables.isEmpty()) {
             parsedDirectDrops.add(id);

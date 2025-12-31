@@ -9,6 +9,14 @@
     "minecraft:gameplay/fishing",
     "netherdepthsupgrade:gameplay/failed_fishing",
     "netherdepthsupgrade:gameplay/lava_fishing",
-    "netherdepthsupgrade:gameplay/nether_fishing"
+    "netherdepthsupgrade:gameplay/nether_fishing",
+    {
+      "ids": [
+        "minecraft:entities/zombified_piglin",
+        "minecraft:entities/zombie_horse",
+        "minecraft:entities/zombie_villager",
+        "minecraft:entities/zombie"
+      ]
+    }
   ]
 }
