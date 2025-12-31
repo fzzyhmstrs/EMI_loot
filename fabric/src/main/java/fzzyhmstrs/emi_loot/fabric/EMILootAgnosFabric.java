@@ -51,7 +51,6 @@ public class EMILootAgnosFabric extends EMILootAgnos {
 
     @Override
     protected @Nullable SpawnEggItem getAllSpawnEggsAgnos(EntityType<?> type) {
-
         return null;
     }
 }
