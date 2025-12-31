@@ -1,6 +1,8 @@
 package fzzyhmstrs.emi_loot.neoforge;
 
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.loot.LootTable;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -52,5 +54,10 @@ public class EMILootAgnosNeoForge extends EMILootAgnos {
     @Override
     protected void releaseBufferAgnos(PacketByteBuf buf) {
         //do nothing in neo apparently, either it release automatically or something else is happening with ref counts here.
+    }
+
+    @Override
+    protected SpawnEggItem getAllSpawnEggsAgnos(EntityType<?> type) {
+        return SpawnEggItem.forEntity(type);
     }
 }
