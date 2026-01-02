@@ -138,6 +138,9 @@ public class EMILoot {
         public boolean chestLootAlwaysStackSame = false;
 
         @NonSync
+        public boolean splitChestLootByTrial = false;
+
+        @NonSync
         @SuppressWarnings("FieldMayBeFinal")
         private ValidatedAny<DirectDrops> directDrops = new ValidatedAny<>(new DirectDrops());
 

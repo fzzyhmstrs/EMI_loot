@@ -40,6 +40,8 @@
   "emi_loot.emi_loot_config.logUnstranslatedTables.archaeology": "Archaeology Loot",
   "emi_loot.emi_loot_config.chestLootAlwaysStackSame": "Stack Chest Pools",
   "emi_loot.emi_loot_config.chestLootAlwaysStackSame.desc": "If true, chest and archaeology pages will always condense stacks that are equivalent in drop chance. If false, stacks will be spread out if there are fewer than 48 of them.",
+  "emi_loot.emi_loot_config.splitChestLootByTrial": "Split Out Trial Loot",
+  "emi_loot.emi_loot_config.splitChestLootByTrial.desc": "When true, chest loot tables with 'trial_chamber' in their id will be split into a separate trial chamber category",
   "emi_loot.emi_loot_config.directDrops.chestLoot": "Include Chest Direct Drops",
   "emi_loot.emi_loot_config.directDrops.chestLoot.desc": "Whether chest loot tables include manually added 'direct drops'",
   "emi_loot.emi_loot_config.directDrops.blockLoot": "Include Block Direct Drops",
@@ -69,6 +71,7 @@
   "emi_loot.emi_loot_config.linkFormatting": "Link Formatting",
   "emi_loot.emi_loot_config.linkFormatting.desc": "Formatting used for loot tables that show a 'link' title",
 
+  "emi.category.emi_loot.trial_chamber": "Trial Chamber Loot",
   "emi.category.emi_loot.chest_loot": "Chest Loot",
   "emi.category.emi_loot.block_drops": "Block Drops",
   "emi.category.emi_loot.mob_drops": "Mob Drops",

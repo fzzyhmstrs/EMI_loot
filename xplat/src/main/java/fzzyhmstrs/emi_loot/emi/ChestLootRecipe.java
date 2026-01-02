@@ -67,7 +67,7 @@ public class ChestLootRecipe implements EmiRecipe {
 
     @Override
     public EmiRecipeCategory getCategory() {
-        return EmiClientPlugin.CHEST_CATEGORY;
+        return (EMILoot.config.splitChestLootByTrial && loot.id.getPath().contains("trial_chamber")) ? EmiClientPlugin.TRIAL_CATEGORY : EmiClientPlugin.CHEST_CATEGORY;
     }
 
     @Override
