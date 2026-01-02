@@ -34,7 +34,7 @@ public class ArchaeologyLootRecipe implements EmiRecipe {
 
 	public ArchaeologyLootRecipe(ArchaeologyLootRecipeData data) {
 		this.loot = data.loot;
-
+		this.isGuaranteedNonChance = data.guaranteed;
 
 		ArrayListMultimap<Float, EmiStack> map2 = ArrayListMultimap.create();
 		List<EmiStack> outputsList = new ArrayList<>();

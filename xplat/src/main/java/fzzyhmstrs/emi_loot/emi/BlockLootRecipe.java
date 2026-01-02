@@ -55,10 +55,11 @@ public class BlockLootRecipe implements EmiRecipe {
     private final boolean isSimple;
     private List<EmiIngredient> inputStacks;
 
-    public void init() {
+    public BlockLootRecipe init() {
         inputStack.init();
         outputStacks.init();
         inputStacks = inputStack.get().getItemStack().isEmpty() ? List.of(lootStack) : List.of(inputStack.get(), lootStack);
+        return this;
     }
 
     @Override
