@@ -135,6 +135,7 @@ public class EMILoot {
         public boolean chestLootAlwaysStackSame = false;
 
         @NonSync
+        @RequiresAction(action = Action.RELOAD_RESOURCES)
         public boolean splitChestLootByTrial = false;
 
         @NonSync
