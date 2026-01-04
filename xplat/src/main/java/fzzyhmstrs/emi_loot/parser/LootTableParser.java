@@ -475,7 +475,7 @@ public class LootTableParser {
             float conditionalMultiplier = 1f;
             for (LootCondition condition : ((LootPoolAccessor) pool).getConditions()) {
                 if (condition instanceof RandomChanceLootCondition) {
-                    conditionalMultiplier *= ((RandomChanceLootConditionAccessor)condition).getChance();
+                    conditionalMultiplier *= ((RandomChanceLootCondition) condition).chance();
                 }
             }
             float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;

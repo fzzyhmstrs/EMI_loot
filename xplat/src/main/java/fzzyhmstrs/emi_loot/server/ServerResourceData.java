@@ -7,6 +7,7 @@ import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.EMILootAgnos;
+import fzzyhmstrs.emi_loot.mixins.LootContextTypesAccessor;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextType;
@@ -24,7 +25,7 @@ public class ServerResourceData {
 
     private static final Multimap<TableChecker, LootTable> DIRECT_DROPS = Multimaps.newMultimap(Maps.newLinkedHashMap(), ArrayList::new);
     public static final List<Identifier> SHEEP_TABLES;
-    public static final List<TableChecker> TABLE_EXCLUSIONS = new LinkedList<>();
+    private static final List<TableChecker> TABLE_EXCLUSIONS = new LinkedList<>();
     private static final int DIRECT_DROPS_PATH_LENGTH = "direct_drops/".length();
     private static final int FILE_SUFFIX_LENGTH = ".json".length();
 
@@ -148,7 +149,7 @@ public class ServerResourceData {
                 EMILoot.LOGGER.error("{} {} has malformed table matcher. 'type' key has unparsable identifier {}", messagePrefix, id, typePrimitive.getAsString());
                 return new TableChecker(id, Optional.empty(), Optional.empty(), Optional.empty());
             }
-            LootContextType type = LootContextTypes.get(typeId);
+            LootContextType type = LootContextTypesAccessor.getMAP().get(typeId);
             if (type == null) {
                 EMILoot.LOGGER.error("{} {} has malformed table matcher. 'type' key has unregistered context type {}", messagePrefix, id, typeId);
                 return new TableChecker(id, Optional.empty(), Optional.empty(), Optional.empty());
