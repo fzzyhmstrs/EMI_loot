@@ -259,7 +259,6 @@ public class LootTableParser {
             LootTable mobTable = manager.get(mobTableId);
 			if (ServerResourceData.skipTable(mobTable, mobTableId)) return;
 			if ((type == EntityType.PIG && mobId.equals(fallback) || mobTable != LootTable.EMPTY) && mobTable != null) {
-                if (ServerResourceData.skipTable(mobTableId)) return;
                 currentTable = mobTableId.toString();
                 mobSenders.put(mobTableId, parseMobLootTable(mobTable, mobTableId, mobId, addedConditions));
             } else {
@@ -475,7 +474,7 @@ public class LootTableParser {
             float conditionalMultiplier = 1f;
             for (LootCondition condition : ((LootPoolAccessor) pool).getConditions()) {
                 if (condition instanceof RandomChanceLootCondition) {
-                    conditionalMultiplier *= ((RandomChanceLootCondition) condition).chance();
+                    conditionalMultiplier *= NumberProcessors.getRollAvg(((RandomChanceLootCondition) condition).chance());
                 }
             }
             float rollAvg = NumberProcessors.getRollAvg(rollProvider) * conditionalMultiplier;

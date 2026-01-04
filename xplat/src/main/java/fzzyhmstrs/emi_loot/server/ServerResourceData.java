@@ -51,7 +51,7 @@ public class ServerResourceData {
             BufferedReader reader = resource.getReader();
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             TableChecker checker = loadTableCheckerFromTable(id2, json);
-            LootTable lootTable = EMILootAgnos.loadLootTable(id2, LootTable.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(IllegalStateException::new));
+            LootTable lootTable = EMILootAgnos.loadLootTable(id2, LootTable.CODEC.parse(ops, json).getOrThrow(IllegalStateException::new));
             if (lootTable != null) {
                 DIRECT_DROPS.put(checker, lootTable);
             } else {
