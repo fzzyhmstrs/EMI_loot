@@ -15,6 +15,7 @@
     "ItemEntryAccessor",
     "LeafEntryAccessor",
     "LimitCountLootFunctionAccessor",
+    "LootContextTypesAccessor",
     "LootManagerMixin",
     "LootPoolAccessor",
     "LootPoolEntryAccessor",
