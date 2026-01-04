@@ -35,9 +35,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.util.Formatting;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -132,7 +129,7 @@ public class EMILoot {
 
         @NonSync
         @SuppressWarnings("FieldMayBeFinal")
-        private ValidatedAny<LogUntranslatedTables> logUnstranslatedTables = new ValidatedAny<>(new LogUntranslatedTables());
+        private ValidatedAny<LogUntranslatedTables> logUntranslatedTables = new ValidatedAny<>(new LogUntranslatedTables());
 
         @NonSync
         public boolean chestLootAlwaysStackSame = false;
@@ -243,10 +240,10 @@ public class EMILoot {
 
     public enum Type {
         BLOCK(() -> EMILoot.config.compactLoot.get().block, () -> EMILoot.config.debugModes.get().block, () -> false, () -> EMILoot.config.directDrops.get().blockLoot),
-        CHEST(() -> EMILoot.config.compactLoot.get().chest, () -> EMILoot.config.debugModes.get().chest, () -> EMILoot.config.logUnstranslatedTables.get().chest, () -> EMILoot.config.directDrops.get().chestLoot),
+        CHEST(() -> EMILoot.config.compactLoot.get().chest, () -> EMILoot.config.debugModes.get().chest, () -> EMILoot.config.logUntranslatedTables.get().chest, () -> EMILoot.config.directDrops.get().chestLoot),
         MOB(() -> EMILoot.config.compactLoot.get().mob, () -> EMILoot.config.debugModes.get().mob, () -> false, () -> EMILoot.config.directDrops.get().mobLoot),
-        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay, () -> EMILoot.config.debugModes.get().gameplay, () -> EMILoot.config.logUnstranslatedTables.get().gameplay, () -> EMILoot.config.directDrops.get().gameplayLoot),
-        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology, () -> EMILoot.config.debugModes.get().archaeology, () -> EMILoot.config.logUnstranslatedTables.get().archaeology, () -> EMILoot.config.directDrops.get().archaeologyLoot);
+        GAMEPLAY(() -> EMILoot.config.compactLoot.get().gameplay, () -> EMILoot.config.debugModes.get().gameplay, () -> EMILoot.config.logUntranslatedTables.get().gameplay, () -> EMILoot.config.directDrops.get().gameplayLoot),
+        ARCHAEOLOGY(() -> EMILoot.config.compactLoot.get().archaeology, () -> EMILoot.config.debugModes.get().archaeology, () -> EMILoot.config.logUntranslatedTables.get().archaeology, () -> EMILoot.config.directDrops.get().archaeologyLoot);
 
         final BooleanSupplier compactLootSupplier;
         final BooleanSupplier debugModeSupplier;
