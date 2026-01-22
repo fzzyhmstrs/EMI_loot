@@ -48,7 +48,7 @@ public class LocationPredicateParser {
 
         RegistryKey<Structure> feature = ((LocationPredicateAccessor)predicate).getFeature();
         if (feature != null) {
-            return LText.translatable("emi_loot.location_predicate.structure", LText.translatable(feature.getValue().toTranslationKey(RegistryKeys.STRUCTURE.getValue().getPath())));
+            return LText.translatable("emi_loot.location_predicate.structure", LText.translatable(feature.getValue().toTranslationKey("structure")));
         }
 
         Boolean smokey = ((LocationPredicateAccessor)predicate).getSmokey();
