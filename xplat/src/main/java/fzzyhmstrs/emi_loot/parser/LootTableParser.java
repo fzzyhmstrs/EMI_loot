@@ -182,6 +182,10 @@ public class LootTableParser {
         currentTable = id.toString();
         try {
             LootContextType type = lootTable.getType();
+            // Many mods omit "type" from their chest tables, which then load as generic
+            if (type == LootContextTypes.GENERIC && id.getPath().startsWith("chests/")) {
+                type = LootContextTypes.CHEST;
+            }
             if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
                 chestSenders.put(id, parseChestLootTable(lootTable, id));
             } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
