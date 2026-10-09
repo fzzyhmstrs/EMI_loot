@@ -1,6 +1,9 @@
 package fzzyhmstrs.emi_loot.parser;
 
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import fzzyhmstrs.emi_loot.EMILoot;
 import fzzyhmstrs.emi_loot.mixins.CombinedEntryAccessor;
 import fzzyhmstrs.emi_loot.mixins.ConditionalLootFunctionAccessor;
@@ -36,6 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootDataKey;
 import net.minecraft.loot.LootDataType;
+import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -48,6 +52,7 @@ import net.minecraft.loot.entry.AlternativeEntry;
 import net.minecraft.loot.entry.GroupEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.entry.LootPoolEntryTypes;
 import net.minecraft.loot.entry.LootTableEntry;
 import net.minecraft.loot.entry.SequenceEntry;
 import net.minecraft.loot.entry.TagEntry;
@@ -533,7 +538,38 @@ public class LootTableParser {
         } else if (entry instanceof LootTableEntry lootTableEntry) {
             return parseLootTableEntry(lootTableEntry, parentIsAlternative);
         }
-        return List.of();
+        return parseUnknownEntry(entry, parentIsAlternative);
+    }
+
+    // Modded composite entries (custom entry types wrapping other entries) are parsed like a group,
+    // by re-encoding them and reading back their "children", if they have any
+    static List<ItemEntryResult> parseUnknownEntry(LootPoolEntry entry, boolean parentIsAlternative) {
+        Gson parser = LootGsons.getTableGsonBuilder().create();
+        JsonElement json;
+        try {
+            json = parser.toJsonTree(entry);
+        } catch (Exception e) {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Failed to encode loot pool entry in table {}", currentTable, e);
+            return List.of();
+        }
+        if (json == null || !json.isJsonObject() || !json.getAsJsonObject().has("children")) return List.of();
+        JsonElement childrenJson = json.getAsJsonObject().get("children");
+        if (!childrenJson.isJsonArray()) return List.of();
+        List<TextKey> conditionsTexts = parseLootConditionTexts(((LootPoolEntryAccessor) entry).getConditions(), ItemStack.EMPTY, parentIsAlternative);
+        List<ItemEntryResult> results = new LinkedList<>();
+        for (JsonElement childJson : childrenJson.getAsJsonArray()) {
+            try {
+                LootPoolEntry child = parser.fromJson(childJson, LootPoolEntry.class);
+                if (child == null) continue;
+                parseLootPoolEntry(child, parentIsAlternative).forEach(resultEntry -> {
+                    resultEntry.conditions.addAll(conditionsTexts);
+                    results.add(resultEntry);
+                });
+            } catch (Exception e) {
+				//noop
+			}
+        }
+        return results;
     }
 
     static List<ItemEntryResult> parseItemEntry(ItemEntry entry, boolean parentIsAlternative) {
