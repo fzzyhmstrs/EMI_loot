@@ -48,6 +48,7 @@ import net.minecraft.loot.entry.AlternativeEntry;
 import net.minecraft.loot.entry.GroupEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.entry.LootPoolEntryTypes;
 import net.minecraft.loot.entry.LootTableEntry;
 import net.minecraft.loot.entry.SequenceEntry;
 import net.minecraft.loot.entry.TagEntry;
@@ -183,6 +184,10 @@ public class LootTableParser {
         currentTable = id.toString();
         try {
             LootContextType type = lootTable.getType();
+            // Many mods omit "type" from their chest tables, which then load as generic
+            if (type == LootContextTypes.GENERIC && id.getPath().startsWith("chests/")) {
+                type = LootContextTypes.CHEST;
+            }
             if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
                 chestSenders.put(id, parseChestLootTable(lootTable, id));
             } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
@@ -544,7 +549,34 @@ public class LootTableParser {
         } else if (entry instanceof LootTableEntry lootTableEntry) {
             return parseLootTableEntry(lootTableEntry, parentIsAlternative);
         }
-        return List.of();
+        return parseUnknownEntry(entry, parentIsAlternative);
+    }
+
+    // Modded composite entries (custom entry types wrapping other entries) are parsed like a group,
+    // by re-encoding them and reading back their "children", if they have any
+    static List<ItemEntryResult> parseUnknownEntry(LootPoolEntry entry, boolean parentIsAlternative) {
+        if (registryOps == null) return List.of();
+        JsonElement json;
+        try {
+            json = LootPoolEntryTypes.CODEC.encodeStart(registryOps, entry).result().orElse(null);
+        } catch (Exception e) {
+            if (EMILoot.DEBUG) EMILoot.LOGGER.warn("Failed to encode loot pool entry in table {}", currentTable, e);
+            return List.of();
+        }
+        if (json == null || !json.isJsonObject() || !json.getAsJsonObject().has("children")) return List.of();
+        JsonElement childrenJson = json.getAsJsonObject().get("children");
+        if (!childrenJson.isJsonArray()) return List.of();
+        List<TextKey> conditionsTexts = parseLootConditionTexts(((LootPoolEntryAccessor) entry).getConditions(), ItemStack.EMPTY, parentIsAlternative);
+        List<ItemEntryResult> results = new LinkedList<>();
+        for (JsonElement childJson : childrenJson.getAsJsonArray()) {
+            LootPoolEntry child = LootPoolEntryTypes.CODEC.parse(registryOps, childJson).result().orElse(null);
+            if (child == null) continue;
+            parseLootPoolEntry(child, parentIsAlternative).forEach(resultEntry -> {
+                resultEntry.conditions.addAll(conditionsTexts);
+                results.add(resultEntry);
+            });
+        }
+        return results;
     }
 
     static List<ItemEntryResult> parseItemEntry(ItemEntry entry, boolean parentIsAlternative) {
@@ -640,9 +672,8 @@ public class LootTableParser {
     static List<ItemEntryResult> parseLootTableEntry(LootTableEntry entry, boolean parentIsAlternative) {
 		Either<RegistryKey<LootTable>, LootTable> value = ((LootTableEntryAccessor)entry).getValue();
 		LootTable table = value.map(LootTableParser.lootManager::get, Function.identity());
+		// Inline tables have no id, but are parsed all the same
 		if (table == null) return List.of();
-		Identifier id = LootTableParser.lootManager.getId(table);
-		if (id == null) return List.of();
 		List<LootCondition> conditions = ((LootPoolEntryAccessor) entry).getConditions();
 		List<TextKey> conditionsTexts = parseLootConditionTexts(conditions, ItemStack.EMPTY, parentIsAlternative);
 		LootSender<ComplexLootPoolBuilder> results = new NestedLootTableResults();
