@@ -124,6 +124,7 @@ public record TextKey(int index, List<Text> args) {
         mapBuilder(53, "emi_loot.condition.raining_false", (key)-> getBasicText(53), Identifier.of(EMILoot.MOD_ID, "textures/gui/sunny.png"));
         mapBuilder(54, "emi_loot.condition.thundering_true", (key)-> getBasicText(54), Identifier.of(EMILoot.MOD_ID, "textures/gui/thundering.png"));
         mapBuilder(55, "emi_loot.condition.thundering_false", (key)-> getBasicText(55), Identifier.of(EMILoot.MOD_ID, "textures/gui/not_thundering.png"));
+        mapBuilder(56, "emi_loot.condition.time_check_period", (key)-> getTwoArgText(56, key), Identifier.of(EMILoot.MOD_ID, "textures/gui/time.png"));
 
 
         //tool tag textkeys

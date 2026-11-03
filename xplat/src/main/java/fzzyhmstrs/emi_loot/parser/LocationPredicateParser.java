@@ -9,7 +9,9 @@ import net.minecraft.predicate.FluidPredicate;
 import net.minecraft.predicate.LightPredicate;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.world.World;
@@ -36,17 +38,17 @@ public class LocationPredicateParser {
 
         RegistryKey<World> dim = ((LocationPredicateAccessor)predicate).getDimension();
         if (dim != null) {
-            return LText.translatable("emi_loot.location_predicate.dim", dim.getValue().toString());
+            return LText.translatable("emi_loot.location_predicate.dim", LText.translatable(dim.getValue().toTranslationKey(RegistryKeys.DIMENSION.getValue().getPath())));
         }
 
         RegistryKey<Biome> biome = ((LocationPredicateAccessor)predicate).getBiome();
         if (biome != null) {
-            return LText.translatable("emi_loot.location_predicate.biome", biome.getValue().toString());
+            return LText.translatable("emi_loot.location_predicate.biome", LText.translatable(biome.getValue().toTranslationKey("biome")));
         }
 
         RegistryKey<Structure> feature = ((LocationPredicateAccessor)predicate).getFeature();
         if (feature != null) {
-            return LText.translatable("emi_loot.location_predicate.structure", feature.getValue().toString());
+            return LText.translatable("emi_loot.location_predicate.structure", LText.translatable(feature.getValue().toTranslationKey("structure")));
         }
 
         Boolean smokey = ((LocationPredicateAccessor)predicate).getSmokey();
