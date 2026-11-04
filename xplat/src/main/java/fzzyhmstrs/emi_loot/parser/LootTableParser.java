@@ -94,6 +94,13 @@ public class LootTableParser {
 
     private static final List<LootCondition> emptyConditions = List.of();
 
+    // Many mods omit "type" from their loot tables, which then load as generic; infer it from the conventional folder
+    private static final Map<String, LootContextType> untypedTableFolders = Map.of(
+            "chests/", LootContextTypes.CHEST,
+            "blocks/", LootContextTypes.BLOCK,
+            "archaeology/", LootContextTypes.ARCHAEOLOGY
+    );
+
     static {
         Object2BooleanOpenHashMap<PostProcessor> map = new Object2BooleanOpenHashMap<>();
         for (var value : PostProcessor.values()) {
@@ -183,11 +190,7 @@ public class LootTableParser {
         if (ServerResourceData.skipTable(lootTable, id)) return;
         currentTable = id.toString();
         try {
-            LootContextType type = lootTable.getType();
-            // Many mods omit "type" from their chest tables, which then load as generic
-            if (type == LootContextTypes.GENERIC && id.getPath().startsWith("chests/")) {
-                type = LootContextTypes.CHEST;
-            }
+            LootContextType type = inferType(lootTable, id);
             if (type == LootContextTypes.CHEST && EMILoot.config.parseChestLoot) {
                 chestSenders.put(id, parseChestLootTable(lootTable, id));
             } else if (type == LootContextTypes.BLOCK && EMILoot.config.parseBlockLoot) {
@@ -201,6 +204,16 @@ public class LootTableParser {
             EMILoot.LOGGER.error("Critical error encountered while parsing Loot Table {}", id);
             EMILoot.LOGGER.error("Thrown Error: ", e);
         }
+    }
+
+    private static LootContextType inferType(LootTable lootTable, Identifier id) {
+        LootContextType type = lootTable.getType();
+        if (type != LootContextTypes.GENERIC) return type;
+        return untypedTableFolders.entrySet().stream()
+                .filter(folder -> id.getPath().startsWith(folder.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(type);
     }
 
     public static void postProcess(PostProcessor process) {
